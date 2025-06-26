@@ -12,7 +12,7 @@ import React from 'react'
 const HomePageMain = () => {
   return (
     <div className="home-page-main-wrapper">
-      <BannerSection />
+      {/* <BannerSection /> */}
       <LatestProducts />
       <FeaturedProducts />
       {/* <ProductCategory /> */}
