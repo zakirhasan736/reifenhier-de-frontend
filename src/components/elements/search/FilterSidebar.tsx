@@ -69,18 +69,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     lastIndex: false,
   });
 
-  // const {
-  //   categories = [],
-  //   brands = [],
-  //   widths = [],
-  //   heights = [],
-  //   diameters = [],
-  //   speedIndexes = [],
-  //   lastIndexes = [],
-  //   noises = [],
-  //   fuelClasses = [],
-  //   wetGrips = [],
-  // } = availableProducts;
 
   const handleFilterChange = (key: keyof SelectedFilters, value: string) => {
     const currentValues = filters[key] || [];

@@ -13,10 +13,10 @@ import { debounce } from 'lodash';
 import { CloseIcon, FilterIcon } from '@/icons';
 import { useSearchParams } from 'next/navigation';
 
-import SortingSearch from '../elements/search/SortingSearch';
-import Pagination from '../elements/Pagination';
+import SortingSearch from '@elements/search/SortingSearch';
+import Pagination from '@elements/Pagination';
 import ProductList from './ProductList';
-import FilterSidebar from '../elements/search/FilterSidebar';
+import FilterSidebar from '@elements/search/FilterSidebar';
 import { AppDispatch, RootState } from '@/store/store';
 
 const productsPerPage = 12;

@@ -57,7 +57,7 @@ const LatestProducts: React.FC = () => {
               Quickly get tyres suited to your vehicle and driving style.
             </p>
           </div>
-          <div className="featured-product-right-content max-md:hidden">
+          <div className="featured-product-right-content hidden">
             <Link
               href="/products"
               className="ml-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
@@ -96,7 +96,7 @@ const LatestProducts: React.FC = () => {
           </Swiper>
         </div>
       </div>
-      <div className="featured-product-right-content mt-6 max-md:flex hidden justify-center">
+      <div className="featured-product-right-content mt-6 hidden justify-center">
         <Link
           href="/products"
           className="mx-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
