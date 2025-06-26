@@ -309,7 +309,7 @@ import {
   setFilters,
   setSort,
   setPage,
-  removeFilter,
+  // removeFilter,
 } from '@/store/productSlice';
 import { debounce } from 'lodash';
 import { CloseIcon, FilterIcon } from '@/icons';
@@ -374,13 +374,13 @@ const DEFAULT_FILTERS: Filters = {
   maxPrice: 99999,
 };
 
-function isRenderable(val: unknown): val is string | number | boolean {
-  return (
-    typeof val === 'string' ||
-    typeof val === 'number' ||
-    typeof val === 'boolean'
-  );
-}
+// function isRenderable(val: unknown): val is string | number | boolean {
+//   return (
+//     typeof val === 'string' ||
+//     typeof val === 'number' ||
+//     typeof val === 'boolean'
+//   );
+// }
 
 const ProductListingsSec = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -442,9 +442,9 @@ const ProductListingsSec = () => {
     return debouncedFetch.cancel;
   }, [mergedFilterHash, page, sortField, sortOrder, debouncedFetch]);
 
-  const handleRemoveFilter = (filterType: ArrayFilterKey, value: string) => {
-    dispatch(removeFilter({ filterType, value }));
-  };
+  // const handleRemoveFilter = (filterType: ArrayFilterKey, value: string) => {
+  //   dispatch(removeFilter({ filterType, value }));
+  // };
 
   const totalPages = Math.ceil(total / productsPerPage);
   const startIndex = (page - 1) * productsPerPage;
