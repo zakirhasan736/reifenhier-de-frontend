@@ -490,7 +490,7 @@ const ProductListingsSec = () => {
                       </div>
                       <div className="filter-body-product-info px-6 pt-4">
                         <div className="product-selected-category-lists flex flex-wrap items-center gap-2">
-                          {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
+                          {/* {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
                             mergedFilters[key].map((val, idx) => {
                               const label = isRenderable(val)
                                 ? val
@@ -513,7 +513,7 @@ const ProductListingsSec = () => {
                                 </span>
                               );
                             })
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
@@ -530,7 +530,7 @@ const ProductListingsSec = () => {
               </div>
 
               <div className="product-selected-category-lists max-sm:hidden flex flex-wrap items-center gap-2">
-                {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
+                {/* {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
                   mergedFilters[key].map((val, idx) => {
                     const label = isRenderable(val) ? val : JSON.stringify(val);
                     return (
@@ -548,7 +548,7 @@ const ProductListingsSec = () => {
                       </span>
                     );
                   })
-                )}
+                )} */}
               </div>
             </div>
 
