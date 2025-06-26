@@ -98,12 +98,17 @@ const ProductListingsSec = () => {
 
     const initialFilters: Partial<Filters> = {};
 
-    ARRAY_FILTER_KEYS.forEach(key => {
-      const values = searchParams.getAll(key);
-      if (values.length > 0) {
-        initialFilters[key] = values;
-      }
-    });
+    {
+      ARRAY_FILTER_KEYS.map(key => {
+        const values = mergedFilters[key] as string[];
+        return values.map((val, idx) => (
+          <span key={`${key}-${idx}`}>
+            {typeof val === 'object' ? JSON.stringify(val) : val}
+          </span>
+        ));
+      });
+    }
+    
 
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
