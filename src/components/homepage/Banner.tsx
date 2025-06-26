@@ -132,11 +132,19 @@ const BannerSection = () => {
                         onChange={e => setCategory(e.target.value)}
                       >
                         <option value="">Select Category</option>
-                        {categories.map(c => (
-                          <option key={c.name} value={c.name}>
-                            {c.name}
-                          </option>
-                        ))}
+                        {categories.map(c => {
+                          const label =
+                            typeof c.name === 'string' ||
+                            typeof c.name === 'number'
+                              ? c.name
+                              : JSON.stringify(c.name); // fallback to safe rendering
+
+                          return (
+                            <option key={label} value={label}>
+                              {label}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                     <div className="tyre-dimensions-left-content w-full">
@@ -153,11 +161,19 @@ const BannerSection = () => {
                         className="input !rounded-[4px] !outline-none w-full !bg-mono-0 !shadow-none !border-2 !border-solid !border-border-100 px-4 py-2"
                       >
                         <option value="">Select Width</option>
-                        {widths.map(w => (
-                          <option key={w.name} value={w.name}>
-                            {w.name}
-                          </option>
-                        ))}
+                        {widths.map(w => {
+                          const label =
+                            typeof w.name === 'string' ||
+                            typeof w.name === 'number'
+                              ? w.name
+                              : JSON.stringify(w.name); // fallback to safe rendering
+
+                          return (
+                            <option key={label} value={label}>
+                              {label}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                     <div className="tyre-dimensions-right-content w-full">
@@ -174,11 +190,19 @@ const BannerSection = () => {
                         className="input !rounded-[4px] !outline-none w-full !bg-mono-0 !shadow-none !border-2 !border-solid !border-border-100 px-4 py-2"
                       >
                         <option value="">Select Height</option>
-                        {heights.map(h => (
-                          <option key={h.name} value={h.name}>
-                            {h.name}
-                          </option>
-                        ))}
+                        {heights.map(h => {
+                          const label =
+                            typeof h.name === 'string' ||
+                            typeof h.name === 'number'
+                              ? h.name
+                              : JSON.stringify(h.name); // fallback to safe rendering
+
+                          return (
+                            <option key={label} value={label}>
+                              {label}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                     <div className="tyre-dimensions-right-content w-full">
@@ -195,11 +219,19 @@ const BannerSection = () => {
                         className="input !rounded-[4px] !outline-none w-full !bg-mono-0 !shadow-none !border-2 !border-solid !border-border-100 px-4 py-2"
                       >
                         <option value="">Select Diameter</option>
-                        {diameters.map(d => (
-                          <option key={d.name} value={d.name}>
-                            {d.name}
-                          </option>
-                        ))}
+                        {diameters.map(d => {
+                          const label =
+                            typeof d.name === 'string' ||
+                            typeof d.name === 'number'
+                              ? d.name
+                              : JSON.stringify(d.name); // fallback to safe rendering
+
+                          return (
+                            <option key={label} value={label}>
+                              {label}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
                   </div>
