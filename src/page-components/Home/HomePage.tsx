@@ -1,5 +1,5 @@
 import AboutUs from '@/components/homepage/AboutUs'
-// import BannerSection from '@/components/homepage/Banner'
+import BannerSection from '@/components/homepage/Banner'
 import BrandCategory from '@/components/homepage/BrandCategory'
 import FaqSection from '@/components/homepage/Faq'
 import FeaturedProducts from '@/components/homepage/FeaturedProducts'
@@ -12,7 +12,7 @@ import React from 'react'
 const HomePageMain = () => {
   return (
     <div className="home-page-main-wrapper">
-      {/* <BannerSection /> */}
+      <BannerSection />
       <LatestProducts />
       <FeaturedProducts />
       {/* <ProductCategory /> */}
