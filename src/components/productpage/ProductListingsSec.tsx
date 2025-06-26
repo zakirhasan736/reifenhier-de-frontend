@@ -205,20 +205,11 @@ const ProductListingsSec = () => {
                                   key={`${key}-${val}-${idx}`}
                                   className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
                                 >
-                                  {typeof val === 'string'
-                                    ? val
-                                    : typeof val === 'object' && val
-                                    ? val
-                                    : JSON.stringify(val)}
+                                  {typeof val === 'object'
+                                    ? JSON.stringify(val)
+                                    : val}
                                   <button
-                                    onClick={() =>
-                                      handleRemoveFilter(
-                                        key,
-                                        typeof val === 'string'
-                                          ? val
-                                          : val ?? ''
-                                      )
-                                    }
+                                    onClick={() => handleRemoveFilter(key, val)}
                                     className="ml-2 text-red-500"
                                   >
                                     ×
@@ -253,18 +244,9 @@ const ProductListingsSec = () => {
                       key={`${key}-${val}-${idx}`}
                       className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
                     >
-                      {typeof val === 'string'
-                        ? val
-                        : typeof val === 'object' && val
-                        ? val
-                        : JSON.stringify(val)}
+                      {typeof val === 'object' ? JSON.stringify(val) : val}
                       <button
-                        onClick={() =>
-                          handleRemoveFilter(
-                            key,
-                            typeof val === 'string' ? val : val ?? ''
-                          )
-                        }
+                        onClick={() => handleRemoveFilter(key, val)}
                         className="ml-2 text-red-500"
                       >
                         ×
