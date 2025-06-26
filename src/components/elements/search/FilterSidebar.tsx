@@ -144,18 +144,31 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </div>
           {openSections.category && (
             <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2 ">
-              {availableProducts.categories.map(({ name, count }) => (
-                <li key={name}>
-                  <label className="flex items-center gap-2 capitalize caption">
-                    <Checkbox
-                      checked={selectedFilters.category.includes(name)}
-                      onChange={() => handleFilterChange('category', name)}
-                    />
-                    {name || 'Unknown'}
-                    <span className="ml-1 text-gray-400">({count})</span>
-                  </label>
-                </li>
-              ))}
+              {availableProducts.categories.map((item, index) => {
+                const label =
+                  typeof item.name === 'string' || typeof item.name === 'number'
+                    ? item.name
+                    : JSON.stringify(item.name);
+
+                return (
+                  <li key={`${label}-${index}`}>
+                    <label className="flex items-center gap-2 capitalize caption">
+                      <Checkbox
+                        checked={selectedFilters.category.includes(
+                          String(label)
+                        )}
+                        onChange={() =>
+                          handleFilterChange('category', String(label))
+                        }
+                      />
+                      {label || 'Unknown'}
+                      <span className="ml-1 text-gray-400">
+                        ({item.count ?? 0})
+                      </span>
+                    </label>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -182,18 +195,29 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </div>
           {openSections.brand && (
             <ul className="px-2 py-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 absolute z-120 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-              {availableProducts.brands.map(({ name, count }) => (
-                <li key={name}>
-                  <label className="flex items-center gap-2 capitalize caption">
-                    <Checkbox
-                      checked={selectedFilters.brand.includes(name)}
-                      onChange={() => handleFilterChange('brand', name)}
-                    />
-                    {name || 'Unknown'}
-                    <span className="ml-1 text-gray-400">({count})</span>
-                  </label>
-                </li>
-              ))}
+              {availableProducts.brands.map((item, index) => {
+                const label =
+                  typeof item.name === 'string' || typeof item.name === 'number'
+                    ? item.name
+                    : JSON.stringify(item.name);
+
+                return (
+                  <li key={`${label}-${index}`}>
+                    <label className="flex items-center gap-2 capitalize caption">
+                      <Checkbox
+                        checked={selectedFilters.brand.includes(String(label))}
+                        onChange={() =>
+                          handleFilterChange('brand', String(label))
+                        }
+                      />
+                      {label || 'Unknown'}
+                      <span className="ml-1 text-gray-400">
+                        ({item.count ?? 0})
+                      </span>
+                    </label>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -241,18 +265,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.width && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-110 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.widths.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.width.includes(name)}
-                        onChange={() => handleFilterChange('width', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.widths.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.width.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('width', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -280,18 +318,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.height && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-100 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.heights.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.height.includes(name)}
-                        onChange={() => handleFilterChange('height', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.heights.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.height.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('height', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -319,18 +371,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.diameter && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-95 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.diameters.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.diameter.includes(name)}
-                        onChange={() => handleFilterChange('diameter', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.diameters.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.diameter.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('diameter', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -360,18 +426,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.speedIndex && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-90 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.speedIndexes.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.speedIndex.includes(name)}
-                        onChange={() => handleFilterChange('speedIndex', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.speedIndexes.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.speedIndex.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('speedIndex', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -401,18 +481,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.lastIndex && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-80 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.lastIndexes.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.lastIndex.includes(name)}
-                        onChange={() => handleFilterChange('lastIndex', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.lastIndexes.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.lastIndex.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('lastIndex', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -455,18 +549,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.fuelClass && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-70 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.fuelClasses.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.fuelClass.includes(name)}
-                        onChange={() => handleFilterChange('fuelClass', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.fuelClasses.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.fuelClass.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('fuelClass', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -495,18 +603,32 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.wetGrip && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-60 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-                {availableProducts.wetGrips.map(({ name, count }) => (
-                  <li key={name}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.wetGrip.includes(name)}
-                        onChange={() => handleFilterChange('wetGrip', name)}
-                      />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
-                    </label>
-                  </li>
-                ))}
+                {availableProducts.wetGrips.map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.wetGrip.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('wetGrip', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -535,18 +657,28 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.noise && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-50 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[200px] overflow-y-auto">
-                {availableProducts.noises.map(({ name, count }) => (
-                  <li key={name}>
+                {availableProducts.noises.map((item, index) => {
+                const label = typeof item.name === 'string' || typeof item.name === 'number'
+                  ? item.name
+                  : JSON.stringify(item.name);
+
+                return (
+                  <li key={`${label}-${index}`}>
                     <label className="flex items-center gap-2 capitalize caption">
                       <Checkbox
-                        checked={selectedFilters.noise.includes(name)}
-                        onChange={() => handleFilterChange('noise', name)}
+                        checked={selectedFilters.noise.includes(String(label))}
+                        onChange={() =>
+                          handleFilterChange('noise', String(label))
+                        }
                       />
-                      {name || 'Unknown'}
-                      <span className="ml-1 text-gray-400">({count})</span>
+                      {label || 'Unknown'}
+                      <span className="ml-1 text-gray-400">
+                        ({item.count ?? 0})
+                      </span>
                     </label>
                   </li>
-                ))}
+                );
+                })}
               </ul>
             )}
           </div>
