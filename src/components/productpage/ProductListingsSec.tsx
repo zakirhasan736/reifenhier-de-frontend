@@ -312,7 +312,7 @@ import {
   removeFilter,
 } from '@/store/productSlice';
 import { debounce } from 'lodash';
-// import { CloseIcon, FilterIcon } from '@/icons';
+import { CloseIcon, FilterIcon } from '@/icons';
 import { useSearchParams } from 'next/navigation';
 
 import SortingSearch from '../elements/search/SortingSearch';
@@ -374,6 +374,14 @@ const DEFAULT_FILTERS: Filters = {
   maxPrice: 99999,
 };
 
+function isRenderable(val: unknown): val is string | number | boolean {
+  return (
+    typeof val === 'string' ||
+    typeof val === 'number' ||
+    typeof val === 'boolean'
+  );
+}
+
 const ProductListingsSec = () => {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
@@ -399,7 +407,6 @@ const ProductListingsSec = () => {
     if (!searchParams) return;
 
     const initialFilters: Partial<Filters> = {};
-
     ARRAY_FILTER_KEYS.forEach(key => {
       const values = searchParams.getAll(key);
       if (values.length > 0) {
@@ -423,9 +430,7 @@ const ProductListingsSec = () => {
     [dispatch]
   );
 
-  useEffect(() => {
-    return () => debouncedFetch.cancel();
-  }, [debouncedFetch]);
+  useEffect(() => () => debouncedFetch.cancel(), [debouncedFetch]);
 
   const mergedFilterHash = useMemo(
     () => JSON.stringify(mergedFilters),
@@ -451,25 +456,102 @@ const ProductListingsSec = () => {
         <div className="product-listing-wrapper">
           <div className="product-list-header mb-[23px] max-md:mb-4 flex items-center justify-between gap-5 w-full">
             <div className="filter-area-box flex items-center gap-8">
+              <div className="filter-sidebar-search hidden max-md:block">
+                <input
+                  id="my-drawer-filter"
+                  type="checkbox"
+                  className="drawer-toggle"
+                />
+                <div className="drawer-content">
+                  <label
+                    htmlFor="my-drawer-filter"
+                    className="drawer-button btn text-mono-100 !outline-none text-[18px]  !shadow-none !bg-transparent !p-0 !border-none"
+                  >
+                    Filter: {'  '} <FilterIcon />
+                  </label>
+                </div>
+                <div className="drawer-side z-[9999999]">
+                  <label
+                    htmlFor="my-drawer-filter"
+                    className="drawer-overlay"
+                  ></label>
+                  <div className="menu bg-mono-0 min-h-full max-w-[430px] w-full p-0">
+                    <div className="offcanvas-head min-h-full">
+                      <div className="minicart-header px-6">
+                        <div className="cart-head-top border-b pt-5 pb-5 flex justify-between items-center border-b-mono-60">
+                          <p className="eyebrow-large">Filter Search</p>
+                          <label
+                            htmlFor="my-drawer-filter"
+                            className="close-btn w-8 h-8 flex items-center justify-center cursor-pointer"
+                          >
+                            <CloseIcon />
+                          </label>
+                        </div>
+                      </div>
+                      <div className="filter-body-product-info px-6 pt-4">
+                        <div className="product-selected-category-lists flex flex-wrap items-center gap-2">
+                          {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
+                            mergedFilters[key].map((val, idx) => {
+                              const label = isRenderable(val)
+                                ? val
+                                : JSON.stringify(val);
+
+                              return (
+                                <span
+                                  key={`${key}-${idx}`}
+                                  className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
+                                >
+                                  {label}
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveFilter(key, String(val))
+                                    }
+                                    className="ml-2 text-red-500"
+                                  >
+                                    ×
+                                  </button>
+                                </span>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="offcanvas-main px-6 mt-4 pb-8">
+                      <FilterSidebar
+                        availableProducts={filterProducts}
+                        selectedFilters={mergedFilters}
+                        min={minPriceLimit}
+                        max={maxPriceLimit}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="product-selected-category-lists max-sm:hidden flex flex-wrap items-center gap-2">
                 {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
-                  mergedFilters[key].map((val, idx) => (
-                    <span
-                      key={`${key}-${idx}`}
-                      className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
-                    >
-                      {typeof val === 'object' ? JSON.stringify(val) : val}
-                      <button
-                        onClick={() => handleRemoveFilter(key, val.toString())}
-                        className="ml-2 text-red-500"
+                  mergedFilters[key].map((val, idx) => {
+                    const label = isRenderable(val) ? val : JSON.stringify(val);
+                    return (
+                      <span
+                        key={`${key}-${idx}`}
+                        className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
                       >
-                        ×
-                      </button>
-                    </span>
-                  ))
+                        {label}
+                        <button
+                          onClick={() => handleRemoveFilter(key, String(val))}
+                          className="ml-2 text-red-500"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  })
                 )}
               </div>
             </div>
+
             <SortingSearch
               onSortChange={(field, order) => {
                 dispatch(setSort({ field, order }));
@@ -477,8 +559,9 @@ const ProductListingsSec = () => {
               }}
             />
           </div>
+
           <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6">
-            <div className="products-list-main-left-cont overflow-hidden overflow-y-scroll h-[100vh] sticky max-md:relative max-md:h-auto top-9 max-w-[230px] max-md:max-w-[160px] w-full max-md:hidden">
+            <div className="products-list-main-left-cont overflow-hidden overflow-y-scroll h-[100vh] sticky top-9 max-w-[230px] max-md:hidden">
               <FilterSidebar
                 availableProducts={filterProducts}
                 selectedFilters={mergedFilters}
@@ -486,22 +569,21 @@ const ProductListingsSec = () => {
                 max={maxPriceLimit}
               />
             </div>
-            <div className="products-list-main-right-cont w-full max-md:w-full">
+
+            <div className="products-list-main-right-cont w-full">
               <ProductList products={products} loading={loading} />
-              <div className="product-lists-footer mt-[38px] max-md:mt-6 flex max-md:flex-row-reverse max-md:justify-between max-sm:flex-col max-sm:mt-4 items-center">
-                <div className="pagination-wrapper ml-auto mr-auto max-md:mx-0">
-                  <Pagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={page => dispatch(setPage(page))}
-                  />
-                </div>
+              <div className="product-lists-footer mt-[38px] flex items-center justify-between max-md:flex-wrap">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={page => dispatch(setPage(page))}
+                />
                 <div className="showing-current-product">
-                  <span className="caption pr-3 max-md:pr-1">Showing</span>
+                  <span className="caption">Showing </span>
                   <span className="caption">
-                    {startIndex + 1} to {endIndex} of
+                    {startIndex + 1} to {endIndex} of{' '}
                   </span>
-                  <span className="caption-bold"> {total} products</span>
+                  <span className="caption-bold">{total} products</span>
                 </div>
               </div>
             </div>
