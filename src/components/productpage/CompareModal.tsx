@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
@@ -100,7 +98,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: RelatedProduct[] }
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black/60 z-50 flex md:items-center md:justify-center items-end justify-center p-4"
+      className="fixed inset-0 bg-black/60 z-[99999] flex md:items-center md:justify-center items-end justify-center p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

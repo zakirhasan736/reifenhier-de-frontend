@@ -3,19 +3,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFilters, resetSubFilters } from '@/store/filterSlice';
+import { fetchFilters, resetSubFilters, FilterOption } from '@/store/filterSlice';
 import { debounce } from 'lodash';
 import Image from 'next/image';
 import { AppDispatch, RootState } from '@/store/store';
-interface FilterParams {
-  category?: string;
-  width?: string;
-  height?: string;
-  diameter?: string;
-}
-interface FilterOption {
-  name: number | string;
-}
 
 const BannerSection = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,27 +18,20 @@ const BannerSection = () => {
   const [diameter, setDiameter] = useState('');
 
   const { categories, widths, heights, diameters } = useSelector(
-    (
-      state: RootState
-    ): {
-      categories: FilterOption[];
-      widths: FilterOption[];
-      heights: FilterOption[];
-      diameters: FilterOption[];
-    } => state.filters
+    (state: RootState) => state.filters
   );
-  
 
-  // Debounced fetch function (memoized)
   const debouncedFetch = useMemo(
-    () =>
-      debounce((params: FilterParams) => {
-        dispatch(fetchFilters(params));
-      }, 300),
+    () => debounce(params => dispatch(fetchFilters(params)), 300),
     [dispatch]
   );
-  
-  
+
+  useEffect(() => () => debouncedFetch.cancel(), [debouncedFetch]);
+
+  useEffect(() => {
+    dispatch(fetchFilters({}));
+  }, [dispatch]);
+
   useEffect(() => {
     return () => {
       debouncedFetch.cancel();
@@ -59,35 +43,47 @@ const BannerSection = () => {
     dispatch(fetchFilters({}));
   }, [dispatch]);
 
-  // Widths when category changes
+
   useEffect(() => {
-    if (category) {
+    if (!category) {
       dispatch(resetSubFilters());
-      debouncedFetch({ category });
       setWidth('');
       setHeight('');
       setDiameter('');
+      dispatch(fetchFilters({}));
+    } else {
+      dispatch(resetSubFilters());
+      setWidth('');
+      setHeight('');
+      setDiameter('');
+      debouncedFetch({ category });
     }
   }, [category, dispatch, debouncedFetch]);
 
-  // Heights when width changes
   useEffect(() => {
-    if (category && width) {
-      debouncedFetch({ category, width });
+    if (!width && category) {
       setHeight('');
       setDiameter('');
+      debouncedFetch({ category });
+    }
+    if (width && category) {
+      setHeight('');
+      setDiameter('');
+      debouncedFetch({ category, width });
     }
   }, [width, category, debouncedFetch]);
 
-  // Diameters when height changes
   useEffect(() => {
-    if (category && width && height) {
-      debouncedFetch({ category, width, height });
+    if (!height && width && category) {
       setDiameter('');
+      debouncedFetch({ category, width });
+    }
+    if (height && width && category) {
+      setDiameter('');
+      debouncedFetch({ category, width, height });
     }
   }, [height, category, width, debouncedFetch]);
-
-
+  
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (category) params.set('category', category);
@@ -96,6 +92,13 @@ const BannerSection = () => {
     if (diameter) params.set('diameter', diameter);
     router.push(`/products?${params.toString()}`);
   };
+
+  const renderOptions = (list: FilterOption[]) =>
+    list.map((item, idx) => (
+      <option key={idx} value={item.name}>
+        {item.name} {item.count ? `(${item.count})` : ''}
+      </option>
+    ));
 
   return (
     <section className="banner-section font-primary max-sm:h-auto">
@@ -132,19 +135,7 @@ const BannerSection = () => {
                         onChange={e => setCategory(e.target.value)}
                       >
                         <option value="">Select Category</option>
-                        {categories.map(c => {
-                          const label =
-                            typeof c.name === 'string' ||
-                            typeof c.name === 'number'
-                              ? c.name
-                              : JSON.stringify(c.name); // fallback to safe rendering
-
-                          return (
-                            <option key={label} value={label}>
-                              {label}
-                            </option>
-                          );
-                        })}
+                        {renderOptions(categories)}
                       </select>
                     </div>
                     <div className="tyre-dimensions-left-content w-full">
@@ -161,19 +152,7 @@ const BannerSection = () => {
                         className="input !rounded-[4px] !outline-none w-full !bg-mono-0 !shadow-none !border-2 !border-solid !border-border-100 px-4 py-2"
                       >
                         <option value="">Select Width</option>
-                        {widths.map(w => {
-                          const label =
-                            typeof w.name === 'string' ||
-                            typeof w.name === 'number'
-                              ? w.name
-                              : JSON.stringify(w.name); // fallback to safe rendering
-
-                          return (
-                            <option key={label} value={label}>
-                              {label}
-                            </option>
-                          );
-                        })}
+                        {renderOptions(widths)}
                       </select>
                     </div>
                     <div className="tyre-dimensions-right-content w-full">
@@ -190,19 +169,7 @@ const BannerSection = () => {
                         className="input !rounded-[4px] !outline-none w-full !bg-mono-0 !shadow-none !border-2 !border-solid !border-border-100 px-4 py-2"
                       >
                         <option value="">Select Height</option>
-                        {heights.map(h => {
-                          const label =
-                            typeof h.name === 'string' ||
-                            typeof h.name === 'number'
-                              ? h.name
-                              : JSON.stringify(h.name); // fallback to safe rendering
-
-                          return (
-                            <option key={label} value={label}>
-                              {label}
-                            </option>
-                          );
-                        })}
+                        {renderOptions(heights)}
                       </select>
                     </div>
                     <div className="tyre-dimensions-right-content w-full">
@@ -219,19 +186,7 @@ const BannerSection = () => {
                         className="input !rounded-[4px] !outline-none w-full !bg-mono-0 !shadow-none !border-2 !border-solid !border-border-100 px-4 py-2"
                       >
                         <option value="">Select Diameter</option>
-                        {diameters.map(d => {
-                          const label =
-                            typeof d.name === 'string' ||
-                            typeof d.name === 'number'
-                              ? d.name
-                              : JSON.stringify(d.name); // fallback to safe rendering
-
-                          return (
-                            <option key={label} value={label}>
-                              {label}
-                            </option>
-                          );
-                        })}
+                        {renderOptions(diameters)}
                       </select>
                     </div>
                   </div>
