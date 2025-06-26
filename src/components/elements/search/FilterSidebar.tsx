@@ -8,8 +8,8 @@ import Checkbox from '../input-fields/checkbox';
 import PriceRangeSlider from '@/components/elements/search/PriceFilter';
 import { RootState } from '@/store/store';
 interface FilterItem {
-  name: string;
-  count: number;
+  name: string | number;
+  count: number  | string;
 }
 
 interface FilterGroups {
