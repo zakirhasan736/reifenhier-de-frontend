@@ -58,7 +58,9 @@ interface ProductState {
   maxPriceLimit: number;
   initialPriceRange: { minPrice: number; maxPrice: number };
 }
-
+// Axios query param value type
+type QueryParamValue = string | number | boolean | string[] | number[] | undefined;
+type QueryParams = Record<string, QueryParamValue>;
 // Initial state
 const initialState: ProductState = {
   products: [],
@@ -96,14 +98,21 @@ export const fetchProducts = createAsyncThunk(
     const state = getState() as { products: ProductState };
     const { filters, page, sortField, sortOrder } = state.products;
 
+    const params: QueryParams = {
+      page,
+      limit: 12,
+      sort: sortField,
+      order: sortOrder,
+      ...filters,
+    };
+
+    // ✅ Only include filters if it's the first page
+    if (page === 1) {
+      params.includeFilters = true;
+    }
+
     const res = await axios.get(`${apiUrl}/api/products/product-lists`, {
-      params: {
-        page,
-        limit: 12,
-        sort: sortField,
-        order: sortOrder,
-        ...filters,
-      },
+      params,
       headers: { 'Cache-Control': 'no-cache' },
     });
 
@@ -140,20 +149,28 @@ const productSlice = createSlice({
       .addCase(fetchProducts.pending, state => {
         state.loading = true;
       })
+
       .addCase(fetchProducts.fulfilled, (state, action) => {
         const data = action.payload;
         state.loading = false;
         state.products = data.products || [];
         state.total = data.total || 0;
-        state.minPriceLimit = data.minPrices;
-        state.maxPriceLimit = data.maxPrices;
-        state.initialPriceRange = {
-          minPrice: data.minPrices,
-          maxPrice: data.maxPrices,
-        };
-        state.filters.minPrice = data.minPrices;
-        state.filters.maxPrice = data.maxPrices;
-        state.filterProducts = data.filterGroups || {};
+      
+        // Only update price limits and filters if included
+        if (data.minPrices !== undefined && data.maxPrices !== undefined) {
+          state.minPriceLimit = data.minPrices;
+          state.maxPriceLimit = data.maxPrices;
+          state.initialPriceRange = {
+            minPrice: data.minPrices,
+            maxPrice: data.maxPrices,
+          };
+          state.filters.minPrice = data.minPrices;
+          state.filters.maxPrice = data.maxPrices;
+        }
+      
+        if (data.filterGroups) {
+          state.filterProducts = data.filterGroups;
+        }
       })
       .addCase(fetchProducts.rejected, state => {
         state.loading = false;

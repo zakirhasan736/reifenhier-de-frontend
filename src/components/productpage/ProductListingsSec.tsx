@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProducts,
@@ -88,7 +88,7 @@ const ProductListingsSec = () => {
     minPriceLimit,
     maxPriceLimit,
   } = useSelector((state: RootState) => state.products);
-
+  console.log(' filter product data', filterProducts);
   const mergedFilters = useMemo(() => {
     return { ...DEFAULT_FILTERS, ...filters };
   }, [filters]);
@@ -115,14 +115,12 @@ const ProductListingsSec = () => {
       dispatch(setPage(1));
     }
   }, [dispatch, searchParams]);
-  
-  const debouncedFetch = useMemo(
-    () =>
-      debounce(() => {
-        dispatch(fetchProducts());
-      }, 300),
-    [dispatch]
-  );
+
+  const debouncedFetch = useRef(
+    debounce(() => {
+      dispatch(fetchProducts());
+    }, 300)
+  ).current;
 
   useEffect(() => {
     return () => {
@@ -134,6 +132,16 @@ const ProductListingsSec = () => {
     () => JSON.stringify(mergedFilters),
     [mergedFilters]
   );
+
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    debouncedFetch();
+  }, [mergedFilterHash, page, sortField, sortOrder, debouncedFetch]);
 
   useEffect(() => {
     debouncedFetch();

@@ -74,7 +74,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
     if (suggestion.type === 'Product') {
-      router.push(`/product/${suggestion.id}`);
+      router.push(`/products/${suggestion.id}`);
     } else if (suggestion.type === 'Category') {
       router.push(`/products?category=${encodeURIComponent(suggestion.name)}`);
     } else if (suggestion.type === 'Brand') {
