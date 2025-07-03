@@ -216,6 +216,29 @@
       transform: rotate(180deg);
       transition: all 150ms ease 0s;
   }
+
+  .blog-details-content-block h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+}
+
+.blog-details-content-block h5 {
+    font-size: 20px;
+    color: #000;
+}
+
+.blog-details-content-block ul.list-disc li {
+    font-size: 16px;
+    font-weight: 400;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.blog-details-content-block p {
+    font-size: 16px;
+    color: #000;
+}
     p {
       font-family: var(--primary-font);
       font-size: 16px;

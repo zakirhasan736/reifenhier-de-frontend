@@ -1,10 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      'cdn-ilddjdl.nitrocdn.com',
-      'images2.productserve.com',
-      'www.reifen.com',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn-ilddjdl.nitrocdn.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images2.productserve.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.reifen.com',
+        pathname: '/**',
+      },
     ],
   },
 };

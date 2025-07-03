@@ -60,17 +60,7 @@ const Header: React.FC = () => {
                     Sommerreifen
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href={{
-                      pathname: '/products',
-                      query: { category: 'all sessions' },
-                    }}
-                    className="text-[10px] max-sm:text-[8px] uppercase text-center font-primary font-medium text-mono-100 cursor-pointer px-4 py-3 max-sm:px-2 hover:text-primary-100"
-                  >
-                    all sessions
-                  </Link>
-                </li>
+                
                 <li>
                   <Link
                     href={{

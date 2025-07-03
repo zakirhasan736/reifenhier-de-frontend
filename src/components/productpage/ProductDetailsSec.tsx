@@ -493,14 +493,18 @@ const ProductSinglepage: React.FC<ProductProps> = ({
             <div className="product-singlepage-cont-wrapper w-full max-w-[895px] flex items-start justify-between gap-9 max-lg:gap-12 max-md:gap-10 max-sm:gap-12 pb-6 max-sm:pb-12 max-sm:flex-col">
               <div className="product-singlepage-left-cont px-3 py-2 max-w-[415px] sticky max-md:relative top-6 max-md:top-0 w-full">
                 <div className="swiper-product-slider-area relative">
-                  <div className="brand-logo inline-block px-4 py-2 border border-primary-100 rounded-[4px] bg-mono-0">
-                    <Image
-                      src={product.brand_logo || '/images/brands/falken.png'}
-                      alt=""
+                    <div className="brand-logo inline-block px-4 py-2 border border-primary-100 rounded-[4px] bg-mono-0">
+                    {product.brand_logo && product.brand_logo !== '0' ? (
+                      <Image
+                      src={product.brand_logo}
+                      alt={product.brand_name || ''}
                       width={110}
                       height={85}
-                    />
-                  </div>
+                      />
+                    ) : (
+                      <span className="font-bold text-primary-100 text-md">{product.brand_name}</span>
+                    )}
+                    </div>
                   <div className="swiper-slider-view w-full relative">
                     <Swiper
                       spaceBetween={10}
@@ -610,16 +614,16 @@ const ProductSinglepage: React.FC<ProductProps> = ({
 
               <div className="product-singlepage-right-cont  w-full">
                 <ul className="product-highlight-info mb-4 flex items-center flex-wrap gap-2">
-                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-border-100 text-primary-70 font-semibold border border-border-100">
+                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-purple-100 text-primary-70 font-semibold border border-border-100">
                     Free Shipping
                   </li>
-                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-border-100 text-primary-70 font-semibold border border-border-100">
+                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-purple-100 text-primary-70 font-semibold border border-border-100">
                     Availability: {product.delivery_time || 'N/A'}
                   </li>
-                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-border-100 text-primary-70 font-semibold border border-border-100">
+                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-purple-100 text-primary-70 font-semibold border border-border-100">
                     {product.merchant_product_third_category || 'N/A'}
                   </li>
-                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-border-100 text-primary-70 font-semibold border border-border-100">
+                  <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-purple-100 text-primary-70 font-semibold border border-border-100">
                     {product.in_stock === '1' ? 'In Stock' : 'Not Available'}
                   </li>
                 </ul>
@@ -632,7 +636,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
 
                 <div className="product-price-group flex flex-col gap-2 mb-4 max-w-[306px] sm:max-w-[375px] w-full">
                   <p className="input-type-text text-primary-70 font-medium text-[18px] capitalized text-left w-full">
-                    <span className="font-bold text-[16px]">Price:</span> £{' '}
+                    <span className="font-bold text-[14px]">Price:</span> €{''}
                     {product.search_price || '0.00'}
                   </p>
                   <ul className="attributes flex items-center justify-start mb-4">
@@ -763,9 +767,16 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                     <Link href={product.product_url} className="block w-full">
                       <button
                         type="button"
-                        className="w-full !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer hover:!text-primary-100 transition ease-in hover:!border-primary-100 hover:bg-transparent"
+                        className="w-full flex items-center justify-center gap-2 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100 hover:opacity-80"
                         //   variant="secondary"
                       >
+                        <Image
+                          src="/images/icons/shopping-bag.png"
+                          className="w-5 h-5"
+                          alt="cart icon"
+                          width={24}
+                          height={24}
+                        />{' '}
                         To the offer
                       </button>
                     </Link>
@@ -934,14 +945,14 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                       autoplay={{ delay: 3900, disableOnInteraction: false }}
                       breakpoints={{
                         640: { slidesPerView: 1, spaceBetween: 10 },
-                        768: { slidesPerView: 2, spaceBetween: 15 },
-                        1024: { slidesPerView: 4, spaceBetween: 20 },
+                        768: { slidesPerView: 1, spaceBetween: 15 },
+                        1024: { slidesPerView: 1, spaceBetween: 20 },
                       }}
                     >
                       {product.offers?.map((product, index) => (
                         <SwiperSlide key={`${product.brand}-${index}`}>
-                          <div className="offer-product-card-item border border-border-100 rounded-[4px] bg-mono-0 p-4">
-                            <div className="offer-product-card-inner flex flex-col gap-0">
+                          <div className="offer-product-card-item border border-border-100 rounded-[4px] bg-mono-0 px-8 py-4">
+                            <div className="offer-product-card-inner flex justify-between items-center gap-0">
                               <div className="offer-product-card-img pt-0 pb-0">
                                 <Image
                                   src={product.vendor_logo}
@@ -962,29 +973,37 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                                 <h5 className="h6 font-secondary text-primary-70 mb-1">
                                   {product.product_name}
                                 </h5>
-                                <p className="text-primary-70 font-bold text-[14px] mb-2">
-                                  £ {product.price}
-                                </p>
-                                <p className="text-primary-70 font-bold text-[12px]">
+                              </div>
+                              <div className="offer-product-card-content flex flex-col gap-2">
+                                <p className="text-primary-70 font-bold text-[14px]">
                                   {product.delivery_cost === '0.00'
                                     ? 'Free delivery'
                                     : 'delivery cost: ' + product.delivery_cost}
                                 </p>
 
-                                <p className="text-primary-70 font-bold text-[12px]">
+                                <p className="text-primary-70 font-bold text-[14px]">
                                   {product.delivery_time || 'N/A'}
                                 </p>
                               </div>
-
                               <div className="offer-product-card-btn-states mt-4">
+                                <p className="text-primary-70 font-bold text-center text-[18px] mb-2">
+                                  €{product.price}
+                                </p>
                                 <Link
                                   href={product.original_affiliate_url}
                                   className="block w-full"
                                 >
                                   <button
                                     type="button"
-                                    className="w-full border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:text-primary-100 hover:border-primary-100 hover:bg-transparent transition ease-in"
+                                    className="w-full flex items-center gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
                                   >
+                                    <Image
+                                      src="/images/icons/shopping-bag.png"
+                                      className="w-5 h-5"
+                                      alt="cart icon"
+                                      width={24}
+                                      height={24}
+                                    />{' '}
                                     To the offer
                                   </button>
                                 </Link>

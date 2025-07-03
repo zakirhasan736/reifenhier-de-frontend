@@ -88,7 +88,7 @@ const ProductListingsSec = () => {
     minPriceLimit,
     maxPriceLimit,
   } = useSelector((state: RootState) => state.products);
-  console.log(' filter product data', filterProducts);
+  console.log(' filter product data', products);
   const mergedFilters = useMemo(() => {
     return { ...DEFAULT_FILTERS, ...filters };
   }, [filters]);
@@ -157,7 +157,7 @@ const ProductListingsSec = () => {
   const endIndex = Math.min(page * productsPerPage, total);
 
   return (
-    <div className="product-listings-sec bg-bg-opacity py-9 max-sm:py-5">
+    <div className="product-listings-sec bg-bg-opacity pt-12 pb-9 max-sm:pt-12 max-sm:pb-5">
       <div className="custom-container">
         <div className="product-listing-wrapper">
           <div className="product-list-header mb-[23px] max-md:mb-4 flex items-center justify-between gap-5 w-full">

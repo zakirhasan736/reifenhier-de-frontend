@@ -28,20 +28,14 @@ interface ProductListProps {
 const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
   return (
     <div className="relative min-h-[200px]">
-      {loading && (
+      {/* {loading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50">
           <div className="w-8 h-8 border-4 border-gray-300 border-t-primary-100 rounded-full animate-spin"></div>
         </div>
-      )}
+      )} */}
 
-      <div className={`${loading ? 'opacity-50 pointer-events-none' : ''}`}>
-        {products.length === 0 && !loading ? (
-          <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <ProductSkeletonCard key={`skeleton-${i}`} />
-            ))}
-          </div>
-        ) : products.length === 0 && loading ? (
+      <div className={`${loading ? '' : ''}`}>
+        {products.length === 0  ? (
           <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
               <ProductSkeletonCard key={`skeleton-${i}`} />
@@ -49,11 +43,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
           </div>
         ) : (
           <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
-            {loading
-              ? Array.from({ length: 12 }).map((_, i) => (
-                  <ProductSkeletonCard key={`skeleton-${i}`} />
-                ))
-              : products.map((p) => (
+            {products.map((p) => (
                   <ProductCard key={p._id} {...p} />
                 ))}
           </div>

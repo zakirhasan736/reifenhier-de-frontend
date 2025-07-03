@@ -53,6 +53,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   min,
   max,
 }) => {
+  const [brandSearch, setBrandSearch] = useState('');
+
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
   const [openSections, setOpenSections] = useState({
@@ -182,31 +184,53 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </span>
           </div>
           {openSections.brand && (
-            <ul className="px-2 py-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 absolute z-120 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px] overflow-y-auto">
-              {availableProducts.brands.map((item, index) => {
-                const label =
-                  typeof item.name === 'string' || typeof item.name === 'number'
-                    ? item.name
-                    : JSON.stringify(item.name);
+            <div className="px-2 pt-1 pb-1 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 absolute z-120 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] max-md:max-h-[180px]">
+              {/* Search Input */}
+              <input
+                type="text"
+                value={brandSearch}
+                onChange={e => setBrandSearch(e.target.value)}
+                placeholder="Search brands..."
+                className="px-2 py-2 mb-1 border border-mono-60 rounded text-sm"
+              />
 
-                return (
-                  <li key={`${label}-${index}`}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.brand.includes(String(label))}
-                        onChange={() =>
-                          handleFilterChange('brand', String(label))
-                        }
-                      />
-                      {label || 'Unknown'}
-                      <span className="ml-1 text-gray-400">
-                        ({item.count ?? 0})
-                      </span>
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
+              {/* Filtered & Sorted Brand List */}
+              <ul className="overflow-y-auto flex-1">
+                {[...availableProducts.brands]
+                  .filter(item =>
+                    String(item.name)
+                      .toLowerCase()
+                      .includes(brandSearch.toLowerCase())
+                  )
+                  .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 capitalize caption">
+                          <Checkbox
+                            checked={selectedFilters.brand.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('brand', String(label))
+                            }
+                          />
+                          {label || 'Unknown'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
           )}
         </div>
       )}
@@ -646,26 +670,30 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             {openSections.noise && (
               <ul className="px-2 py-3 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2  absolute z-50 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[200px] overflow-y-auto">
                 {availableProducts.noises.map((item, index) => {
-                const label = typeof item.name === 'string' || typeof item.name === 'number'
-                  ? item.name
-                  : JSON.stringify(item.name);
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
 
-                return (
-                  <li key={`${label}-${index}`}>
-                    <label className="flex items-center gap-2 capitalize caption">
-                      <Checkbox
-                        checked={selectedFilters.noise.includes(String(label))}
-                        onChange={() =>
-                          handleFilterChange('noise', String(label))
-                        }
-                      />
-                      {label || 'Unknown'}
-                      <span className="ml-1 text-gray-400">
-                        ({item.count ?? 0})
-                      </span>
-                    </label>
-                  </li>
-                );
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 capitalize caption">
+                        <Checkbox
+                          checked={selectedFilters.noise.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('noise', String(label))
+                          }
+                        />
+                        {label || 'Unknown'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
                 })}
               </ul>
             )}

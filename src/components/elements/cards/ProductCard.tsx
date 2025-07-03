@@ -107,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {brand_name}
           </p>
           <p className="product-price text-primary-100 font-medium text-[16px] uppercase text-right">
-            <span className="text-[11px] text-mono-100">ab</span> {search_price}
+            <span className="text-[11px] text-mono-100">ab</span> €{search_price}
           </p>
         </div>
         <h5 className="h6 text-[16px]  text-primary-70 h-[42px] max-sm:h-auto font-semibold">
