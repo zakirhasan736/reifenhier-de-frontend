@@ -58,7 +58,7 @@ const BlogDetailPage = () => {
   return (
     <>
       <section className="blog-details-page">
-        <div className="blog-details-banner bg-mono-0 py-8 max-sm:py-5">
+        <div className="blog-details-banner hidden  bg-mono-0 py-8 max-sm:py-5">
           <div className="custom-container">
             <div className="product-banner-wrapper flex flex-col items-center justify-center">
               <ul className="breadcrumb-area flex items-center gap-[10px]">
@@ -83,7 +83,7 @@ const BlogDetailPage = () => {
           </div>
         </div>
         <div className="custom-container">
-          <div className="blog-details-wrapper bg-bg-opacity">
+          <div className="blog-details-wrapper bg-bg-opacity pt-12">
             <div className="blog-dtails-right-cont">
               <div className="max-w-4xl mx-auto p-6">
                 <h1 className="text-3xl font-bold mb-2">{blog.title}</h1>
