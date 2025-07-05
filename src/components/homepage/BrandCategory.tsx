@@ -17,6 +17,7 @@ interface BrandInfo {
 
 const BrandCategory = () => {
   const [brands, setBrands] = useState<BrandInfo[]>([]);
+
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const BrandCategory = () => {
         }
       } catch (err) {
         console.error('Error fetching brand summary:', err);
-      }
+      } 
     };
     fetchBrands();
   }, [apiUrl]);
@@ -59,47 +60,55 @@ const BrandCategory = () => {
                 1024: { slidesPerView: 5, spaceBetween: 20 },
               }}
             >
-              {brands.length > 0 ? (
-                brands.map((brandItem, index) => (
-                  <SwiperSlide key={index}>
-                    <Link
-                      href={{
-                        pathname: '/products',
-                        query: { brand: brandItem.brand_name },
-                      }}
-                      passHref
-                    >
-                      <div className="brand-item cursor-pointer bg-mono-0 border border-border-100 rounded-[4px] px-4 pb-5 text-center transition ease-in-out duration-300 hover:shadow-md">
-                        <div className="brand-image-box py-6">
-                          {brandItem.brandLogo &&
-                          brandItem.brandLogo !== 'no image' ? (
-                            <Image
-                              src={brandItem.brandLogo}
-                              alt={brandItem.brand_name}
-                              width={120}
-                              height={35}
-                              className="w-auto h-[35px] mx-auto"
-                              priority
-                            />
-                          ) : (
-                            <span className="text-primary-70 font-semibold h6 font-secondary">
-                              {brandItem.brand_name}
-                            </span>
-                          )}
+              {brands.length > 0
+                ? brands.map((brandItem, index) => (
+                    <SwiperSlide key={index}>
+                      <Link
+                        href={{
+                          pathname: '/products',
+                          query: { brand: brandItem.brand_name },
+                        }}
+                        passHref
+                      >
+                        <div className="brand-item cursor-pointer bg-mono-0 border border-border-100 rounded-[4px] px-4 pb-5 text-center transition ease-in-out duration-300 hover:shadow-md">
+                          <div className="brand-image-box py-6">
+                            {brandItem.brandLogo &&
+                            brandItem.brandLogo !== 'no image' ? (
+                              <Image
+                                src={brandItem.brandLogo}
+                                alt={brandItem.brand_name}
+                                width={120}
+                                height={35}
+                                className="w-auto h-[35px] mx-auto"
+                                priority
+                              />
+                            ) : (
+                              <span className="text-primary-70 font-semibold h6 font-secondary">
+                                {brandItem.brand_name}
+                              </span>
+                            )}
+                          </div>
+                          <h5 className="text-primary-70 font-semibold h6 font-secondary">
+                            {brandItem.brand_name}
+                          </h5>
+                          <p className="number-of-products font-bold text-[12px] font-secondary mt-2">
+                            {brandItem.count} Tyres
+                          </p>
                         </div>
-                        <h5 className="text-primary-70 font-semibold h6 font-secondary">
-                          {brandItem.brand_name}
-                        </h5>
-                        <p className="number-of-products font-bold text-[12px] font-secondary mt-2">
-                          {brandItem.count} Tyres
-                        </p>
+                      </Link>
+                    </SwiperSlide>
+                  ))
+                : Array.from({ length: 5 }).map((_, index) => (
+                    <SwiperSlide key={index}>
+                      <div className="animate-pulse bg-mono-0 border border-border-100 rounded-[4px] px-4 pb-5 text-center">
+                        <div className="brand-image-box py-6">
+                          <div className="h-[35px] w-[120px] mx-auto bg-mono-40 bg-border-200 rounded"></div>
+                        </div>
+                        <div className="h-4 w-3/4 bg-border-200 bg-mono-40 rounded mx-auto mt-2 mb-1"></div>
+                        <div className="h-3 w-1/2 bg-border-200 bg-mono-40 rounded mx-auto"></div>
                       </div>
-                    </Link>
-                  </SwiperSlide>
-                ))
-              ) : (
-                <div>No brands available</div>
-              )}
+                    </SwiperSlide>
+                  ))}
             </Swiper>
           </div>
         </div>

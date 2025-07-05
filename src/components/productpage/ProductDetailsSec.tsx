@@ -813,7 +813,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                       <div className="collapse-title font-semibold text-primary-70 h6 text-[16px]">
                         Description
                       </div>
-                      <div className="collapse-content caption-regular font-primary">
+                      <div className="collapse-content text-[14px] font-primary">
                         {product.description || 'No description available'}
                       </div>
                     </div>
