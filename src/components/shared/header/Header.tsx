@@ -6,6 +6,11 @@ import GlobalSearch from '@/components/elements/search/globalSearch';
 const Header: React.FC = () => {
     return (
       <header className="header-section bg-mono-0 pb-2 z-50 ">
+        <div className="development-mood-banner">
+          <p className="text text-center text-mono-40 font-bold bg-[#3a64f6]  py-1">
+            Demo Mood
+          </p>
+        </div>
         <div className="header-content-area border-b border-border-100 pb-4 max-sm:pb-2">
           <div className="custom-container flex items-end justify-between max-sm:items-center max-sm:justify-center max-sm:flex-col">
             <nav className="nav-section pb-2 max-sm:hidden">
@@ -60,7 +65,7 @@ const Header: React.FC = () => {
                     Sommerreifen
                   </Link>
                 </li>
-                
+
                 <li>
                   <Link
                     href={{
