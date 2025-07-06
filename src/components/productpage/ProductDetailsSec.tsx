@@ -91,7 +91,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     );
     dispatch(openModal());
   };
-
+console.log(product)
   return (
     <>
       {loading ? (
@@ -1016,15 +1016,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                   </div>
                 </div>
               </div>
-              {/* <input
-                type="radio"
-                name="my_tabs_6"
-                className="tab !text-[18px] !text-primary-70 !shadow-none focus:!rounded-[4px] !py-0 !rounded-[4px] ml-4 !bg-transparent !px-6 border-border-100 !border hover:border-primary-100 hover:!bg-primary-100 transition ease-in hover:!text-mono-0 !leading-[150%]"
-                aria-label="Customer Reviews"
-              />
-              <div className="tab-content !text-primary-70 bg-mono-0 body-regular border-base-300 p-6  border-t border-t-border-100 mt-4 pl-0">
-                Customers Review
-              </div> */}
+            
             </div>
           </div>
         </section>
