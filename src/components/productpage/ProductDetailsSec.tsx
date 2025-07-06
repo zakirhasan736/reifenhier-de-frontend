@@ -624,7 +624,7 @@ console.log(product)
                     {product.merchant_product_third_category || 'N/A'}
                   </li>
                   <li className="product-highlight-info-item text-[12px] caption py-1 px-3 rounded-[16px] bg-purple-100 text-primary-70 font-semibold border border-border-100">
-                    {product.in_stock === '1' ? 'In Stock' : 'Not Available'}
+                    {product.in_stock === 'true' ? 'In Stock' : 'Not Available'}
                   </li>
                 </ul>
                 <p className="product-brand text-primary-100 font-bold text-[18px] max-md:text-[16px] uppercase text-left  mb-2">
