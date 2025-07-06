@@ -1,7 +1,3 @@
-Absolutely! Here’s an improved and more detailed README.md template for your reifenhier-de-frontend project. This version includes sections about the project’s purpose, features, architecture, development workflow, deployment, and more. You can copy-paste this into your README.md and adjust the text to fit your exact requirements.
-
----
-
 # reifenhier-de-frontend
 
 Frontend for [ReifenHier.de](https://reifenhier.de) – an online platform for [describe your business, e.g., tire sales, car services, etc.].
@@ -160,4 +156,3 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-Feel free to tailor this template to fit the specific details and technologies of your project! If you share more about your tech stack or business logic, I can make it even more precise.
