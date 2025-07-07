@@ -10,7 +10,7 @@ import Link from 'next/link';
 import NewArticles from '@/components/homepage/NewArticles';
 
 const apiUrl =
-  process.env.NEXT_PUBLIC_API_url?.replace(/\/$/, '') ||
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
   'http://localhost:8001';
 
 type ContentBlock =
