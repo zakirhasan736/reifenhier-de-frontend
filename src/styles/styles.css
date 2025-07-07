@@ -1273,3 +1273,6 @@ button.steps-completed {
 .strip-connect-account-btn svg path {
     fill: #611192;
 }
+ol.list-disc {
+    list-style: decimal;
+}
