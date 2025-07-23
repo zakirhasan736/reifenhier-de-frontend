@@ -9,14 +9,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {' '}
-      {/* <AuthProvider> */}
       <Header />
       <main className="page-main-content-wrapper">
         <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
         {children}
       </main>
-      <Footer /> {/* </AuthProvider> */}
+      <Footer />
     </>
   );
 }
