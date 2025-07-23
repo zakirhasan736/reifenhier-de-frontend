@@ -4,28 +4,15 @@
 import React from 'react';
 import ProductCard from '@/components/elements/cards/ProductCard';
 import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
+import { Product } from '@/types/product';
 
-type Product = {
-  _id: string;
-  brand_logo: string;
-  product_image: string;
-  merchant_product_third_category: string;
-  brand_name: string;
-  search_price: number;
-  product_name: string;
-  dimensions: string;
-  fuel_class: string;
-  wet_grip: string;
-  noise_class: string;
-  showCompareButton?: boolean;
-};
 
 interface ProductListProps {
   products: Product[];
   loading: boolean;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
+const ProductList: React.FC<ProductListProps> = ({ products }) => {
   return (
     <div className="relative min-h-[200px]">
       {/* {loading && (
@@ -34,7 +21,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
         </div>
       )} */}
 
-      <div className={`${loading ? '' : ''}`}>
+      <div className="">
         {products.length === 0  ? (
           <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -42,7 +29,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
             {products.map((p) => (
                   <ProductCard key={p._id} {...p} />
                 ))}

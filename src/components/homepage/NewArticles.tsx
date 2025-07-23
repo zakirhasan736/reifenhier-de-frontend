@@ -49,14 +49,14 @@ const NewArticles: React.FC = () => {
   }, [page]);
 
   return (
-    <section className="news-section pt-10 pb-20 bg-mono-0">
+    <section className="news-section lg:pb-[70] pb-14 bg-mono-0">
       <div className="custom-container">
         <div className="news-content">
-          <div className="section-header text-left mb-9">
-            <h2 className="h3 text-primary-70 font-secondary">
+          <div className="section-header text-left md:mb-8 mb-6">
+            <h2 className="h3 font-primary font-medium  md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3">
               News & Articles
             </h2>
-            <p className="text-mono-100 font-medium text-[14px] font-primary">
+            <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#89898B]">
               Stay updated with the latest insights and tips about tires.
             </p>
           </div>
@@ -64,26 +64,32 @@ const NewArticles: React.FC = () => {
           <div className="news-list grid grid-cols-3 max-md:grid-cols-1 gap-6">
             {blogs.map(blog => (
               <Link key={blog._id} href={`/blogs/${blog.slug}`}>
-                <div className="news-item bg-mono-0 relative border border-border-100 rounded-[4px] cursor-pointer hover:shadow-lg transition-shadow">
+                <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
                   <Image
                     src={blog.coverImage}
                     alt={blog.title}
-                    className="w-full h-[280px] object-cover rounded-[4px]"
+                    className="w-full h-[200px] object-cover rounded-[10px]"
                     width={1024}
-                    height={675}
+                    height={200}
                     priority
                   />
-                  <div className="news-item-content absolute bottom-0 left-0 z-[99] py-6 px-5 bg-[#0000007a]">
-                    <h5 className="text-mono-0 font-semibold h6 font-secondary">
+                  <div className="news-item-content relative pt-5">
+                    <h5 className="text-[#404042] font-medium h6 font-primary">
                       {blog.title}
                     </h5>
-                    <p className="text-mono-0 text-[14px] font-medium font-primary mt-1">
+                    <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
                       {new Date(blog.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
                       })}
                     </p>
+                    <Link
+                      href={`/blogs/${blog.slug}`}
+                      className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block"
+                    >
+                      Read More
+                    </Link>
                   </div>
                 </div>
               </Link>

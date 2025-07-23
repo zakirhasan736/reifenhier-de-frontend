@@ -119,7 +119,7 @@ const ProductListingsSec = () => {
   const debouncedFetch = useRef(
     debounce(() => {
       dispatch(fetchProducts());
-    }, 300)
+    }, 30)
   ).current;
 
   useEffect(() => {
@@ -157,10 +157,10 @@ const ProductListingsSec = () => {
   const endIndex = Math.min(page * productsPerPage, total);
 
   return (
-    <div className="product-listings-sec bg-bg-opacity pt-12 pb-9 max-sm:pt-12 max-sm:pb-5">
+    <div className="product-listings-sec bg-mono-0 pt-12 pb-9 max-sm:pt-12 max-sm:pb-5">
       <div className="custom-container">
         <div className="product-listing-wrapper">
-          <div className="product-list-header mb-[23px] max-md:mb-4 flex items-center justify-between gap-5 w-full">
+          <div className="product-list-header border-b border-b-[#F5F5F7] mb-6 max-md:mb-4 flex items-center justify-between pb-5 gap-5 w-full">
             <div className="filter-area-box flex items-center gap-8">
               {/* mobile view filter style start */}
               <div className="filter-sidebar-search hidden max-md:block">
@@ -211,14 +211,14 @@ const ProductListingsSec = () => {
                               mergedFilters[key].map((val, idx) => (
                                 <span
                                   key={`${key}-${val}-${idx}`}
-                                  className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
+                                  className="selected-filter px-4 py-1 h-9 bg-[#F5F5F7] rounded-full text-[14px] font-normal font-secondary leading-[100%] text-[#404042] flex items-center"
                                 >
                                   {typeof val === 'object'
                                     ? JSON.stringify(val)
                                     : val}
                                   <button
                                     onClick={() => handleRemoveFilter(key, val)}
-                                    className="ml-2 text-red-500"
+                                    className="ml-2 text-primary-100 cursor-pointer"
                                   >
                                     ×
                                   </button>
@@ -250,12 +250,12 @@ const ProductListingsSec = () => {
                   mergedFilters[key].map((val, idx) => (
                     <span
                       key={`${key}-${val}-${idx}`}
-                      className="selected-filter px-3 py-1 bg-purple-100 rounded-full text-sm flex items-center"
+                      className="selected-filter px-4 py-1 h-9 bg-[#F5F5F7] rounded-full text-[14px] font-normal font-secondary leading-[100%] text-[#404042] flex items-center"
                     >
                       {typeof val === 'object' ? JSON.stringify(val) : val}
                       <button
                         onClick={() => handleRemoveFilter(key, val)}
-                        className="ml-2 text-red-500"
+                        className="ml-2 text-primary-100 cursor-pointer"
                       >
                         ×
                       </button>
@@ -271,8 +271,11 @@ const ProductListingsSec = () => {
               }}
             />
           </div>
-          <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6">
-            <div className="products-list-main-left-cont overflow-hidden overflow-y-scroll h-[100vh] sticky max-md:relative max-md:h-auto top-9 max-w-[230px] max-md:max-w-[160px] w-full max-md:hidden">
+          <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6  max-xl:gap-4">
+            <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky max-md:relative max-md:h-auto top-9 max-w-[282px] max-xl:max-w-[220px]  max-md:max-w-[160px] w-full max-md:hidden">
+              <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
+                Filter By
+              </h4>
               <FilterSidebar
                 availableProducts={filterProducts}
                 selectedFilters={mergedFilters}

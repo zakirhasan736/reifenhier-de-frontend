@@ -41,28 +41,28 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-4 pt-2 pb-6 bg-white rounded">
-      <h4 className="filter-sidebar-title pr-8 eyebrow-small flex items-start gap-1 pl-2">
+    <div className="flex flex-col gap-4 mb-2 pt-1 pb-3 border-b border-b-[#C6C7CC] bg-transparent rounded">
+      <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3">
         Price Range
       </h4>
-      <div className="w-full">
+      <div className="w-full px-3">
         {/* Input fields to manually adjust min and max price */}
         <div className="flex items-center justify-between gap-2">
           <input
-            type="number"
+            type="text"
             value={roundedMin}
             min={min}
             max={roundedMax}
             onChange={e => {
-              const v = Math.max(Number(e.target.value), min); // Constrain to min
-              onChange(v, maxPrice); // Update parent with new min value
+              const v = Math.max(Number(e.target.value), min);
+              onChange(v, maxPrice);
             }}
-            className="border border-gray-300 px-2 py-1 rounded w-20"
+            className="border-none text-[14px] font-normal font-secondary !outline-0 !text-[#86878A] leading-[100%] !bg-transparent w-20"
             placeholder="min"
           />
-          <span>–</span>
+          {/* <span>–</span> */}
           <input
-            type="number"
+            type="text"
             value={roundedMax}
             min={roundedMin}
             max={max}
@@ -70,43 +70,42 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
               const v = Math.min(Number(e.target.value), max); // Constrain to max
               onChange(minPrice, v); // Update parent with new max value
             }}
-            className="border border-gray-300 px-2 py-1 rounded w-20"
+            className="border-none text-right text-[14px] font-normal font-secondary !outline-0 !text-[#86878A] leading-[100%]  !bg-transparent w-20"
             placeholder="max"
           />
         </div>
 
         {/* Slider for adjusting price range */}
-        <div className="px-4 mt-4">
+        <div className="px-1 mt-1">
           <Range
             min={min}
             max={max}
-            step={0.01} // Precision for decimals
-            value={[roundedMin, roundedMax]} // Bind slider value to minPrice and maxPrice
+            step={0.01}
+            value={[roundedMin, roundedMax]}
             onChange={([a, b]) => {
-              onChange(a, b); // Pass updated range to parent
-            }} // Update the selected range when slider moves
-         
-            allowCross={false} // Prevent the sliders from crossing each other
-            trackStyle={[{ background: '#3a64f6', height: 8 }]} // Custom track style
+              onChange(a, b);
+            }}
+            allowCross={false}
+            trackStyle={[{ background: '#3a64f6', height: 6 }]} // Custom track style
             handleStyle={[
               {
                 backgroundColor: '#fff',
                 borderColor: '#3a64f6',
-                height: 18,
-                width: 18,
-                marginTop: -6,
-                boxShadow: '0 0 0 3px rgba(58, 100, 246, 0.3)',
+                height: 12,
+                width: 12,
+                marginTop: -3,
+                boxShadow: '0 0 0 2px rgba(58, 100, 246, 0.3)',
               },
               {
                 backgroundColor: '#fff',
                 borderColor: '#3a64f6',
-                height: 18,
-                width: 18,
-                marginTop: -6,
-                boxShadow: '0 0 0 3px rgba(58, 100, 246, 0.3)',
+                height: 12,
+                width: 12,
+                marginTop: -3,
+                boxShadow: '0 0 0 2px rgba(58, 100, 246, 0.3)',
               },
             ]} // Custom handle style
-            railStyle={{ backgroundColor: '#ccc', height: 8 }} // Custom rail style
+            railStyle={{ backgroundColor: '#ccc', height: 6 }} // Custom rail style
           />
         </div>
       </div>

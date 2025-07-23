@@ -1,0 +1,32 @@
+// @/types/product.ts
+export interface Product {
+  _id: string;
+  product_name: string;
+  brand_name: string;
+  product_image: string;
+  dimensions: string;
+  search_price: number;
+  fuel_class: string;
+  wet_grip: string;
+  noise_class: string;
+  in_stock: string;
+  delivery_time: string;
+  average_rating: number;
+  rating_count: number;
+  cheapest_offer: number;
+  expensive_offer: number;
+  ean: string;
+  product_url: string;
+  brand_logo: string;
+  merchant_product_third_category: string;
+  descriptions?: string;
+  description?: string;
+  width?: string;
+  height?: string;
+  diameter?: string;
+  lastIndex?: string;
+  speedIndex?: string;
+  savings_percent: string;
+  savings_amount: number;
+  related_cheaper: [];
+}

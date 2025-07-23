@@ -89,7 +89,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
 
   return (
     <div
-      className={`global-search-bar max-w-[300px] w-full relative ${className}`}
+      className={`global-search-bar max-sm:hidden max-w-[300px] w-full relative ${className}`}
     >
       <form className="global-search-form global-search w-full">
         <div className="global-search-group-field relative w-full">
@@ -98,12 +98,12 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
             type="search"
             value={query}
             onChange={handleInputChange}
-            className="search-input-filed h-10  placeholder:text-primary-color-100 !rounded-full !outline-none w-full !border-solid !bg-mono-0 !shadow-none !border-2 !border-border-100 text-body-form font-normal bg-primary-color-70 pr-2 pl-8 py-[11.5px] text-primary-color-100 leading-[150%] font-secondary"
-            placeholder="Search"
+            className="search-input-filed h-12  placeholder:text-primary-color-100 !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none w-full !bg-mono-0 !shadow-none !border !border-border-100 text-[14px] font-normal bg-primary-color-70 pr-2 pl-[38px] py-[11.5px] text-primary-color-100 leading-[150%] font-secondary"
+            placeholder="Search..."
           />
           <label
             htmlFor="searchid1"
-            className="searchbtn absolute top-[13px] left-3"
+            className="searchbtn absolute top-[16px] left-3"
           >
             <svg
               className="h-[1em] opacity-50"

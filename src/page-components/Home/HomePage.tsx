@@ -17,8 +17,8 @@ const HomePageMain = () => {
       <FeaturedProducts />
       {/* <ProductCategory /> */}
       <BrandCategory />
-      <HowItWorks />
       <AboutUs />
+      <HowItWorks />
       <FaqSection />
       <NewArticles />
     </div>

@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
 
   :root{
-            --border-color: #ededed;
-            --primary-color: #3a64f6;
-            --font-primary: 'Montserrat', sans-serif;
-            --font-secondary: 'Noto Sans', sans-serif;
-            --font-tertiary: 'Noto Sans', sans-serif;
-            --font-quaternary: 'Noto Sans', sans-serif;
-            --mono-100: #333;
+            --border-color: #F0F0F2;
+            --primary-color: #3A64F6;
+            --font-primary: "Poppins", sans-serif;
+            --font-secondary: "Poppins", sans-serif;
+            --font-tertiary: "Poppins", sans-serif;
+            --font-quaternary: "Poppins", sans-serif;
+            --mono-100: #404042;
             --mono-90: #474648;
             --mono-80: #6B686E;
             --mono-70: #949494;
@@ -22,7 +22,7 @@
             --secondary-100: #333;
             --error: #E50035;
             --success: #8284FFB2;
-            --sky-blue: #3a64f6;
+            --sky-blue: #3A64F6;
             --opacity-color: #3a63f623;
             --bg-opacity: #ededed63;
             --neutral-light: #AAAAAA;
@@ -430,10 +430,10 @@
         border-bottom: 1px solid var(--border-color);
     }
     .banner-section{
-        background: url('/images/home/banner-cover-image.png') no-repeat center center/cover;
+        background: url('/images/banner-image.jpg') no-repeat center center/cover;
         /* min-height: 60vh; */
-        height: 45vh;
-        max-height: 70vh;
+        height: 468px;
+        /* max-height: 70vh; */
         /* height: 100%; */
         width: 100%;
     }
@@ -447,11 +447,32 @@
     } */
      /* .products-banner-section, */
     .how-it-works-section{
-      background-color: #3a63f615 !important;
+      background-color: #ffffff !important;
     }
     .collapse-plus > .collapse-title:after {
     font-size: 24px;
 }
+
+
+/* product card styles */
+.card-header{
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 12.48%, #FFFFFF 88.99%, #F5F5F5 100%);
+  border-radius: 12px;
+  border: 1px solid #F0F0F2;
+}
+.latest-swiper-pagination  span.swiper-pagination-bullet ,
+.custom-swiper-pagination span.swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #3A64F6;
+    background: linear-gradient(#fff 0% 12.48%, #fff 88.99%, #f5f5f5 100%);
+    /* border: 1px solid #f0f0f2; */
+    /* border-radius: 12px; */
+}
+span.swiper-pagination-bullet.swiper-pagination-bullet-active {
+    background: #3A64F6 !important;
+}
+
 }
 @layer components {
     .custom-container-fluid {
@@ -462,7 +483,7 @@
     }
 
     .custom-container {
-      max-width: 1280px;
+      max-width: 1248px;
       padding-left: 24px;
       padding-right: 24px;
       margin-left: auto;
@@ -489,6 +510,5 @@
         padding-left: 16px;
         padding-right: 16px;
       }
-    }
- 
+    } 
 }

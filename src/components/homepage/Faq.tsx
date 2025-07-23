@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface FAQ {
   _id: string;
@@ -31,41 +32,52 @@ const FaqSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="FAQ-section pt-16 pb-10 bg-bg-opacity">
+    <section className="FAQ-section lg:py-[70px] py-14">
       <div className="custom-container">
-        <div className="FAQ-content">
-          <div className="section-header text-left mb-9">
-            <h2 className="h3 max-sm:text-[22px] text-primary-70 font-secondary text-left leading-tight">
-              <span className="text-primary-100">Frequently</span> <br />
-              Asked Questions (FAQ)
-            </h2>
+        <div className="faq-content-wrapper md:grid md:grid-cols-12 gap-6 flex flex-col  items-start">
+          <div className="faq-left-cont col-span-5 flex flex-col justify-center">
+            <div className="faq-model-image w-full">
+              <Image
+                src="/images/realistic-complete-set-car-wheels 1.png"
+                alt="FAQ Model"
+                width={419}
+                height={397}
+              />
+            </div>
           </div>
+          <div className="faq-right-cont col-span-7">
+            <div className="section-header text-left md:mb-8 mb-6">
+              <h2 className="h3  md:text-[28px] text-[26px] lg:text-[36px] text-[#16171A] font-primary font-medium text-left leading-tight">
+                Frequently Asked Questions
+              </h2>
+            </div>
 
-          <div className="FAQ-list">
-            {loading ? (
-              <p>Loading FAQs...</p>
-            ) : faqs.length === 0 ? (
-              <p>No FAQs available at the moment.</p>
-            ) : (
-              faqs.map((faq, index) => (
-                <div
-                  key={faq._id}
-                  className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3"
-                >
-                  <input
-                    type="radio"
-                    name="faq-accordion"
-                    defaultChecked={index === 0}
-                  />
-                  <div className="collapse-title max-sm:text-[16px] font-semibold text-primary-70 h5">
-                    {faq.question}
+            <div className="FAQ-list">
+              {loading ? (
+                <p>Loading FAQs...</p>
+              ) : faqs.length === 0 ? (
+                <p>No FAQs available at the moment.</p>
+              ) : (
+                faqs.map((faq, index) => (
+                  <div
+                    key={faq._id}
+                    className="collapse rounded-[12px] bg-[#F5F5F7] collapse-plus mb-2"
+                  >
+                    <input
+                      type="radio"
+                      name="faq-accordion"
+                      defaultChecked={index === 0}
+                    />
+                    <div className="collapse-title max-sm:text-[16px] text-[#404042] font-primary font-medium text-[20px] leading-[130%]">
+                      {faq.question}
+                    </div>
+                    <div className="collapse-content max-sm:text-[14px] font-secondary font-normal text-[16px] text-left text-[#86878A] leading-[150%]">
+                      {faq.answer}
+                    </div>
                   </div>
-                  <div className="collapse-content max-sm:text-[14px] body-regular font-primary">
-                    {faq.answer}
-                  </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -6,53 +6,31 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { Product } from '@/types/product';
 
-interface Product {
-  _id: string;
-  brand_logo: string;
-  product_image: string;
-  merchant_product_third_category: string;
-  brand_name: string;
-  search_price: number;
-  product_name: string;
-  dimensions: string;
-  fuel_class: string;
-  wet_grip: string;
-  noise_class: string;
-  showCompareButton?: boolean;
-}
 interface RelatedProductsProps {
   relatedProductData: Product[];
 }
 
 const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData }) => {
 
-
   return (
-    <section className="featured-product pt-10 pb-10 bg-bg-opacity">
+    <section className="featured-product lg:py-[70px] py-[50px]">
       <div className="custom-container">
         <div className="featured-product-content flex justify-between items-end mb-9">
           <div className="featured-product-left-content w-full">
-            <h2 className="h3 text-primary-70 font-secondary">
+            <h2 className="h3 text-primary-70  md:text-[28px] text-[26px] lg:text-[36px] font-secondary text-center">
               Related products
             </h2>
-            <p className="text-mono-100 font-medium text-[14px] font-primary">
+            <p className="text-mono-100 text-center font-medium lg:text-[18px] text-[14px] font-primary">
               Quickly get tyres suited to your vehicle and driving style.
             </p>
           </div>
-          {/* <div className="featured-product-right-content max-sm:hidden">
-            <a
-              href="./products"
-              className="ml-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
-            >
-              View all
-            </a>
-          </div> */}
         </div>
       </div>
 
       <div className="custom-container">
-        <div className="featured-product-list-area product-slides-area pr-[16px] pl-[10px] max-sm:pr-8 max-sm:pl-0 overflow-hidden">
+        <div className="featured-product-list-area product-slides-area lg:pr-[16px] md:pl-[10px] pr-14 pl-0 overflow-hidden">
           <Swiper
             spaceBetween={20}
             slidesPerView={1}
@@ -78,14 +56,6 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData })
                 ))}
           </Swiper>
         </div>
-        {/* <div className="featured-product-right-content max-sm:justify-center max-sm:items-center mt-6 hidden max-sm:flex">
-          <a
-            href="./products"
-            className="mx-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
-          >
-            View all
-          </a>
-        </div> */}
       </div>
     </section>
   );

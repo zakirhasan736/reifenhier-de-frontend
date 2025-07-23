@@ -2,6 +2,8 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Product } from '@/types/product';
+
 import {
   removeProduct,
   clearProducts,
@@ -17,26 +19,13 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { AppDispatch, RootState } from '@/store/store';
 
-
-interface Product {
-  _id: string;
-  product_name: string;
-  brand_name: string;
-  dimensions: string;
-  search_price: number | string;
-  fuel_class: string;
-  wet_grip: string;
-  noise_class: string;
-  product_image: string;
-}
-
 const downloadCSV = (products: Product[]) => {
   const csvContent = [
     ['Name', 'Brand', 'Dimensions', 'Price', 'Fuel', 'Wet Grip', 'Noise'],
     ...products.map(p => [
       p.product_name,
       p.brand_name,
-      p.dimensions,                                 
+      p.dimensions,
       p.search_price,
       p.fuel_class,
       p.wet_grip,
@@ -52,25 +41,14 @@ const downloadCSV = (products: Product[]) => {
   link.download = 'comparison.csv';
   link.click();
 };
-interface RelatedProduct {
-  _id: string;
-  brand_logo: string;
-  product_image: string;
-  merchant_product_third_category: string;
-  brand_name: string;
-  search_price: number;
-  product_name: string;
-  dimensions: string;
-  fuel_class: string;
-  wet_grip: string;
-  noise_class: string;
-}
 
-const CompareModal = ({ relatedProducts }: { relatedProducts: RelatedProduct[] }) => {
+const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const products = useSelector((state: RootState) => state.compare.products);
+  const products = useSelector(
+    (state: RootState) => state.compare.products as Product[]
+  );
   const isOpen = useSelector((state: RootState) => state.compare.isOpen);
-  const [showRelated, setShowRelated] = useState(false); 
+  const [showRelated, setShowRelated] = useState(false);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -87,7 +65,6 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: RelatedProduct[] }
     }
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [isOpen, dispatch]);
-  
 
   if (!isOpen || products.length === 0) return null;
 
@@ -98,7 +75,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: RelatedProduct[] }
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black/60 z-[99999] flex md:items-center md:justify-center items-end justify-center p-4"
+      className="fixed product-compared-table-box inset-0 bg-[#D9D9D933] bg-blur-2xl z-[99999] flex md:items-center md:justify-center items-end justify-center p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

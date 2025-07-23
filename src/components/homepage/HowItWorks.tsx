@@ -3,82 +3,83 @@ import Image from 'next/image';
 
 const HowItWorks: React.FC = () => {
     return (
-      <section className="how-it-works-section py-8">
+      <section className="how-it-works-section !bg-transparent !py-0">
         <div className="custom-container">
           <div className="how-it-works-content">
             <div className="how-it-works-right-content w-full">
-              <ul className="work-process-lists flex items-center justify-between max-md:flex-wrap max-md:gap-8">
-                <li className="work-process-item max-md:flex-col max-md:w-full flex gap-6 items-center justify-center text-center">
-                  <div className="icons-item">
+              <ul className="work-process-lists lg:gap-6 grid md:grid-cols-4 grid-cols-2 gap-4">
+                <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center justify-center text-center px-[18px] py-[30px]">
+                  <div className="icons-item mb-5">
                     <Image
-                      src="/images/icons/fast-delivery.png"
-                      alt="Trusted Product Icon"
-                      width={40}
-                      height={40}
+                      src="/images/icons/shipping-icons.svg"
+                      alt="Fast Shipping Icon"
+                      className="lg:w-[59px] w-[45px]"
+                      width={59}
+                      height={48}
                     />
                   </div>
-                  <div className="content-area max-md:justify-cente  max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title text-primary-70">
+                  <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
+                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
+                      Fast Shipping
+                    </h5>
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                      All over Germany
+                    </p>
+                  </div>
+                </li>
+                <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center justify-center text-center px-[18px] py-[30px]">
+                  <div className="icons-item mb-5">
+                    <Image
+                      src="/images/icons/trust-icons.svg"
+                      alt="Trust Icon"
+                      className="lg:w-[59px] w-[45px]"
+                      width={59}
+                      height={48}
+                    />
+                  </div>
+                  <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
+                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Trusted Product
                     </h5>
-                    <p className="work-process-text text-mono-100">
-                      Only parts from trusted brands
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                      Only Parts from trusted brands
                     </p>
                   </div>
                 </li>
-                <li className="divider mx-6 my-0 w-[2px] h-16 bg-border-100 max-md:hidden"></li>
-                <li className="work-process-item max-md:flex-col max-md:w-full flex gap-6 items-center justify-center text-center">
-                  <div className="icons-item">
+                <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center justify-center text-center px-[18px] py-[30px]">
+                  <div className="icons-item mb-5">
                     <Image
-                      src="/images/icons/fast-delivery (1).png"
-                      alt="Fast Delivery Icon"
-                      width={40}
-                      height={40}
-                    />
-                  </div>
-                  <div className="content-area max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title text-primary-70">
-                      Fast Delivery
-                    </h5>
-                    <p className="work-process-text text-mono-100">
-                      All Over Germany
-                    </p>
-                  </div>
-                </li>
-                <li className="divider mx-6 my-0 w-[2px] h-16 bg-border-100 max-md:hidden"></li>
-                <li className="work-process-item max-md:flex-col max-md:w-full flex gap-6 items-center justify-center text-center">
-                  <div className="icons-item">
-                    <Image
-                      src="/images/icons/best-price.png"
+                      src="/images/icons/best-price-icon.svg"
                       alt="Best Price Icon"
-                      width={40}
-                      height={40}
+                      className="lg:w-[59px] w-[45px]"
+                      width={59}
+                      height={48}
                     />
                   </div>
-                  <div className="content-area max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title text-primary-70">
+                  <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
+                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Best Price
                     </h5>
-                    <p className="work-process-text text-mono-100">
-                      We compare the best prices
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                      We compare the best price
                     </p>
                   </div>
                 </li>
-                <li className="divider mx-6 my-0 w-[2px] h-16 bg-border-100 max-md:hidden"></li>
-                <li className="work-process-item max-md:flex-col  max-md:items-center max-md:w-full flex gap-6 items-center justify-center text-center">
-                  <div className="icons-item">
+                <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center justify-center text-center px-[18px] py-[30px]">
+                  <div className="icons-item mb-5">
                     <Image
-                      src="/images/icons/product-return.png"
+                      src="/images/icons/group-9.svg"
                       alt="Easy Return Icon"
-                      width={40}
-                      height={40}
+                      className="lg:w-[59px] w-[45px]"
+                      width={59}
+                      height={48}
                     />
                   </div>
-                  <div className="content-area max-md:justify-center max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title text-primary-70">
+                  <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-center flex-col items-center">
+                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Easy Return
                     </h5>
-                    <p className="work-process-text text-mono-100">
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
                       Easy return policy
                     </p>
                   </div>

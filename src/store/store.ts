@@ -3,12 +3,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import productReducer from './productSlice';
 import filterReducer from './filterSlice';
 import compareReducer from './compareSlice';
+import favoriteReducer from './favoriteSlice'; 
 
 const store = configureStore({
   reducer: {
     products: productReducer,
     filters: filterReducer,
     compare: compareReducer,
+    favorite: favoriteReducer,
   },
 });
 

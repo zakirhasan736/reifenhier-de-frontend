@@ -11,10 +11,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-tooltip": "^1.2.7",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.9.0",
     "daisyui": "^5.0.35",
     "framer-motion": "^12.19.1",
+    "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "next": "15.3.1",
@@ -24,12 +26,15 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-redux": "^9.2.0",
-    "swiper": "^11.1.14"
+    "redux": "^5.0.1",
+    "swiper": "^11.1.14",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.5",
     "@types/lodash": "^4.17.19",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -373,13 +373,15 @@ nav.header-bottom-navbar.navbar-megamenu-area {
 
 .product-slides-area .swiper .swiper-button-prev,
 .product-slides-area .swiper .swiper-button-next {
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #fff;
+    background: #F0F0F2;
     box-shadow: 0 0px 3px 0px rgba(0, 0, 0, .3);
+    border-radius: 60px;
+    z-index: 999;
 }
 
 .product-slides-area .swiper .swiper-button-prev:after,
@@ -415,7 +417,7 @@ button:empty {
 }
 
 .about-sec-info-cont .about-sec-desc {
-    color: #182652;
+    /* color: #182652; */
     letter-spacing: 0.8px;
 }
 
@@ -1132,7 +1134,8 @@ button.steps-completed {
 .swiper-product-slide-tab-item.mt-2 .swiper.swiper-initialized.swiper-thumbs {
     border-radius: 0 !important;
 }
-
+.offer-vendor-navigator .swiper-button-next::after,
+.offer-vendor-navigator .swiper-button-prev::after,
 .swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-next::after,
 .swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-prev::after {
     font-size: 16px !important;
@@ -1140,20 +1143,42 @@ button.steps-completed {
     color: #0D0113;
 }
 
+.offer-vendor-navigator .swiper-button-next,
+.offer-vendor-navigator .swiper-button-prev,
 .swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-next,
 .swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-prev {
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
     padding: 8px;
-    background: #fff;
+    border-radius: 999px;
+    background: #F0F0F2;
     top: 35px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
+@media screen and (max-width:767px) {
+  .offer-vendor-navigator .swiper-button-next,
+.offer-vendor-navigator .swiper-button-prev,
+.swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-next,
+.swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-prev {
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+    border-radius: 999px;
+    background: #F0F0F2;
+    top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    
+}
+.offer-vendor-navigator .swiper-button-prev,
 .swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-prev {
     left: 0;
 }
-
+.offer-vendor-navigator .swiper-button-next,
 .swiper-product-slide-tab-item .swiper.swiper-initialized.swiper-thumbs .swiper-button-next {
     right: 0;
 }
@@ -1168,7 +1193,9 @@ button.steps-completed {
     position: relative;
     /* Keeps the positioning context for inner elements */
 }
-
+.swiper-product-slide-tab-item .swiper-slide.swiper-slide-visible.swiper-slide-fully-visible.swiper-slide-active.swiper-slide-thumb-active .slide-tab-item .slide-tab-item-wrap {
+    border: 1px solid #3A64F6;
+}
 /* Apply overflow: visible to the swiper component */
 .thumbs {
     overflow: visible !important;
@@ -1245,7 +1272,6 @@ button.steps-completed {
 @media screen and (min-width: 1190px) {
     .how-it-works-slides-area {
         position: relative;
-        /* display: flex; */
         padding-top: 16px;
         overflow: hidden;
         width: calc(1200px +((100vw - 1200px) / 2));
@@ -1253,7 +1279,16 @@ button.steps-completed {
         left: calc((100vw - 1200px) / 2);
         padding-right: calc((100vw - 1200px) / 2);
     }
+    .offer-slider-area .product-slides-area {
+    overflow: hidden;
+    width: calc(1200px +((100vw - 1170px) / 2));
+    max-width: calc(1200px +((100vw - 1170px) / 2)) !important;
+    left: calc((100vw - 1200px) / 2);
+    padding-right: calc((100vw - 1000px) / 2);
+    position: relative;
+  }
 }
+
 
 .slider-indicator-area .swiper-navigation>div:after {
     display: none;
@@ -1275,4 +1310,56 @@ button.steps-completed {
 }
 ol.list-disc {
     list-style: decimal;
+}
+
+  input.form-subs-input:target,
+
+  input.form-subs-input:focus,
+  input.form-subs-input:focus-visible,
+  input.form-subs-input:focus-within {
+    border-radius: 999px !important;
+  }
+  input.form-subs-input{
+    border-radius: 999px !important;
+    -webkit-border-radius: 999px !important;
+  }
+  .tyres-search-main-content .tyres-search-content{
+    box-shadow: 0px 4px 44px 0px #000D3814;
+  }
+  .product-specification-box .collapse:is([open], :focus:not(.collapse-close)) > :where(.collapse-content),   .product-specification-box  .collapse:not(.collapse-close) > :where(input:is([type="checkbox"],   .product-specification-box  [type="radio"]):checked ~ .collapse-content) {
+    padding-bottom: 24px;
+    padding-top: 20px;
+    padding-left: 24px;
+    padding-right: 24px;
+    transition: padding .2s ease-out, background-color .2s ease-out;
+}
+.product-specification-box .collapse-plus > .collapse-title:after {
+    top: .2rem;
+}
+.product-compared-table-box{
+    backdrop-filter: blur(4px)
+}
+.featured-product-list-area{
+    position: relative;
+}
+section.brand-category-section .featured-product-list-area:before{
+    content: "";
+    position: absolute;
+    width: 87px;
+    height: 100%;
+    top: 0;
+    left: 0;
+   background: linear-gradient(270deg, #FFFFFF 3%, rgba(255, 255, 255, 0) 100%);
+   transform: rotate(-180deg);
+   z-index: 9;
+}
+section.brand-category-section .featured-product-list-area:after{
+    content: "";
+    position: absolute;
+    width: 87px;
+    height: 100%;
+    top: 0;
+    right: 0; 
+    background: linear-gradient(270deg, #FFFFFF 3%, rgba(255, 255, 255, 0) 100%);
+    z-index: 9;
 }

@@ -7,9 +7,10 @@ import ProductSinglepage from '@/components/productpage/ProductDetailsSec';
 import RelatedProducts from '@/components/productpage/RelatedProducts';
 import CompareModal from '@/components/productpage/CompareModal';
 import CompareFloatingButton from '@/components/productpage/CompareFloatingButton';
-
+import HowItWorks from '@/components/homepage/HowItWorks';
+import Loading from '@/app/loading';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
+// import {Product} from '@/types/product';
 interface Offer {
   brand: string;
   vendor_logo: string;
@@ -18,9 +19,19 @@ interface Offer {
   product_category: string;
   product_name: string;
   price: number;
-  delivery_cost: string;
+  delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
   delivery_time: string;
+  payment_icons: string[];
   original_affiliate_url: string;
+}
+
+interface CheapestVendor {
+  aw_deep_link: string;
+  delivery_cost: string | number; // ← Adjusted here too
+  payment_icons: string[];
+  vendor: string;
+  vendor_id: string;
+  vendor_logo: string;
 }
 
 interface Product {
@@ -35,6 +46,13 @@ interface Product {
   noise_class: string;
   in_stock: string;
   delivery_time: string;
+  review_count: number;
+  average_rating: number;
+  cheapest_offer: number;
+  expensive_offer: number;
+  savings_percent: string;
+  related_cheaper: Product[];
+  cheapest_vendor: CheapestVendor;
   ean: string;
   product_url: string;
   brand_logo?: string;
@@ -51,20 +69,34 @@ interface Product {
 
 interface RelatedProduct {
   _id: string;
-  brand_logo: string;
-  product_image: string;
-  merchant_product_third_category: string;
-  brand_name: string;
-  search_price: number;
   product_name: string;
+  brand_name: string;
+  product_image: string;
   dimensions: string;
-  descriptions: string;
+  search_price: number;
   fuel_class: string;
   wet_grip: string;
   noise_class: string;
   in_stock: string;
   delivery_time: string;
+  average_rating: number;
+  rating_count: number;
+  cheapest_offer: number;
+  expensive_offer: number;
   ean: string;
+  product_url: string;
+  brand_logo: string;
+  merchant_product_third_category: string;
+  descriptions?: string;
+  description?: string;
+  width?: string;
+  height?: string;
+  diameter?: string;
+  lastIndex?: string;
+  speedIndex?: string;
+  savings_percent: string;
+  savings_amount: number;
+  related_cheaper: [];
   showCompareButton?: boolean;
 }
 
@@ -88,6 +120,8 @@ const ProductDetailsPage = () => {
         );
         setProduct(response.data.product);
         setRelatedProducts(response.data.relatedProducts);
+        console.log('response related product', response.data.relatedProducts);
+
       } catch {
         setError('Failed to load product details.');
       } finally {
@@ -102,9 +136,12 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="product-details-cont-wrapper">
-      {product &&
-      <ProductSinglepage product={product} loading={loading} />
-    }
+      {product ? (
+        <ProductSinglepage product={product} loading={loading} />
+      ) : (
+        <Loading />
+      )}
+      <HowItWorks />
       <RelatedProducts relatedProductData={relatedProducts} />
       <CompareFloatingButton />
       <CompareModal relatedProducts={relatedProducts} />
