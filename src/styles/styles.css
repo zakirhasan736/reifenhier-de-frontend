@@ -1368,7 +1368,7 @@ section.brand-category-section .featured-product-list-area:after{
     width: 12px;
     height: 12px;
     border: 1px solid #3A64F6;
-    background: linear-gradient(#fff 0% 12.48%, #fff 88.99%, #f5f5f5 100%);
+    background: linear-gradient(#3a63f662 0% 12.48%, #fff 88.99%, #3a63f662 100%);
 }
 span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     background: #3A64F6 !important;
