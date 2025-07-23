@@ -1274,15 +1274,15 @@ button.steps-completed {
         position: relative;
         padding-top: 16px;
         overflow: hidden;
-        width: calc(1200px +((100vw - 1200px) / 2));
-        max-width: calc(1200px +((100vw - 1200px) / 2)) !important;
+        width: calc(1200px + ((100vw - 1200px) / 2));
+        max-width: calc(1200px + ((100vw - 1200px) / 2)) !important;
         left: calc((100vw - 1200px) / 2);
         padding-right: calc((100vw - 1200px) / 2);
     }
     .offer-slider-area .product-slides-area {
     overflow: hidden;
-    width: calc(1200px +((100vw - 1170px) / 2));
-    max-width: calc(1200px +((100vw - 1170px) / 2)) !important;
+    width: calc(1200px + ((100vw - 1170px) / 2));
+    max-width: calc(1200px + ((100vw - 1170px) / 2)) !important;
     left: calc((100vw - 1200px) / 2);
     padding-right: calc((100vw - 1000px) / 2);
     position: relative;
