@@ -1127,7 +1127,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                     <div className="product-slides-area lg:pr-4 px-[18px] overflow-hidden">
                       <Swiper
                         spaceBetween={20}
-                        slidesPerView={1}
+                        // slidesPerView={2}
                         navigation={{
                           nextEl: '.swiper-button-next',
                           prevEl: '.swiper-button-prev',
