@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import type { JSX } from 'react';
-
+import { useGetBlogsQuery } from '@/store/api/blogApi';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import NewArticles from '@/components/homepage/Blogs';
+import NewArticles from '@/components/homepage/NewArticles';
 import Loading from '@/app/loading';
 
 const apiUrl =
@@ -36,7 +36,7 @@ const BlogDetailPage = () => {
   const { slug } = useParams() as { slug: string };
   const [blog, setBlog] = useState<Blog | null>(null);
   const [error, setError] = useState<string | null>(null);
-
+ const { data: blogsData } = useGetBlogsQuery({ page: 1, limit: 6 });
   useEffect(() => {
     const fetchBlog = async () => {
       try {
@@ -141,7 +141,7 @@ const BlogDetailPage = () => {
           </div>
         </div>
       </section>
-      <NewArticles />
+      <NewArticles blogs={blogsData?.blogs || []} />
     </>
   );
 };
