@@ -411,7 +411,7 @@ console.log(data)
                     <button
                       onClick={handleSearch}
                       disabled={!canSearch}
-                      className="md:max-w-[170px] flex items-center justify-center md:gap-[10px] gap-2 max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:opacity-85 transition ease !border-primary-100 cursor-pointer py-2 px-5"
+                      className="md:max-w-[170px] flex items-center justify-center md:gap-[10px] gap-2 max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:opacity-85 transition ease !border-primary-100 cursor-pointer py-2 px-3"
                     >
                       Search Tyres <Image src="/images/icons/search-normal.svg" alt="search" width={16} height={16} />
                     </button>
