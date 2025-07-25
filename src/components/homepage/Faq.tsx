@@ -1,7 +1,4 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import Image from 'next/image';
 
 interface FAQ {
@@ -12,24 +9,25 @@ interface FAQ {
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
-const FaqSection: React.FC = () => {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [loading, setLoading] = useState(true);
+async function getFaqs(): Promise<FAQ[]> {
+  try {
+    const res = await fetch(`${apiUrl}/api/faq/faqs-lists`, {
+      // Revalidate once per hour (3600s)
+      next: { revalidate: 3600 },
+    });
 
-  useEffect(() => {
-    const fetchFaqs = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/faq/faqs-lists`);
-        setFaqs(res.data);
-      } catch (err) {
-        console.error('Failed to fetch FAQs', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!res.ok) throw new Error('Failed to fetch FAQs');
 
-    fetchFaqs();
-  }, []);
+    return await res.json();
+  } catch (error) {
+    console.error('ISR FAQ fetch error:', error);
+    return [];
+  }
+}
+
+
+const FaqSection = async () => {
+  const faqs = await getFaqs();
 
   return (
     <section className="FAQ-section lg:py-[70px] py-14">
@@ -53,9 +51,7 @@ const FaqSection: React.FC = () => {
             </div>
 
             <div className="FAQ-list">
-              {loading ? (
-                <p>Loading FAQs...</p>
-              ) : faqs.length === 0 ? (
+              {faqs.length === 0 ? (
                 <p>No FAQs available at the moment.</p>
               ) : (
                 faqs.map((faq, index) => (

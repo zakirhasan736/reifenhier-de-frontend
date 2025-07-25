@@ -7,7 +7,8 @@ import type { JSX } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import NewArticles from '@/components/homepage/NewArticles';
+import NewArticles from '@/components/homepage/Blogs';
+import Loading from '@/app/loading';
 
 const apiUrl =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
@@ -53,7 +54,7 @@ const BlogDetailPage = () => {
   }, [slug]);
 
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
-  if (!blog) return <div className="p-6 text-center">Loading...</div>;
+  if (!blog) return <div className="p-6 text-center"><Loading /></div>;
 
   return (
     <>
@@ -85,8 +86,10 @@ const BlogDetailPage = () => {
         <div className="custom-container">
           <div className="blog-details-wrapper bg-bg-opacity pt-12">
             <div className="blog-dtails-right-cont">
-              <div className="max-w-4xl mx-auto p-6">
-                <h1 className="text-3xl font-bold mb-2">{blog.title}</h1>
+              <div className="md:max-w-4xl w-full mx-auto">
+                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] font-medium font-primary text-[#404042] mb-2">
+                  {blog.title}
+                </h1>
                 <p className="text-gray-600 mb-4">
                   {new Date(blog.createdAt).toLocaleDateString()}
                 </p>

@@ -1,9 +1,8 @@
 import debounce from 'lodash.debounce';
 
 export function debounceAsync(fn, wait = 400) {
-  // let promise = null;
   const debounced = debounce((resolve, ...args) => {
-    promise = fn(...args).then(resolve);
+    fn(...args).then(resolve);
   }, wait);
 
   return (...args) =>
@@ -11,3 +10,4 @@ export function debounceAsync(fn, wait = 400) {
       debounced(resolve, ...args);
     });
 }
+

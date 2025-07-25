@@ -11,19 +11,22 @@ export interface Product {
   merchant_product_third_category: string;
   brand_name: string;
   search_price: number;
-  main_price: number;
-  product_name: string;
-  dimensions: string;
-  fuel_class: string;
-  wet_grip: string;
-  noise_class: string;
   average_rating: number;
   rating_count: number;
   cheapest_offer: number;
   expensive_offer: number;
   savings_percent: string;
   savings_amount: number;
-  product_url: string;
+  related_cheaper:
+    | { _id: string; brand_name: string; price: number }[]
+    | string;
+  product_name: string;
+  dimensions: string;
+  fuel_class: string;
+  wet_grip: string;
+  noise_class: string;
+  in_stock: string;
+  showCompareButton?: boolean;
 }
 
 interface FavoriteState {

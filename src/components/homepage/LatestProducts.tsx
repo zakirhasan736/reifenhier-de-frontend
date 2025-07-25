@@ -1,7 +1,6 @@
 
 "use client";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import ProductCard from "@/components/elements/cards/ProductCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, Pagination } from "swiper/modules";
@@ -10,27 +9,14 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
 import Link from "next/link";
-import { Product } from '@/types/product';
 
-
+import { useGetLatestProductsQuery } from '@/store/api/latestProductApi';
 const LatestProducts: React.FC = () => {
-  const [productData, setProductData] = useState<Product[]>([]);
+const { data, isLoading } = useGetLatestProductsQuery(undefined, {
+  refetchOnMountOrArgChange: false,
+});
 
-  useEffect(() => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-    const fetchLatestProducts = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/products/latest-products`);
-        console.log('Received data:', res.data);
-        const latestProducts = res.data.products;
-        setProductData(latestProducts); // Set the latest products in state
-      } catch (err) {
-        console.error('Error fetching latest products:', err);
-      }
-    };
-    fetchLatestProducts();
-  }, []);
+ const productData = data?.products || [];
 
 
   return (
@@ -56,8 +42,8 @@ const LatestProducts: React.FC = () => {
         </div>
       </div>
 
-      <div className="custom-container">
-        <div className="latest-product-list-area product-slides-area pr-4 pl-[10px] max-sm:pr-14 max-sm:pl-0 overflow-hidden">
+      <div className="custom-container max-sm:pr-0">
+        <div className="latest-product-list-area product-slides-area pr-4 pl-[10px] max-sm:pr-10 max-sm:pl-0 overflow-hidden">
           <Swiper
             spaceBetween={20}
             slidesPerView={1}
@@ -77,7 +63,7 @@ const LatestProducts: React.FC = () => {
               1024: { slidesPerView: 4, spaceBetween: 19 },
             }}
           >
-            {productData.length === 0
+            {isLoading
               ? Array.from({ length: 5 }).map((_, index) => (
                   <SwiperSlide key={`skeleton-${index}`}>
                     <ProductSkeletonCard />

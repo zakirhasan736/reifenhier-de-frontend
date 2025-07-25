@@ -1,42 +1,23 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/elements/cards/ProductCard';
 import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Product } from '@/types/product';
 import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-
+import { useGetFeaturedProductsQuery } from '@/store/api/featuredProductApi';
 
 const FeaturedProducts: React.FC = () => {
-  const [productData, setProductData] = useState<Product[]>([]);
-  const [title, setTitle] = useState('Our recommendation');
-  const [category, setCategory] = useState('Winterreifen');
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const { data, isLoading } = useGetFeaturedProductsQuery(undefined, {
+  refetchOnMountOrArgChange: false,
+});
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/products/sessions-products`);
-        const { products, title, category } = res.data;
-        setProductData(products || []);
-        if (title) setTitle(title);
-        if (category) setCategory(category);
-      } catch (err) {
-        console.error('Error fetching featured products:', err);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, [apiUrl]);
-
-  const selectedCategory =
-    productData[0]?.merchant_product_third_category || 'Winterreifen';
-    console.log('Selected category:', selectedCategory);
+const title = data?.title || 'Our recommendation';
+const category = data?.category || 'Winterreifen';
+const productData = data?.products || [];
 
   return (
     <section className="featured-product pt-5  lg:pb-[70] pb-14">
@@ -53,8 +34,8 @@ const FeaturedProducts: React.FC = () => {
         </div>
       </div>
 
-      <div className="custom-container">
-        <div className="featured-product-list-area product-slides-area md:pr-[16px] md:pl-[10px] pr-14 pl-0 overflow-hidden">
+      <div className="custom-container max-sm:pr-0">
+        <div className="featured-product-list-area product-slides-area md:pr-[16px] md:pl-[10px] pr-10 pl-0 overflow-hidden">
           <Swiper
             spaceBetween={20}
             slidesPerView={1}
@@ -74,7 +55,7 @@ const FeaturedProducts: React.FC = () => {
               1024: { slidesPerView: 4, spaceBetween: 19 },
             }}
           >
-            {productData.length === 0
+            {isLoading
               ? Array.from({ length: 5 }).map((_, index) => (
                   <SwiperSlide key={`skeleton-${index}`}>
                     <ProductSkeletonCard />

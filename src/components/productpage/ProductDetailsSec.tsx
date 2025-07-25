@@ -1,9 +1,14 @@
 'use client';
 
-import React , { useState} from 'react';
-
+import React , { useState, useMemo} from 'react';
+import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
+import {
+  useAddWishlistMutation,
+  useRemoveWishlistMutation,
+  useGetWishlistQuery,
+} from '@/store/api/wishlistApi';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
@@ -20,12 +25,32 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import 'swiper/swiper-bundle.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addProduct, openModal } from '@/store/compareSlice';
-import { addFavorite, removeFavorite } from '@/store/favoriteSlice';
-import { AppDispatch, RootState } from '@/store/store';
+import { AppDispatch } from '@/store/store';
 import type { Swiper as SwiperClass } from 'swiper';
 
+interface WishlistProduct {
+  _id: string;
+  brand_logo: string;
+  product_image: string;
+  merchant_product_third_category: string;
+  brand_name: string;
+  search_price: number;
+  average_rating: number;
+  rating_count: number;
+  cheapest_offer: number;
+  expensive_offer: number;
+  savings_percent: string;
+  savings_amount: number;
+  product_name: string;
+  dimensions: string;
+  fuel_class: string;
+  wet_grip: string;
+  noise_class: string;
+  in_stock: string;
+  favoritedAt?: string;
+}
 interface Offer {
   brand: string;
   vendor_logo: string;
@@ -110,19 +135,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     };
     console.log(product);
     // Get favorite product IDs (filter nulls defensively)
-    const favorites = useSelector((state: RootState) =>
-      (state.favorite.items || []).filter(Boolean).map(p => p._id)
-    );
-    const isFav = product ? favorites.includes(product._id) : false;
 
-    const handleFavorite = () => {
-      if (!product) return;
-      if (isFav) {
-        dispatch(removeFavorite(product._id));
-      } else {
-        dispatch(addFavorite(product._id));
-      }
-    };
     // You can adjust these colors as you want!
     const gradeFuelColor = (grade: string) => {
       switch ((grade || '').toUpperCase()) {
@@ -164,6 +177,33 @@ const ProductSinglepage: React.FC<ProductProps> = ({
           return '#404042'; // Gray (for unknown)
       }
     };
+const { data: wishlistData } = useGetWishlistQuery();
+const [addWishlist] = useAddWishlistMutation();
+const [removeWishlist] = useRemoveWishlistMutation();
+
+// Ensure wishlist is always an array
+
+const wishlist: WishlistProduct[] = useMemo(() => {
+  return wishlistData?.wishlist ?? [];
+}, [wishlistData]);
+
+const isFavorited = useMemo(() => {
+  return wishlist.some(item => item._id === product._id);
+}, [wishlist, product._id]);
+
+const handleToggleWishlist = async () => {
+  try {
+    if (isFavorited) {
+      await removeWishlist(product._id);
+      toast.success('Removed from Wishlist');
+    } else {
+      await addWishlist(product._id);
+      toast.success('Added to Wishlist');
+    }
+  } catch {
+    toast.error('Something went wrong');
+  }
+};
 
     return (
       <>
@@ -599,26 +639,20 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                         </div>
                         <div className="product-favorite-icon">
                           <button
-                            onClick={handleFavorite}
+                            onClick={handleToggleWishlist}
                             className="cursor-pointer"
                           >
-                            {isFav ? (
-                              <Image
-                                src="/images/icons/heart-filled.svg"
-                                alt="favorite"
-                                className="lg:w-6 lg:h-6 h-5 w-5"
-                                width={32}
-                                height={32}
-                              />
-                            ) : (
-                              <Image
-                                src="/images/icons/heart.svg"
-                                alt="favorite"
-                                className="lg:w-6 lg:h-6 h-5 w-5"
-                                width={32}
-                                height={32}
-                              />
-                            )}
+                            <Image
+                              src={
+                                isFavorited
+                                  ? '/images/icons/heart-filled.svg'
+                                  : '/images/icons/heart.svg'
+                              }
+                              alt="favorite"
+                              className="lg:w-6 lg:h-6 h-5 w-5"
+                              width={32}
+                              height={32}
+                            />
                           </button>
                         </div>
                       </div>
@@ -778,13 +812,13 @@ const ProductSinglepage: React.FC<ProductProps> = ({
                       </p>
                     </div>
                     <div className="product-details-brand-info">
-                        <Image
-                          src={product.cheapest_vendor?.vendor_logo}
-                          width={140}
-                          height={37}
-                          className="lg:w-[140px] lg:h-[37px] h-[27px] w-[80px] object-contain"
-                          alt="vendor image"
-                        />
+                      <Image
+                        src={product.cheapest_vendor?.vendor_logo}
+                        width={140}
+                        height={37}
+                        className="lg:w-[140px] lg:h-[37px] h-[27px] w-[80px] object-contain"
+                        alt="vendor image"
+                      />
                       <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
                           {product.cheapest_vendor?.delivery_cost === '0' ||

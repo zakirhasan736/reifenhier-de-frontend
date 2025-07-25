@@ -1,13 +1,25 @@
-"use client"
-import toast from 'react-hot-toast';
+'use client';
+
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
-
-import { addFavorite, removeFavorite } from '@/store/favoriteSlice';
+import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  useAddWishlistMutation,
+  useRemoveWishlistMutation,
+  useGetWishlistQuery,
+} from '@/store/api/wishlistApi';
+
 import { addProduct, openModal } from '@/store/compareSlice';
-import type { RootState, AppDispatch } from '@/store/store'; 
+import type { RootState, AppDispatch } from '@/store/store';
+
+interface RelatedCheaperItem {
+  _id: string;
+  brand_name: string;
+  price: number;
+}
 
 interface ProductCardProps {
   _id: string;
@@ -22,7 +34,7 @@ interface ProductCardProps {
   expensive_offer: number;
   savings_percent: string;
   savings_amount: number;
-  related_cheaper: { _id: string; brand_name: string; price: number }[] | string;
+  related_cheaper: RelatedCheaperItem[] | string;
   product_name: string;
   dimensions: string;
   fuel_class: string;
@@ -31,8 +43,27 @@ interface ProductCardProps {
   in_stock: string;
   showCompareButton?: boolean;
 }
-
-
+interface WishlistProduct {
+  _id: string;
+  brand_logo: string;
+  product_image: string;
+  merchant_product_third_category: string;
+  brand_name: string;
+  search_price: number;
+  average_rating: number;
+  rating_count: number;
+  cheapest_offer: number;
+  expensive_offer: number;
+  savings_percent: string;
+  savings_amount: number;
+  product_name: string;
+  dimensions: string;
+  fuel_class: string;
+  wet_grip: string;
+  noise_class: string;
+  in_stock: string;
+  favoritedAt?: string;
+}
 const ProductCard: React.FC<ProductCardProps> = ({
   _id,
   brand_logo,
@@ -55,30 +86,47 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const compareProducts = useSelector(
-    (state: RootState) => state.compare.products
-  );
-  const favorites = useSelector((state: RootState) =>
-    state.favorite.items.map(p => p._id)
-  );
-  const isFav = favorites.includes(_id);
+  const { data: wishlistData } = useGetWishlistQuery();
+  const [addWishlist] = useAddWishlistMutation();
+  const [removeWishlist] = useRemoveWishlistMutation();
 
-  const handleFavorite = () => {
-    if (isFav) {
-      dispatch(removeFavorite(_id));
-    } else {
-      dispatch(addFavorite(_id));
+  // Ensure wishlist is always an array
+
+const wishlist: WishlistProduct[] = useMemo(() => {
+  return wishlistData?.wishlist ?? [];
+}, [wishlistData]);
+
+const isFavorited = useMemo(() => {
+  return wishlist.some(item => item._id === _id);
+}, [wishlist, _id]);
+
+  const handleToggleWishlist = async () => {
+    try {
+      if (isFavorited) {
+        await removeWishlist(_id);
+        toast.success('Removed from Wishlist');
+      } else {
+        await addWishlist(_id);
+        toast.success('Added to Wishlist');
+      }
+    } catch {
+      toast.error('Something went wrong');
     }
   };
 
-  const isAlready = compareProducts.find(p => p._id === _id);
+  const compareProducts = useSelector(
+    (state: RootState) => state.compare.products
+  );
+
+  const isAlreadyCompared = compareProducts.find(p => p._id === _id);
   const handleCompare = () => {
-    if (isAlready) {
+    if (isAlreadyCompared) {
       toast.error('Product already added');
       return;
     }
+
     if (compareProducts.length >= 4) {
-      toast.error('Compared products cannot exceed Maximum 4 products');
+      toast.error('Maximum 4 products allowed in comparison');
       return;
     }
 
@@ -96,49 +144,43 @@ const ProductCard: React.FC<ProductCardProps> = ({
       })
     );
     dispatch(openModal());
-    toast.success('Product added to compare');
+    toast.success('Product added to comparison');
   };
-  // You can adjust these colors as you want!
+
   const gradeFuelColor = (grade: string) => {
     switch ((grade || '').toUpperCase()) {
       case 'A':
-        return '#2d8934'; // Green
+        return '#2d8934';
       case 'B':
-        return '#a4c600'; // Light Green
+        return '#a4c600';
       case 'C':
-        return '#f9ed02'; // Yellow
+        return '#f9ed02';
       case 'D':
-        return '#f5b602'; // Orange Yellow
+        return '#f5b602';
       case 'E':
-        return '#e81401'; // Orange
       case 'F':
-        return '#e81401'; // Red
       case 'G':
-        return '#e81401'; // Dark Red
+        return '#e81401';
       default:
-        return '#404042'; // Gray (for unknown)
+        return '#404042';
     }
   };
+
   const gradeGripColor = (grade: string) => {
     switch ((grade || '').toUpperCase()) {
       case 'A':
-        return '#2c5aa9'; // Green
+        return '#2c5aa9';
       case 'B':
-        return '#377ac1'; // Light Green
+        return '#377ac1';
       case 'C':
-        return '#5ba7db'; // Yellow
+        return '#5ba7db';
       case 'D':
-        return '#87c2ea'; // Orange Yellow
-      case 'E':
-        return '#b7e4f9'; // Orange
-      case 'F':
-        return '#b7e4f9'; // Red
-      case 'G':
-        return '#b7e4f9'; // Dark Red
+        return '#87c2ea';
       default:
-        return '#404042'; // Gray (for unknown)
+        return '#b7e4f9';
     }
   };
+
   return (
     <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex flex-col duration-300">
       <div className="card-header py-3 px-4 relative">
@@ -152,22 +194,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
             />{' '}
             {average_rating > 0 && <span>{average_rating}</span>}
           </p>
-          <button onClick={handleFavorite} className="cursor-pointer">
-            {isFav ? (
-              <Image
-                src="/images/icons/heart-filled.svg"
-                alt="favorite"
-                width={16}
-                height={16}
-              />
-            ) : (
-              <Image
-                src="/images/icons/heart.svg"
-                alt="favorite"
-                width={16}
-                height={16}
-              />
-            )}
+          <button onClick={handleToggleWishlist} className="cursor-pointer">
+            <Image
+              src={
+                isFavorited
+                  ? '/images/icons/heart-filled.svg'
+                  : '/images/icons/heart.svg'
+              }
+              alt="favorite"
+              width={16}
+              height={16}
+            />
           </button>
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
@@ -330,14 +367,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
           ) : (
             <>
               <span className="text-[18px] font-medium font-secondary text-[#404042]">
-          {cheapest_offer}
+                {cheapest_offer}
               </span>
               <span className="ml-3 text-[#C6C7CC]"></span>
               <span
-          style={{ textDecoration: 'line-through' }}
-          className="text-[16px] font-secondary font-normal text-[#C6C7CC] leading-[140%] text-line-through"
+                style={{ textDecoration: 'line-through' }}
+                className="text-[16px] font-secondary font-normal text-[#C6C7CC] leading-[140%] text-line-through"
               >
-          €{expensive_offer}
+                €{expensive_offer}
               </span>{' '}
             </>
           )}
@@ -358,7 +395,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             onClick={handleCompare}
             className="flex items-center gap-2 mt-3 text-[14px] font-normal font-secondary text-primary-100 justify-center w-full cursor-pointer"
           >
-            {isAlready ? (
+            {isAlreadyCompared ? (
               <>
                 <span className="text-green-600">✔</span> Added to comparison
               </>

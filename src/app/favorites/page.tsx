@@ -1,90 +1,69 @@
 'use client';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { fetchFavorites, removeFavorite } from '../../store/favoriteSlice';
-import { RootState, AppDispatch } from '../../store/store';
-import Image from 'next/image';
+
+import { useGetWishlistQuery } from '@/store/api/wishlistApi';
+import ProductCard from '@/components/elements/cards/ProductCard';
+import Loading from '../loading';
+interface RelatedCheaperItem {
+  _id: string;
+  brand_name: string;
+  price: number;
+}
+interface Product {
+  _id: string;
+  brand_logo: string;
+  product_image: string;
+  merchant_product_third_category: string;
+  brand_name: string;
+  search_price: number;
+  average_rating: number;
+  rating_count: number;
+  cheapest_offer: number;
+  expensive_offer: number;
+  savings_percent: string;
+  savings_amount: number;
+  related_cheaper: RelatedCheaperItem[] | string;
+  product_name: string;
+  dimensions: string;
+  fuel_class: string;
+  wet_grip: string;
+  noise_class: string;
+  in_stock: string;
+  showCompareButton?: boolean;
+  favoritedAt?: string;
+}
 
 export default function FavoritesPage() {
-  const dispatch = useDispatch<AppDispatch>();
-  const favorites = useSelector((state: RootState) => state.favorite.items);
+  const { data, isLoading, isError } = useGetWishlistQuery();
 
-  useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
-
-  const handleUnfavorite = (productId: string) => {
-    dispatch(removeFavorite(productId));
-  };
+  const wishlist: Product[] = data?.wishlist || [];
 
   return (
-    <div>
-      <h1>Your Favorites</h1>
-      {favorites.length === 0 ? (
-        <p>No favorites yet.</p>
-      ) : (
-        <div
-          style={{
-            display: 'grid',
-            gap: 24,
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          }}
-        >
-          {favorites.map(product => (
-            <div
-              key={product._id}
-              style={{
-                border: '1px solid #eee',
-                borderRadius: 12,
-                padding: 16,
-                position: 'relative',
-              }}
-            >
-              <Image
-                src={product.product_image}
-                width={80}
-                height={80}
-                alt={product.product_name}
+    <section className="favorite-page-section pt-8 pb-9">
+      <div className="custom-container">
+        <h1 className="h4 font-medium font-primary text-[#404042] mb-5">
+          Your Wishlist
+        </h1>
+
+        {isLoading ? (
+          <Loading />
+        ) : isError ? (
+          <p className="text-red-500">
+            Failed to load wishlist. Please try again.
+          </p>
+        ) : wishlist.length === 0 ? (
+          <p className="text-[#888]">Your wishlist is empty.</p>
+        ) : (
+          <div className="favorite-wrapper grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-6">
+            {wishlist.map(product => (
+              <ProductCard
+                key={product._id}
+                {...product}
+                showCompareButton={false}
               />
-              <h3>{product.product_name}</h3>
-              <Image
-                src={product.brand_logo}
-                width={80}
-                height={80}
-                alt={product.brand_name}
-              />
-              <p>{product.merchant_product_third_category}</p>
-              {/* <h3>{product.main_price}</h3> */}
-              <h3>{product.search_price}</h3>
-              <h3>{product.expensive_offer}</h3>
-              <h3>{product.cheapest_offer}</h3>
-              <p>{product.savings_percent}</p>
-              {/* Remove/Favorite button */}
-              <button
-                onClick={() => handleUnfavorite(product._id)}
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 28,
-                  color: 'red',
-                  cursor: 'pointer',
-                  outline: 'none',
-                }}
-                title="Unfavorite"
-                aria-label="Remove from favorites"
-              >
-                {/* Filled heart icon */}
-                <span role="img" aria-label="favorite">
-                  ❤️
-                </span>
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

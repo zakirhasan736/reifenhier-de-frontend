@@ -361,16 +361,18 @@ nav.header-bottom-navbar.navbar-megamenu-area {
         width: 100%;
     }
 }
-
+.blogs-slides-area .swiper,
 .product-slides-area .swiper {
     overflow: visible !important;
 }
-
+.blogs-slides-area .swiper .swiper-button-next.swiper-button-disabled,
+.blogs-slides-area .swiper .swiper-button-prev.swiper-button-disabled,
 .product-slides-area .swiper .swiper-button-next.swiper-button-disabled,
 .product-slides-area .swiper .swiper-button-prev.swiper-button-disabled {
     display: none;
 }
-
+.blogs-slides-area .swiper .swiper-button-prev,
+.blogs-slides-area .swiper .swiper-button-next,
 .product-slides-area .swiper .swiper-button-prev,
 .product-slides-area .swiper .swiper-button-next {
     width: 38px;
@@ -383,24 +385,26 @@ nav.header-bottom-navbar.navbar-megamenu-area {
     border-radius: 60px;
     z-index: 999;
 }
-
+.blogs-slides-area .swiper .swiper-button-prev:after,
+.blogs-slides-area .swiper .swiper-button-next:after,
 .product-slides-area .swiper .swiper-button-prev:after,
 .product-slides-area .swiper .swiper-button-next:after {
     font-size: 16px;
     font-weight: 900;
     color: #0D0113;
 }
-
+.blogs-slides-area  .swiper .swiper-button-next,
 .product-slides-area .swiper .swiper-button-next {
     right: -15px;
 }
-
+.blogs-slides-area  .swiper .swiper-button-prev,
 .product-slides-area .swiper .swiper-button-prev {
     left: -8px;
 }
 
 @media screen and (max-width:767px) {
-
+    .blogs-slides-area .swiper .swiper-button-prev,
+    .blogs-slides-area .swiper .swiper-button-next,
     .product-slides-area .swiper .swiper-button-prev,
     .product-slides-area .swiper .swiper-button-next,
     .slides-indicator {
@@ -1363,6 +1367,7 @@ section.brand-category-section .featured-product-list-area:after{
     background: linear-gradient(270deg, #FFFFFF 3%, rgba(255, 255, 255, 0) 100%);
     z-index: 9;
 }
+.blogs-swiper-pagination  span.swiper-pagination-bullet ,
 .latest-swiper-pagination  span.swiper-pagination-bullet ,
 .custom-swiper-pagination span.swiper-pagination-bullet {
     width: 12px;

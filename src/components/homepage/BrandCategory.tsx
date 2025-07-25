@@ -1,40 +1,18 @@
 
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import axios from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { useGetBrandSummaryQuery } from '@/store/api/brandApi';
 
-interface BrandInfo {
-  brand_name: string;
-  brandLogo: string;
-  count: number;
-}
 
 const BrandCategory = () => {
-  const [brands, setBrands] = useState<BrandInfo[]>([]);
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-  useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/products/brand-summary`);
-        if (Array.isArray(res.data.brands)) {
-          setBrands(res.data.brands);
-        } else {
-          console.error('Invalid brand data format', res.data);
-        }
-      } catch (err) {
-        console.error('Error fetching brand summary:', err);
-      } 
-    };
-    fetchBrands();
-  }, [apiUrl]);
+   const { data, isLoading, error } = useGetBrandSummaryQuery();
+   const brands = data?.brands || [];
 
   return (
     <section className="brand-category-section lg:pb-[70] pb-14 bg-mono-0">
@@ -65,8 +43,19 @@ const BrandCategory = () => {
             1500: { slidesPerView: 8, spaceBetween: 24 },
           }}
         >
-          {brands.length > 0
-            ? brands.map((brandItem, index) => (
+          {isLoading || error
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <SwiperSlide key={index}>
+                  <div className="animate-pulse bg-mono-0 border border-border-100 rounded-[4px] px-4 pb-5 text-center">
+                    <div className="brand-image-box py-6">
+                      <div className="h-[35px] w-[120px] mx-auto bg-mono-40 bg-border-200 rounded"></div>
+                    </div>
+                    <div className="h-4 w-3/4 bg-border-200 bg-mono-40 rounded mx-auto mt-2 mb-1"></div>
+                    <div className="h-3 w-1/2 bg-border-200 bg-mono-40 rounded mx-auto"></div>
+                  </div>
+                </SwiperSlide>
+              ))
+            : brands.map((brandItem, index) => (
                 <SwiperSlide key={index}>
                   <Link
                     href={{
@@ -101,17 +90,6 @@ const BrandCategory = () => {
                       </p>
                     </div>
                   </Link>
-                </SwiperSlide>
-              ))
-            : Array.from({ length: 5 }).map((_, index) => (
-                <SwiperSlide key={index}>
-                  <div className="animate-pulse bg-mono-0 border border-border-100 rounded-[4px] px-4 pb-5 text-center">
-                    <div className="brand-image-box py-6">
-                      <div className="h-[35px] w-[120px] mx-auto bg-mono-40 bg-border-200 rounded"></div>
-                    </div>
-                    <div className="h-4 w-3/4 bg-border-200 bg-mono-40 rounded mx-auto mt-2 mb-1"></div>
-                    <div className="h-3 w-1/2 bg-border-200 bg-mono-40 rounded mx-auto"></div>
-                  </div>
                 </SwiperSlide>
               ))}
         </Swiper>

@@ -229,98 +229,74 @@
 // export default BannerSection;
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchFilters,
-  resetSubFilters,
-} from '@/store/filterSlice';
-import { debounce } from 'lodash';
-import { AppDispatch, RootState } from '@/store/store';
+import { useGetTyreFiltersQuery } from '@/store/api/filterApi';
 import CustomSelect from '@/components/elements/inputs/CustomCategorySelect';
 
+interface FilterOption {
+  name: string;
+  count?: number;
+}
+interface FilterResponse {
+  categories: FilterOption[];
+  widths: FilterOption[];
+  heights: FilterOption[];
+  diameters: FilterOption[];
+  brands: FilterOption[];
+  wetGrips: FilterOption[];
+  fuelClasses: FilterOption[];
+  noises: FilterOption[];
+}
 const BannerSection = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   const [category, setCategory] = useState('');
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const [diameter, setDiameter] = useState('');
+  const [brand, setBrand] = useState('');
+  const [wetGrip, setWetGrip] = useState('');
+  const [fuelClass, setFuelClass] = useState('');
+  const [noise, setNoise] = useState('');
 
-  const { categories, widths, heights, diameters } = useSelector(
-    (state: RootState) => state.filters
-  );
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
 
-  const debouncedFetch = useMemo(
-    () => debounce(params => dispatch(fetchFilters(params)), 300),
-    [dispatch]
-  );
+  const { data = {} as FilterResponse } = useGetTyreFiltersQuery({
+    category,
+    width,
+    height,
+    diameter,
+  });
+console.log(data)
 
-  useEffect(() => () => debouncedFetch.cancel(), [debouncedFetch]);
-  useEffect(() => {
-    dispatch(fetchFilters({}));
-  }, [dispatch]);
-  useEffect(
-    () => () => {
-      debouncedFetch.cancel();
-    },
-    [debouncedFetch]
-  );
-  useEffect(() => {
-    dispatch(fetchFilters({}));
-  }, [dispatch]);
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    params.set('category', category);
+    params.set('width', width);
+    params.set('height', height);
+    params.set('diameter', diameter);
 
-  useEffect(() => {
-    if (!category) {
-      dispatch(resetSubFilters());
-      setWidth('');
-      setHeight('');
-      setDiameter('');
-      dispatch(fetchFilters({}));
-    } else {
-      dispatch(resetSubFilters());
-      setWidth('');
-      setHeight('');
-      setDiameter('');
-      debouncedFetch({ category });
+    if (showMoreFilters) {
+      params.set('brand', brand);
+      params.set('wetGrip', wetGrip);
+      params.set('fuelClass', fuelClass);
+      params.set('noise', noise);
     }
-  }, [category, dispatch, debouncedFetch]);
 
-  useEffect(() => {
-    if (!width && category) {
-      setHeight('');
-      setDiameter('');
-      debouncedFetch({ category });
-    }
-    if (width && category) {
-      setHeight('');
-      setDiameter('');
-      debouncedFetch({ category, width });
-    }
-  }, [width, category, debouncedFetch]);
+    router.push(`/products?${params.toString()}`);
+  };
 
-  useEffect(() => {
-    if (!height && width && category) {
-      setDiameter('');
-      debouncedFetch({ category, width });
-    }
-    if (height && width && category) {
-      setDiameter('');
-      debouncedFetch({ category, width, height });
-    }
-  }, [height, category, width, debouncedFetch]);
-
- const handleSearch = () => {
-   const params = new URLSearchParams();
-   if (category) params.set('category', category);
-   if (width) params.set('width', width);
-   if (height) params.set('height', height);
-   if (diameter) params.set('diameter', diameter);
-   router.push(`/products?${params.toString()}`);
- };
-
+  const canSearch = showMoreFilters
+    ? category &&
+      width &&
+      height &&
+      diameter &&
+      brand &&
+      wetGrip &&
+      fuelClass &&
+      noise
+    : category && width && height && diameter;
 
   return (
     <section className="banner-section font-primary max-sm:h-auto">
@@ -336,89 +312,116 @@ const BannerSection = () => {
                   Quickly get tyres suited to your vehicle and driving style.
                 </p>
               </div>
-              <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto ">
+
+              <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto">
                 <div className="lg:h-[152px] h-[188px] md:block hidden w-full"></div>
+
                 <div className="tyres-search-content md:absolute top-0 left-0 w-full bg-mono-0 md:px-[30px] px-4 py-4 md:py-6 rounded-[10px]">
                   <div className="tyre-search-box lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
                     <div className="tyre-type-area flex-wrap flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
                       <CustomSelect
-                        label="Session tyre"
-                        options={categories}
+                        label="Category"
                         value={category}
-                        onChange={setCategory}
+                        onChange={val => {
+                          setCategory(val);
+                          setWidth('');
+                          setHeight('');
+                          setDiameter('');
+                        }}
+                        options={data.categories || []}
                         placeholder="Select Category"
                       />
+
                       <CustomSelect
                         label="Width"
-                        options={widths}
                         value={width}
-                        onChange={setWidth}
-                        disabled={!category}
+                        onChange={val => {
+                          setWidth(val);
+                          setHeight('');
+                          setDiameter('');
+                        }}
+                        options={data.widths || []}
                         placeholder="Select Width"
+                        disabled={!category}
                       />
+
                       <CustomSelect
-                        label="Aspect Ratio"
-                        options={heights}
+                        label="Height"
                         value={height}
-                        onChange={setHeight}
-                        disabled={!width}
+                        onChange={val => {
+                          setHeight(val);
+                          setDiameter('');
+                        }}
+                        options={data.heights || []}
                         placeholder="Select Height"
+                        disabled={!width}
                       />
+
                       <CustomSelect
                         label="Diameter"
-                        options={diameters}
                         value={diameter}
                         onChange={setDiameter}
-                        disabled={!height}
+                        options={data.diameters || []}
                         placeholder="Select Diameter"
+                        disabled={!height}
                       />
-                      {/* <CustomSelect
-                        label="Diameter"
-                        options={diameters}
-                        value={diameter}
-                        onChange={setDiameter}
-                        disabled={!height}
-                        placeholder="Select Diameter"
-                      />
-                      <CustomSelect
-                        label="Diameter"
-                        options={diameters}
-                        value={diameter}
-                        onChange={setDiameter}
-                        disabled={!height}
-                        placeholder="Select Diameter"
-                      />
-                      <CustomSelect
-                        label="Diameter"
-                        options={diameters}
-                        value={diameter}
-                        onChange={setDiameter}
-                        disabled={!height}
-                        placeholder="Select Diameter"
-                      />
-                      <CustomSelect
-                        label="Diameter"
-                        options={diameters}
-                        value={diameter}
-                        onChange={setDiameter}
-                        disabled={!height}
-                        placeholder="Select Diameter"
-                      /> */}
+
+                      {showMoreFilters && (
+                        <>
+                          <CustomSelect
+                            label="Brand"
+                            value={brand}
+                            onChange={setBrand}
+                            options={data.brands || []}
+                            placeholder="Select Brand"
+                            disabled={!diameter}
+                          />
+
+                          <CustomSelect
+                            label="Wet Grip"
+                            value={wetGrip}
+                            onChange={setWetGrip}
+                            options={data.wetGrips || []}
+                            placeholder="Select Wet Grip"
+                            disabled={!diameter}
+                          />
+
+                          <CustomSelect
+                            label="Fuel Class"
+                            value={fuelClass}
+                            onChange={setFuelClass}
+                            options={data.fuelClasses || []}
+                            placeholder="Select Fuel Class"
+                            disabled={!diameter}
+                          />
+
+                          <CustomSelect
+                            label="Noise"
+                            value={noise}
+                            onChange={setNoise}
+                            options={data.noises || []}
+                            placeholder="Select Noise"
+                            disabled={!diameter}
+                          />
+                        </>
+                      )}
                     </div>
+
                     <button
                       onClick={handleSearch}
-                      disabled={!diameter}
+                      disabled={!canSearch}
                       className="md:max-w-[170px] max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:bg-transparent hover:text-primary-100 transition ease !border-primary-100 cursor-pointer py-2 px-6"
                     >
                       Search Tyres
                     </button>
                   </div>
+
                   <button
                     type="button"
+                    onClick={() => setShowMoreFilters(prev => !prev)}
                     className="text-primary-100 mt-5 text-[14px] text-left font-secondary font-normal leading-[120%] cursor-pointer lg:relative lg:bottom-0 lg:left-0 absolute bottom-10 left-8 max-sm:left-4"
                   >
-                    {/* `More Filters` if ovew then change text to `Fewer Filters` */}
-                    More Filters
+                    {showMoreFilters ? 'Fewer Filters' : 'More Filters'}
                   </button>
                 </div>
               </div>
