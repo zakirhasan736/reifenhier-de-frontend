@@ -1132,7 +1132,7 @@ const handleToggleWishlist = async () => {
                 </div>
               </div>
             </div>
-            <div className="custom-container-full lg:pt-[70px] pt-9">
+            <div className="custom-container-full lg:pt-[55px] pt-9">
               {/* name of each tab group should be unique */}
               <div className="custom-container relative flex md:flex-row flex-col items-end md:items-center md:justify-between max-sm:mb-6">
                 <div className="best-offer-vendor-sec-title">
@@ -1143,7 +1143,7 @@ const handleToggleWishlist = async () => {
                     Free shipping, trusted brands & the lowest prices daily!
                   </p>
                 </div>
-                <div className="offer-vendor-navigator flex items-baseline-last gap-5">
+                <div className="offer-vendor-navigator hidden items-baseline-last gap-5">
                   <div className="swiper-button-prev !relative"></div>
                   <div className="swiper-button-next !relative"></div>
                 </div>
@@ -1157,7 +1157,7 @@ const handleToggleWishlist = async () => {
                   defaultChecked
                 />
                 <div className="tab-content !text-primary-70 bg-mono-0 body-regular border-base-300 pt-2 md:pt-8 px-0">
-                  <div className="offer-slider-area  overflow-hidden">
+                  <div className="offer-slider-area hidden  overflow-hidden">
                     <div className="product-slides-area lg:pr-4 px-[18px] overflow-hidden">
                       <Swiper
                         spaceBetween={20}
@@ -1300,6 +1300,134 @@ const handleToggleWishlist = async () => {
                           </SwiperSlide>
                         ))}
                       </Swiper>
+                    </div>
+                  </div>
+                  <div className="offer-list-item-wrapper">
+                    <div className="custom-container">
+                      <div className="offer-list-item-area">
+                        {product.offers?.map((product, index) => (
+                          <div
+                            key={`${product.brand}-${index}`}
+                            className="offer-product-card-item  not-last:mb-6"
+                          >
+                            <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
+                              <div className="offer-product-top-cont w-full md:max-w-[170px]  flex justify-between items-start gap-2">
+                                  <div className="cont-box">
+                                    <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
+                                      €{product.price}{' '}
+                                    </h4>
+
+                                    <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
+                                      Including shipping price
+                                    </p>
+                                  </div>
+                                  <Image
+                                    src={product.vendor_logo}
+                                    alt={`${product.vendor} logo`}
+                                    width={140}
+                                    height={37}
+                                    className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                  />
+                              </div>
+                              <div className="vendor-box">
+                                <Image
+                                  src={product.vendor_logo}
+                                  alt={`${product.vendor} logo`}
+                                  width={140}
+                                  height={37}
+                                  className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                />
+                              </div>
+                              <div className="offer-product-bottom-cont  md:max-w-[220px] w-full  flex max-sm:flex-col-reverse items-start  lg:items-center justify-between gap-4">
+                                <div className="offer-info-right-cont">
+                                  <h6 className="text-[14px] lg:text-[16px] mb-3 leading-[120%] font-medium font-secondary">
+                                    Payment Methods:
+                                  </h6>
+                                  <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2 mt-1">
+                                    {product.payment_icons?.map(
+                                      (icon: string, index: number) => (
+                                        <li
+                                          key={index}
+                                          className="payment-method-item h-7"
+                                        >
+                                          <Image
+                                            src={icon}
+                                            alt={`payment method ${index + 1}`}
+                                            width={45}
+                                            height={48}
+                                            className="h-7 object-contain"
+                                          />
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              </div>
+                              <ul className="product-info-item w-full md:max-w-[280px] flex flex-col gap-2">
+                                <li className="flex items-center gap-2">
+                                  <Image
+                                    src="/images/icons/iconoir_delivery-truck.svg"
+                                    alt="truck icons"
+                                    width={20}
+                                    height={20}
+                                    className="h-5 w-5 object-contain rounded-[4px]"
+                                  />{' '}
+                                  <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                    Delivery: {product.delivery_time || 'N/A'}
+                                  </span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                  <Image
+                                    src="/images/icons/check-circle.svg"
+                                    alt="tick icon"
+                                    width={20}
+                                    height={20}
+                                    className="h-5 w-5 object-contain rounded-[4px]"
+                                  />{' '}
+                                  <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                    {product.delivery_cost === '0.00' ||
+                                    product.delivery_cost === '0'
+                                      ? 'Free delivery'
+                                      : 'Delivery cost: ' +
+                                        product.delivery_cost}
+                                  </span>
+                                </li>
+                              </ul>
+                              <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-2">
+                                <Link
+                                  href={product.original_affiliate_url}
+                                  className="block w-full"
+                                >
+                                  <button
+                                    type="button"
+                                    className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                  >
+                                    <Image
+                                      src="/images/icons/shopping-bag.png"
+                                      className="w-5 h-5"
+                                      alt="cart icon"
+                                      width={24}
+                                      height={24}
+                                    />{' '}
+                                    To the offer
+                                  </button>
+                                </Link>
+                                <Link
+                                  href={product.original_affiliate_url}
+                                  className="block w-full"
+                                >
+                                  <button
+                                    type="button"
+                                    className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
+                                  >
+                                    Shop details
+                                  </button>
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>

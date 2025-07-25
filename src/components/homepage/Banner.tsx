@@ -233,6 +233,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGetTyreFiltersQuery } from '@/store/api/filterApi';
 import CustomSelect from '@/components/elements/inputs/CustomCategorySelect';
+import Image from 'next/image';
 
 interface FilterOption {
   name: string;
@@ -301,14 +302,14 @@ console.log(data)
   return (
     <section className="banner-section font-primary max-sm:h-auto">
       <div className="custom-container h-full">
-        <div className="banner-content w-full md:pt-[56px]  md:pb-[55px] pt-5 pb-6 h-full">
+        <div className="banner-content w-full lg:pt-[56px] md:pt-[42px]  lg:pb-[55px] md:pb-[36px] pt-5 pb-6 h-full"> 
           <div className="tyres-search-area w-full h-full flex items-end justify-center">
             <div className="tyres-search-content w-full relative">
-              <div className="tyres-search-left-content mb-10 max-sm:mb-6  relative">
-                <h1 className="h2 text-mono-0 text-center mb-4 md:text-[48px] leading-[115%] font-medium font-primary text-[26px]">
+              <div className="tyres-search-left-content lg:mb-10 md:mb-8 mb-6  relative">
+                <h1 className="h2 text-mono-0 text-center mb-4 md:text-[38px] lg:text-[48px] leading-[115%] font-medium font-primary text-[26px]">
                   Find the Perfect Tyres <br /> For Your Vehicle
                 </h1>
-                <p className="text-[#FFFFFFCC] text-[20px] max-sm:text-[16px] text-center font-normal font-primary leading-[150%]">
+                <p className="text-[#FFFFFFCC] lg:text-[20px] md:text-[18px] text-[16px] text-center font-normal font-primary leading-[150%]">
                   Quickly get tyres suited to your vehicle and driving style.
                 </p>
               </div>
@@ -410,9 +411,9 @@ console.log(data)
                     <button
                       onClick={handleSearch}
                       disabled={!canSearch}
-                      className="md:max-w-[170px] max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:bg-transparent hover:text-primary-100 transition ease !border-primary-100 cursor-pointer py-2 px-6"
+                      className="md:max-w-[170px] flex items-center justify-center md:gap-[10px] gap-2 max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:opacity-85 transition ease !border-primary-100 cursor-pointer py-2 px-5"
                     >
-                      Search Tyres
+                      Search Tyres <Image src="/images/icons/search-normal.svg" alt="search" width={16} height={16} />
                     </button>
                   </div>
 
