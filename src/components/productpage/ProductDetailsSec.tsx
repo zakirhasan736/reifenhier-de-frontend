@@ -90,7 +90,6 @@ interface Product {
   review_count: number;
   average_rating: number;
   cheapest_offer: number;
-  main_price: number;
   expensive_offer: number;
   savings_percent: string;
   related_cheaper: Product[];
@@ -844,7 +843,7 @@ const handleToggleWishlist = async () => {
                     <div className="input-type-text flex items-center gap-6 text-primary-70 font-medium text-[18px] capitalized text-left w-full">
                       {product.cheapest_offer === product.expensive_offer ? (
                         <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                          €{product.main_price}
+                          €{product.search_price}
                         </span>
                       ) : (
                         <div className="price-box flex items-center gap-2">
