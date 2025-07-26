@@ -322,7 +322,7 @@ const isFavorited = useMemo(() => {
           {savings_percent &&
             savings_percent !== '0%' &&
             savings_percent !== '-0%' && (
-              <p className="px-2 py-[3px] border border-[#E66605] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
+              <p className="px-2 py-[3px] border text-[14px] border-[#E66605] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
                 {savings_percent}
                 <span
                   className="tooltip tooltip-left cursor-pointer flex items-center"

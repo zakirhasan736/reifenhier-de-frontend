@@ -451,9 +451,9 @@
   border: 1px solid #F0F0F2;
 }
 
-.product-slides-area .swiper-wrapper {
+/* .product-slides-area .swiper-wrapper {
     justify-content: center;
-}
+} */
 }
 @layer components {
     .custom-container-fluid {

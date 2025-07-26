@@ -98,7 +98,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
                             className="w-full h-[200px] object-cover rounded-[10px]"
                             width={1024}
                             height={200}
-                            priority
+                            loading="lazy"
                           />
                           <div className="news-item-content relative pt-5">
                             <h5 className="text-[#404042] font-medium h6 font-primary">

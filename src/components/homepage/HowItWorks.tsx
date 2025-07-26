@@ -16,6 +16,7 @@ const HowItWorks: React.FC = () => {
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
+                      loading="lazy"
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
@@ -35,6 +36,7 @@ const HowItWorks: React.FC = () => {
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
+                      loading="lazy"
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
@@ -54,6 +56,7 @@ const HowItWorks: React.FC = () => {
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
+                      loading="lazy"
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
@@ -73,6 +76,7 @@ const HowItWorks: React.FC = () => {
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
+                      loading="lazy"
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-center flex-col items-center">

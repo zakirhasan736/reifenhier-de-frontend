@@ -1311,8 +1311,8 @@ const handleToggleWishlist = async () => {
                             key={`${product.brand}-${index}`}
                             className="offer-product-card-item  not-last:mb-5"
                           >
-                            <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                              <div className="offer-product-top-cont w-full md:max-w-[170px]  flex justify-between items-start gap-2">
+                            <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
+                              <div className="offer-product-top-cont w-full md:max-w-[170px] max-sm:mb-3 flex justify-between items-start gap-2">
                                 <div className="cont-box">
                                   <div className="title-box flex gap-2 items-center">
                                     <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
@@ -1380,7 +1380,7 @@ const handleToggleWishlist = async () => {
                                   className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
                                 />
                               </div>
-                              <div className="offer-product-bottom-cont  md:max-w-[220px] w-full">
+                              <div className="offer-product-bottom-cont max-sm:mb-3  md:max-w-[220px] w-full">
                                 <div className="offer-info-right-cont">
                                   <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
                                     Payment Methods:
@@ -1405,7 +1405,7 @@ const handleToggleWishlist = async () => {
                                   </ul>
                                 </div>
                               </div>
-                              <ul className="product-info-item w-full md:max-w-[280px] flex flex-col gap-2">
+                              <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[280px] flex flex-col gap-2">
                                 <li className="flex items-center gap-2">
                                   <Image
                                     src="/images/icons/iconoir_delivery-truck.svg"

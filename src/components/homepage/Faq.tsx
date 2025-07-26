@@ -40,6 +40,7 @@ const FaqSection = async () => {
                 alt="FAQ Model"
                 width={419}
                 height={397}
+                loading="lazy"
               />
             </div>
           </div>
