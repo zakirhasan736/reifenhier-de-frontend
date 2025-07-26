@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -37,7 +37,6 @@ const BlogListPage = () => {
 
   return (
     <section className="blogs-page">
-      
       <div className="blog-page-wrapper bg-mono-0 py-9">
         <div className="custom-container ">
           <div className="mx-auto p-6 ">
@@ -54,6 +53,8 @@ const BlogListPage = () => {
                 alt="Search"
                 width={16}
                 height={16}
+                priority
+                fetchPriority="high"
                 className="absolute top-4 left-3"
               />
             </div>
@@ -104,6 +105,7 @@ const BlogListPage = () => {
                   alt="Previous"
                   width={16}
                   height={16}
+                  loading="lazy"
                 />
               </button>
               <button
@@ -116,6 +118,7 @@ const BlogListPage = () => {
                   alt="Previous"
                   width={16}
                   height={16}
+                  loading="lazy"
                 />
               </button>
             </div>

@@ -99,6 +99,8 @@ const BlogDetailPage = () => {
                     alt={blog.title}
                     className="w-full rounded mb-6"
                     width={848}
+                    priority
+                    fetchPriority="high"
                     height={558}
                   />
                 )}
