@@ -17,7 +17,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
   return (
     <div className="relative min-h-[200px]">
       <div className="">
-        {products.length === 0 ? (
+        {!products  ? (
           <NotFound />
         ) : loading ? (
           <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">

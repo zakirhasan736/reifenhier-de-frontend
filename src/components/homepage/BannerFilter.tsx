@@ -38,6 +38,10 @@ const FilterForm = () => {
     width,
     height,
     diameter,
+    brand,
+    wetGrip,
+    fuelClass,
+    noise
   });
   console.log(data);
 
