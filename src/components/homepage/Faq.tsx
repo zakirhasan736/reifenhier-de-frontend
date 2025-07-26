@@ -60,6 +60,7 @@ const FaqSection = async () => {
                     key={faq._id}
                     className="collapse rounded-[12px] bg-[#F5F5F7] collapse-plus mb-2"
                   >
+                    <label htmlFor="faq-accordion" className="cursor-pointer"></label>
                     <input
                       type="radio"
                       name="faq-accordion"

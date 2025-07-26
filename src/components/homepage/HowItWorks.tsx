@@ -20,9 +20,9 @@ const HowItWorks: React.FC = () => {
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
+                    <h2 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Fast Shipping
-                    </h5>
+                    </h2>
                     <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
                       All over Germany
                     </p>
@@ -40,9 +40,9 @@ const HowItWorks: React.FC = () => {
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
+                    <h2 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Trusted Product
-                    </h5>
+                    </h2>
                     <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
                       Only Parts from trusted brands
                     </p>
@@ -60,9 +60,9 @@ const HowItWorks: React.FC = () => {
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-start flex-col items-start">
-                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
+                    <h2 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Best Price
-                    </h5>
+                    </h2>
                     <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
                       We compare the best price
                     </p>
@@ -80,9 +80,9 @@ const HowItWorks: React.FC = () => {
                     />
                   </div>
                   <div className="content-area w-full max-md:justify-center  max-md:items-center flex justify-center flex-col items-center">
-                    <h5 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
+                    <h2 className="work-process-title w-full lg:text-[24px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Easy Return
-                    </h5>
+                    </h2>
                     <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
                       Easy return policy
                     </p>

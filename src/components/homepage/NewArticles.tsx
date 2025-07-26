@@ -101,9 +101,9 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
                             loading="lazy"
                           />
                           <div className="news-item-content relative pt-5">
-                            <h5 className="text-[#404042] font-medium h6 font-primary">
+                            <h3 className="text-[#404042] font-medium h6 font-primary">
                               {blog.title}
-                            </h5>
+                            </h3>
                             <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
                               {new Date(blog.createdAt).toLocaleDateString(
                                 'en-US',

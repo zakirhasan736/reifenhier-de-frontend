@@ -82,9 +82,9 @@ const BrandCategory = () => {
                           </span>
                         )}
                       </div>
-                      <h5 className="font-medium font-primary text-center md:text-[20px] text-[16px] leading-[140%] text-[#404042]">
+                      <h3 className="font-medium font-primary text-center md:text-[20px] text-[16px] leading-[140%] text-[#404042]">
                         {brandItem.brand_name}
-                      </h5>
+                      </h3>
                       <p className="number-of-products md:text-[16px] text-[12px] text-center font-medium font-secondary md:mt-2 mt-1 text-[#86878A]">
                         {brandItem.count} Tyres
                       </p>

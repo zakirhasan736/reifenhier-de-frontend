@@ -10,9 +10,9 @@ const Footer: React.FC = () => {
             <div className="footer-cta-section bg-primary-100 md:py-[60px] py-8 lg:px-[78px] md:px-12 px-6 rounded-[20px]">
               <div className="footer-cta-content flex items-center justify-between max-sm:flex-col max-sm:gap-4">
                 <div className="left-content">
-                  <h3 className="font-medium font-primary text-[24px] lg:text-[30px] md:text-left text-center text-mono-0 leading-[120%]">
+                  <h2 className="font-medium font-primary text-[24px] lg:text-[30px] md:text-left text-center text-mono-0 leading-[120%]">
                     Subscribe to our Newsletter
-                  </h3>
+                  </h2>
                   <p className="font-normal font-secondary text-[14px] lg:text-[16px] md:text-left text-center text-mono-0 mt-3 leading-[150%]">
                     Stay on the road with exclusive deals
                   </p>
@@ -22,6 +22,7 @@ const Footer: React.FC = () => {
                     action="post"
                     className="reifencheck-subscription-form w-full flex md:flex-row max-sm:flex-col gap-3 items-center"
                   >
+                    <label htmlFor="email" className="sr-only"></label>
                     <input
                       type="email"
                       placeholder="Your email address"
@@ -54,9 +55,9 @@ const Footer: React.FC = () => {
               </div>
               <div className="footer-quick-link-cont max-w-[690px] w-full flex items-start justify-between max-sm:flex-col max-sm:gap-4">
                 <div className="quick-link-cont">
-                  <h5 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
                     Quick Links
-                  </h5>
+                  </h3>
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
@@ -93,9 +94,9 @@ const Footer: React.FC = () => {
                   </ul>
                 </div>
                 <div className="quick-link-cont">
-                  <h5 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
                     Shop
-                  </h5>
+                  </h3>
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
@@ -132,9 +133,9 @@ const Footer: React.FC = () => {
                   </ul>
                 </div>
                 <div className="quick-link-cont">
-                  <h5 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
                     Social Media
-                  </h5>
+                  </h3>
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link

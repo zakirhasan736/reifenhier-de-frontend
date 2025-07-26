@@ -250,11 +250,11 @@ const isFavorited = useMemo(() => {
         </div>
       </div>
       <div className="card-body !flex !flex-col !gap-0 px-4 pt-3 pb-0">
-        <h5 className="h6 text-[15px]  text-[#404042] h-[37px] font-medium font-primary mb-3">
+        <h3 className="h6 text-[15px]  text-[#404042] h-[37px] font-medium font-primary mb-3">
           <Link href={`/products/${_id}`} passHref>
             {product_name}
           </Link>
-        </h5>
+        </h3>
         <div className="cat-diameter-box flex items-center justify-between w-full gap-1">
           <p className="tyres-category text-left font-normal capitalize text-[#89898B] text-[14px] font-secondary">
             {merchant_product_third_category}
