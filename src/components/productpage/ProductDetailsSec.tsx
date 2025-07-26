@@ -961,7 +961,7 @@ const handleToggleWishlist = async () => {
                       >
                         <button
                           type="button"
-                          className="w-full h-[42px] lg:h-[47px] flex items-center justify-center gap-2 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
+                          className="w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-2 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
                         >
                           <Image
                             src="/images/icons/shopping-bag.png"
@@ -978,7 +978,7 @@ const handleToggleWishlist = async () => {
                     <button
                       type="button"
                       onClick={handleCompareClick}
-                      className="w-full  h-[42px] lg:h-[47px] flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
+                      className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
                     >
                       Add to comparison
                     </button>

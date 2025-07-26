@@ -143,7 +143,7 @@ const ProductDetailsPage = () => {
         <Loading />
       )}
       <HowItWorks />
-      <RelatedProducts relatedProductData={relatedProducts} />
+      <RelatedProducts relatedProductData={relatedProducts} loading={loading} />
       <CompareFloatingButton />
       <CompareModal relatedProducts={relatedProducts} />
     </div>

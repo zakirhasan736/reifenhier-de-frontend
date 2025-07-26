@@ -7,12 +7,14 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Product } from '@/types/product';
+import Link from 'next/link';
 
 interface RelatedProductsProps {
   relatedProductData: Product[];
+  loading: boolean;
 }
-
-const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData }) => {
+ 
+const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, loading }) => {
 
   return (
     <section className="featured-product lg:py-[70px] py-[50px]">
@@ -31,30 +33,50 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData })
 
       <div className="custom-container">
         <div className="featured-product-list-area product-slides-area lg:pr-[16px] md:pl-[10px] pr-14 pl-0 overflow-hidden">
-          <Swiper
-            spaceBetween={20}
-            slidesPerView={1}
-            navigation
-            modules={[Navigation, Autoplay]}
-            autoplay={{ delay: 3900, disableOnInteraction: false }}
-            breakpoints={{
-              640: { slidesPerView: 1, spaceBetween: 10 },
-              768: { slidesPerView: 2, spaceBetween: 15 },
-              1024: { slidesPerView: 4, spaceBetween: 19 },
-            }}
-          >
-            {relatedProductData.length === 0
-              ? Array.from({ length: 5 }).map((_, index) => (
-                  <SwiperSlide key={`skeleton-${index}`}>
-                    <ProductSkeletonCard />
-                  </SwiperSlide>
-                ))
-              : relatedProductData.map((product, index) => (
-                  <SwiperSlide key={product.dimensions || index}>
-                    <ProductCard {...product} showCompareButton={true} />
-                  </SwiperSlide>
-                ))}
-          </Swiper>
+          {relatedProductData.length === 0 ? (
+            <div className="not-found-wrapper py-12">
+              <div className="custom-container h-full">
+                <div className="not-found-cont flex flex-col justify-center items-center h-full">
+                  <h4 className="text-center">No Related Products</h4>
+                  <p className="text-center">
+                    We couldn&apos;t find any related products for your
+                    selection.
+                  </p>
+                  <Link
+                    href="/products"
+                    className="primary-btn btn-styles mt-6 mx-auto block"
+                  >
+                    Browse All Products
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Swiper
+              spaceBetween={20}
+              slidesPerView={1}
+              navigation
+              modules={[Navigation, Autoplay]}
+              autoplay={{ delay: 3900, disableOnInteraction: false }}
+              breakpoints={{
+                640: { slidesPerView: 1, spaceBetween: 10 },
+                768: { slidesPerView: 2, spaceBetween: 15 },
+                1024: { slidesPerView: 4, spaceBetween: 19 },
+              }}
+            >
+              {loading
+                ? Array.from({ length: 5 }).map((_, index) => (
+                    <SwiperSlide key={`skeleton-${index}`}>
+                      <ProductSkeletonCard />
+                    </SwiperSlide>
+                  ))
+                : relatedProductData.map((product, index) => (
+                    <SwiperSlide key={product.dimensions || index}>
+                      <ProductCard {...product} showCompareButton={true} />
+                    </SwiperSlide>
+                  ))}
+            </Swiper>
+          )}
         </div>
       </div>
     </section>

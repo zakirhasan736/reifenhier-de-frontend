@@ -204,6 +204,7 @@ const isFavorited = useMemo(() => {
               alt="favorite"
               width={16}
               height={16}
+              loading="lazy"
             />
           </button>
         </div>
