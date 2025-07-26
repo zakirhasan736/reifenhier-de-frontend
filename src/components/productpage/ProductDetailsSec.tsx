@@ -59,6 +59,7 @@ interface Offer {
   product_category: string;
   product_name: string;
   price: number;
+  savings_percent: string;
   delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
   delivery_time: string;
   payment_icons: string[];
@@ -89,6 +90,7 @@ interface Product {
   review_count: number;
   average_rating: number;
   cheapest_offer: number;
+  main_price: number;
   expensive_offer: number;
   savings_percent: string;
   related_cheaper: Product[];
@@ -842,7 +844,7 @@ const handleToggleWishlist = async () => {
                     <div className="input-type-text flex items-center gap-6 text-primary-70 font-medium text-[18px] capitalized text-left w-full">
                       {product.cheapest_offer === product.expensive_offer ? (
                         <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                          €{product.search_price}
+                          €{product.main_price}
                         </span>
                       ) : (
                         <div className="price-box flex items-center gap-2">
@@ -1308,26 +1310,67 @@ const handleToggleWishlist = async () => {
                         {product.offers?.map((product, index) => (
                           <div
                             key={`${product.brand}-${index}`}
-                            className="offer-product-card-item  not-last:mb-6"
+                            className="offer-product-card-item  not-last:mb-5"
                           >
                             <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
                               <div className="offer-product-top-cont w-full md:max-w-[170px]  flex justify-between items-start gap-2">
-                                  <div className="cont-box">
+                                <div className="cont-box">
+                                  <div className="title-box flex gap-2 items-center">
                                     <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
                                       €{product.price}{' '}
                                     </h4>
-
-                                    <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
-                                      Including shipping price
-                                    </p>
+                                    {product.savings_percent &&
+                                      product.savings_percent !== '0%' &&
+                                      product.savings_percent !== '-0%' && (
+                                        <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                          {product.savings_percent}
+                                          <span
+                                            className="tooltip tooltip-right cursor-pointer flex items-center"
+                                            data-tip="Savings compared to the most expensive offer"
+                                          >
+                                            <svg
+                                              width="12"
+                                              height="12"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              className="inline-block"
+                                              xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                              <title>Savings Info</title>
+                                              <circle
+                                                cx="12"
+                                                cy="12"
+                                                r="12"
+                                                fill="#E66605"
+                                              />
+                                              <text
+                                                x="12"
+                                                y="16"
+                                                textAnchor="middle"
+                                                fontSize="14"
+                                                fill="#fff"
+                                                fontFamily="Arial"
+                                                fontWeight="bold"
+                                              >
+                                                i
+                                              </text>
+                                            </svg>
+                                          </span>
+                                        </p>
+                                      )}
                                   </div>
-                                  <Image
-                                    src={product.vendor_logo}
-                                    alt={`${product.vendor} logo`}
-                                    width={140}
-                                    height={37}
-                                    className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                  />
+
+                                  <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
+                                    Including shipping price
+                                  </p>
+                                </div>
+                                <Image
+                                  src={product.vendor_logo}
+                                  alt={`${product.vendor} logo`}
+                                  width={140}
+                                  height={37}
+                                  className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                />
                               </div>
                               <div className="vendor-box">
                                 <Image
@@ -1338,12 +1381,12 @@ const handleToggleWishlist = async () => {
                                   className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
                                 />
                               </div>
-                              <div className="offer-product-bottom-cont  md:max-w-[220px] w-full  flex max-sm:flex-col-reverse items-start  lg:items-center justify-between gap-4">
+                              <div className="offer-product-bottom-cont  md:max-w-[220px] w-full">
                                 <div className="offer-info-right-cont">
-                                  <h6 className="text-[14px] lg:text-[16px] mb-3 leading-[120%] font-medium font-secondary">
+                                  <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
                                     Payment Methods:
                                   </h6>
-                                  <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2 mt-1">
+                                  <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
                                     {product.payment_icons?.map(
                                       (icon: string, index: number) => (
                                         <li
@@ -1393,7 +1436,7 @@ const handleToggleWishlist = async () => {
                                   </span>
                                 </li>
                               </ul>
-                              <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-2">
+                              <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
                                 <Link
                                   href={product.original_affiliate_url}
                                   className="block w-full"
@@ -1414,7 +1457,7 @@ const handleToggleWishlist = async () => {
                                 </Link>
                                 <Link
                                   href={product.original_affiliate_url}
-                                  className="block w-full"
+                                  className="block w-full mt-1"
                                 >
                                   <button
                                     type="button"
