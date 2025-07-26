@@ -1,10 +1,21 @@
 import React from 'react';
 import FilterForm from './BannerFilter';
+import Image from 'next/image';
 
 const BannerSection = () => {
  
   return (
-    <section className="banner-section font-primary max-sm:h-auto">
+    <section className="banner-section relative font-primary max-sm:h-auto">
+      <Image
+        className="banner-image-fill object-cover"
+        fill
+        priority
+        fetchPriority="high"
+        src="/images/banner-image.webp"
+        alt="banner-image"
+        // width={1920}
+        // height={1080}
+      />
       <div className="custom-container h-full">
         <div className="banner-content w-full lg:pt-[56px] md:pt-[42px]  lg:pb-[55px] md:pb-[36px] pt-5 pb-6 h-full">
           <div className="tyres-search-area w-full h-full flex items-end justify-center">
@@ -17,7 +28,7 @@ const BannerSection = () => {
                   Quickly get tyres suited to your vehicle and driving style.
                 </p>
               </div>
-               <FilterForm />             
+              <FilterForm />
             </div>
           </div>
         </div>

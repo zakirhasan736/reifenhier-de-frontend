@@ -29,6 +29,7 @@ import { useDispatch } from 'react-redux';
 import { addProduct, openModal } from '@/store/compareSlice';
 import { AppDispatch } from '@/store/store';
 import type { Swiper as SwiperClass } from 'swiper';
+import NotFound from '@/app/products/not-found';
 
 interface WishlistProduct {
   _id: string;
@@ -208,7 +209,9 @@ const handleToggleWishlist = async () => {
 
     return (
       <>
-        {loading ? (
+        {!product ? (
+          <NotFound />
+        ) : loading ? (
           <section className="product-singlepage-section">
             <div className="custom-container max-w-[960px] w-full">
               {/* product details banner area */}

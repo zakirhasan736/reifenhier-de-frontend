@@ -49,7 +49,7 @@ const AboutUs = () => {
                 width={474}
                 height={541}
                 loading="lazy"
-                className="lg:w-[474px] lg:h-full md:h-[385px] md:w-[635px] h-full"
+                className="lg:w-[474px] lg:h-auto md:h-[385px] md:w-[635px] h-full"
               />
             </div>
           </div>
