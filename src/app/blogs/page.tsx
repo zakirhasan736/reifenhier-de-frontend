@@ -53,8 +53,7 @@ const BlogListPage = () => {
                 alt="Search"
                 width={16}
                 height={16}
-                priority
-                fetchPriority="high"
+                loading="lazy"
                 className="absolute top-4 left-3"
               />
             </div>
@@ -68,7 +67,9 @@ const BlogListPage = () => {
                       className="w-full h-[200px] object-cover rounded-[10px]"
                       width={1024}
                       height={200}
+                      sizes="(max-width: 768px) 100vw, 800px"
                       priority
+                      fetchPriority="high"
                     />
                     <div className="news-item-content relative pt-5">
                       <h5 className="text-[#404042] font-medium h6 font-primary">
