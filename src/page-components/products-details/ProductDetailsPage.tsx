@@ -19,6 +19,7 @@ interface Offer {
   product_category: string;
   product_name: string;
   price: number;
+  savings_percent: string;
   delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
   delivery_time: string;
   payment_icons: string[];
