@@ -23,7 +23,7 @@ interface Blog {
 interface BlogProps {
   blogs: Blog[];
 }
-const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
+const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -1007,7 +1007,7 @@ const handleToggleWishlist = async () => {
                     {product.cheapest_vendor?.payment_icons?.map(
                       (icon: string, idx: number) => (
                         <li
-                          className="payment-item lg:h-9 md:h-8 h-9 lg:w-[56px] md:w-[45px] w-[55px]"
+                          className="payment-item lg:h-9 h-7 lg:w-[56px] w-auto"
                           key={idx}
                         >
                           <Image
@@ -1016,7 +1016,7 @@ const handleToggleWishlist = async () => {
                             width={70}
                             height={36}
                             loading='lazy'
-                            className="lg:h-9 md:h-8 h-9 lg:w-[56px] md:w-[45px] w-[55px] rounded-[6px]"
+                            className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
                           />
                         </li>
                       )

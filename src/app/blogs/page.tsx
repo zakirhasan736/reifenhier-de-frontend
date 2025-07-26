@@ -23,14 +23,22 @@ const BlogListPage = () => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      const res = await axios.get(`${apiUrl}/api/blogs/list`, {
-        params: { page, limit: 6, search },
-      });
-      setBlogs(res.data.blogs);
-      setTotal(res.data.total);
+      setLoading(true);
+      try {
+        const res = await axios.get(`${apiUrl}/api/blogs/list`, {
+          params: { page, limit: 6, search },
+        });
+        setBlogs(res.data.blogs);
+        setTotal(res.data.total);
+      } catch  {
+        // Optionally handle error here
+      } finally {
+        setLoading(false);
+      }
     };
     fetchBlogs();
   }, [page, search]);
@@ -58,40 +66,57 @@ const BlogListPage = () => {
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {blogs.map(blog => (
-                <Link key={blog._id} href={`/blogs/${blog.slug}`}>
-                  <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
-                    <Image
-                      src={blog.coverImage}
-                      alt={blog.title}
-                      className="w-full h-[200px] object-cover rounded-[10px]"
-                      width={1024}
-                      height={200}
-                      sizes="(max-width: 768px) 100vw, 800px"
-                      priority
-                      fetchPriority="high"
-                    />
-                    <div className="news-item-content relative pt-5">
-                      <h5 className="text-[#404042] font-medium h6 font-primary">
-                        {blog.title}
-                      </h5>
-                      <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
-                        {new Date(blog.createdAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </p>
-                      <Link
-                        href={`/blogs/${blog.slug}`}
-                        className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block"
-                      >
-                        Read More
-                      </Link>
+              {blogs.length === 0 || !blogs || loading
+                ? Array.from({ length: 3 }).map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="news-item bg-mono-0 relative rounded-[4px] animate-pulse"
+                    >
+                      <div className="w-full h-[200px] bg-gray-200 rounded-[10px]" />
+                      <div className="news-item-content relative pt-5">
+                        <div className="h-5 bg-gray-200 rounded w-3/4 mb-2" />
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-4" />
+                        <div className="h-4 bg-gray-200 rounded w-1/4" />
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  ))
+                : blogs.map(blog => (
+                    <Link key={blog._id} href={`/blogs/${blog.slug}`}>
+                      <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
+                        <Image
+                          src={blog.coverImage}
+                          alt={blog.title}
+                          className="w-full h-[200px] object-cover rounded-[10px]"
+                          width={1024}
+                          height={200}
+                          sizes="(max-width: 768px) 100vw, 800px"
+                          priority
+                          fetchPriority="high"
+                        />
+                        <div className="news-item-content relative pt-5">
+                          <h5 className="text-[#404042] font-medium h6 font-primary">
+                            {blog.title}
+                          </h5>
+                          <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
+                            {new Date(blog.createdAt).toLocaleDateString(
+                              'en-US',
+                              {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              }
+                            )}
+                          </p>
+                          <Link
+                            href={`/blogs/${blog.slug}`}
+                            className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block"
+                          >
+                            Read More
+                          </Link>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
             </div>
 
             {/* Pagination */}

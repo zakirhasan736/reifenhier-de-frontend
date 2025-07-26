@@ -119,7 +119,7 @@ const ProductListingsSec = () => {
   const debouncedFetch = useRef(
     debounce(() => {
       dispatch(fetchProducts());
-    }, 30)
+    }, 300)
   ).current;
 
   useEffect(() => {

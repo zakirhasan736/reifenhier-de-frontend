@@ -32,26 +32,25 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
       </div>
 
       <div className="custom-container">
-        <div className="featured-product-list-area product-slides-area lg:pr-[16px] md:pl-[10px] pr-14 pl-0 overflow-hidden">
-          {relatedProductData.length === 0 ? (
-            <div className="not-found-wrapper py-12">
-              <div className="custom-container h-full">
-                <div className="not-found-cont flex flex-col justify-center items-center h-full">
-                  <h4 className="text-center">No Related Products</h4>
-                  <p className="text-center">
-                    We couldn&apos;t find any related products for your
-                    selection.
-                  </p>
-                  <Link
-                    href="/products"
-                    className="primary-btn btn-styles mt-6 mx-auto block"
-                  >
-                    Browse All Products
-                  </Link>
-                </div>
+        {relatedProductData.length === 0 ? (
+          <div className="not-found-wrapper py-12">
+            <div className="custom-container h-full">
+              <div className="not-found-cont flex flex-col justify-center items-center h-full">
+                <h4 className="text-center max-sm:text-[20px]">No Related Products</h4>
+                <p className="text-center max-sm:text-[14px]">
+                  We couldn&apos;t find any related products for your selection.
+                </p>
+                <Link
+                  href="/products"
+                  className="primary-btn btn-styles mt-6 mx-auto block"
+                >
+                  Browse All Products
+                </Link>
               </div>
             </div>
-          ) : (
+          </div>
+        ) : (
+          <div className="featured-product-list-area product-slides-area lg:pr-[16px] md:pl-[10px] pr-14 pl-0 overflow-hidden">
             <Swiper
               spaceBetween={20}
               slidesPerView={1}
@@ -76,8 +75,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
                     </SwiperSlide>
                   ))}
             </Swiper>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
