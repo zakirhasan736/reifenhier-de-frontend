@@ -11,6 +11,7 @@ const BannerSection = () => {
         fill
         priority
         fetchPriority="high"
+        sizes="1080px"
         src="/images/banner-image.webp"
         alt="banner-image"
         // width={1920}
