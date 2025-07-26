@@ -242,6 +242,7 @@ const isFavorited = useMemo(() => {
               src="/images/icons/tick-square.svg"
               alt="search price"
               width={16}
+              loading='lazy'
               height={16}
             />
             {in_stock === 'true' ? 'In Stock' : 'Not Available'}
@@ -273,6 +274,7 @@ const isFavorited = useMemo(() => {
                     alt="Fuel Class"
                     width={16}
                     height={16}
+                    loading="lazy"
                   />{' '}
                   <span
                     style={{
@@ -294,6 +296,7 @@ const isFavorited = useMemo(() => {
                     alt="Weight"
                     width={16}
                     height={16}
+                    loading='lazy'
                   />{' '}
                   <span
                     style={{
@@ -314,6 +317,7 @@ const isFavorited = useMemo(() => {
                   alt="External Rolling Noise"
                   width={16}
                   height={16}
+                  loading='lazy'
                 />{' '}
                 {noise_class}
               </li>

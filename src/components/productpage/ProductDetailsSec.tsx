@@ -591,6 +591,7 @@ const handleToggleWishlist = async () => {
                       className="md:h-6 h-4"
                       width={24}
                       height={24}
+                      loading="lazy"
                     />{' '}
                     Back to product
                   </button>
@@ -656,6 +657,7 @@ const handleToggleWishlist = async () => {
                               className="lg:w-6 lg:h-6 h-5 w-5"
                               width={32}
                               height={32}
+                              loading="lazy"
                             />
                           </button>
                         </div>
@@ -687,6 +689,8 @@ const handleToggleWishlist = async () => {
                                         className="lg:h-[417px] h-[218px] max-md:w-auto"
                                         width={343}
                                         height={417}
+                                        priority
+                                        fetchPriority="high"
                                       />
                                     </div>
                                   </SwiperSlide>
@@ -701,6 +705,8 @@ const handleToggleWishlist = async () => {
                                     className="lg:h-[417px] h-[218px] max-md:w-auto object-contain"
                                     width={343}
                                     height={417}
+                                    priority
+                                    fetchPriority="high"
                                   />
                                 </div>
                               </SwiperSlide>
@@ -742,6 +748,8 @@ const handleToggleWishlist = async () => {
                                         className="w-[87px] lg:w-auto lg:h-[106px] h-[70px] object-cover cursor-pointer"
                                         width={106}
                                         height={106}
+                                        priority
+                                        fetchPriority="high"
                                       />
                                     </div>
                                   </div>
@@ -758,6 +766,8 @@ const handleToggleWishlist = async () => {
                                     className="w-[87px] lg:w-auto lg:h-[106px] max-sm:h-[78px] h-[70px] object-cover cursor-pointer"
                                     width={106}
                                     height={106}
+                                    priority
+                                    fetchPriority="high"
                                   />
                                 </div>
                               </div>
@@ -778,6 +788,7 @@ const handleToggleWishlist = async () => {
                           alt="In Stock"
                           width={16}
                           height={16}
+                          loading='lazy'
                         />{' '}
                         <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#00BE00]">
                           {product.in_stock === 'true'
@@ -803,6 +814,7 @@ const handleToggleWishlist = async () => {
                             alt="Star"
                             width={16}
                             height={16}
+                            loading='lazy'
                           />
                           {product.average_rating ? (
                             <span className="pr-3 text-[#404042]">
@@ -820,6 +832,7 @@ const handleToggleWishlist = async () => {
                         src={product.cheapest_vendor?.vendor_logo}
                         width={140}
                         height={37}
+                        loading='lazy'
                         className="lg:w-[140px] lg:h-[37px] h-[27px] w-[80px] object-contain"
                         alt="vendor image"
                       />
@@ -905,6 +918,7 @@ const handleToggleWishlist = async () => {
                               alt="Fuel Class"
                               width={16}
                               height={16}
+                              loading='lazy'
                             />{' '}
                             <span
                               style={{
@@ -926,6 +940,7 @@ const handleToggleWishlist = async () => {
                               alt="Weight"
                               width={16}
                               height={16}
+                              loading='lazy'
                             />{' '}
                             <span
                               style={{
@@ -946,6 +961,7 @@ const handleToggleWishlist = async () => {
                             alt="External Rolling Noise"
                             width={16}
                             height={16}
+                            loading='lazy'
                           />{' '}
                           {product.noise_class} db
                         </li>
@@ -972,6 +988,7 @@ const handleToggleWishlist = async () => {
                             alt="cart icon"
                             width={24}
                             height={24}
+                            loading='lazy'
                           />{' '}
                           To the offer
                         </button>
@@ -998,6 +1015,7 @@ const handleToggleWishlist = async () => {
                             alt="payment methods icons"
                             width={70}
                             height={36}
+                            loading='lazy'
                             className="lg:h-9 md:h-8 h-9 lg:w-[56px] md:w-[45px] w-[55px] rounded-[6px]"
                           />
                         </li>
@@ -1219,6 +1237,7 @@ const handleToggleWishlist = async () => {
                                                 }`}
                                                 width={45}
                                                 height={48}
+                                                loading='lazy'
                                                 className="h-7 object-contain"
                                               />
                                             </li>
@@ -1235,6 +1254,7 @@ const handleToggleWishlist = async () => {
                                           alt="truck icons"
                                           width={20}
                                           height={20}
+                                          loading='lazy'
                                           className="h-5 w-5 object-contain rounded-[4px]"
                                         />{' '}
                                         <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
@@ -1248,6 +1268,7 @@ const handleToggleWishlist = async () => {
                                           alt="tick icon"
                                           width={20}
                                           height={20}
+                                          loading='lazy'
                                           className="h-5 w-5 object-contain rounded-[4px]"
                                         />{' '}
                                         <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
@@ -1283,6 +1304,7 @@ const handleToggleWishlist = async () => {
                                         alt="cart icon"
                                         width={24}
                                         height={24}
+                                        loading='lazy'
                                       />{' '}
                                       To the offer
                                     </button>
@@ -1371,6 +1393,7 @@ const handleToggleWishlist = async () => {
                                   alt={`${product.vendor} logo`}
                                   width={140}
                                   height={37}
+                                  loading='lazy'
                                   className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
                                 />
                               </div>
@@ -1380,6 +1403,7 @@ const handleToggleWishlist = async () => {
                                   alt={`${product.vendor} logo`}
                                   width={140}
                                   height={37}
+                                  loading='lazy'
                                   className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
                                 />
                               </div>
@@ -1400,6 +1424,7 @@ const handleToggleWishlist = async () => {
                                             alt={`payment method ${index + 1}`}
                                             width={45}
                                             height={48}
+                                            loading='lazy'
                                             className="h-7 object-contain"
                                           />
                                         </li>
@@ -1415,6 +1440,7 @@ const handleToggleWishlist = async () => {
                                     alt="truck icons"
                                     width={20}
                                     height={20}
+                                    loading='lazy'
                                     className="h-5 w-5 object-contain rounded-[4px]"
                                   />{' '}
                                   <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
@@ -1427,6 +1453,7 @@ const handleToggleWishlist = async () => {
                                     alt="tick icon"
                                     width={20}
                                     height={20}
+                                    loading='lazy'
                                     className="h-5 w-5 object-contain rounded-[4px]"
                                   />{' '}
                                   <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
@@ -1453,6 +1480,7 @@ const handleToggleWishlist = async () => {
                                       alt="cart icon"
                                       width={24}
                                       height={24}
+                                      loading='lazy'
                                     />{' '}
                                     To the offer
                                   </button>
