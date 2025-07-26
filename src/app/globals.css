@@ -431,7 +431,7 @@
         border-bottom: 1px solid var(--border-color);
     }
     .banner-section{
-        background: url('/images/banner-image.webp') no-repeat center center/cover;
+        /* background: url('/images/banner-image.webp') no-repeat center center/cover; */
         height: 468px; 
         width: 100%;
     }
