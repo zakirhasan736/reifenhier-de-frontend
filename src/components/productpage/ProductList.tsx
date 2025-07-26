@@ -9,9 +9,10 @@ import { Product } from '@/types/product';
 
 interface ProductListProps {
   products: Product[];
+  loading: boolean;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products }) => {
+const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
   return (
     <div className="relative min-h-[200px]">
       <div className="">
@@ -22,13 +23,14 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-3 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
+          <div
+            className={`grid grid-cols-3 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4 ${loading ? 'pointer-events-none' : ''}`}
+          >
             {products.map(p => (
               <ProductCard key={p._id} {...p} />
             ))}
           </div>
         )}
-        
       </div>
     </div>
   );
