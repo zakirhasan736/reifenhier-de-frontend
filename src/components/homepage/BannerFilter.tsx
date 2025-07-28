@@ -81,7 +81,7 @@ const FilterForm = () => {
         <div className="tyre-search-box lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
           <div className="tyre-type-area flex-wrap flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
             <CustomSelect
-              label="Category"
+              label="Categorie"
               value={category}
               onChange={val => {
                 setCategory(val);
@@ -90,11 +90,11 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.categories || []}
-              placeholder="Select Category"
+              placeholder="Selecteer Categorie"
             />
 
             <CustomSelect
-              label="Width"
+              label="Breedte"
               value={width}
               onChange={val => {
                 setWidth(val);
@@ -102,19 +102,19 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.widths || []}
-              placeholder="Select Width"
+              placeholder="Selecteer breedte"
               disabled={!category}
             />
 
             <CustomSelect
-              label="Height"
+              label="Höhe"
               value={height}
               onChange={val => {
                 setHeight(val);
                 setDiameter('');
               }}
               options={data.heights || []}
-              placeholder="Select Height"
+              placeholder="Selecteer Höhe"
               disabled={!width}
             />
 
@@ -123,7 +123,7 @@ const FilterForm = () => {
               value={diameter}
               onChange={setDiameter}
               options={data.diameters || []}
-              placeholder="Select Diameter"
+              placeholder="Selecteer Diameter"
               disabled={!height}
             />
 
@@ -134,7 +134,7 @@ const FilterForm = () => {
                   value={brand}
                   onChange={setBrand}
                   options={data.brands || []}
-                  placeholder="Select Brand"
+                  placeholder="Selecteer Brand"
                   disabled={!diameter}
                 />
 
@@ -143,7 +143,7 @@ const FilterForm = () => {
                   value={wetGrip}
                   onChange={setWetGrip}
                   options={data.wetGrips || []}
-                  placeholder="Select Wet Grip"
+                  placeholder="Selecteer Wet Grip"
                   disabled={!diameter}
                 />
 
@@ -152,7 +152,7 @@ const FilterForm = () => {
                   value={fuelClass}
                   onChange={setFuelClass}
                   options={data.fuelClasses || []}
-                  placeholder="Select Fuel Class"
+                  placeholder="Selecteer Fuel Class"
                   disabled={!diameter}
                 />
 
@@ -161,7 +161,7 @@ const FilterForm = () => {
                   value={noise}
                   onChange={setNoise}
                   options={data.noises || []}
-                  placeholder="Select Noise"
+                  placeholder="Selecteer Noise"
                   disabled={!diameter}
                 />
               </>

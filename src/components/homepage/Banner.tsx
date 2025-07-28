@@ -24,10 +24,11 @@ const BannerSection = () => {
             <div className="tyres-search-content w-full relative">
               <div className="tyres-search-left-content lg:mb-10 md:mb-8 mb-6  relative">
                 <h1 className="h2 text-mono-0 text-center mb-4 md:text-[38px] lg:text-[48px] leading-[115%] font-medium font-primary text-[26px]">
-                  Find the Perfect Tyres <br /> For Your Vehicle
+                  Vind de perfecte banden <br />
+                  voor uw voertuig
                 </h1>
                 <p className="text-[#FFFFFFCC] lg:text-[20px] md:text-[18px] text-[16px] text-center font-normal font-primary leading-[150%]">
-                  Quickly get tyres suited to your vehicle and driving style.
+                  Zorg snel voor banden die passen bij uw voertuig en rijstijl.
                 </p>
               </div>
               <FilterForm />

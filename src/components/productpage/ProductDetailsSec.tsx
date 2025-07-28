@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
-
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -121,7 +120,6 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   }) => {
     const uuidCookie = Cookies.get('uuid') || 'guest';
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
-
     const dispatch = useDispatch<AppDispatch>();
     const handleCompareClick = () => {
       dispatch(
@@ -187,7 +185,6 @@ const { data: wishlistData } = useGetWishlistQuery();
 const [addWishlist] = useAddWishlistMutation();
 const [removeWishlist] = useRemoveWishlistMutation();
 
-// Ensure wishlist is always an array
 
 const wishlist: WishlistProduct[] = useMemo(() => {
   return wishlistData?.wishlist ?? [];
@@ -985,11 +982,22 @@ const handleToggleWishlist = async () => {
                         }&from=product-page`}
                         className="block w-full"
                       > */}
-                      <Link
+
+                      {/* <Link
                         href={`${apiUrl}/go/${encodeURIComponent(
                           product.cheapest_vendor?.aw_deep_link
                             ?.split('/go/')[1]
                             ?.split('?')[0] || ''
+                        )}?product=${product._id}&uuid=${
+                          uuidCookie || 'guest'
+                        }&from=product-page`}
+                        className="block w-full"
+                      > */}
+                      <Link
+                        href={`${apiUrl}/out/${encodeURIComponent(
+                          product.cheapest_vendor?.original_affiliate_url
+                            ?.split('p=')[1]
+                            ?.split('&')[0] || ''
                         )}?product=${product._id}&uuid=${
                           uuidCookie || 'guest'
                         }&from=product-page`}
@@ -1308,8 +1316,10 @@ const handleToggleWishlist = async () => {
                                 </div>
                                 <div className="offer-product-card-footer flex lg:flex-row flex-col items-center justify-center gap-3 lg:gap-5 mt-4 lg:mt-6">
                                   <Link
-                                    href={`${apiUrl}/go/${encodeURIComponent(
-                                      offer.aw_deep_link?.split('/go/')[1] || ''
+                                    href={`${apiUrl}/out/${encodeURIComponent(
+                                      offer.original_affiliate_url
+                                        ?.split('p=')[1]
+                                        ?.split('&')[0] || ''
                                     )}?product=${product._id}&uuid=${
                                       uuidCookie || 'guest'
                                     }&from=product-page`}
@@ -1351,7 +1361,17 @@ const handleToggleWishlist = async () => {
                   <div className="offer-list-item-wrapper">
                     <div className="custom-container">
                       <div className="offer-list-item-area">
-                        {product.offers?.map((offer, index) => (
+                        {product.offers?.map((offer, index) => {
+                         const fullEncoded = encodeURIComponent(
+                           Buffer.from(offer.original_affiliate_url).toString(
+                             'base64'
+                           )
+                         );
+                         const redirectUrl = `${apiUrl}/visit/${fullEncoded}?uuid=${uuidCookie}&product=${product._id}&from=product-page`;
+
+
+
+                         return (
                           <div
                             key={`${offer.brand}-${index}`}
                             className="offer-product-card-item  not-last:mb-5"
@@ -1485,15 +1505,7 @@ const handleToggleWishlist = async () => {
                                 </li>
                               </ul>
                               <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
-                                <Link
-                                  href={`${apiUrl}/go/${encodeURIComponent(
-                                    offer.aw_deep_link
-                                      ?.split('/go/')[1]
-                                      ?.split('?')[0] || ''
-                                  )}?product=${product._id}&uuid=${
-                                    uuidCookie || 'guest'
-                                  }&from=product-page`}
-                                >
+                                <Link href={redirectUrl}>
                                   <button
                                     type="button"
                                     className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
@@ -1509,13 +1521,7 @@ const handleToggleWishlist = async () => {
                                     To the offer
                                   </button>
                                 </Link>
-                                <Link
-                                  href={`/go/${encodeURIComponent(
-                                    offer.aw_deep_link?.split('/go/')[1] || ''
-                                  )}?product=${product._id}&uuid=${
-                                    uuidCookie || 'guest'
-                                  }&from=product-page`}
-                                >
+                                <Link href={redirectUrl}>
                                   <button
                                     type="button"
                                     className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
@@ -1526,7 +1532,8 @@ const handleToggleWishlist = async () => {
                               </div>
                             </div>
                           </div>
-                        ))}
+                        )
+                       })}
                       </div>
                     </div>
                   </div>
