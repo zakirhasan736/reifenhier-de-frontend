@@ -995,7 +995,7 @@ const handleToggleWishlist = async () => {
                       > */}
                       <Link
                         href={`${apiUrl}/out/${encodeURIComponent(
-                          product.cheapest_vendor?.original_affiliate_url
+                          product.cheapest_vendor?.aw_deep_link
                             ?.split('p=')[1]
                             ?.split('&')[0] || ''
                         )}?product=${product._id}&uuid=${
