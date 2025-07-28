@@ -5,12 +5,13 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
+import { Buffer } from 'buffer';
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
   EffectFade,
@@ -1362,13 +1363,17 @@ const handleToggleWishlist = async () => {
                     <div className="custom-container">
                       <div className="offer-list-item-area">
                         {product.offers?.map((offer, index) => {
-                         const fullEncoded = encodeURIComponent(
-                           Buffer.from(offer.original_affiliate_url).toString(
-                             'base64'
-                           )
-                         );
-                         const redirectUrl = `${apiUrl}/visit/${fullEncoded}?uuid=${uuidCookie}&product=${product._id}&from=product-page`;
+                        //  const encoded = encodeURIComponent(
+                        //    Buffer.from(offer.original_affiliate_url).toString(
+                        //      'base64'
+                        //    )
+                        //  );
+                       const affiliateLink = offer.original_affiliate_url;
 
+                       const encoded = encodeURIComponent(
+                         Buffer.from(affiliateLink).toString('base64')
+                       );
+                       
 
 
                          return (
@@ -1505,7 +1510,7 @@ const handleToggleWishlist = async () => {
                                 </li>
                               </ul>
                               <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
-                                <Link href={redirectUrl}>
+                                <Link href={`/visit/${encoded}`}>
                                   <button
                                     type="button"
                                     className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
@@ -1521,7 +1526,7 @@ const handleToggleWishlist = async () => {
                                     To the offer
                                   </button>
                                 </Link>
-                                <Link href={redirectUrl}>
+                                <Link href={`/visit/${encoded}`}>
                                   <button
                                     type="button"
                                     className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
@@ -1529,6 +1534,7 @@ const handleToggleWishlist = async () => {
                                     Shop details
                                   </button>
                                 </Link>
+                                
                               </div>
                             </div>
                           </div>
