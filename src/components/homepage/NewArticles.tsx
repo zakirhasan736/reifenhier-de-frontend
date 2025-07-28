@@ -70,7 +70,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
           <div className="news-list blogs-slides-area md:pr-[16px] md:pl-[10px] pr-10 pl-0 overflow-hidden">
             <Swiper
               spaceBetween={20}
-              slidesPerView={3}
+              slidesPerView={1}
               navigation
               modules={[Navigation, Autoplay, Pagination]}
               autoplay={{ delay: 3900, disableOnInteraction: false }}

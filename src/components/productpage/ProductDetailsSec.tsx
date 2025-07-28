@@ -597,7 +597,7 @@ const handleToggleWishlist = async () => {
                       height={24}
                       loading="lazy"
                     />{' '}
-                    Back to product
+                    Zurück zum Produkt
                   </button>
                 </Link>
                 <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden  md:gap-[10px] mx-auto">
