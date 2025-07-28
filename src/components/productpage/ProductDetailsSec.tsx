@@ -11,7 +11,7 @@ import {
   useRemoveWishlistMutation,
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
   EffectFade,
@@ -986,7 +986,7 @@ const handleToggleWishlist = async () => {
                         className="block w-full"
                       > */}
                       <Link
-                        href={`http://localhost:8001/go/${encodeURIComponent(
+                        href={`${apiUrl}/go/${encodeURIComponent(
                           product.cheapest_vendor?.aw_deep_link
                             ?.split('/go/')[1]
                             ?.split('?')[0] || ''
@@ -1308,7 +1308,7 @@ const handleToggleWishlist = async () => {
                                 </div>
                                 <div className="offer-product-card-footer flex lg:flex-row flex-col items-center justify-center gap-3 lg:gap-5 mt-4 lg:mt-6">
                                   <Link
-                                    href={`http://localhost:8001/go/${encodeURIComponent(
+                                    href={`${apiUrl}/go/${encodeURIComponent(
                                       offer.aw_deep_link?.split('/go/')[1] || ''
                                     )}?product=${product._id}&uuid=${
                                       uuidCookie || 'guest'
@@ -1486,7 +1486,7 @@ const handleToggleWishlist = async () => {
                               </ul>
                               <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
                                 <Link
-                                  href={`http://localhost:8001/go/${encodeURIComponent(
+                                  href={`${apiUrl}/go/${encodeURIComponent(
                                     offer.aw_deep_link
                                       ?.split('/go/')[1]
                                       ?.split('?')[0] || ''
