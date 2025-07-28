@@ -4,6 +4,8 @@ import React , { useState, useMemo} from 'react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
+
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -60,6 +62,7 @@ interface Offer {
   product_category: string;
   product_name: string;
   price: number;
+  aw_deep_link: string;
   savings_percent: string;
   delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
   delivery_time: string;
@@ -116,6 +119,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     product,
     loading
   }) => {
+    const uuidCookie = Cookies.get('uuid') || 'guest';
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
 
     const dispatch = useDispatch<AppDispatch>();
@@ -788,7 +792,7 @@ const handleToggleWishlist = async () => {
                           alt="In Stock"
                           width={16}
                           height={16}
-                          loading='lazy'
+                          loading="lazy"
                         />{' '}
                         <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#00BE00]">
                           {product.in_stock === 'true'
@@ -814,7 +818,7 @@ const handleToggleWishlist = async () => {
                             alt="Star"
                             width={16}
                             height={16}
-                            loading='lazy'
+                            loading="lazy"
                           />
                           {product.average_rating ? (
                             <span className="pr-3 text-[#404042]">
@@ -832,7 +836,7 @@ const handleToggleWishlist = async () => {
                         src={product.cheapest_vendor?.vendor_logo}
                         width={140}
                         height={37}
-                        loading='lazy'
+                        loading="lazy"
                         className="lg:w-[140px] lg:h-[37px] h-[27px] w-[80px] object-contain"
                         alt="vendor image"
                       />
@@ -918,7 +922,7 @@ const handleToggleWishlist = async () => {
                               alt="Fuel Class"
                               width={16}
                               height={16}
-                              loading='lazy'
+                              loading="lazy"
                             />{' '}
                             <span
                               style={{
@@ -940,7 +944,7 @@ const handleToggleWishlist = async () => {
                               alt="Weight"
                               width={16}
                               height={16}
-                              loading='lazy'
+                              loading="lazy"
                             />{' '}
                             <span
                               style={{
@@ -961,7 +965,7 @@ const handleToggleWishlist = async () => {
                             alt="External Rolling Noise"
                             width={16}
                             height={16}
-                            loading='lazy'
+                            loading="lazy"
                           />{' '}
                           {product.noise_class} db
                         </li>
@@ -971,11 +975,24 @@ const handleToggleWishlist = async () => {
 
                   <div className="product-cta-box flex lg:flex-row flex-col gap-4 mt-4 max-w-[375px] sm:max-w-[375px] w-full">
                     <div className="product-card-btn-states  lg:max-w-[173px] w-full">
+                      {/* <Link
+                        href={`/go/${encodeURIComponent(
+                          product.cheapest_vendor?.aw_deep_link?.split(
+                            '/go/'
+                          )[1] || ''
+                        )}?product=${product._id}&uuid=${
+                          uuidCookie || 'guest'
+                        }&from=product-page`}
+                        className="block w-full"
+                      > */}
                       <Link
-                        href={
-                          product.cheapest_vendor?.aw_deep_link ||
-                          product.product_url
-                        }
+                        href={`http://localhost:8001/go/${encodeURIComponent(
+                          product.cheapest_vendor?.aw_deep_link
+                            ?.split('/go/')[1]
+                            ?.split('?')[0] || ''
+                        )}?product=${product._id}&uuid=${
+                          uuidCookie || 'guest'
+                        }&from=product-page`}
                         className="block w-full"
                       >
                         <button
@@ -988,7 +1005,7 @@ const handleToggleWishlist = async () => {
                             alt="cart icon"
                             width={24}
                             height={24}
-                            loading='lazy'
+                            loading="lazy"
                           />{' '}
                           To the offer
                         </button>
@@ -1015,7 +1032,7 @@ const handleToggleWishlist = async () => {
                             alt="payment methods icons"
                             width={70}
                             height={36}
-                            loading='lazy'
+                            loading="lazy"
                             className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
                           />
                         </li>
@@ -1196,8 +1213,8 @@ const handleToggleWishlist = async () => {
                           1024: { slidesPerView: 2, spaceBetween: 24 },
                         }}
                       >
-                        {product.offers?.map((product, index) => (
-                          <SwiperSlide key={`${product.brand}-${index}`}>
+                        {product.offers?.map((offer, index) => (
+                          <SwiperSlide key={`${offer.brand}-${index}`}>
                             <div className="offer-product-card-item">
                               <div className="offer-product-card-inner lg:h-[246px] border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
                                 <div className="offer-product-card-content flex flex-col justify-between lg:max-h-[141px] h-full gap-4">
@@ -1205,15 +1222,15 @@ const handleToggleWishlist = async () => {
                                     <div className="offer-info-left-cont lg:block flex justify-between items-center w-full gap-2">
                                       <div className="cont-box">
                                         <h4 className="offer-price text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
-                                          €{product.price}{' '}
+                                          €{offer.price}{' '}
                                         </h4>
                                         <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
                                           Including shipping price
                                         </p>
                                       </div>
                                       <Image
-                                        src={product.vendor_logo}
-                                        alt={`${product.vendor} logo`}
+                                        src={offer.vendor_logo}
+                                        alt={`${offer.vendor} logo`}
                                         width={140}
                                         height={37}
                                         className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[27px] w-[80px] object-contain"
@@ -1224,7 +1241,7 @@ const handleToggleWishlist = async () => {
                                         Payment Methods:
                                       </h6>
                                       <ul className="payment-methods-list flex items-center justify-start lg:justify-end flex-wrap gap-2 mt-1">
-                                        {product.payment_icons?.map(
+                                        {offer.payment_icons?.map(
                                           (icon: string, index: number) => (
                                             <li
                                               key={index}
@@ -1237,7 +1254,7 @@ const handleToggleWishlist = async () => {
                                                 }`}
                                                 width={45}
                                                 height={48}
-                                                loading='lazy'
+                                                loading="lazy"
                                                 className="h-7 object-contain"
                                               />
                                             </li>
@@ -1254,12 +1271,12 @@ const handleToggleWishlist = async () => {
                                           alt="truck icons"
                                           width={20}
                                           height={20}
-                                          loading='lazy'
+                                          loading="lazy"
                                           className="h-5 w-5 object-contain rounded-[4px]"
                                         />{' '}
                                         <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
                                           Delivery:{' '}
-                                          {product.delivery_time || 'N/A'}
+                                          {offer.delivery_time || 'N/A'}
                                         </span>
                                       </li>
                                       <li className="flex items-center lg:flex-wrap gap-2">
@@ -1268,21 +1285,21 @@ const handleToggleWishlist = async () => {
                                           alt="tick icon"
                                           width={20}
                                           height={20}
-                                          loading='lazy'
+                                          loading="lazy"
                                           className="h-5 w-5 object-contain rounded-[4px]"
                                         />{' '}
                                         <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                          {product.delivery_cost === '0.00' ||
-                                          product.delivery_cost === '0'
+                                          {offer.delivery_cost === '0.00' ||
+                                          offer.delivery_cost === '0'
                                             ? 'Free delivery'
                                             : 'Delivery cost: ' +
-                                              product.delivery_cost}
+                                              offer.delivery_cost}
                                         </span>
                                       </li>
                                     </ul>
                                     <Image
-                                      src={product.vendor_logo}
-                                      alt={`${product.vendor} logo`}
+                                      src={offer.vendor_logo}
+                                      alt={`${offer.vendor} logo`}
                                       width={140}
                                       height={37}
                                       className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
@@ -1291,8 +1308,11 @@ const handleToggleWishlist = async () => {
                                 </div>
                                 <div className="offer-product-card-footer flex lg:flex-row flex-col items-center justify-center gap-3 lg:gap-5 mt-4 lg:mt-6">
                                   <Link
-                                    href={product.original_affiliate_url}
-                                    className="block w-full"
+                                    href={`http://localhost:8001/go/${encodeURIComponent(
+                                      offer.aw_deep_link?.split('/go/')[1] || ''
+                                    )}?product=${product._id}&uuid=${
+                                      uuidCookie || 'guest'
+                                    }&from=product-page`}
                                   >
                                     <button
                                       type="button"
@@ -1304,13 +1324,13 @@ const handleToggleWishlist = async () => {
                                         alt="cart icon"
                                         width={24}
                                         height={24}
-                                        loading='lazy'
+                                        loading="lazy"
                                       />{' '}
                                       To the offer
                                     </button>
                                   </Link>
                                   <Link
-                                    href={product.original_affiliate_url}
+                                    href={offer.original_affiliate_url}
                                     className="block w-full"
                                   >
                                     <button
@@ -1331,9 +1351,9 @@ const handleToggleWishlist = async () => {
                   <div className="offer-list-item-wrapper">
                     <div className="custom-container">
                       <div className="offer-list-item-area">
-                        {product.offers?.map((product, index) => (
+                        {product.offers?.map((offer, index) => (
                           <div
-                            key={`${product.brand}-${index}`}
+                            key={`${offer.brand}-${index}`}
                             className="offer-product-card-item  not-last:mb-5"
                           >
                             <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
@@ -1341,13 +1361,13 @@ const handleToggleWishlist = async () => {
                                 <div className="cont-box">
                                   <div className="title-box flex gap-2 items-center">
                                     <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
-                                      €{product.price}{' '}
+                                      €{offer.price}{' '}
                                     </h4>
-                                    {product.savings_percent &&
-                                      product.savings_percent !== '0%' &&
-                                      product.savings_percent !== '-0%' && (
+                                    {offer.savings_percent &&
+                                      offer.savings_percent !== '0%' &&
+                                      offer.savings_percent !== '-0%' && (
                                         <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
-                                          {product.savings_percent}
+                                          {offer.savings_percent}
                                           <span
                                             className="tooltip tooltip-right cursor-pointer flex items-center"
                                             data-tip="Savings compared to the most expensive offer"
@@ -1389,21 +1409,21 @@ const handleToggleWishlist = async () => {
                                   </p>
                                 </div>
                                 <Image
-                                  src={product.vendor_logo}
-                                  alt={`${product.vendor} logo`}
+                                  src={offer.vendor_logo}
+                                  alt={`${offer.vendor} logo`}
                                   width={140}
                                   height={37}
-                                  loading='lazy'
+                                  loading="lazy"
                                   className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
                                 />
                               </div>
                               <div className="vendor-box">
                                 <Image
-                                  src={product.vendor_logo}
-                                  alt={`${product.vendor} logo`}
+                                  src={offer.vendor_logo}
+                                  alt={`${offer.vendor} logo`}
                                   width={140}
                                   height={37}
-                                  loading='lazy'
+                                  loading="lazy"
                                   className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
                                 />
                               </div>
@@ -1413,7 +1433,7 @@ const handleToggleWishlist = async () => {
                                     Payment Methods:
                                   </h6>
                                   <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
-                                    {product.payment_icons?.map(
+                                    {offer.payment_icons?.map(
                                       (icon: string, index: number) => (
                                         <li
                                           key={index}
@@ -1424,7 +1444,7 @@ const handleToggleWishlist = async () => {
                                             alt={`payment method ${index + 1}`}
                                             width={45}
                                             height={48}
-                                            loading='lazy'
+                                            loading="lazy"
                                             className="h-7 object-contain"
                                           />
                                         </li>
@@ -1440,11 +1460,11 @@ const handleToggleWishlist = async () => {
                                     alt="truck icons"
                                     width={20}
                                     height={20}
-                                    loading='lazy'
+                                    loading="lazy"
                                     className="h-5 w-5 object-contain rounded-[4px]"
                                   />{' '}
                                   <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                    Delivery: {product.delivery_time || 'N/A'}
+                                    Delivery: {offer.delivery_time || 'N/A'}
                                   </span>
                                 </li>
                                 <li className="flex items-center gap-2">
@@ -1453,22 +1473,26 @@ const handleToggleWishlist = async () => {
                                     alt="tick icon"
                                     width={20}
                                     height={20}
-                                    loading='lazy'
+                                    loading="lazy"
                                     className="h-5 w-5 object-contain rounded-[4px]"
                                   />{' '}
                                   <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                    {product.delivery_cost === '0.00' ||
-                                    product.delivery_cost === '0'
+                                    {offer.delivery_cost === '0.00' ||
+                                    offer.delivery_cost === '0'
                                       ? 'Free delivery'
-                                      : 'Delivery cost: ' +
-                                        product.delivery_cost}
+                                      : 'Delivery cost: ' + offer.delivery_cost}
                                   </span>
                                 </li>
                               </ul>
                               <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
                                 <Link
-                                  href={product.original_affiliate_url}
-                                  className="block w-full"
+                                  href={`http://localhost:8001/go/${encodeURIComponent(
+                                    offer.aw_deep_link
+                                      ?.split('/go/')[1]
+                                      ?.split('?')[0] || ''
+                                  )}?product=${product._id}&uuid=${
+                                    uuidCookie || 'guest'
+                                  }&from=product-page`}
                                 >
                                   <button
                                     type="button"
@@ -1480,14 +1504,17 @@ const handleToggleWishlist = async () => {
                                       alt="cart icon"
                                       width={24}
                                       height={24}
-                                      loading='lazy'
+                                      loading="lazy"
                                     />{' '}
                                     To the offer
                                   </button>
                                 </Link>
                                 <Link
-                                  href={product.original_affiliate_url}
-                                  className="block w-full mt-1"
+                                  href={`/go/${encodeURIComponent(
+                                    offer.aw_deep_link?.split('/go/')[1] || ''
+                                  )}?product=${product._id}&uuid=${
+                                    uuidCookie || 'guest'
+                                  }&from=product-page`}
                                 >
                                   <button
                                     type="button"
