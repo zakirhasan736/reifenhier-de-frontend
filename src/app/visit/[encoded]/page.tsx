@@ -1,6 +1,11 @@
 import { redirect, notFound } from 'next/navigation';
 
-export default function Visit({ params }: { params: { encoded: string } }) {
+// This is the correct props shape for a route like /visit/[encoded]
+type VisitPageProps = {
+  params: { encoded: string };
+};
+
+export default function Visit({ params }: VisitPageProps) {
   const { encoded } = params;
   if (!encoded) return notFound();
 
@@ -14,4 +19,6 @@ export default function Visit({ params }: { params: { encoded: string } }) {
   }
 
   redirect(`/api/exit?to=${encodeURIComponent(originalUrl)}`);
+  // Not needed, but TS likes return type
+  return null;
 }
