@@ -174,7 +174,7 @@ const ProductListingsSec = () => {
                     htmlFor="my-drawer-filter"
                     className="drawer-button btn text-mono-100 !outline-none text-[18px]  !shadow-none !bg-transparent !p-0 !border-none"
                   >
-                    Filter: {'  '} <FilterIcon />
+                    Filtern: {'  '} <FilterIcon />
                   </label>
                 </div>
                 <div className="drawer-side z-[9999999]">
@@ -187,7 +187,7 @@ const ProductListingsSec = () => {
                     <div className="offcanvas-head mini-cart-header-and-main-wrea min-h-full">
                       <div className="minicart-header px-6">
                         <div className="cart-head-top border-b pt-5 pb-5 flex justify-between items-center border-b-mono-60">
-                          <p className="eyebrow-large">Filter Search</p>
+                          <p className="eyebrow-large">Filtersuche</p>
                           <label
                             htmlFor="my-drawer-filter"
                             aria-label="close sidebar"
@@ -201,7 +201,7 @@ const ProductListingsSec = () => {
                       <div className="filter-body-product-info px-6">
                         <div className="empty-product-listing-message my-auto py-12 hidden">
                           <p className="font-secondary font-medium text-body-caption text-center text-mono-100">
-                            listing is empty
+                            Die Liste ist leer
                           </p>
                         </div>
 
@@ -274,7 +274,7 @@ const ProductListingsSec = () => {
           <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6  max-xl:gap-4">
             <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky max-md:relative max-md:h-auto top-9 max-w-[282px] max-xl:max-w-[220px]  max-md:max-w-[160px] w-full max-md:hidden">
               <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
-                Filter By
+                Filtern nach
               </h4>
               <FilterSidebar
                 availableProducts={filterProducts}
@@ -297,9 +297,9 @@ const ProductListingsSec = () => {
                 <div className="showing-current-product">
                   <span className="caption pr-3 max-md:pr-1">Showing</span>{' '}
                   <span className="caption">
-                    {startIndex + 1} to {endIndex} of{' '}
+                    {startIndex + 1} bis {endIndex} von{' '}
                   </span>
-                  <span className="caption-bold">{total} products</span>
+                  <span className="caption-bold">{total} Produkte</span>
                 </div>
               </div>
             </div>

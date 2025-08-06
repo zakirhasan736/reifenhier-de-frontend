@@ -26,7 +26,10 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
 
   return (
     <div className="sorting flex items-center gap-2">
-      <label htmlFor="sort-select" className="font-secondary font-normal text-[14px] leading-[100%] text-[#404042]">
+      <label
+        htmlFor="sort-select"
+        className="font-secondary font-normal text-[14px] leading-[100%] text-[#404042]"
+      >
         Sort by:
       </label>
       <select
@@ -35,9 +38,9 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
         defaultValue="date-desc"
         className="text-[14px] font-normal font-secondary h-[38px] leading-[100%] text-[#404042] px-2 py-1 !rounded-full border !border-primary-100"
       >
-        <option value="price-asc">Price: Low to High</option>
-        <option value="price-desc">Price: High to Low</option>
-        <option value="date-desc">Most Recent</option>
+        <option value="price-asc">Preis: Niedrig bis Hoch</option>
+        <option value="price-desc">Preis: Hoch bis Niedrig</option>
+        <option value="date-desc">Neueste</option>
       </select>
     </div>
   );

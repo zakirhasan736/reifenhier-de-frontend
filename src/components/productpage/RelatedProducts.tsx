@@ -22,10 +22,11 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
         <div className="featured-product-content flex justify-between items-end mb-9">
           <div className="featured-product-left-content w-full">
             <h2 className="h3 text-primary-70  md:text-[28px] text-[26px] lg:text-[36px] font-secondary text-center">
-              Related products
+              Ähnliche Produkte
             </h2>
             <p className="text-mono-100 text-center font-medium lg:text-[18px] text-[14px] font-primary">
-              Quickly get tyres suited to your vehicle and driving style.
+              Erhalten Sie schnell die passenden Reifen für Ihr Fahrzeug und
+              Ihren Fahrstil.
             </p>
           </div>
         </div>
@@ -36,15 +37,17 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
           <div className="not-found-wrapper py-12">
             <div className="custom-container h-full">
               <div className="not-found-cont flex flex-col justify-center items-center h-full">
-                <h4 className="text-center max-sm:text-[20px]">No Related Products</h4>
+                <h4 className="text-center max-sm:text-[20px]">
+                  Keine ähnlichen Produkte
+                </h4>
                 <p className="text-center max-sm:text-[14px]">
-                  We couldn&apos;t find any related products for your selection.
+                  Wir konnten keine ähnlichen Produkte für Ihre Auswahl finden.
                 </p>
                 <Link
                   href="/products"
                   className="primary-btn btn-styles mt-6 mx-auto block"
                 >
-                  Browse All Products
+                  Alle Produkte durchsuchen
                 </Link>
               </div>
             </div>

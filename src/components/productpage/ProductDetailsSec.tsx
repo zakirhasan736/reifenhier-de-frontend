@@ -224,7 +224,7 @@ const handleToggleWishlist = async () => {
                       className="body-caption capitalize text-mono-100"
                       href="/"
                     >
-                      Home
+                      Heim
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>
@@ -604,7 +604,7 @@ const handleToggleWishlist = async () => {
                       className="body-caption capitalize text-mono-100"
                       href="/"
                     >
-                      Home
+                      Heim
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>
@@ -743,7 +743,7 @@ const handleToggleWishlist = async () => {
                               (image: string, index: number) => (
                                 <SwiperSlide key={index}>
                                   <div className="slide-tab-item">
-                                    <div className="slide-tab-item-wrap w-[87px] lg:w-auto bg-[#F7F7F7] rounded-[10px] lg:pl-[55px] lg:pt-[25px] lg:pr-[56px] lg:pb-[24px] md:py-3 py-2 px-3 md:px-4 flex justify-center">
+                                    <div className="slide-tab-item-wrap w-[87px] lg:w-auto bg-[#F7F7F7] rounded-[10px] lg:pl-[47px] lg:pt-[25px] lg:pr-[47px] lg:pb-[24px] md:py-3 py-2 px-3 md:px-4 flex justify-center">
                                       <Image
                                         src={image}
                                         alt="product image item"
@@ -787,15 +787,15 @@ const handleToggleWishlist = async () => {
                       <li className="in-stock-info flex items-center gap-1">
                         <Image
                           src="/images/icons/tick-square.svg"
-                          alt="In Stock"
+                          alt="Auf Lager"
                           width={16}
                           height={16}
                           loading="lazy"
                         />{' '}
                         <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#00BE00]">
                           {product.in_stock === 'true'
-                            ? 'In Stock'
-                            : 'Not Available'}
+                            ? 'Auf Lager'
+                            : 'Nicht Verfügbar'}
                         </p>
                       </li>
                       <li className="product-category">
@@ -825,7 +825,7 @@ const handleToggleWishlist = async () => {
                           ) : null}
                         </div>{' '}
                         <span className="text-[#404042]">
-                          {product.review_count || 0} Reviews
+                          {product.review_count || 0} Bewertungen
                         </span>
                       </p>
                     </div>
@@ -883,7 +883,7 @@ const handleToggleWishlist = async () => {
                             {product.savings_percent}
                             <span
                               className="tooltip tooltip-left cursor-pointer flex items-center"
-                              data-tip="Savings compared to the most expensive offer"
+                              data-tip="Ersparnisse im Vergleich zum teuersten Angebot"
                             >
                               <svg
                                 width="12"
@@ -893,7 +893,7 @@ const handleToggleWishlist = async () => {
                                 className="inline-block"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
-                                <title>Savings Info</title>
+                                <title>Sparinformationen</title>
                                 <circle cx="12" cy="12" r="12" fill="#E66605" />
                                 <text
                                   x="12"
@@ -1016,7 +1016,7 @@ const handleToggleWishlist = async () => {
                             height={24}
                             loading="lazy"
                           />{' '}
-                          To the offer
+                          Zum Angebot
                         </button>
                       </Link>
                     </div>
@@ -1026,7 +1026,7 @@ const handleToggleWishlist = async () => {
                       onClick={handleCompareClick}
                       className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
                     >
-                      Add to comparison
+                      Zur Vergleichsliste hinzufügen
                     </button>
                   </div>
                   <ul className="payment-method-list flex flex-wrap items-center gap-2 mt-6">
@@ -1057,10 +1057,11 @@ const handleToggleWishlist = async () => {
                           name="my-accordion-3"
                         />
                         <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                          Description
+                          Beschreibung
                         </div>
                         <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#86878A] leading-[140%]">
-                          {product.description || 'No description available'}
+                          {product.description ||
+                            'Keine Beschreibung verfügbar'}
                         </div>
                       </div>
                       <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
@@ -1071,13 +1072,13 @@ const handleToggleWishlist = async () => {
                           // defaultChecked
                         />
                         <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                          Additional Information
+                          Zusätzliche Informationen
                         </div>
                         <div className="collapse-content caption-regular font-primary border-t border-t-border-100 !px-0 !pb-0 !pt-0">
                           <ul className="product-specification-table border border-border-100 border-b-transparent">
                             <li className="details-items bg-[#C6C7CC] flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Features
+                                Eigenschaften
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Details
@@ -1085,7 +1086,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                category
+                                Kategorie
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.merchant_product_third_category ||
@@ -1094,7 +1095,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                brand
+                                Marke
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.brand_name || 'N/A'}
@@ -1102,7 +1103,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Fuel class
+                                Kraftstoffklasse
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.fuel_class || 'N/A'}
@@ -1110,7 +1111,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Wet grip class
+                                Nasshaftungsklasse
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.wet_grip || 'N/A'}
@@ -1118,7 +1119,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Size
+                                Größe
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.dimensions}
@@ -1126,7 +1127,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Width
+                                Breite
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.width || 'N/A'}
@@ -1134,7 +1135,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Height
+                                Höhe
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.height || 'N/A'}
@@ -1142,7 +1143,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  bg-[#F5F5F7] flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Diameter
+                                Durchmesser
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.diameter || 'N/A'}
@@ -1150,7 +1151,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Speed ​​index
+                                Geschwindigkeitsindex
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.speedIndex || 'N/A'}
@@ -1158,7 +1159,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Load index
+                                Lastindex
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.lastIndex || 'N/A'}
@@ -1185,10 +1186,11 @@ const handleToggleWishlist = async () => {
               <div className="custom-container relative flex md:flex-row flex-col items-end md:items-center md:justify-between max-sm:mb-6">
                 <div className="best-offer-vendor-sec-title">
                   <h2 className="md:text-[28px] text-[26px] font-medium font-primary text-[#16171A] leading-[120%] mb-1 md:mb-3">
-                    Best Offer
+                    Bestes Angebot
                   </h2>
                   <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#89898B]">
-                    Free shipping, trusted brands & the lowest prices daily!
+                    Kostenloser Versand, vertrauenswürdige Marken und täglich
+                    die niedrigsten Preise!
                   </p>
                 </div>
                 <div className="offer-vendor-navigator hidden items-baseline-last gap-5">
@@ -1234,7 +1236,7 @@ const handleToggleWishlist = async () => {
                                           €{offer.price}{' '}
                                         </h4>
                                         <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
-                                          Including shipping price
+                                          Inklusive Versandpreis
                                         </p>
                                       </div>
                                       <Image
@@ -1247,7 +1249,7 @@ const handleToggleWishlist = async () => {
                                     </div>
                                     <div className="offer-info-right-cont w-full">
                                       <h6 className="text-[14px] lg:text-[16px] mb-3 lg:text-right leading-[120%] font-medium font-secondary">
-                                        Payment Methods:
+                                        Zahlungsmethoden:
                                       </h6>
                                       <ul className="payment-methods-list flex items-center justify-start lg:justify-end flex-wrap gap-2 mt-1">
                                         {offer.payment_icons?.map(
@@ -1284,7 +1286,7 @@ const handleToggleWishlist = async () => {
                                           className="h-5 w-5 object-contain rounded-[4px]"
                                         />{' '}
                                         <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                          Delivery:{' '}
+                                          Lieferung:{' '}
                                           {offer.delivery_time || 'N/A'}
                                         </span>
                                       </li>
@@ -1300,8 +1302,8 @@ const handleToggleWishlist = async () => {
                                         <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
                                           {offer.delivery_cost === '0.00' ||
                                           offer.delivery_cost === '0'
-                                            ? 'Free delivery'
-                                            : 'Delivery cost: ' +
+                                            ? 'Kostenloser Versand'
+                                            : 'Versandkosten: ' +
                                               offer.delivery_cost}
                                         </span>
                                       </li>
@@ -1337,7 +1339,7 @@ const handleToggleWishlist = async () => {
                                         height={24}
                                         loading="lazy"
                                       />{' '}
-                                      To the offer
+                                      Zum Angebot
                                     </button>
                                   </Link>
                                   <Link
@@ -1348,7 +1350,7 @@ const handleToggleWishlist = async () => {
                                       type="button"
                                       className="w-full flex items-center max-sm:text-[14px] justify-center h-10 gap-2 border border-primary-100 bg-transparent text-primary-100 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
                                     >
-                                      Shop data
+                                      Shopdaten
                                     </button>
                                   </Link>
                                 </div>
@@ -1363,183 +1365,183 @@ const handleToggleWishlist = async () => {
                     <div className="custom-container">
                       <div className="offer-list-item-area">
                         {product.offers?.map((offer, index) => {
-                        //  const encoded = encodeURIComponent(
-                        //    Buffer.from(offer.original_affiliate_url).toString(
-                        //      'base64'
-                        //    )
-                        //  );
-                       const affiliateLink = offer.original_affiliate_url;
+                          //  const encoded = encodeURIComponent(
+                          //    Buffer.from(offer.original_affiliate_url).toString(
+                          //      'base64'
+                          //    )
+                          //  );
+                          const affiliateLink = offer.original_affiliate_url;
 
-                       const encoded = encodeURIComponent(
-                         Buffer.from(affiliateLink).toString('base64')
-                       );
-                       
+                          const encoded = encodeURIComponent(
+                            Buffer.from(affiliateLink).toString('base64')
+                          );
 
-
-                         return (
-                          <div
-                            key={`${offer.brand}-${index}`}
-                            className="offer-product-card-item  not-last:mb-5"
-                          >
-                            <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                              <div className="offer-product-top-cont w-full md:max-w-[170px] max-sm:mb-3 flex justify-between items-start gap-2">
-                                <div className="cont-box">
-                                  <div className="title-box flex gap-2 items-center">
-                                    <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
-                                      €{offer.price}{' '}
-                                    </h4>
-                                    {offer.savings_percent &&
-                                      offer.savings_percent !== '0%' &&
-                                      offer.savings_percent !== '-0%' && (
-                                        <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
-                                          {offer.savings_percent}
-                                          <span
-                                            className="tooltip tooltip-right cursor-pointer flex items-center"
-                                            data-tip="Savings compared to the most expensive offer"
-                                          >
-                                            <svg
-                                              width="12"
-                                              height="12"
-                                              viewBox="0 0 24 24"
-                                              fill="none"
-                                              className="inline-block"
-                                              xmlns="http://www.w3.org/2000/svg"
+                          return (
+                            <div
+                              key={`${offer.brand}-${index}`}
+                              className="offer-product-card-item  not-last:mb-5"
+                            >
+                              <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
+                                <div className="offer-product-top-cont w-full md:max-w-[170px] max-sm:mb-3 flex justify-between items-start gap-2">
+                                  <div className="cont-box">
+                                    <div className="title-box flex gap-2 items-center">
+                                      <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
+                                        €{offer.price}{' '}
+                                      </h4>
+                                      {offer.savings_percent &&
+                                        offer.savings_percent !== '0%' &&
+                                        offer.savings_percent !== '-0%' && (
+                                          <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                            {offer.savings_percent}
+                                            <span
+                                              className="tooltip tooltip-right cursor-pointer flex items-center"
+                                              data-tip="Ersparnis gegenüber dem teuersten Angebot"
                                             >
-                                              <title>Savings Info</title>
-                                              <circle
-                                                cx="12"
-                                                cy="12"
-                                                r="12"
-                                                fill="#E66605"
-                                              />
-                                              <text
-                                                x="12"
-                                                y="16"
-                                                textAnchor="middle"
-                                                fontSize="14"
-                                                fill="#fff"
-                                                fontFamily="Arial"
-                                                fontWeight="bold"
+                                              <svg
+                                                width="12"
+                                                height="12"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                className="inline-block"
+                                                xmlns="http://www.w3.org/2000/svg"
                                               >
-                                                i
-                                              </text>
-                                            </svg>
-                                          </span>
-                                        </p>
-                                      )}
-                                  </div>
+                                                <title>Einsparungen Info</title>
+                                                <circle
+                                                  cx="12"
+                                                  cy="12"
+                                                  r="12"
+                                                  fill="#E66605"
+                                                />
+                                                <text
+                                                  x="12"
+                                                  y="16"
+                                                  textAnchor="middle"
+                                                  fontSize="14"
+                                                  fill="#fff"
+                                                  fontFamily="Arial"
+                                                  fontWeight="bold"
+                                                >
+                                                  i
+                                                </text>
+                                              </svg>
+                                            </span>
+                                          </p>
+                                        )}
+                                    </div>
 
-                                  <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
-                                    Including shipping price
-                                  </p>
-                                </div>
-                                <Image
-                                  src={offer.vendor_logo}
-                                  alt={`${offer.vendor} logo`}
-                                  width={140}
-                                  height={37}
-                                  loading="lazy"
-                                  className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                />
-                              </div>
-                              <div className="vendor-box">
-                                <Image
-                                  src={offer.vendor_logo}
-                                  alt={`${offer.vendor} logo`}
-                                  width={140}
-                                  height={37}
-                                  loading="lazy"
-                                  className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                />
-                              </div>
-                              <div className="offer-product-bottom-cont max-sm:mb-3  md:max-w-[220px] w-full">
-                                <div className="offer-info-right-cont">
-                                  <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
-                                    Payment Methods:
-                                  </h6>
-                                  <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
-                                    {offer.payment_icons?.map(
-                                      (icon: string, index: number) => (
-                                        <li
-                                          key={index}
-                                          className="payment-method-item h-7"
-                                        >
-                                          <Image
-                                            src={icon}
-                                            alt={`payment method ${index + 1}`}
-                                            width={45}
-                                            height={48}
-                                            loading="lazy"
-                                            className="h-7 object-contain"
-                                          />
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                </div>
-                              </div>
-                              <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[280px] flex flex-col gap-2">
-                                <li className="flex items-center gap-2">
+                                    <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
+                                      Inklusive Versandpreis
+                                    </p>
+                                  </div>
                                   <Image
-                                    src="/images/icons/iconoir_delivery-truck.svg"
-                                    alt="truck icons"
-                                    width={20}
-                                    height={20}
+                                    src={offer.vendor_logo}
+                                    alt={`${offer.vendor} logo`}
+                                    width={140}
+                                    height={37}
                                     loading="lazy"
-                                    className="h-5 w-5 object-contain rounded-[4px]"
-                                  />{' '}
-                                  <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                    Delivery: {offer.delivery_time || 'N/A'}
-                                  </span>
-                                </li>
-                                <li className="flex items-center gap-2">
+                                    className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                  />
+                                </div>
+                                <div className="vendor-box">
                                   <Image
-                                    src="/images/icons/check-circle.svg"
-                                    alt="tick icon"
-                                    width={20}
-                                    height={20}
+                                    src={offer.vendor_logo}
+                                    alt={`${offer.vendor} logo`}
+                                    width={140}
+                                    height={37}
                                     loading="lazy"
-                                    className="h-5 w-5 object-contain rounded-[4px]"
-                                  />{' '}
-                                  <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                    {offer.delivery_cost === '0.00' ||
-                                    offer.delivery_cost === '0'
-                                      ? 'Free delivery'
-                                      : 'Delivery cost: ' + offer.delivery_cost}
-                                  </span>
-                                </li>
-                              </ul>
-                              <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
-                                <Link href={`/visit/${encoded}`}>
-                                  <button
-                                    type="button"
-                                    className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
-                                  >
+                                    className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                  />
+                                </div>
+                                <div className="offer-product-bottom-cont max-sm:mb-3  md:max-w-[220px] w-full">
+                                  <div className="offer-info-right-cont">
+                                    <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
+                                      Zahlungsmethoden:
+                                    </h6>
+                                    <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
+                                      {offer.payment_icons?.map(
+                                        (icon: string, index: number) => (
+                                          <li
+                                            key={index}
+                                            className="payment-method-item h-7"
+                                          >
+                                            <Image
+                                              src={icon}
+                                              alt={`payment method ${
+                                                index + 1
+                                              }`}
+                                              width={45}
+                                              height={48}
+                                              loading="lazy"
+                                              className="h-7 object-contain"
+                                            />
+                                          </li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </div>
+                                </div>
+                                <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[280px] flex flex-col gap-2">
+                                  <li className="flex items-center gap-2">
                                     <Image
-                                      src="/images/icons/shopping-bag.png"
-                                      className="w-5 h-5"
-                                      alt="cart icon"
-                                      width={24}
-                                      height={24}
+                                      src="/images/icons/iconoir_delivery-truck.svg"
+                                      alt="truck icons"
+                                      width={20}
+                                      height={20}
                                       loading="lazy"
+                                      className="h-5 w-5 object-contain rounded-[4px]"
                                     />{' '}
-                                    To the offer
-                                  </button>
-                                </Link>
-                                <Link href={`/visit/${encoded}`}>
-                                  <button
-                                    type="button"
-                                    className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
-                                  >
-                                    Shop details
-                                  </button>
-                                </Link>
-                                
+                                    <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                      Lieferung: {offer.delivery_time || 'N/A'}
+                                    </span>
+                                  </li>
+                                  <li className="flex items-center gap-2">
+                                    <Image
+                                      src="/images/icons/check-circle.svg"
+                                      alt="tick icon"
+                                      width={20}
+                                      height={20}
+                                      loading="lazy"
+                                      className="h-5 w-5 object-contain rounded-[4px]"
+                                    />{' '}
+                                    <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                      {offer.delivery_cost === '0.00' ||
+                                      offer.delivery_cost === '0'
+                                        ? 'Kostenloser Versand'
+                                        : 'Versandkosten: ' +
+                                          offer.delivery_cost}
+                                    </span>
+                                  </li>
+                                </ul>
+                                <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
+                                  <Link href={`/visit/${encoded}`}>
+                                    <button
+                                      type="button"
+                                      className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                    >
+                                      <Image
+                                        src="/images/icons/shopping-bag.png"
+                                        className="w-5 h-5"
+                                        alt="cart icon"
+                                        width={24}
+                                        height={24}
+                                        loading="lazy"
+                                      />{' '}
+                                      Zum Angebot
+                                    </button>
+                                  </Link>
+                                  <Link href={`/visit/${encoded}`}>
+                                    <button
+                                      type="button"
+                                      className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
+                                    >
+                                      Shopdaten
+                                    </button>
+                                  </Link>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )
-                       })}
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

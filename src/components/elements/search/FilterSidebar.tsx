@@ -160,7 +160,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Category{' '}
+              Kategorie{' '}
               <span className="text-[#404042] absolute right-2">
                 {selectedFilters.category.length > 0
                   ? `(${selectedFilters.category.length})`
@@ -223,7 +223,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Brand{' '}
+              Marke{' '}
               <span className="text-[#404042] absolute right-2">
                 {selectedFilters.brand.length > 0
                   ? `(${selectedFilters.brand.length})`
@@ -297,14 +297,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
       <div className="flex-group-box">
         {/* Tyres Index Filter */}
-        {/* <div
-          className="filter-item-title-box flex items-center  justify-between"
-          style={{ cursor: 'pointer' }}
-        >
-          <h4 className="filter-sidebar-title pr-8 relative text-[14px] font-bold flex items-center  gap-1 justify-start pl-2 py-[13px]">
-            Tyres Index{' '}
-          </h4>
-        </div> */}
+
         {availableProducts.widths && (
           <div className="relative mb-2 pb-1  border-b border-b-[#C6C7CC]">
             <div
@@ -313,7 +306,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Width{' '}
+                Breite{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.width.length > 0
                     ? `(${selectedFilters.width.length})`
@@ -366,7 +359,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Height{' '}
+                Höhe{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.height.length > 0
                     ? `(${selectedFilters.height.length})`
@@ -419,7 +412,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Diameter{' '}
+                Durchmesser{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.diameter.length > 0
                     ? `(${selectedFilters.diameter.length})`
@@ -472,7 +465,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Speed Index{' '}
+                Geschwindigkeitsindex{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.speedIndex.length > 0
                     ? `(${selectedFilters.speedIndex.length})`
@@ -527,7 +520,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Lasts Index{' '}
+                Letztenindex{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.lastIndex.length > 0
                     ? `(${selectedFilters.lastIndex.length})`
@@ -576,16 +569,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         )}
       </div>
       <div className="tyres-additional-info">
-        {/* Tyres Index Filter */}
-        {/* <div
-          className="filter-item-title-box flex items-center  justify-between"
-          style={{ cursor: 'pointer' }}
-        >
-          <h4 className="filter-sidebar-title text-[#404042] pr-8 relative text-[16px] font-medium flex items-center  gap-1 justify-start pl-2 py-[13px]">
-            Tyres additional Info{' '}
-          </h4>
-        </div> */}
-
         {/* Product Fuel class Filter */}
         {availableProducts.fuelClasses && (
           <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
@@ -595,7 +578,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Fuel class{' '}
+                Kraftstoffklasse{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.fuelClass.length > 0
                     ? `(${selectedFilters.fuelClass.length})`
@@ -657,7 +640,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Wet grip class{' '}
+                Nasshaftungsklasse{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.wetGrip.length > 0
                     ? `(${selectedFilters.wetGrip.length})`
@@ -717,7 +700,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Noise class{' '}
+                Geräuschklasse{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.noise.length > 0
                     ? `(${selectedFilters.noise.length})`
