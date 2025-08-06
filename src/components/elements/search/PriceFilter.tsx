@@ -43,7 +43,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
   return (
     <div className="flex flex-col gap-4 mb-2 pt-1 pb-3 border-b border-b-[#C6C7CC] bg-transparent rounded">
       <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3">
-        Price Range
+        Preisklasse
       </h4>
       <div className="w-full px-3">
         {/* Input fields to manually adjust min and max price */}
