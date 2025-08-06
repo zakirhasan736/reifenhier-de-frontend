@@ -7,8 +7,8 @@ const AboutUs = () => {
         <div className="custom-container">
           <div className="about-sec-wrapper grid grid-cols-12 md:gap-0 gap-6 lg:gap-12 max-md:grid-cols-full">
             <div className="about-sec-info-cont  md:py-7 max-md:col-span-full col-span-6 max-md:order-2 order-1">
-              <h2 className="h3 about-sec-title  md:text-[28px] text-[26px] lg:text-[36px] text-left font-primary leading-[120%] font-medium text-[#16171A] lg:max-w-[586px] max-w-full mb-5">
-                Welcome to Reifenhier.de
+              <h2 className="h3 about-sec-title  md:text-[28px] text-[26px] lg:text-[34px] text-left font-primary leading-[120%] font-medium text-[#16171A] lg:max-w-[586px] max-w-full mb-5">
+                Willkommen bei Reifencheck.de
               </h2>
               <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#89898B] md:mb-3 mb-2">
                 Ihrer zentralen Plattform für den umfassenden Reifenvergleich

@@ -60,10 +60,11 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
         <div className="news-content">
           <div className="section-header text-left md:mb-8 mb-6">
             <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
-              News & Articles
+              News & Artikel
             </h2>
             <p className="font-normal font-secondary text-center text-[#89898B]">
-              Stay updated with the latest insights and tips about tires.
+              Bleiben Sie auf dem Laufenden mit den neuesten Erkenntnissen und
+              Tipps zu Reifen.
             </p>
           </div>
 
@@ -115,7 +116,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
                               )}
                             </p>
                             <span className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block">
-                              Read More
+                              Mehr lesen
                             </span>
                           </div>
                         </div>
@@ -136,7 +137,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
             href="/blogs"
             className="mx-auto block text-center underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
           >
-            View all
+            Alle anzeigen
           </Link>
         </div>
       </div>

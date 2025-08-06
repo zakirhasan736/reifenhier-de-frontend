@@ -47,7 +47,7 @@ const FaqSection = async () => {
           <div className="faq-right-cont col-span-7">
             <div className="section-header text-left md:mb-8 mb-6">
               <h2 className="h3  md:text-[28px] text-[26px] lg:text-[36px] text-[#16171A] font-primary font-medium text-left leading-tight">
-                Frequently Asked Questions
+                Häufig gestellte Fragen
               </h2>
             </div>
 
@@ -60,7 +60,10 @@ const FaqSection = async () => {
                     key={faq._id}
                     className="collapse rounded-[12px] bg-[#F5F5F7] collapse-plus mb-2"
                   >
-                    <label htmlFor="faq-accordion" className="cursor-pointer"></label>
+                    <label
+                      htmlFor="faq-accordion"
+                      className="cursor-pointer"
+                    ></label>
                     <input
                       type="radio"
                       name="faq-accordion"

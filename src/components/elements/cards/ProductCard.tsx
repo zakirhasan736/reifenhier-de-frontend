@@ -242,7 +242,7 @@ const isFavorited = useMemo(() => {
               src="/images/icons/tick-square.svg"
               alt="search price"
               width={16}
-              loading='lazy'
+              loading="lazy"
               height={16}
             />
             {in_stock === 'true' ? 'In Stock' : 'Not Available'}
@@ -296,7 +296,7 @@ const isFavorited = useMemo(() => {
                     alt="Weight"
                     width={16}
                     height={16}
-                    loading='lazy'
+                    loading="lazy"
                   />{' '}
                   <span
                     style={{
@@ -317,7 +317,7 @@ const isFavorited = useMemo(() => {
                   alt="External Rolling Noise"
                   width={16}
                   height={16}
-                  loading='lazy'
+                  loading="lazy"
                 />{' '}
                 {noise_class}
               </li>
@@ -330,7 +330,7 @@ const isFavorited = useMemo(() => {
                 {savings_percent}
                 <span
                   className="tooltip tooltip-left cursor-pointer flex items-center"
-                  data-tip="Savings compared to the most expensive offer"
+                  data-tip="Ersparnis gegenüber dem teuersten Angebot"
                 >
                   <svg
                     width="12"
@@ -340,7 +340,7 @@ const isFavorited = useMemo(() => {
                     className="inline-block"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <title>Savings Info</title>
+                    <title>Sparinformationen</title>
                     <circle cx="12" cy="12" r="12" fill="#E66605" />
                     <text
                       x="12"
@@ -360,7 +360,7 @@ const isFavorited = useMemo(() => {
         </div>
         <p className="product-price text-primary-100 font-normal font-secondary text-[14px] leading-[150%] mt-4 flex items-center gap-1">
           <span className="text-[14px] font-normal font-secondary text-[#86878A]">
-            From:
+            Aus:
           </span>{' '}
           <span className="text-[20px] font-normal font-secondary text-[#404042]">
             €
@@ -391,7 +391,7 @@ const isFavorited = useMemo(() => {
             type="button"
             className="max-w-full w-full text-[14px] font-medium leading-[120%] font-secondary max-md:text-[14px] ml-auto block border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 cursor-pointer py-[11.5px] px-8"
           >
-            View Details
+            Details anzeigen
           </button>
         </Link>
         {showCompareButton && (
@@ -402,7 +402,8 @@ const isFavorited = useMemo(() => {
           >
             {isAlreadyCompared ? (
               <>
-                <span className="text-green-600">✔</span> Added to comparison
+                <span className="text-green-600">✔</span> Zum Vergleich
+                hinzugefügt
               </>
             ) : (
               <>
@@ -412,14 +413,17 @@ const isFavorited = useMemo(() => {
                   width={20}
                   height={20}
                 />{' '}
-                Add to comparison
+                Zum Vergleich hinzufügen
               </>
             )}
           </button>
         )}
         {Array.isArray(related_cheaper) && related_cheaper.length > 0 && (
           <>
-            <div className="divider !h-[1px] !my-3 !bg-[#F0F0F2]"></div>
+            <div className="divider !h-[1px] !mt-3 !mb-1 !bg-[#F0F0F2]"></div>
+            <h4 className="font-primary font-normal text-[12px] mb-[6px] text-left text-[#86878a] leading-[140%]">
+              Günstigere Alternativen
+            </h4>
             <ul className="competitor-product-lists flex flex-col gap-[2px]">
               {related_cheaper.map(item => (
                 <li

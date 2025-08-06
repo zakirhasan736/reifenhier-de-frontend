@@ -20,10 +20,11 @@ const BrandCategory = () => {
         <div className="brand-category-content">
           <div className="section-header text-center mb-9">
             <h2 className="h3 font-primary font-medium  md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3">
-              Shop by Brand
+              Nach Marke einkaufen
             </h2>
             <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#89898B]">
-              Discover tyres from top brands to ensure quality and performance.
+              Entdecken Sie Reifen von Top-Marken, um Qualität und Leistung
+              sicherzustellen.
             </p>
           </div>
         </div>

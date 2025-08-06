@@ -99,7 +99,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
             value={query}
             onChange={handleInputChange}
             className="search-input-filed h-12  placeholder:text-primary-color-100 !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none w-full !bg-mono-0 !shadow-none !border !border-border-100 text-[14px] font-normal bg-primary-color-70 pr-2 pl-[38px] py-[11.5px] text-primary-color-100 leading-[150%] font-secondary"
-            placeholder="Search..."
+            placeholder="Suchen..."
           />
           <label
             htmlFor="searchid1"
@@ -127,7 +127,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
       {query.length > 1 && (
         <div className="absolute z-50 top-full mt-2 w-full bg-white shadow-lg rounded-md max-h-[300px] overflow-y-auto">
           {loading ? (
-            <div className="p-3 text-sm text-gray-500">Loading...</div>
+            <div className="p-3 text-sm text-gray-500">Laden...</div>
           ) : suggestions.length > 0 ? (
             suggestions.map((sugg, idx) => (
               <div

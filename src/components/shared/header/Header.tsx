@@ -13,7 +13,7 @@ const Header: React.FC = () => {
     <header className="header-section bg-mono-0 z-50 ">
       <div className="development-mood-banner">
         <p className="text text-center text-mono-40 font-bold bg-[#3a64f6]  py-1">
-          Demo Mood
+          Demo-Modus
         </p>
       </div>
       <div className="header-content-area border-b border-border-100 pt-4 pb-5  max-sm:pb-2 max-sm:pt-3">

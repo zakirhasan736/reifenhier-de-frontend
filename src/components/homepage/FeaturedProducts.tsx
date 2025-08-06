@@ -29,7 +29,8 @@ console.log('featured product' , productData);
               {title}
             </h2>
             <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#89898B]">
-              Quickly get tyres suited to your vehicle and driving style.
+              Erhalten Sie schnell die passenden Reifen für Ihr Fahrzeug und
+              Ihren Fahrstil.
             </p>
           </div>
         </div>
@@ -78,7 +79,7 @@ console.log('featured product' , productData);
             }}
             className="mx-auto block text-center underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
           >
-            View all
+            Alle ansehen
           </Link>
         </div>
       </div>

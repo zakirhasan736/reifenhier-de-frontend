@@ -81,7 +81,7 @@ const FilterForm = () => {
         <div className="tyre-search-box lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
           <div className="tyre-type-area flex-wrap flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
             <CustomSelect
-              label="Categorie"
+              label="Kategorie"
               value={category}
               onChange={val => {
                 setCategory(val);
@@ -90,11 +90,11 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.categories || []}
-              placeholder="Selecteer Categorie"
+              placeholder="Kategorie auswählen"
             />
 
             <CustomSelect
-              label="Breedte"
+              label="Breite"
               value={width}
               onChange={val => {
                 setWidth(val);
@@ -102,7 +102,7 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.widths || []}
-              placeholder="Selecteer breedte"
+              placeholder="Ausführung wählen"
               disabled={!category}
             />
 
@@ -114,54 +114,54 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.heights || []}
-              placeholder="Selecteer Höhe"
+              placeholder="Höhe auswählen"
               disabled={!width}
             />
 
             <CustomSelect
-              label="Diameter"
+              label="Durchmesser"
               value={diameter}
               onChange={setDiameter}
               options={data.diameters || []}
-              placeholder="Selecteer Diameter"
+              placeholder="Durchmesser auswählen"
               disabled={!height}
             />
 
             {showMoreFilters && (
               <>
                 <CustomSelect
-                  label="Brand"
+                  label="Marke"
                   value={brand}
                   onChange={setBrand}
                   options={data.brands || []}
-                  placeholder="Selecteer Brand"
+                  placeholder="Marke auswählen"
                   disabled={!diameter}
                 />
 
                 <CustomSelect
-                  label="Wet Grip"
+                  label="Nasshaftung"
                   value={wetGrip}
                   onChange={setWetGrip}
                   options={data.wetGrips || []}
-                  placeholder="Selecteer Wet Grip"
+                  placeholder="Nasshaftung auswählen"
                   disabled={!diameter}
                 />
 
                 <CustomSelect
-                  label="Fuel Class"
+                  label="Kraftstoffklasse"
                   value={fuelClass}
                   onChange={setFuelClass}
                   options={data.fuelClasses || []}
-                  placeholder="Selecteer Fuel Class"
+                  placeholder="Kraftstoffklasse auswählen"
                   disabled={!diameter}
                 />
 
                 <CustomSelect
-                  label="Noise"
+                  label="Lärm"
                   value={noise}
                   onChange={setNoise}
                   options={data.noises || []}
-                  placeholder="Selecteer Noise"
+                  placeholder="Lärm auswählen"
                   disabled={!diameter}
                 />
               </>
@@ -173,7 +173,7 @@ const FilterForm = () => {
             disabled={!canSearch}
             className="md:max-w-[170px] flex items-center justify-center md:gap-[10px] gap-2 max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:opacity-85 transition ease !border-primary-100 cursor-pointer py-2 px-3"
           >
-            Search Tyres{' '}
+            Reifen suchen{' '}
             <Image
               src="/images/icons/search-normal.svg"
               alt="search"
@@ -189,7 +189,7 @@ const FilterForm = () => {
           onClick={() => setShowMoreFilters(prev => !prev)}
           className="text-primary-100 mt-5 text-[14px] text-left font-secondary font-normal leading-[120%] cursor-pointer lg:relative lg:bottom-0 lg:left-0 absolute bottom-10 left-8 max-sm:left-4"
         >
-          {showMoreFilters ? 'Fewer Filters' : 'More Filters'}
+          {showMoreFilters ? 'Weniger Filter' : 'Mehr Filter'}
         </button>
       </div>
     </div>

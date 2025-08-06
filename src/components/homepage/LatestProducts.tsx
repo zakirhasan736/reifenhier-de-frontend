@@ -25,10 +25,11 @@ console.log(productData);
         <div className="featured-product-content flex justify-between items-end lg:mb-8 mb-6">
           <div className="featured-product-left-content w-full">
             <h2 className="h3 font-primary font-medium md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3 leading-[120%]">
-              Latest products
+              Neueste Produkte
             </h2>
             <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#89898B]">
-              Quickly get tyres suited to your vehicle and driving style.
+              Erhalten Sie schnell die passenden Reifen für Ihr Fahrzeug und
+              Ihren Fahrstil.
             </p>
           </div>
           <div className="featured-product-right-content hidden">
@@ -36,7 +37,7 @@ console.log(productData);
               href="/products"
               className="ml-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
             >
-              View all
+              Alle ansehen
             </Link>
           </div>
         </div>
