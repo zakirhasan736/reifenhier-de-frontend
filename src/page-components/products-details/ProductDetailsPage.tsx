@@ -19,6 +19,7 @@ interface Offer {
   product_category: string;
   product_name: string;
   price: number;
+  affiliate_product_cloak_url: string;
   aw_deep_link: string;
   savings_percent: string;
   delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
@@ -32,6 +33,7 @@ interface CheapestVendor {
   delivery_cost: string | number; // ← Adjusted here too
   payment_icons: string[];
   vendor: string;
+  affiliate_product_cloak_url: string;
   vendor_id: string;
   vendor_logo: string;
 }
