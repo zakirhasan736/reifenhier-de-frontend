@@ -295,7 +295,7 @@ const ProductListingsSec = () => {
                   />
                 </div>
                 <div className="showing-current-product">
-                  <span className="caption pr-3 max-md:pr-1">Showing</span>{' '}
+                  <span className="caption pr-3 max-md:pr-1">Anzeigen</span>{' '}
                   <span className="caption">
                     {startIndex + 1} bis {endIndex} von{' '}
                   </span>

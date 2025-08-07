@@ -245,7 +245,7 @@ const isFavorited = useMemo(() => {
               loading="lazy"
               height={16}
             />
-            {in_stock === 'true' ? 'In Stock' : 'Not Available'}
+            {in_stock === 'true' ? 'Auf Lager' : 'Nicht Verfügbar'}
           </p>
         </div>
       </div>

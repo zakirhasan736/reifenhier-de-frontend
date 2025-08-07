@@ -68,6 +68,7 @@ interface Offer {
   delivery_time: string;
   payment_icons: string[];
   original_affiliate_url: string;
+  affiliate_product_cloak_url: string;
 }
 
 interface CheapestVendor {
@@ -75,6 +76,7 @@ interface CheapestVendor {
   delivery_cost: string | number; // ← Adjusted here too
   payment_icons: string[];
   vendor: string;
+  affiliate_product_cloak_url: string;
   vendor_id: string;
   vendor_logo: string;
 }
@@ -761,7 +763,7 @@ const handleToggleWishlist = async () => {
                           ) : (
                             <SwiperSlide key={0}>
                               <div className="slide-tab-item">
-                                <div className="slide-tab-item-wrap w-[87px] lg:w-auto bg-[#F7F7F7] rounded-[10px] lg:pl-[55px] lg:pt-[25px] lg:pr-[56px] lg:pb-[24px] py-3 px-4 flex justify-center">
+                                <div className="slide-tab-item-wrap w-[87px] lg:w-auto bg-[#F7F7F7] rounded-[10px] lg:pl-[47px] lg:pt-[25px] lg:pr-[47px] lg:pb-[24px] py-3 px-4 flex justify-center">
                                   <Image
                                     src={product.product_image}
                                     alt="product image item"
@@ -973,33 +975,17 @@ const handleToggleWishlist = async () => {
 
                   <div className="product-cta-box flex lg:flex-row flex-col gap-4 mt-4 max-w-[375px] sm:max-w-[375px] w-full">
                     <div className="product-card-btn-states  lg:max-w-[173px] w-full">
-                      {/* <Link
-                        href={`/go/${encodeURIComponent(
-                          product.cheapest_vendor?.aw_deep_link?.split(
-                            '/go/'
-                          )[1] || ''
-                        )}?product=${product._id}&uuid=${
-                          uuidCookie || 'guest'
-                        }&from=product-page`}
-                        className="block w-full"
-                      > */}
-
-                      {/* <Link
-                        href={`${apiUrl}/go/${encodeURIComponent(
-                          product.cheapest_vendor?.aw_deep_link
-                            ?.split('/go/')[1]
-                            ?.split('?')[0] || ''
-                        )}?product=${product._id}&uuid=${
-                          uuidCookie || 'guest'
-                        }&from=product-page`}
-                        className="block w-full"
-                      > */}
                       <Link
-                        href={`${apiUrl}/out/${encodeURIComponent(
-                          product.cheapest_vendor?.aw_deep_link
-                            ?.split('p=')[1]
-                            ?.split('&')[0] || ''
-                        )}?product=${product._id}&uuid=${
+                        // href={`${apiUrl}/out/${encodeURIComponent(
+                        //   product.cheapest_vendor?.aw_deep_link
+                        //     ?.split('p=')[1]
+                        //     ?.split('&')[0] || ''
+                        // )}?product=${product._id}&uuid=${
+                        //   uuidCookie || 'guest'
+                        // }&from=product-page`}
+                        href={`${apiUrl}/out/${
+                          product.cheapest_vendor?.affiliate_product_cloak_url
+                        }?product=${product._id}&uuid=${
                           uuidCookie || 'guest'
                         }&from=product-page`}
                         className="block w-full"
@@ -1319,11 +1305,9 @@ const handleToggleWishlist = async () => {
                                 </div>
                                 <div className="offer-product-card-footer flex lg:flex-row flex-col items-center justify-center gap-3 lg:gap-5 mt-4 lg:mt-6">
                                   <Link
-                                    href={`${apiUrl}/out/${encodeURIComponent(
-                                      offer.original_affiliate_url
-                                        ?.split('p=')[1]
-                                        ?.split('&')[0] || ''
-                                    )}?product=${product._id}&uuid=${
+                                    href={`${apiUrl}/out/${
+                                      offer.affiliate_product_cloak_url
+                                    }?product=${product._id}&uuid=${
                                       uuidCookie || 'guest'
                                     }&from=product-page`}
                                   >
@@ -1513,7 +1497,15 @@ const handleToggleWishlist = async () => {
                                   </li>
                                 </ul>
                                 <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
-                                  <Link href={`/visit/${encoded}`}>
+                                  <Link
+                                    href={`${apiUrl}/out/${
+                                      offer.affiliate_product_cloak_url
+                                    }?product=${product._id}&uuid=${
+                                      uuidCookie || 'guest'
+                                    }&from=product-page`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
                                     <button
                                       type="button"
                                       className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"

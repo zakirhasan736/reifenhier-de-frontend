@@ -28,7 +28,7 @@ async function getFaqs(): Promise<FAQ[]> {
 
 const FaqSection = async () => {
   const faqs = await getFaqs();
-
+  
   return (
     <section className="FAQ-section lg:py-[70px] py-14">
       <div className="custom-container">
@@ -53,7 +53,7 @@ const FaqSection = async () => {
 
             <div className="FAQ-list">
               {faqs.length === 0 ? (
-                <p>No FAQs available at the moment.</p>
+                <p>Zurzeit sind keine FAQs verfügbar.</p>
               ) : (
                 faqs.map((faq, index) => (
                   <div
