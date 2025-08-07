@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
-import { Buffer } from 'buffer';
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -976,18 +975,14 @@ const handleToggleWishlist = async () => {
                   <div className="product-cta-box flex lg:flex-row flex-col gap-4 mt-4 max-w-[375px] sm:max-w-[375px] w-full">
                     <div className="product-card-btn-states  lg:max-w-[173px] w-full">
                       <Link
-                        // href={`${apiUrl}/out/${encodeURIComponent(
-                        //   product.cheapest_vendor?.aw_deep_link
-                        //     ?.split('p=')[1]
-                        //     ?.split('&')[0] || ''
-                        // )}?product=${product._id}&uuid=${
-                        //   uuidCookie || 'guest'
-                        // }&from=product-page`}
+                       
                         href={`${apiUrl}/out/${
                           product.cheapest_vendor?.affiliate_product_cloak_url
                         }?product=${product._id}&uuid=${
                           uuidCookie || 'guest'
                         }&from=product-page`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block w-full"
                       >
                         <button
@@ -1349,16 +1344,7 @@ const handleToggleWishlist = async () => {
                     <div className="custom-container">
                       <div className="offer-list-item-area">
                         {product.offers?.map((offer, index) => {
-                          //  const encoded = encodeURIComponent(
-                          //    Buffer.from(offer.original_affiliate_url).toString(
-                          //      'base64'
-                          //    )
-                          //  );
-                          const affiliateLink = offer.original_affiliate_url;
-
-                          const encoded = encodeURIComponent(
-                            Buffer.from(affiliateLink).toString('base64')
-                          );
+                     
 
                           return (
                             <div
@@ -1521,7 +1507,15 @@ const handleToggleWishlist = async () => {
                                       Zum Angebot
                                     </button>
                                   </Link>
-                                  <Link href={`/visit/${encoded}`}>
+                                  <Link
+                                    href={`${apiUrl}/out/${
+                                      offer.affiliate_product_cloak_url
+                                    }?product=${product._id}&uuid=${
+                                      uuidCookie || 'guest'
+                                    }&from=product-page`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
                                     <button
                                       type="button"
                                       className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
