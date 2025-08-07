@@ -27,6 +27,21 @@ const nextConfig = {
         hostname: 'www.rubbex.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.reifencheck.de',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.reifencheck.de',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.reifencheck.de',
+        pathname: '/images/blogs/**',
+      },
     ],
   },
 };
