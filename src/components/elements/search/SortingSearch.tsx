@@ -30,7 +30,7 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
         htmlFor="sort-select"
         className="font-secondary font-normal text-[14px] leading-[100%] text-[#404042]"
       >
-        Sort by:
+        Sortieren nach:
       </label>
       <select
         id="sort-select"

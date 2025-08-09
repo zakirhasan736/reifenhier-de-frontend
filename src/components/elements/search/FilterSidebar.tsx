@@ -242,12 +242,12 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   type="text"
                   value={brandSearch}
                   onChange={e => setBrandSearch(e.target.value)}
-                  placeholder="Search brands..."
+                  placeholder="Marken suchen..."
                   className="pr-3 pl-9 py-2 focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#86878A]"
                 />
                 <Image
                   className="absolute top-2 left-3"
-                  src="/images/icons/search-normal.svg"
+                  src="/images/icons/search-norma2.svg"
                   width={16}
                   height={16}
                   alt="Search"

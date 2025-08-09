@@ -16,9 +16,9 @@ export default function Error({
 
   return (
     <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h2>Something went wrong!</h2>
-      <p>{error.message || 'An unexpected error occurred.'}</p>
-      <p>{error.digest && `Error Digest: ${error.digest}`}</p>
+      <h2>Etwas ist schiefgelaufen!</h2>
+      <p>{error.message || 'Ein unerwarteter Fehler ist aufgetreten.'}</p>
+      <p>{error.digest && `Fehler-Digest: ${error.digest}`}</p>
 
       <button
         onClick={() => {
@@ -35,7 +35,7 @@ export default function Error({
           borderRadius: '5px',
         }}
       >
-        Try again
+        Erneut versuchen
       </button>
     </div>
   );

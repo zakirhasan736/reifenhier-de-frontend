@@ -41,17 +41,17 @@ export default function FavoritesPage() {
     <section className="favorite-page-section pt-8 pb-9">
       <div className="custom-container">
         <h1 className="h4 font-medium font-primary text-[#404042] mb-5">
-          Your Wishlist
+          Ihre Wunschliste
         </h1>
 
         {isLoading ? (
           <Loading />
         ) : isError ? (
           <p className="text-red-500">
-            Failed to load wishlist. Please try again.
+            Fehler beim Laden der Wunschliste. Bitte versuchen Sie es erneut.
           </p>
         ) : wishlist.length === 0 ? (
-          <p className="text-[#888]">Your wishlist is empty.</p>
+          <p className="text-[#888]">Ihre Wunschliste ist leer.</p>
         ) : (
           <div className="favorite-wrapper grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-4 gap-y-6">
             {wishlist.map(product => (

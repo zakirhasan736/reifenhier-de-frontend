@@ -44,8 +44,8 @@ const BlogDetailPage = () => {
         setBlog(res.data);
         setError(null);
       } catch  {
-        console.error('Error fetching blog:');
-        setError('Failed to load blog.');
+        console.error('Fehler beim Abrufen des Blogs:');
+        setError('Fehler beim Laden des Blogs.');
         setBlog(null);
       }
     };
@@ -69,7 +69,7 @@ const BlogDetailPage = () => {
                     href="/"
                     passHref
                   >
-                    Home
+                    Heim
                   </Link>
                   <span className="angle">&gt;</span>
                 </li>
@@ -91,7 +91,11 @@ const BlogDetailPage = () => {
                   {blog.title}
                 </h1>
                 <p className="text-gray-600 mb-4">
-                  {new Date(blog.createdAt).toLocaleDateString()}
+                  {new Date(blog.createdAt).toLocaleDateString('de-DE', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </p>
                 {blog.coverImage && (
                   <Image

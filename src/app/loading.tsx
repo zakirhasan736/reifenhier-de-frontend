@@ -8,7 +8,7 @@ export default function Loading() {
         {/* <LoadingModal /> */}
         <p className="body-small text-mono-100">
           {' '}
-          Loading... , please do not refresh this page.
+          Wird geladen..., bitte aktualisieren Sie diese Seite nicht.
         </p>
       </div>
     </div>

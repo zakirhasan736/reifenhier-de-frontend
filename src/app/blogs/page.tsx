@@ -51,7 +51,7 @@ const BlogListPage = () => {
             <div className="blog-search-box relative">
               <input
                 type="text"
-                placeholder="Search blogs..."
+                placeholder="Blogs durchsuchen..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="border max-w-[350px] rounded-full border-border-100 text-[14px] font-medium font-secondary text-[#86878A] pr-6 pl-9 py-3 w-full mb-6"
@@ -99,7 +99,7 @@ const BlogListPage = () => {
                           </h5>
                           <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
                             {new Date(blog.createdAt).toLocaleDateString(
-                              'en-US',
+                              'de-DE',
                               {
                                 year: 'numeric',
                                 month: 'long',
@@ -111,7 +111,7 @@ const BlogListPage = () => {
                             href={`/blogs/${blog.slug}`}
                             className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block"
                           >
-                            Read More
+                            Mehr lesen
                           </Link>
                         </div>
                       </div>
