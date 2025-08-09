@@ -12,7 +12,7 @@ const HowItWorks: React.FC = () => {
                   <div className="icons-item mb-5">
                     <Image
                       src="/images/icons/shipping-icons.svg"
-                      alt="Fast Shipping Icon"
+                      alt="Symbol für schnellen Versand"
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
@@ -32,7 +32,7 @@ const HowItWorks: React.FC = () => {
                   <div className="icons-item mb-5">
                     <Image
                       src="/images/icons/trust-icons.svg"
-                      alt="Trust Icon"
+                      alt="Symbol für Vertrauen"
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
@@ -52,7 +52,7 @@ const HowItWorks: React.FC = () => {
                   <div className="icons-item mb-5">
                     <Image
                       src="/images/icons/best-price-icon.svg"
-                      alt="Best Price Icon"
+                      alt="Symbol für besten Preis"
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}
@@ -72,7 +72,7 @@ const HowItWorks: React.FC = () => {
                   <div className="icons-item mb-5">
                     <Image
                       src="/images/icons/group-9.svg"
-                      alt="Easy Return Icon"
+                      alt="Symbol für einfache Rückgabe"
                       className="lg:w-[59px] w-[45px]"
                       width={59}
                       height={48}

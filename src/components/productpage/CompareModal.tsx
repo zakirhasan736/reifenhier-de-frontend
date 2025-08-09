@@ -95,7 +95,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
         </button>
 
         <h2 className="text-[22px] font-semibold mb-6 font-secondary">
-          Product Comparison
+          Produktvergleich
         </h2>
 
         <div className="overflow-x-auto">
@@ -103,15 +103,15 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
                 {[
-                  'Image',
+                  'Bild',
                   'Name',
-                  'Brand',
-                  'Dimensions',
-                  'Price',
-                  'Fuel',
-                  'Wet Grip',
-                  'Noise',
-                  'Remove',
+                  'Marke',
+                  'Abmessungen',
+                  'Preis',
+                  'Kraftstoff',
+                  'Nassgriff',
+                  'Geräusch',
+                  'Entfernen',
                 ].map((title, i) => (
                   <th
                     key={i}
@@ -159,7 +159,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                       onClick={() => handleRemove(p._id)}
                       className="text-red-500 text-sm hover:underline cursor-pointer"
                     >
-                      Remove
+                      Entfernen
                     </button>
                   </td>
                 </tr>
@@ -174,7 +174,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
               onClick={() => downloadCSV(products)}
               className="text-sm bg-gray-200 px-4 py-2 rounded-full cursor-pointer"
             >
-              Download CSV
+              CSV herunterladen
             </button>
             <button
               onClick={() => {
@@ -183,14 +183,14 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
               }}
               className="text-sm text-gray-500 underline cursor-pointer"
             >
-              Clear All
+              Alle löschen
             </button>
           </div>
           <button
             onClick={() => dispatch(closeModal())}
-            className="bg-primary-100 text-white px-4 py-2 rounded-full max-w-[90px] w-full cursor-pointer"
+            className="bg-primary-100 text-white px-4 py-2 rounded-full max-w-[120px] w-full cursor-pointer"
           >
-            Close
+            Schließen
           </button>
         </div>
 
@@ -201,7 +201,9 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
               onClick={() => setShowRelated(!showRelated)}
               className="text-sm text-primary-100 underline font-medium"
             >
-              {showRelated ? 'Hide Related Products' : '➕ Add More Products'}
+              {showRelated
+                ? 'Verwandte Produkte ausblenden'
+                : '➕ Weitere Produkte hinzufügen'}
             </button>
           </div>
 
@@ -257,13 +259,13 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                             <button
                               onClick={handleAdd}
                               disabled={isAlready}
-                              className={`px-3 py-1 text-sm rounded-full ${
+                              className={`px-3 py-1 text-sm rounded-full cursor-pointer ${
                                 isAlready
                                   ? 'bg-green-100 text-green-700 cursor-not-allowed'
                                   : 'bg-primary-100 text-white hover:bg-primary-200'
                               }`}
                             >
-                              {isAlready ? 'Added' : 'Add'}
+                              {isAlready ? 'Hinzugefügt' : 'Hinzufügen'}
                             </button>
                           </div>
                         </SwiperSlide>
@@ -272,7 +274,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                   </Swiper>
                 ) : (
                   <p className="text-sm text-gray-400 mt-4">
-                    No related products available.
+                    Keine verwandten Produkte verfügbar.
                   </p>
                 )}
               </div>

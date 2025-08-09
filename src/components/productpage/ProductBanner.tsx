@@ -13,12 +13,12 @@ const ProductBanner: React.FC<ProductBannerProps> = ({ categoryName }) => {
           <ul className="breadcrumb-area flex items-center gap-[10px]">
             <li className="breadcrumb-item body-caption prev-pages flex items-center gap-[10px]">
               <Link className="body-caption text-mono-100" href="/" passHref>
-                Home
+                Heim
               </Link>
               <span className="angle">&gt;</span>
             </li>
             <li className="breadcrumb-item body-caption capitalize text-mono-70">
-              Tyres
+              Reifen
             </li>
           </ul>
           <h4 className="h4 current-category-title capitalize mt-[15px] max-md:mt-2">

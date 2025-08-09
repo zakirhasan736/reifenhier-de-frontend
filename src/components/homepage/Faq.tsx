@@ -37,7 +37,7 @@ const FaqSection = async () => {
             <div className="faq-model-image w-full">
               <Image
                 src="/images/realistic-complete-set-car-wheels 1.png"
-                alt="FAQ Model"
+                alt="FAQ-Modell"
                 width={419}
                 height={397}
                 loading="lazy"

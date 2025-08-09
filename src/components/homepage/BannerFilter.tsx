@@ -176,7 +176,7 @@ const FilterForm = () => {
             Reifen suchen{' '}
             <Image
               src="/images/icons/search-normal.svg"
-              alt="search"
+              alt="suchen"
               loading="lazy"
               width={16}
               height={16}

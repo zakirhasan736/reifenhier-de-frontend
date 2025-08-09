@@ -360,7 +360,7 @@ const handleToggleWishlist = async () => {
                       <li className="payment-item">
                         <Image
                           src="/images/icons/payments/Visa.png"
-                          alt="payment methods icons"
+                          alt="Symbole für Zahlungsmethoden"
                           width={45}
                           height={48}
                         />
@@ -369,7 +369,7 @@ const handleToggleWishlist = async () => {
                       <li className="payment-item">
                         <Image
                           src="/images/icons/payments/Mastercard.png"
-                          alt="payment methods icons"
+                          alt="Symbole für Zahlungsmethoden"
                           width={45}
                           height={48}
                         />
@@ -378,7 +378,7 @@ const handleToggleWishlist = async () => {
                       <li className="payment-item">
                         <Image
                           src="/images/icons/payments/UnionPay.png"
-                          alt="payment methods icons"
+                          alt="Symbole für Zahlungsmethoden"
                           width={45}
                           height={48}
                         />
@@ -386,35 +386,20 @@ const handleToggleWishlist = async () => {
                       <li className="payment-item">
                         <Image
                           src="/images/icons/payments/Amex.png"
-                          alt="payment methods icons"
+                          alt="Symbole für Zahlungsmethoden"
                           width={45}
                           height={48}
                         />
                       </li>
-                      {/* <li className="payment-item">
-                <Image
-                  src="/images/icons/payments/Klarna.svg"
-                  alt="payment methods icons"
-                  width={70}
-                  height={48}
-                />
-              </li> */}
+
                       <li className="payment-item">
                         <Image
                           src="/images/icons/payments/payment-paypal.svg"
-                          alt="payment methods icons"
+                          alt="Symbole für Zahlungsmethoden"
                           width={65}
                           height={48}
                         />
                       </li>
-                      {/* <li className="payment-item">
-                <Image
-                  src="/images/icons/payments/icon-payment-ico-amazon-pay.svg"
-                  alt="payment methods icons"
-                  width={87}
-                  height={80}
-                />
-              </li> */}
                     </ul>
                   </div>
 
@@ -424,7 +409,6 @@ const handleToggleWishlist = async () => {
                         <button
                           type="button"
                           className="w-full !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer hover:!text-primary-100 transition ease-in hover:!border-primary-100 hover:bg-transparent"
-                          //   variant="secondary"
                         >
                           <div className="skeleton h-2 w-12 bg-mono-60"></div>
                         </button>
@@ -441,7 +425,7 @@ const handleToggleWishlist = async () => {
                       }}
                       className="flex items-center gap-2 py-2 px-6 rounded-[4px] text-[14px] justify-center w-full cursor-pointer"
                     >
-                      ➕ Add to comparison
+                      ➕ Zum Vergleich hinzufügen
                     </button>
 
                     <dialog id="my_modal_3" className="modal">
@@ -452,9 +436,10 @@ const handleToggleWishlist = async () => {
                             ✕
                           </button>
                         </form>
-                        <h3 className="font-bold text-lg">Comparison Table</h3>
+                        <h3 className="font-bold text-lg">Vergleichstabelle</h3>
                         <p className="py-4">
-                          Press ESC key or click on ✕ button to close
+                          Drücken Sie die ESC-Taste oder klicken Sie auf die
+                          Schaltfläche ✕, um zu schließen
                         </p>
                       </div>
                     </dialog>
@@ -465,7 +450,7 @@ const handleToggleWishlist = async () => {
                       <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
                         <input type="radio" name="my-accordion-3" />
                         <div className="collapse-title font-semibold text-primary-70 h6 text-[16px]">
-                          Description
+                          Beschreibung
                         </div>
                         <div className="collapse-content caption-regular font-primary">
                           <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -478,13 +463,13 @@ const handleToggleWishlist = async () => {
                           defaultChecked
                         />
                         <div className="collapse-title font-semibold text-primary-70 h6 text-[16px]">
-                          Additional Information
+                          Zusätzliche Informationen
                         </div>
                         <div className="collapse-content caption-regular font-primary border-t border-t-border-100 !px-0 !pb-0">
                           <ul className="product-specification-table mt-3 border border-border-100 border-b-transparent">
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[16px] text-left text-[#404042]">
-                                category
+                                Kategorie
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -492,7 +477,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                brand
+                                Marke
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -500,7 +485,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Fuel class
+                                Kraftstoffklasse
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -508,7 +493,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Wet grip class
+                                Nasshaftungsklasse
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -516,7 +501,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Size
+                                Größe
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -524,7 +509,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Width
+                                Breite
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -532,7 +517,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Height
+                                Höhe
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -540,7 +525,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Diameter
+                                Durchmesser
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -548,7 +533,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Speed ​​index
+                                Geschwindigkeitsindex
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -556,7 +541,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Load index
+                                Lastindex
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -843,16 +828,16 @@ const handleToggleWishlist = async () => {
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
                           {product.cheapest_vendor?.delivery_cost === '0' ||
                           product.cheapest_vendor?.delivery_cost === '0.00'
-                            ? 'Free Shipping'
+                            ? 'Kostenloser Versand'
                             : product.cheapest_vendor?.delivery_cost
-                            ? `Delivery Cost: ${product.cheapest_vendor.delivery_cost}`
-                            : 'Free Shipping'}
+                            ? `Lieferkosten: ${product.cheapest_vendor.delivery_cost}`
+                            : 'Kostenloser Versand'}
                         </li>
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                          Availability: {product.delivery_time || 'N/A'}
+                          Verfügbarkeit: {product.delivery_time || 'N/A'}
                         </li>
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                          Brand: {product.brand_name || 'brand name'}
+                          Marke: {product.brand_name || 'Marke'}
                         </li>
                       </ul>
                     </div>
@@ -975,7 +960,6 @@ const handleToggleWishlist = async () => {
                   <div className="product-cta-box flex lg:flex-row flex-col gap-4 mt-4 max-w-[375px] sm:max-w-[375px] w-full">
                     <div className="product-card-btn-states  lg:max-w-[173px] w-full">
                       <Link
-                       
                         href={`${apiUrl}/out/${
                           product.cheapest_vendor?.affiliate_product_cloak_url
                         }?product=${product._id}&uuid=${
@@ -1344,8 +1328,6 @@ const handleToggleWishlist = async () => {
                     <div className="custom-container">
                       <div className="offer-list-item-area">
                         {product.offers?.map((offer, index) => {
-                     
-
                           return (
                             <div
                               key={`${offer.brand}-${index}`}

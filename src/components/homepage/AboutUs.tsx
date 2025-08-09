@@ -42,14 +42,14 @@ const AboutUs = () => {
                 umweltbewusste und sichere Mobilität gestalten.
               </p>
             </div>
-            <div className="about-sec-modal-img lg:relative md:sticky max-sm:relative lg:h-full md:h-[385px] max-sm:h-full top-0 flex justify-end max-md:col-span-full col-span-6 lg:pl-[54px] pl-10 max-sm:pl-0 laptop-m:pl-0 max-md:order-1 order-2">
+            <div className="about-sec-modal-img lg:relative md:sticky  max-sm:relative lg:h-auto md:h-[385px] border-r-4 rounded-[14px] border-r-primary-100 max-sm:h-full top-0 flex justify-end max-md:col-span-full col-span-6 lg:pl-[54px] pl-10 max-sm:pl-0 laptop-m:pl-0 max-md:order-1 order-2">
               <Image
-                alt="About Reifenhier.de"
+                alt="Über Reifencheck.de"
                 src="/images/car-mechanic-changing-wheels-car.png"
                 width={474}
                 height={541}
                 loading="lazy"
-                className="lg:w-[474px] lg:h-auto md:h-[385px] md:w-[635px] h-full"
+                className="lg:w-[474px] lg:h-auto md:h-[385px] md:w-[635px] h-full object-center object-cover rounded-[10px] shadow-[0px_4px_20px_rgba(0,0,0,0.05)]"
               />
             </div>
           </div>

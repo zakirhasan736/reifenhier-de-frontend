@@ -14,7 +14,7 @@ const BannerSection = () => {
         fetchPriority="high"
         sizes="1080px"
         src="/images/banner-image.webp"
-        alt="banner-image"
+        alt="Bannerbild Reifencheck.de"
         // width={1920}
         // height={1080}
       />
@@ -28,7 +28,8 @@ const BannerSection = () => {
                   für Ihr Fahrzeug
                 </h1>
                 <p className="text-[#FFFFFFCC] lg:text-[20px] md:text-[18px] text-[16px] text-center font-normal font-primary leading-[150%]">
-                  Sorgen Sie schnell für Reifen, die zu Ihrem Fahrzeug und Fahrstil passen.
+                  Sorgen Sie schnell für Reifen, die zu Ihrem Fahrzeug und
+                  Fahrstil passen.
                 </p>
               </div>
               <FilterForm />

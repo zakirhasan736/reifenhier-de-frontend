@@ -76,6 +76,7 @@ const BrandCategory = () => {
                             height={27}
                             className="w-auto md:h-[27px] mx-auto"
                             loading="lazy"
+                            
                           />
                         ) : (
                           <span className="font-medium font-primary text-center md:text-[20px] text-[16px] leading-[140%] text-[#404042]">
