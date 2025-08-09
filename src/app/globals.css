@@ -1752,7 +1752,7 @@ ol.list-disc {
     transition: padding .2s ease-out, background-color .2s ease-out;
 }
 .product-specification-box .collapse-plus > .collapse-title:after {
-    top: .2rem;
+    top: .2rem !important;
 }
 .product-compared-table-box{
     backdrop-filter: blur(4px)
