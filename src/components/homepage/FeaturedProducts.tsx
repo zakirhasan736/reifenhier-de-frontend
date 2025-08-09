@@ -18,7 +18,6 @@ const { data, isLoading } = useGetFeaturedProductsQuery(undefined, {
 const title = data?.title || 'Our recommendation';
 const category = data?.category || 'Winterreifen';
 const productData = data?.products || [];
-console.log('featured product' , productData);
 
   return (
     <section className="featured-product pt-5  lg:pb-[70] pb-14">

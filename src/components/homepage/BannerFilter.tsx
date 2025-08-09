@@ -43,7 +43,6 @@ const FilterForm = () => {
     fuelClass,
     noise
   });
-  console.log(data);
 
   const handleSearch = () => {
     const params = new URLSearchParams();

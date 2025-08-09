@@ -88,7 +88,6 @@ const ProductListingsSec = () => {
     minPriceLimit,
     maxPriceLimit,
   } = useSelector((state: RootState) => state.products);
-  console.log(' filter product data', products);
   const mergedFilters = useMemo(() => {
     return { ...DEFAULT_FILTERS, ...filters };
   }, [filters]);

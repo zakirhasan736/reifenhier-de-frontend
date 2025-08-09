@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
               <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
                 <Image
                   src="/images/footer-brand-logo.svg"
-                  className="opacity-100 max-sm:w-[130px] sm:w-[140px] lg:w-[180px]"
+                  className="opacity-100 max-sm:w-[130px] sm:w-[140px] w-[180px] h-auto"
                   alt="company logo"
                   width={180}
                   height={70}

@@ -90,7 +90,7 @@ const Header: React.FC = () => {
                       alt="Favoriten"
                       width={24}
                       height={24}
-                      className="w-6 h-6 max-md:w-5 max-md:h-5"
+                      className="w-6 h-auto max-md:w-5 "
                     />
                     {!isLoading && data?.count > 0 && (
                       <span className="count-number absolute flex items-center justify-center -top-1 -right-1 text-[10px] max-md:text-2 max-md:w-4 max-md:h-4 w-[20px] h-[20px] rounded-full text-white bg-[#FF3333]">

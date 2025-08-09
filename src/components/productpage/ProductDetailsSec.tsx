@@ -139,7 +139,6 @@ const ProductSinglepage: React.FC<ProductProps> = ({
       );
       dispatch(openModal());
     };
-    console.log(product);
     // Get favorite product IDs (filter nulls defensively)
 
     // You can adjust these colors as you want!
@@ -642,7 +641,7 @@ const handleToggleWishlist = async () => {
                                   : '/images/icons/heart.svg'
                               }
                               alt="favorite"
-                              className="lg:w-6 lg:h-6 h-5 w-5"
+                              className="lg:w-6 h-auto w-5"
                               width={32}
                               height={32}
                               loading="lazy"

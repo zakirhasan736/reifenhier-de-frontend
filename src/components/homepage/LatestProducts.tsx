@@ -17,7 +17,6 @@ const { data, isLoading } = useGetLatestProductsQuery(undefined, {
 });
 
  const productData = data?.products || [];
-console.log(productData);
 
   return (
     <section className="featured-product lg:py-[70px] py-14">

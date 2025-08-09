@@ -195,17 +195,19 @@ const isFavorited = useMemo(() => {
             {average_rating > 0 && <span>{average_rating}</span>}
           </p>
           <button onClick={handleToggleWishlist} className="cursor-pointer">
-            <Image
-              src={
-                isFavorited
-                  ? '/images/icons/heart-filled.svg'
-                  : '/images/icons/heart.svg'
-              }
-              alt="favorite"
-              width={16}
-              height={16}
-              loading="lazy"
-            />
+            <div className="relative w-5 h-5">
+              <Image
+                src={
+                  isFavorited
+                    ? '/images/icons/heart-filled.svg'
+                    : '/images/icons/heart.svg'
+                }
+                alt="favorite"
+                fill
+                className="object-contain"
+                loading="lazy"
+              />
+            </div>
           </button>
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">

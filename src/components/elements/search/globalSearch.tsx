@@ -64,7 +64,6 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
       setLoading(false);
     }
   };
-  console.log(suggestions);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
