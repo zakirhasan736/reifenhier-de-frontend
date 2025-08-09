@@ -57,7 +57,7 @@ const BlogListPage = () => {
                 className="border max-w-[350px] rounded-full border-border-100 text-[14px] font-medium font-secondary text-[#86878A] pr-6 pl-9 py-3 w-full mb-6"
               />
               <Image
-                src="/images/icons/search-normal.svg"
+                src="/images/icons/search-norma2.svg"
                 alt="Search"
                 width={16}
                 height={16}
