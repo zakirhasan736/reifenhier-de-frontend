@@ -17,7 +17,7 @@ import {
   FreeMode,
   Navigation,
   Thumbs,
-  Autoplay,
+
 } from 'swiper/modules';
 
 import 'swiper/css';
@@ -1171,56 +1171,116 @@ const handleToggleWishlist = async () => {
                   defaultChecked
                 />
                 <div className="tab-content !text-primary-70 bg-mono-0 body-regular border-base-300 pt-2 md:pt-8 px-0">
-                  <div className="offer-slider-area hidden  overflow-hidden">
-                    <div className="product-slides-area lg:pr-4 px-[18px] overflow-hidden">
-                      <Swiper
-                        spaceBetween={20}
-                        // slidesPerView={2}
-                        navigation={{
-                          nextEl: '.swiper-button-next',
-                          prevEl: '.swiper-button-prev',
-                        }}
-                        modules={[Navigation, Autoplay]}
-                        autoplay={{ delay: 3900, disableOnInteraction: false }}
-                        breakpoints={{
-                          640: { slidesPerView: 1, spaceBetween: 10 },
-                          768: { slidesPerView: 2, spaceBetween: 10 },
-                          1024: { slidesPerView: 2, spaceBetween: 24 },
-                        }}
-                      >
-                        {product.offers?.map((offer, index) => (
-                          <SwiperSlide key={`${offer.brand}-${index}`}>
-                            <div className="offer-product-card-item">
-                              <div className="offer-product-card-inner lg:h-[246px] border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                                <div className="offer-product-card-content flex flex-col justify-between lg:max-h-[141px] h-full gap-4">
-                                  <div className="offer-product-top-cont flex lg:flex-row flex-col lg:items-start justify-between gap-2 lg:gap-4">
-                                    <div className="offer-info-left-cont lg:block flex justify-between items-center w-full gap-2">
-                                      <div className="cont-box">
-                                        <h4 className="offer-price text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
+                  <div className="offer-list-item-wrapper">
+                    <div className="custom-container">
+                      <div className="offer-list-item-area">
+                        {[...(product.offers || [])]
+                          .sort((a, b) => {
+                            // Convert string prices with commas to numbers for proper sort
+                            const parsePrice = (val: string | number) => {
+                              if (typeof val === 'number') return val;
+                              if (!val) return 0;
+                              return (
+                                Number(
+                                  val
+                                    .toString()
+                                    .replace(/\./g, '')
+                                    .replace(',', '.')
+                                ) || 0
+                              );
+                            };
+                            return parsePrice(a.price) - parsePrice(b.price);
+                          })
+                          .map((offer, index) => {
+                            return (
+                              <div
+                                key={`${offer.brand}-${index}`}
+                                className="offer-product-card-item  not-last:mb-5"
+                              >
+                                <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
+                                  <div className="offer-product-top-cont w-full md:max-w-[170px] max-sm:mb-3 flex justify-between items-start gap-2">
+                                    <div className="cont-box">
+                                      <div className="title-box flex gap-2 items-center">
+                                        <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
                                           €{offer.price}{' '}
                                         </h4>
-                                        <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
-                                          Inklusive Versandpreis
-                                        </p>
+                                        {offer.savings_percent &&
+                                          offer.savings_percent !== '0%' &&
+                                          offer.savings_percent !== '-0%' && (
+                                            <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                              {offer.savings_percent}
+                                              <span
+                                                className="tooltip tooltip-right cursor-pointer flex items-center"
+                                                data-tip="Ersparnis gegenüber dem teuersten Angebot"
+                                              >
+                                                <svg
+                                                  width="12"
+                                                  height="12"
+                                                  viewBox="0 0 24 24"
+                                                  fill="none"
+                                                  className="inline-block"
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                  <title>
+                                                    Einsparungen Info
+                                                  </title>
+                                                  <circle
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="12"
+                                                    fill="#E66605"
+                                                  />
+                                                  <text
+                                                    x="12"
+                                                    y="16"
+                                                    textAnchor="middle"
+                                                    fontSize="14"
+                                                    fill="#fff"
+                                                    fontFamily="Arial"
+                                                    fontWeight="bold"
+                                                  >
+                                                    i
+                                                  </text>
+                                                </svg>
+                                              </span>
+                                            </p>
+                                          )}
                                       </div>
-                                      <Image
-                                        src={offer.vendor_logo}
-                                        alt={`${offer.vendor} logo`}
-                                        width={140}
-                                        height={37}
-                                        className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[27px] w-[80px] object-contain"
-                                      />
+
+                                      <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
+                                        Inklusive Versandpreis
+                                      </p>
                                     </div>
-                                    <div className="offer-info-right-cont w-full">
-                                      <h6 className="text-[14px] lg:text-[16px] mb-3 lg:text-right leading-[120%] font-medium font-secondary">
+                                    <Image
+                                      src={offer.vendor_logo}
+                                      alt={`${offer.vendor} logo`}
+                                      width={140}
+                                      height={37}
+                                      loading="lazy"
+                                      className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                    />
+                                  </div>
+                                  <div className="vendor-box">
+                                    <Image
+                                      src={offer.vendor_logo}
+                                      alt={`${offer.vendor} logo`}
+                                      width={140}
+                                      height={37}
+                                      loading="lazy"
+                                      className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                    />
+                                  </div>
+                                  <div className="offer-product-bottom-cont max-sm:mb-3  md:max-w-[220px] w-full">
+                                    <div className="offer-info-right-cont">
+                                      <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
                                         Zahlungsmethoden:
                                       </h6>
-                                      <ul className="payment-methods-list flex items-center justify-start lg:justify-end flex-wrap gap-2 mt-1">
+                                      <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
                                         {offer.payment_icons?.map(
                                           (icon: string, index: number) => (
                                             <li
                                               key={index}
-                                              className="payment-method-item h-5"
+                                              className="payment-method-item h-7"
                                             >
                                               <Image
                                                 src={icon}
@@ -1238,277 +1298,85 @@ const handleToggleWishlist = async () => {
                                       </ul>
                                     </div>
                                   </div>
-                                  <div className="offer-product-bottom-cont flex max-sm:flex-col-reverse items-start  lg:items-center justify-between gap-4">
-                                    <ul className="product-info-item flex flex-col gap-[10px]">
-                                      <li className="flex items-center gap-2">
-                                        <Image
-                                          src="/images/icons/iconoir_delivery-truck.svg"
-                                          alt="truck icons"
-                                          width={20}
-                                          height={20}
-                                          loading="lazy"
-                                          className="h-5 w-5 object-contain rounded-[4px]"
-                                        />{' '}
-                                        <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                          Lieferung:{' '}
-                                          {offer.delivery_time || 'N/A'}
-                                        </span>
-                                      </li>
-                                      <li className="flex items-center lg:flex-wrap gap-2">
-                                        <Image
-                                          src="/images/icons/check-circle.svg"
-                                          alt="tick icon"
-                                          width={20}
-                                          height={20}
-                                          loading="lazy"
-                                          className="h-5 w-5 object-contain rounded-[4px]"
-                                        />{' '}
-                                        <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                          {offer.delivery_cost === '0.00' ||
-                                          offer.delivery_cost === '0'
-                                            ? 'Kostenloser Versand'
-                                            : 'Versandkosten: ' +
-                                              offer.delivery_cost}
-                                        </span>
-                                      </li>
-                                    </ul>
-                                    <Image
-                                      src={offer.vendor_logo}
-                                      alt={`${offer.vendor} logo`}
-                                      width={140}
-                                      height={37}
-                                      className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="offer-product-card-footer flex lg:flex-row flex-col items-center justify-center gap-3 lg:gap-5 mt-4 lg:mt-6">
-                                  <Link
-                                    href={`${apiUrl}/out/${
-                                      offer.affiliate_product_cloak_url
-                                    }?product=${product._id}&uuid=${
-                                      uuidCookie || 'guest'
-                                    }&from=product-page`}
-                                  >
-                                    <button
-                                      type="button"
-                                      className="w-full flex items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
-                                    >
+                                  <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[280px] flex flex-col gap-2">
+                                    <li className="flex items-center gap-2">
                                       <Image
-                                        src="/images/icons/shopping-bag.png"
-                                        className="w-5 h-5"
-                                        alt="cart icon"
-                                        width={24}
-                                        height={24}
+                                        src="/images/icons/iconoir_delivery-truck.svg"
+                                        alt="truck icons"
+                                        width={20}
+                                        height={20}
                                         loading="lazy"
+                                        className="h-5 w-5 object-contain rounded-[4px]"
                                       />{' '}
-                                      Zum Angebot
-                                    </button>
-                                  </Link>
-                                  <Link
-                                    href={offer.original_affiliate_url}
-                                    className="block w-full"
-                                  >
-                                    <button
-                                      type="button"
-                                      className="w-full flex items-center max-sm:text-[14px] justify-center h-10 gap-2 border border-primary-100 bg-transparent text-primary-100 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                      <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                        Lieferung:{' '}
+                                        {offer.delivery_time || 'N/A'}
+                                      </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                      <Image
+                                        src="/images/icons/check-circle.svg"
+                                        alt="tick icon"
+                                        width={20}
+                                        height={20}
+                                        loading="lazy"
+                                        className="h-5 w-5 object-contain rounded-[4px]"
+                                      />{' '}
+                                      <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                        {offer.delivery_cost === '0.00' ||
+                                        offer.delivery_cost === '0'
+                                          ? 'Kostenloser Versand'
+                                          : 'Versandkosten: ' +
+                                            offer.delivery_cost}
+                                      </span>
+                                    </li>
+                                  </ul>
+                                  <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
+                                    <Link
+                                      href={`${apiUrl}/out/${
+                                        offer.affiliate_product_cloak_url
+                                      }?product=${product._id}&uuid=${
+                                        uuidCookie || 'guest'
+                                      }&from=product-page`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
                                     >
-                                      Shopdaten
-                                    </button>
-                                  </Link>
+                                      <button
+                                        type="button"
+                                        className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                      >
+                                        <Image
+                                          src="/images/icons/shopping-bag.png"
+                                          className="w-5 h-5"
+                                          alt="cart icon"
+                                          width={24}
+                                          height={24}
+                                          loading="lazy"
+                                        />{' '}
+                                        Zum Angebot
+                                      </button>
+                                    </Link>
+                                    <Link
+                                      href={`${apiUrl}/out/${
+                                        offer.affiliate_product_cloak_url
+                                      }?product=${product._id}&uuid=${
+                                        uuidCookie || 'guest'
+                                      }&from=product-page`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <button
+                                        type="button"
+                                        className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
+                                      >
+                                        Shopdaten
+                                      </button>
+                                    </Link>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-                    </div>
-                  </div>
-                  <div className="offer-list-item-wrapper">
-                    <div className="custom-container">
-                      <div className="offer-list-item-area">
-                        {product.offers?.map((offer, index) => {
-                          return (
-                            <div
-                              key={`${offer.brand}-${index}`}
-                              className="offer-product-card-item  not-last:mb-5"
-                            >
-                              <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                                <div className="offer-product-top-cont w-full md:max-w-[170px] max-sm:mb-3 flex justify-between items-start gap-2">
-                                  <div className="cont-box">
-                                    <div className="title-box flex gap-2 items-center">
-                                      <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
-                                        €{offer.price}{' '}
-                                      </h4>
-                                      {offer.savings_percent &&
-                                        offer.savings_percent !== '0%' &&
-                                        offer.savings_percent !== '-0%' && (
-                                          <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
-                                            {offer.savings_percent}
-                                            <span
-                                              className="tooltip tooltip-right cursor-pointer flex items-center"
-                                              data-tip="Ersparnis gegenüber dem teuersten Angebot"
-                                            >
-                                              <svg
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                className="inline-block"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                              >
-                                                <title>Einsparungen Info</title>
-                                                <circle
-                                                  cx="12"
-                                                  cy="12"
-                                                  r="12"
-                                                  fill="#E66605"
-                                                />
-                                                <text
-                                                  x="12"
-                                                  y="16"
-                                                  textAnchor="middle"
-                                                  fontSize="14"
-                                                  fill="#fff"
-                                                  fontFamily="Arial"
-                                                  fontWeight="bold"
-                                                >
-                                                  i
-                                                </text>
-                                              </svg>
-                                            </span>
-                                          </p>
-                                        )}
-                                    </div>
-
-                                    <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
-                                      Inklusive Versandpreis
-                                    </p>
-                                  </div>
-                                  <Image
-                                    src={offer.vendor_logo}
-                                    alt={`${offer.vendor} logo`}
-                                    width={140}
-                                    height={37}
-                                    loading="lazy"
-                                    className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                  />
-                                </div>
-                                <div className="vendor-box">
-                                  <Image
-                                    src={offer.vendor_logo}
-                                    alt={`${offer.vendor} logo`}
-                                    width={140}
-                                    height={37}
-                                    loading="lazy"
-                                    className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                  />
-                                </div>
-                                <div className="offer-product-bottom-cont max-sm:mb-3  md:max-w-[220px] w-full">
-                                  <div className="offer-info-right-cont">
-                                    <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
-                                      Zahlungsmethoden:
-                                    </h6>
-                                    <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
-                                      {offer.payment_icons?.map(
-                                        (icon: string, index: number) => (
-                                          <li
-                                            key={index}
-                                            className="payment-method-item h-7"
-                                          >
-                                            <Image
-                                              src={icon}
-                                              alt={`payment method ${
-                                                index + 1
-                                              }`}
-                                              width={45}
-                                              height={48}
-                                              loading="lazy"
-                                              className="h-7 object-contain"
-                                            />
-                                          </li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </div>
-                                </div>
-                                <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[280px] flex flex-col gap-2">
-                                  <li className="flex items-center gap-2">
-                                    <Image
-                                      src="/images/icons/iconoir_delivery-truck.svg"
-                                      alt="truck icons"
-                                      width={20}
-                                      height={20}
-                                      loading="lazy"
-                                      className="h-5 w-5 object-contain rounded-[4px]"
-                                    />{' '}
-                                    <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                      Lieferung: {offer.delivery_time || 'N/A'}
-                                    </span>
-                                  </li>
-                                  <li className="flex items-center gap-2">
-                                    <Image
-                                      src="/images/icons/check-circle.svg"
-                                      alt="tick icon"
-                                      width={20}
-                                      height={20}
-                                      loading="lazy"
-                                      className="h-5 w-5 object-contain rounded-[4px]"
-                                    />{' '}
-                                    <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                      {offer.delivery_cost === '0.00' ||
-                                      offer.delivery_cost === '0'
-                                        ? 'Kostenloser Versand'
-                                        : 'Versandkosten: ' +
-                                          offer.delivery_cost}
-                                    </span>
-                                  </li>
-                                </ul>
-                                <div className="offer-product-card-footer max-sm:w-full  md:flex-col flex items-center justify-between gap-0">
-                                  <Link
-                                    href={`${apiUrl}/out/${
-                                      offer.affiliate_product_cloak_url
-                                    }?product=${product._id}&uuid=${
-                                      uuidCookie || 'guest'
-                                    }&from=product-page`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <button
-                                      type="button"
-                                      className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
-                                    >
-                                      <Image
-                                        src="/images/icons/shopping-bag.png"
-                                        className="w-5 h-5"
-                                        alt="cart icon"
-                                        width={24}
-                                        height={24}
-                                        loading="lazy"
-                                      />{' '}
-                                      Zum Angebot
-                                    </button>
-                                  </Link>
-                                  <Link
-                                    href={`${apiUrl}/out/${
-                                      offer.affiliate_product_cloak_url
-                                    }?product=${product._id}&uuid=${
-                                      uuidCookie || 'guest'
-                                    }&from=product-page`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <button
-                                      type="button"
-                                      className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
-                                    >
-                                      Shopdaten
-                                    </button>
-                                  </Link>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
                       </div>
                     </div>
                   </div>

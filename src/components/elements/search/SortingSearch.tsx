@@ -28,7 +28,7 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
     <div className="sorting flex items-center gap-2">
       <label
         htmlFor="sort-select"
-        className="font-secondary font-normal text-[14px] leading-[100%] text-[#404042]"
+        className="font-secondary font-normal text-[14px] max-sm:hidden leading-[100%] text-[#404042]"
       >
         Sortieren nach:
       </label>

@@ -237,21 +237,23 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           {openSections.brand && (
             <div className="px-2 pt-1 pb-1 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[190px] max-md:max-h-[180px]">
               {/* Search Input */}
-              <div className="search-brand-box relative">
-                <input
-                  type="text"
-                  value={brandSearch}
-                  onChange={e => setBrandSearch(e.target.value)}
-                  placeholder="Marken suchen..."
-                  className="pr-3 pl-9 py-2 focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#86878A]"
-                />
-                <Image
-                  className="absolute top-2 left-3"
-                  src="/images/icons/search-norma2.svg"
-                  width={16}
-                  height={16}
-                  alt="Search"
-                />
+              <div className="px-2">
+                <div className="search-brand-box relative">
+                  <input
+                    type="text"
+                    value={brandSearch}
+                    onChange={e => setBrandSearch(e.target.value)}
+                    placeholder="Marken suchen..."
+                    className="pr-3 pl-9 py-2 w-full focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#86878A]"
+                  />
+                  <Image
+                    className="absolute top-2 left-3"
+                    src="/images/icons/search-norma2.svg"
+                    width={16}
+                    height={16}
+                    alt="Search"
+                  />
+                </div>
               </div>
 
               {/* Filtered & Sorted Brand List */}

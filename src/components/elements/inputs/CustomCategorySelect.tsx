@@ -35,7 +35,7 @@ const CustomSelect: React.FC<Props> = ({
   const selected = options.find(o => o.name === value);
 
   return (
-    <div className="relative max-w-[139px] lg:max-w-[170px] w-full" ref={ref}>
+    <div className="relative max-w-[139px] md:max-w-[155px] lg:max-w-[170px] w-full" ref={ref}>
       <label className="text-[#86878A] md:text-[14px] text-[12px] font-normal font-secondary leading-[120%] mb-[7px] block">
         {label}
       </label>
