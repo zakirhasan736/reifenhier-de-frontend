@@ -11,7 +11,7 @@ interface FilterParams {
   width?: string;
   height?: string;
   diameter?: string;
-  brand?: string;
+  lastIndex?: string;
   wetGrip?: string;
   fuelClass?: string;
   noise?: string;
@@ -22,7 +22,7 @@ interface FilterResponse {
   widths: FilterOption[];
   heights: FilterOption[];
   diameters: FilterOption[];
-  brands: FilterOption[];
+  lastIndexes: FilterOption[];
   wetGrips: FilterOption[];
   fuelClasses: FilterOption[];
   noises: FilterOption[];

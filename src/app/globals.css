@@ -1792,8 +1792,12 @@ section.brand-category-section .featured-product-list-area:after{
 span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     background: #3A64F6 !important;
 }
+
 }
 @layer components {
+    .select-area-sort-filter{
+        border-radius: 20px !important;
+    }
     .custom-container-fluid {
       max-width: 1440px;
       width: 100%;
@@ -1830,4 +1834,10 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
         padding-right: 16px;
       }
     } 
+}
+
+
+/* raw css */
+.select-area-sort-filter {
+    border-radius: 20px !important;
 }

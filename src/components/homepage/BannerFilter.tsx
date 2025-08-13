@@ -14,7 +14,7 @@ interface FilterResponse {
   widths: FilterOption[];
   heights: FilterOption[];
   diameters: FilterOption[];
-  brands: FilterOption[];
+  lastIndexes: FilterOption[];
   wetGrips: FilterOption[];
   fuelClasses: FilterOption[];
   noises: FilterOption[];
@@ -22,11 +22,11 @@ interface FilterResponse {
 const FilterForm = () => {
   const router = useRouter();
 
-  const [category, setCategory] = useState('');
-  const [width, setWidth] = useState('');
-  const [height, setHeight] = useState('');
-  const [diameter, setDiameter] = useState('');
-  const [brand, setBrand] = useState('');
+  const [category, setCategory] = useState('Sommerreifen');
+  const [width, setWidth] = useState('205');
+  const [height, setHeight] = useState('55');
+  const [diameter, setDiameter] = useState('16');
+  const [lastIndex, setLastIndex] = useState('');
   const [wetGrip, setWetGrip] = useState('');
   const [fuelClass, setFuelClass] = useState('');
   const [noise, setNoise] = useState('');
@@ -38,12 +38,12 @@ const FilterForm = () => {
     width,
     height,
     diameter,
-    brand,
+    lastIndex,
     wetGrip,
     fuelClass,
     noise
   });
-
+ 
   const handleSearch = () => {
     const params = new URLSearchParams();
     params.set('category', category);
@@ -52,7 +52,7 @@ const FilterForm = () => {
     params.set('diameter', diameter);
 
     if (showMoreFilters) {
-      params.set('brand', brand);
+      params.set('lastIndex', lastIndex);
       params.set('wetGrip', wetGrip);
       params.set('fuelClass', fuelClass);
       params.set('noise', noise);
@@ -66,7 +66,7 @@ const FilterForm = () => {
       width &&
       height &&
       diameter &&
-      brand &&
+      lastIndex &&
       wetGrip &&
       fuelClass &&
       noise
@@ -129,11 +129,11 @@ const FilterForm = () => {
             {showMoreFilters && (
               <>
                 <CustomSelect
-                  label="Marke"
-                  value={brand}
-                  onChange={setBrand}
-                  options={data.brands || []}
-                  placeholder="Marke auswählen"
+                  label="Lastenindex"
+                  value={lastIndex}
+                  onChange={setLastIndex}
+                  options={data.lastIndexes || []}
+                  placeholder="Lastenindex auswählen"
                   disabled={!diameter}
                 />
 

@@ -172,7 +172,7 @@ const isFavorited = useMemo(() => {
       case 'B':
         return '#a4c600';
       case 'C':
-        return '#f9ed02';
+        return '#FFC300'; // Deeper yellow, better contrast on white
       case 'D':
         return '#f5b602';
       case 'E':

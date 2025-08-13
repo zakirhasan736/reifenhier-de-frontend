@@ -36,7 +36,7 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
         id="sort-select"
         onChange={handleChange}
         defaultValue="date-desc"
-        className="text-[14px] font-normal font-secondary h-[38px] leading-[100%] text-[#404042] px-2 py-1 !rounded-full border !border-primary-100"
+        className="text-[14px] text-center font-normal font-secondary h-[38px] leading-[100%] text-[#404042] px-2 py-1 border !border-primary-100 select-area-sort-filter"
       >
         <option value="price-asc">Preis: Niedrig bis Hoch</option>
         <option value="price-desc">Preis: Hoch bis Niedrig</option>

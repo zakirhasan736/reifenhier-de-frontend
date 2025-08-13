@@ -149,7 +149,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
         case 'B':
           return '#a4c600'; // Light Green
         case 'C':
-          return '#f9ed02'; // Yellow
+          return '#ffd600'; // Deeper yellow, better contrast on white
         case 'D':
           return '#f5b602'; // Orange Yellow
         case 'E':
