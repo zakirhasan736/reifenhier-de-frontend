@@ -51,7 +51,7 @@ interface Offer {
   brand_name: string;
   product_category: string;
   product_name: string;
-  price: number;
+  price: string; // ← Adjusted for flexibility (string or number)
   vendor_id: string;
   aw_deep_link: string;
   savings_percent: string;
@@ -451,11 +451,11 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               Direkt zum günstigsten Angebot
             </h4>
             <ul className="competitor-product-lists flex flex-col gap-[2px]">
-              {offers
-                .slice() // copy array to avoid mutating original
-                .sort((a, b) => a.price - b.price)
+              {[...offers]
+                .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
                 .slice(0, 3)
-                .map(item => {
+                .map((item) => {
+                  
                   return (
                     <li
                       key={item.vendor_id}
@@ -476,7 +476,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
                         </Link>
                       </div>
                       <span className="font-secondary font-normal text-[14px] text-left text-[#86878A] leading-[140%]">
-                        {item.price} €
+                        <span>{item.price + ' €'}</span>
                       </span>
                     </li>
                   );
