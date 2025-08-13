@@ -160,7 +160,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Kategorie{' '}
+              Reifentyp{' '}
               <span className="text-[#404042] absolute right-2">
                 {selectedFilters.category.length > 0
                   ? `(${selectedFilters.category.length})`
@@ -192,7 +192,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                           handleFilterChange('category', String(label))
                         }
                       />
-                      {label || 'Unknown'}
+                      {label || 'Unbekannt'}
                       <span className="ml-1 text-[#86878A]">
                         ({item.count ?? 0})
                       </span>
@@ -243,7 +243,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                     type="text"
                     value={brandSearch}
                     onChange={e => setBrandSearch(e.target.value)}
-                    placeholder="Marken suchen..."
+                    placeholder="Marke suchen …"
                     className="pr-3 pl-9 py-2 w-full focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#86878A]"
                   />
                   <Image
@@ -283,7 +283,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                               handleFilterChange('brand', String(label))
                             }
                           />
-                          {label || 'Unknown'}
+                          {label || 'Unbekannt'}
                           <span className="ml-1 text-gray-400">
                             ({item.count ?? 0})
                           </span>
@@ -341,7 +341,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('width', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -394,7 +394,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('height', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -447,7 +447,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('diameter', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -502,7 +502,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('speedIndex', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -522,7 +522,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Letztenindex{' '}
+                Lastenindex{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.lastIndex.length > 0
                     ? `(${selectedFilters.lastIndex.length})`
@@ -557,7 +557,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('lastIndex', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -580,7 +580,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Kraftstoffklasse{' '}
+                Kraftstoffeffizienz{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.fuelClass.length > 0
                     ? `(${selectedFilters.fuelClass.length})`
@@ -621,7 +621,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('fuelClass', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -642,7 +642,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Nasshaftungsklasse{' '}
+                Nasshaftung{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.wetGrip.length > 0
                     ? `(${selectedFilters.wetGrip.length})`
@@ -681,7 +681,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('wetGrip', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>
@@ -702,7 +702,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Geräuschklasse{' '}
+                Externes Rollgeräusch in dB{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.noise.length > 0
                     ? `(${selectedFilters.noise.length})`
@@ -735,7 +735,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                             handleFilterChange('noise', String(label))
                           }
                         />
-                        {label || 'Unknown'}
+                        {label || 'Unbekannt'}
                         <span className="ml-1 text-gray-400">
                           ({item.count ?? 0})
                         </span>

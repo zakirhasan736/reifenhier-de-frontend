@@ -484,7 +484,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Kraftstoffklasse
+                                Kraftstoffeffizienz
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -492,7 +492,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items  flex items-center gap-0">
                               <div className="left-cont px-3 py-2 border-b border-r border-r-border-100 border-b-border-100 max-w-[160px] w-full capitalize font-semibold body-regular font-primary">
-                                Nasshaftungsklasse
+                                Nasshaftung
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[16px] text-left text-[#404042]">
                                 <div className="skeleton h-2 w-12 bg-mono-60"></div>
@@ -846,18 +846,18 @@ const handleToggleWishlist = async () => {
                     <div className="input-type-text flex items-center gap-6 text-primary-70 font-medium text-[18px] capitalized text-left w-full">
                       {product.cheapest_offer === product.expensive_offer ? (
                         <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                          €{product.search_price}
+                          {product.search_price} €
                         </span>
                       ) : (
                         <div className="price-box flex items-center gap-2">
                           <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                            €{product.cheapest_offer}
+                            {product.cheapest_offer} €
                           </span>
                           <span
                             style={{ textDecoration: 'line-through' }}
                             className="text-[18px] md:text-[20px] font-secondary font-medium text-[#86878A] leading-[140%] text-line-through"
                           >
-                            €{product.expensive_offer}
+                            {product.expensive_offer} €
                           </span>
                         </div>
                       )}
@@ -957,7 +957,7 @@ const handleToggleWishlist = async () => {
                   </div>
 
                   <div className="product-cta-box flex lg:flex-row flex-col gap-4 mt-4 max-w-[375px] sm:max-w-[375px] w-full">
-                    <div className="product-card-btn-states  lg:max-w-[173px] w-full">
+                    <div className="product-card-btn-states lg:min-w-[173px] w-full">
                       <Link
                         href={`${apiUrl}/out/${
                           product.cheapest_vendor?.affiliate_product_cloak_url
@@ -980,7 +980,7 @@ const handleToggleWishlist = async () => {
                             height={24}
                             loading="lazy"
                           />{' '}
-                          Zum Angebot
+                          {product.cheapest_vendor?.vendor}
                         </button>
                       </Link>
                     </div>
@@ -1050,7 +1050,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Kategorie
+                                Reifentyp
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.merchant_product_third_category ||
@@ -1067,7 +1067,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Kraftstoffklasse
+                                Kraftstoffeffizienz
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.fuel_class || 'N/A'}
@@ -1075,7 +1075,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Nasshaftungsklasse
+                                Nasshaftung
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.wet_grip || 'N/A'}
@@ -1123,7 +1123,7 @@ const handleToggleWishlist = async () => {
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
                               <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
-                                Lastindex
+                                Lastenindex
                               </div>
                               <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
                                 {product.lastIndex || 'N/A'}
@@ -1153,8 +1153,7 @@ const handleToggleWishlist = async () => {
                     Bestes Angebot
                   </h2>
                   <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#89898B]">
-                    Kostenloser Versand, vertrauenswürdige Marken und täglich
-                    die niedrigsten Preise!
+                    Vertrauenswürdige Marken und täglich die niedrigsten Preise!
                   </p>
                 </div>
                 <div className="offer-vendor-navigator hidden items-baseline-last gap-5">
@@ -1369,7 +1368,7 @@ const handleToggleWishlist = async () => {
                                         type="button"
                                         className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
                                       >
-                                        Shopdaten
+                                        Shop Informationen
                                       </button>
                                     </Link>
                                   </div>

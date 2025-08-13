@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-
+import Cookies from 'js-cookie';
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -14,7 +14,7 @@ import {
 
 import { addProduct, openModal } from '@/store/compareSlice';
 import type { RootState, AppDispatch } from '@/store/store';
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 interface RelatedCheaperItem {
   _id: string;
   brand_name: string;
@@ -42,6 +42,24 @@ interface ProductCardProps {
   noise_class: string;
   in_stock: string;
   showCompareButton?: boolean;
+  offers?: Offer[];
+}
+interface Offer {
+  brand: string;
+  vendor_logo: string;
+  vendor: string;
+  brand_name: string;
+  product_category: string;
+  product_name: string;
+  price: number;
+  vendor_id: string;
+  aw_deep_link: string;
+  savings_percent: string;
+  delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
+  delivery_time: string;
+  payment_icons: string[];
+  original_affiliate_url: string;
+  affiliate_product_cloak_url: string;
 }
 interface WishlistProduct {
   _id: string;
@@ -75,7 +93,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   cheapest_offer,
   expensive_offer,
   savings_percent,
-  related_cheaper,
+  offers,
   product_name,
   dimensions,
   fuel_class,
@@ -180,7 +198,7 @@ const isFavorited = useMemo(() => {
         return '#b7e4f9';
     }
   };
-
+const uuidCookie = Cookies.get('uuid') || 'guest';
   return (
     <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex flex-col duration-300">
       <div className="card-header py-3 px-4 relative">
@@ -360,40 +378,46 @@ const isFavorited = useMemo(() => {
               </p>
             )}
         </div>
-        <p className="product-price text-primary-100 font-normal font-secondary text-[14px] leading-[150%] mt-4 flex items-center gap-1">
+        <p className="product-price text-primary-100 font-normal font-secondary text-[14px] mt-4 flex items-center gap-1">
           <span className="text-[14px] font-normal font-secondary text-[#86878A]">
             Aus:
           </span>{' '}
-          <span className="text-[20px] font-normal font-secondary text-[#404042]">
-            €
-          </span>
           {cheapest_offer === expensive_offer ? (
-            <span className="text-[18px] font-medium font-secondary text-[#404042]">
-              {search_price}
-            </span>
+            <>
+              <span className="text-[18px] font-medium font-secondary text-[#404042]">
+                {search_price}
+              </span>
+              <span className="text-[20px] font-normal font-secondary text-[#404042]">
+                €
+              </span>
+            </>
           ) : (
             <>
               <span className="text-[18px] font-medium font-secondary text-[#404042]">
-                {cheapest_offer}
+                {cheapest_offer} €
               </span>
               <span className="ml-3 text-[#C6C7CC]"></span>
               <span
                 style={{ textDecoration: 'line-through' }}
                 className="text-[16px] font-secondary font-normal text-[#C6C7CC] leading-[140%] text-line-through"
               >
-                €{expensive_offer}
+                {expensive_offer} €
               </span>{' '}
             </>
           )}
         </p>
       </div>
-      <div className="card-foot px-4 pb-3 pt-4 mt-auto">
+      <div className="card-foot px-4 pb-3 pt-4">
         <Link href={`/products/${_id}`} passHref>
           <button
             type="button"
-            className="max-w-full w-full text-[14px] font-medium leading-[120%] font-secondary max-md:text-[14px] ml-auto block border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 cursor-pointer py-[11.5px] px-8"
+            className="max-w-full flex items-center w-full text-[14px] font-medium leading-[120%] font-secondary max-md:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"
           >
-            Details anzeigen
+            Alle Angebote{' '}
+            {Array.isArray(offers) && offers.length > 0 && (
+              <>({offers.length})</>
+            )}{' '}
+            anzeigen
           </button>
         </Link>
         {showCompareButton && (
@@ -415,34 +439,48 @@ const isFavorited = useMemo(() => {
                   width={20}
                   height={20}
                 />{' '}
-                Zum Vergleich hinzufügen
+                Alle Angebote anzeigen
               </>
             )}
           </button>
         )}
-        {Array.isArray(related_cheaper) && related_cheaper.length > 0 && (
+        {Array.isArray(offers) && offers.length > 0 && (
           <>
             <div className="divider !h-[1px] !mt-3 !mb-1 !bg-[#F0F0F2]"></div>
             <h4 className="font-primary font-normal text-[12px] mb-[6px] text-left text-[#86878a] leading-[140%]">
-              Günstigere Alternativen
+              Direkt zum günstigsten Angebot
             </h4>
             <ul className="competitor-product-lists flex flex-col gap-[2px]">
-              {related_cheaper.map(item => (
-                <li
-                  key={item._id}
-                  className="competitor-lists-item flex items-center justify-between"
-                >
-                  <Link
-                    href={`/products/${item._id}`}
-                    className="font-secondary font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
-                  >
-                    {item.brand_name}
-                  </Link>
-                  <span className="font-secondary font-normal text-[14px] text-left text-[#86878A] leading-[140%]">
-                    €{item.price}
-                  </span>
-                </li>
-              ))}
+              {offers
+                .slice() // copy array to avoid mutating original
+                .sort((a, b) => a.price - b.price)
+                .slice(0, 3)
+                .map(item => {
+                  return (
+                    <li
+                      key={item.vendor_id}
+                      className="competitor-lists-item flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`${apiUrl}/out/${
+                            item.affiliate_product_cloak_url
+                          }?product=${_id}&uuid=${
+                            uuidCookie || 'guest'
+                          }&from=product-page`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-secondary font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
+                        >
+                          {item.vendor}
+                        </Link>
+                      </div>
+                      <span className="font-secondary font-normal text-[14px] text-left text-[#86878A] leading-[140%]">
+                        {item.price} €
+                      </span>
+                    </li>
+                  );
+                })}
             </ul>
           </>
         )}

@@ -80,7 +80,7 @@ const FilterForm = () => {
         <div className="tyre-search-box lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
           <div className="tyre-type-area flex-wrap flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
             <CustomSelect
-              label="Kategorie"
+              label="Reifentyp"
               value={category}
               onChange={val => {
                 setCategory(val);
@@ -89,7 +89,7 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.categories || []}
-              placeholder="Kategorie auswählen"
+              placeholder="Reifentyp auswählen"
             />
 
             <CustomSelect
@@ -101,7 +101,7 @@ const FilterForm = () => {
                 setDiameter('');
               }}
               options={data.widths || []}
-              placeholder="Ausführung wählen"
+              placeholder="Breite auswählen"
               disabled={!category}
             />
 
@@ -118,7 +118,7 @@ const FilterForm = () => {
             />
 
             <CustomSelect
-              label="Durchmesser"
+              label="Durchmesser (Zoll)"
               value={diameter}
               onChange={setDiameter}
               options={data.diameters || []}
@@ -147,20 +147,20 @@ const FilterForm = () => {
                 />
 
                 <CustomSelect
-                  label="Kraftstoffklasse"
+                  label="Kraftstoffeffizienz"
                   value={fuelClass}
                   onChange={setFuelClass}
                   options={data.fuelClasses || []}
-                  placeholder="Kraftstoffklasse auswählen"
+                  placeholder="Kraftstoffeffizienz auswählen"
                   disabled={!diameter}
                 />
 
                 <CustomSelect
-                  label="Lärm"
+                  label="Externes Rollgeräusch in dB"
                   value={noise}
                   onChange={setNoise}
                   options={data.noises || []}
-                  placeholder="Lärm auswählen"
+                  placeholder="Externes Rollgeräusch in dB"
                   disabled={!diameter}
                 />
               </>
@@ -188,7 +188,7 @@ const FilterForm = () => {
           onClick={() => setShowMoreFilters(prev => !prev)}
           className="text-primary-100 mt-5 text-[14px] text-left font-secondary font-normal leading-[120%] cursor-pointer lg:relative lg:bottom-0 lg:left-0 absolute bottom-10 left-8 max-sm:left-4"
         >
-          {showMoreFilters ? 'Weniger Filter' : 'Mehr Filter'}
+          {showMoreFilters ? 'Weniger Filter' : 'Weitere Filteroptionen'}
         </button>
       </div>
     </div>
