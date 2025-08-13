@@ -7,7 +7,7 @@ const HowItWorks: React.FC = () => {
         <div className="custom-container">
           <div className="how-it-works-content">
             <div className="how-it-works-right-content w-full">
-              <ul className="work-process-lists lg:gap-6 grid md:grid-cols-4 grid-cols-2 gap-4">
+              <ul className="work-process-lists lg:gap-6 grid md:grid-cols-2 grid-cols-2 gap-4">
                 <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center justify-start text-center px-[10px] py-[30px]">
                   <div className="icons-item relative mb-5 lg:w-[59px] h-12 w-[45px]">
                     <Image
@@ -27,7 +27,7 @@ const HowItWorks: React.FC = () => {
                     </p>
                   </div>
                 </li>
-                <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center  justify-start text-center px-[10px] py-[30px]">
+                <li className="work-process-item hidden border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex-col gap-0 items-center  justify-start text-center px-[10px] py-[30px]">
                   <div className="icons-item relative mb-5 lg:w-[59px] h-12 w-[45px]">
                     <Image
                       src="/images/icons/trust-icons.svg"
@@ -65,7 +65,7 @@ const HowItWorks: React.FC = () => {
                     </p>
                   </div>
                 </li>
-                <li className="work-process-item  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full flex flex-col gap-0 items-center justify-start text-center px-[10px] py-[30px]">
+                <li className="work-process-item hidden  border border-[#F0F0F2] rounded-[10px] w-full max-md:flex-col max-md:w-full  flex-col gap-0 items-center justify-start text-center px-[10px] py-[30px]">
                   <div className="icons-item relative mb-5 lg:w-[59px] h-12 w-[45px]">
                     <Image
                       src="/images/icons/group-9.svg"

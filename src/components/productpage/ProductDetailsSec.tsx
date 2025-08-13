@@ -815,14 +815,18 @@ const handleToggleWishlist = async () => {
                       </p>
                     </div>
                     <div className="product-details-brand-info">
-                      <Image
-                        src={product.cheapest_vendor?.vendor_logo}
-                        width={140}
-                        height={37}
-                        loading="lazy"
-                        className="lg:w-[140px] lg:h-[37px] h-[27px] w-[80px] object-contain"
-                        alt="vendor image"
-                      />
+                      <p className="text-xl md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%] flex justify-start items-center gap-2">
+                        <span className='text-[14px]'>Bester Preis:</span>{' '}
+                        <Image
+                          src={product.cheapest_vendor?.vendor_logo}
+                          width={140}
+                          height={37}
+                          loading="lazy"
+                          className="lg:w-auto lg:h-[37px] h-[27px] w-auto object-contain"
+                          alt="vendor image"
+                        />{' '}
+                        {product.cheapest_vendor?.vendor}
+                      </p>
                       <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
                           {product.cheapest_vendor?.delivery_cost === '0' ||
@@ -980,7 +984,7 @@ const handleToggleWishlist = async () => {
                             height={24}
                             loading="lazy"
                           />{' '}
-                          {product.cheapest_vendor?.vendor}
+                          Zum Angebot
                         </button>
                       </Link>
                     </div>
