@@ -91,7 +91,7 @@ const ProductListingsSec = () => {
   const mergedFilters = useMemo(() => {
     return { ...DEFAULT_FILTERS, ...filters };
   }, [filters]);
-console.log(products, 'Products in ProductListingsSec');
+// console.log(products, 'Products in ProductListingsSec');
   useEffect(() => {
     if (!searchParams) return;
 

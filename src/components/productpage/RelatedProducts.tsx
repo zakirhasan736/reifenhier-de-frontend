@@ -73,7 +73,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
                     </SwiperSlide>
                   ))
                 : relatedProductData.map((product, index) => (
-                    <SwiperSlide key={product.dimensions || index}>
+                    <SwiperSlide key={product._id || index}>
                       <ProductCard {...product} showCompareButton={true} />
                     </SwiperSlide>
                   ))}

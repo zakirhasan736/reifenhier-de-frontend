@@ -795,7 +795,7 @@ const handleToggleWishlist = async () => {
                         {product.product_name || 'product name'}
                       </h2>
                       <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
-                        <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-2">
                           <Image
                             src={'/images/icons/Vector.svg'}
                             alt="Star"
@@ -808,7 +808,7 @@ const handleToggleWishlist = async () => {
                               {product.average_rating}
                             </span>
                           ) : null}
-                        </div>{' '}
+                        </span>{' '}
                         <span className="text-[#404042]">
                           {product.review_count || 0} Bewertungen
                         </span>
