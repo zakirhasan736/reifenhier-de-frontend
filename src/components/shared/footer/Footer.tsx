@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
       <div className="footer-wrapper pt-4">
         <div className="custom-container">
           <div className="footer-main-centent">
-            <div className="footer-cta-section bg-primary-100 md:py-[60px] py-8 lg:px-[78px] md:px-12 px-6 rounded-[20px]">
+            <div className="footer-cta-section bg-primary-100 md:py-[60px] py-8 xl:px-[78px] md:px-9 px-6 rounded-[20px]">
               <div className="footer-cta-content flex items-center justify-between max-sm:flex-col max-sm:gap-4">
                 <div className="left-content">
                   <h2 className="font-medium font-primary text-[24px] lg:text-[30px] md:text-left text-center text-mono-0 leading-[120%]">
@@ -167,16 +167,16 @@ const Footer: React.FC = () => {
               </div>
             </div>
             <div className="footer-bottom-area w-full pt-[13px] pb-[20px] border-t border-t-border-100 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
-              <div className="foot-centent w-full lg:gap-0 gap-4 max-sm:gap-1 sm:flex-row flex-col flex items-center justify-between">
+              <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
                 <div className="foot-left-content">
-                  <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[16px] text-[#86878A] leading-[150%]">
+                  <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#86878A] leading-[150%]">
                     © 2025 reifencheck.de Alle Rechte vorbehalten.
                   </p>
                 </div>
                 <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">
                   <li className="foot-middle-item">
                     <Link
-                      className="md:text-[16px] max-sm:text-center text-[14px] whitespace-nowrap text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                      className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#86878A]"
                       href="/privacy-policy"
                     >
                       Datenschutz-Bestimmungen
@@ -184,23 +184,14 @@ const Footer: React.FC = () => {
                   </li>
                   <li className="foot-middle-item">
                     <Link
-                      className="md:text-[16px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[150%] text-[#86878A]"
+                      className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#86878A]"
                       href="/terms-of-service"
                     >
                       Nutzungsbedingungen
                     </Link>
                   </li>
                 </ul>
-                {/* <p className="foot-right-content md:text-[15px] max-sm:text-center text-[13px] whitespace-nowrap text-left font-normal font-secondary leading-[150%] text-[#86878A]">
-                  <Link
-                    href="https://www.webdevzakir.tech"
-                    rel="nofollow"
-                    target="_blank"
-                    className="text-[#86878A] md:text-[15px] text-[13px] hover:text-primary-100 transition-colors"
-                  >
-                    Developed by WebDevZakir
-                  </Link>
-                </p> */}
+               
               </div>
             </div>
           </div>

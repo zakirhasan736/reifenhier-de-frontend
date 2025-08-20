@@ -21,15 +21,27 @@ import { AppDispatch, RootState } from '@/store/store';
 
 const downloadCSV = (products: Product[]) => {
   const csvContent = [
-    ['Name', 'Brand', 'Dimensions', 'Price', 'Fuel', 'Wet Grip', 'Noise'],
+    [
+      'Name',
+      // 'Marke',
+      'Abmessungen',
+      'Preis',
+      'Nasshaftung',
+      'Kraftstoffeffizienz',
+      'Rollgeräusch in dB	',
+      'Geschwindigkeitsindex',
+      'Lastenindex',
+    ],
     ...products.map(p => [
       p.product_name,
-      p.brand_name,
+      // p.brand_name,
       p.dimensions,
       p.search_price,
-      p.fuel_class,
       p.wet_grip,
+      p.fuel_class,
       p.noise_class,
+      p.speedIndex,
+      p.lastIndex,
     ]),
   ]
     .map(e => e.join(','))
@@ -67,7 +79,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
   }, [isOpen, dispatch]);
 
   if (!isOpen || products.length === 0) return null;
-
+  console.log(products);
   const handleRemove = (id: string) => {
     dispatch(removeProduct(id));
     toast.success('Product removed');
@@ -82,7 +94,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
     >
       <motion.div
         ref={modalRef}
-        className="bg-white main-popup-wrapper relative p-4 rounded-t-2xl md:rounded-lg w-full md:max-w-6xl md:max-h-[90vh] overflow-auto"
+        className="bg-white main-popup-wrapper relative p-4 rounded-t-2xl md:rounded-lg w-full md:max-w-7xl md:max-h-[90vh] overflow-auto"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
@@ -105,12 +117,14 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                 {[
                   'Bild',
                   'Name',
-                  'Marke',
+                  // 'Marke',
                   'Abmessungen',
                   'Preis',
-                  'Kraftstoff',
-                  'Nassgriff',
-                  'Geräusch',
+                  'Geschwindigkeitsindex',
+                  'Lastenindex',
+                  'Kraftstoffeffizienz',
+                  'Nasshaftung',
+                  'Rollgeräusch in dB',
                   'Entfernen',
                 ].map((title, i) => (
                   <th
@@ -125,7 +139,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
             <tbody>
               {products.map(p => (
                 <tr key={p._id} className="text-left border-t">
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-2 text-center min-w-[60px]">
                     <Image
                       src={p.product_image}
                       alt={p.product_name}
@@ -133,27 +147,40 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                       height={60}
                     />
                   </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
-                    {p.product_name}
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full">
+                    {[
+                      p.brand_name,
+                      p.product_name
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
+                      .toUpperCase()}
                   </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
+                  {/* <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.brand_name}
-                  </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
+                  </td> */}
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.dimensions}
                   </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
-                    €{p.search_price}
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                    {p.search_price} €
                   </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                    {p.speedIndex}
+                  </td>
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                    {p.lastIndex}
+                  </td>
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.fuel_class}
                   </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.wet_grip}
                   </td>
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.noise_class}
                   </td>
+
                   <td className="px-3 py-2 text-[13px] whitespace-nowrap">
                     <button
                       onClick={() => handleRemove(p._id)}
@@ -199,7 +226,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
           <div className="mt-6 border-t pt-4">
             <button
               onClick={() => setShowRelated(!showRelated)}
-              className="text-sm text-primary-100 underline font-medium"
+              className="text-sm text-primary-100 underline cursor-pointer font-medium"
             >
               {showRelated
                 ? 'Verwandte Produkte ausblenden'
@@ -250,7 +277,16 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                             />
                             <div className="flex-1">
                               <p className="text-[13px] font-medium">
-                                {prod.product_name}
+                                {[
+                                  prod.brand_name,
+                                  prod.product_name.replace(
+                                    /^\d{3}\/\d{2} R\d{2}\s*/,
+                                    ''
+                                  ),
+                                ]
+                                  .filter(Boolean)
+                                  .join(' ')
+                                  .toUpperCase()}
                               </p>
                               <p className="text-[12px] text-gray-500">
                                 {prod.brand_name}

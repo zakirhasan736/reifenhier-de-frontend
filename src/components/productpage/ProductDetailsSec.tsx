@@ -132,8 +132,10 @@ const ProductSinglepage: React.FC<ProductProps> = ({
           product_image: product.product_image,
           dimensions: product.dimensions,
           search_price: product.search_price,
-          fuel_class: product.fuel_class,
           wet_grip: product.wet_grip,
+          speedIndex: product.speedIndex,
+          lastIndex: product.lastIndex,
+          fuel_class: product.fuel_class,
           noise_class: product.noise_class,
         })
       );
@@ -564,13 +566,13 @@ const handleToggleWishlist = async () => {
             </div>
           </section>
         ) : (
-          <section className="product-singlepage-section">
+          <section className="product-singlepage-section overflow-hidden">
             <div className="custom-container w-full">
               <div className="product-breadcrumb-area pt-6 pb-8 max-sm:pb-4 flex items-center justify-start gap-3">
                 <Link href="/products" className="">
                   <button
                     type="button"
-                    className="flex items-center gap-2 cursor-pointer md:text-[16px] text-[12px] font-normal text-[#404042] font-primary"
+                    className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
                   >
                     <Image
                       src="/images/icons/arrow-left.svg"
@@ -583,28 +585,34 @@ const handleToggleWishlist = async () => {
                     Zurück zum Produkt
                   </button>
                 </Link>
-                <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden  md:gap-[10px] mx-auto">
-                  <li className="breadcrumb-item body-caption prev-pages flex items-center gap-[10px]">
+                <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden md:gap-2  lg:gap-[10px] mx-auto">
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
                     <Link
-                      className="body-caption capitalize text-mono-100"
+                      className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
                       href="/"
                     >
                       Heim
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>
-                  <li className="breadcrumb-item body-caption prev-pages flex items-center gap-[10px]">
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
                     <Link
-                      className="body-caption capitalize text-mono-100"
+                      className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
                       href=""
                     >
                       {product.merchant_product_third_category || 'Products'}
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>
-                  <li className="breadcrumb-item body-caption current-page text-mono-70 flex items-center gap-[10px]">
-                    <span className="body-caption text-mono-70">
-                      {product.product_name}
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-mono-70 flex items-center gap-[10px]">
+                    <span className="body-caption text-[12px] lg:text-base text-mono-70">
+                      {[
+                        product.brand_name,
+                        product.product_name
+                      ]
+                        .filter(Boolean)
+                        .join(' ')
+                        .toUpperCase()}
                     </span>
                   </li>
                 </ul>
@@ -792,7 +800,13 @@ const handleToggleWishlist = async () => {
                     </ul>
                     <div className="product-details-title-box mb-4">
                       <h2 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
-                        {product.product_name || 'product name'}
+                        {[
+                          product.brand_name,
+                          product.product_name
+                        ]
+                          .filter(Boolean)
+                          .join(' ')
+                          .toUpperCase()}
                       </h2>
                       <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
                         <span className="flex items-center gap-2">
@@ -805,7 +819,9 @@ const handleToggleWishlist = async () => {
                           />
                           {product.average_rating ? (
                             <span className="pr-3 text-[#404042]">
-                              {product.average_rating}
+                              {product.average_rating
+                                .toFixed(1)
+                                .replace('.', ',')}
                             </span>
                           ) : null}
                         </span>{' '}
@@ -815,8 +831,8 @@ const handleToggleWishlist = async () => {
                       </p>
                     </div>
                     <div className="product-details-brand-info">
-                      <p className="text-xl md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%] flex justify-start items-center gap-2">
-                        <span className='text-[14px]'>Bester Preis:</span>{' '}
+                      <p className="text-base font-normal font-secondary text-[#404042] leading-[140%] flex md:flex-row flex-col items-start justify-start md:items-center gap-2">
+                        <span className="text-[14px] whitespace-nowrap">Bester Preis:</span>{' '}
                         <Image
                           src={product.cheapest_vendor?.vendor_logo}
                           width={140}
@@ -833,7 +849,13 @@ const handleToggleWishlist = async () => {
                           product.cheapest_vendor?.delivery_cost === '0.00'
                             ? 'Kostenloser Versand'
                             : product.cheapest_vendor?.delivery_cost
-                            ? `Lieferkosten: ${product.cheapest_vendor.delivery_cost}`
+                            ? `Lieferkosten: ${parseFloat(
+                                product.cheapest_vendor.delivery_cost
+                                  .toString()
+                                  .replace(/[^\d.]/g, '')
+                              )
+                                .toFixed(2)
+                                .replace('.', ',')} €`
                             : 'Kostenloser Versand'}
                         </li>
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
@@ -1201,7 +1223,7 @@ const handleToggleWishlist = async () => {
                                 className="offer-product-card-item  not-last:mb-5"
                               >
                                 <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                                  <div className="offer-product-top-cont w-full md:max-w-[170px] max-sm:mb-3 flex justify-between items-start gap-2">
+                                  <div className="offer-product-top-cont w-full md:max-w-[170px] mb-3 md:mb-0 flex flex-row md:flex-col lg:flex-row justify-between items-start gap-2 md:gap-3 lg:gap-2">
                                     <div className="cont-box">
                                       <div className="title-box flex gap-2 items-center">
                                         <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
@@ -1254,55 +1276,87 @@ const handleToggleWishlist = async () => {
                                         Inklusive Versandpreis
                                       </p>
                                     </div>
-                                    <Image
-                                      src={offer.vendor_logo}
-                                      alt={`${offer.vendor} logo`}
-                                      width={140}
-                                      height={37}
-                                      loading="lazy"
-                                      className="lg:w-[140px] lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                    />
+                                    <Link
+                                      href={`${apiUrl}/out/${
+                                        offer.affiliate_product_cloak_url
+                                      }?product=${product._id}&uuid=${
+                                        uuidCookie || 'guest'
+                                      }&from=product-page`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <Image
+                                        src={offer.vendor_logo}
+                                        alt={`${offer.vendor} logo`}
+                                        width={140}
+                                        height={37}
+                                        loading="lazy"
+                                        className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                      />
+                                    </Link>
                                   </div>
-                                  <div className="vendor-box">
-                                    <Image
-                                      src={offer.vendor_logo}
-                                      alt={`${offer.vendor} logo`}
-                                      width={140}
-                                      height={37}
-                                      loading="lazy"
-                                      className="lg:w-[140px] lg:block hidden lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                    />
+                                  <div className="vendor-box  lg:block hidden">
+                                    <Link
+                                      href={`${apiUrl}/out/${
+                                        offer.affiliate_product_cloak_url
+                                      }?product=${product._id}&uuid=${
+                                        uuidCookie || 'guest'
+                                      }&from=product-page`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <Image
+                                        src={offer.vendor_logo}
+                                        alt={`${offer.vendor} logo`}
+                                        width={140}
+                                        height={37}
+                                        loading="lazy"
+                                        className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                      />
+                                    </Link>
                                   </div>
-                                  <div className="offer-product-bottom-cont max-sm:mb-3  md:max-w-[220px] w-full">
+                                  <div className="offer-product-bottom-cont max-sm:mb-3 md:max-w-[180px]  xl:max-w-[220px] w-full">
                                     <div className="offer-info-right-cont">
                                       <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
                                         Zahlungsmethoden:
                                       </h6>
                                       <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
                                         {offer.payment_icons?.map(
-                                          (icon: string, index: number) => (
-                                            <li
-                                              key={index}
-                                              className="payment-method-item h-7"
-                                            >
-                                              <Image
-                                                src={icon}
-                                                alt={`payment method ${
-                                                  index + 1
-                                                }`}
-                                                width={45}
-                                                height={48}
-                                                loading="lazy"
-                                                className="h-7 object-contain"
-                                              />
-                                            </li>
-                                          )
+                                          (icon: string, index: number) => {
+                                            // Extract payment name from icon path, e.g. '/images/icons/payments/Visa.png' → 'Visa'
+                                            const match = icon.match(
+                                              /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i
+                                            );
+                                            const paymentName = match
+                                              ? match[1].replace(/-/g, ' ')
+                                              : `Zahlungsmethode ${index + 1}`;
+                                            return (
+                                              <li
+                                                key={index}
+                                                className="payment-method-item cursor-pointer h-7 flex items-center gap-2"
+                                              >
+                                                <span
+                                                  className="tooltip tooltip-top"
+                                                  data-tip={paymentName}
+                                                >
+                                                  <Image
+                                                    src={icon}
+                                                    alt={paymentName}
+                                                    width={45}
+                                                    height={48}
+                                                    loading="lazy"
+                                                    className="h-7 object-contain"
+                                                  />
+                                                </span>
+                                              </li>
+                                            );
+                                          }
                                         )}
                                       </ul>
                                     </div>
                                   </div>
-                                  <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[280px] flex flex-col gap-2">
-                                    <li className="flex items-center gap-2">
+                                  <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[220px] xl:max-w-[280px] flex flex-col gap-2">
+                                    <li className="flex items-start gap-2">
                                       <Image
                                         src="/images/icons/iconoir_delivery-truck.svg"
                                         alt="truck icons"
@@ -1312,11 +1366,10 @@ const handleToggleWishlist = async () => {
                                         className="h-5 w-5 object-contain rounded-[4px]"
                                       />{' '}
                                       <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                        Lieferung:{' '}
-                                        {offer.delivery_time || 'N/A'}
+                                        Lieferung: {offer.delivery_time || ''}
                                       </span>
                                     </li>
-                                    <li className="flex items-center gap-2">
+                                    <li className="flex items-start gap-2">
                                       <Image
                                         src="/images/icons/check-circle.svg"
                                         alt="tick icon"
@@ -1343,10 +1396,11 @@ const handleToggleWishlist = async () => {
                                       }&from=product-page`}
                                       target="_blank"
                                       rel="noopener noreferrer"
+                                      className="cta-button-shop"
                                     >
                                       <button
                                         type="button"
-                                        className="w-full flex whitespace-nowrap items-center justify-center max-sm:text-[14px] h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                        className="w-full flex  whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer  hover:border-primary-100 hover:opacity-80 transition ease-in"
                                       >
                                         <Image
                                           src="/images/icons/shopping-bag.png"
@@ -1370,7 +1424,7 @@ const handleToggleWishlist = async () => {
                                     >
                                       <button
                                         type="button"
-                                        className="w-full flex items-center max-sm:text-[14px] justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
+                                        className="w-full flex items-center shop-info-btn text-[14px] lg:text-base justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
                                       >
                                         Shop Informationen
                                       </button>

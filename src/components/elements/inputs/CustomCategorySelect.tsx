@@ -9,6 +9,7 @@ type Props = {
   onChange: (val: string) => void;
   disabled?: boolean;
   placeholder?: string;
+  className?: string;
 };
 
 const CustomSelect: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const CustomSelect: React.FC<Props> = ({
   onChange,
   disabled,
   placeholder = 'Select',
+  className = '',
 }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -35,14 +37,15 @@ const CustomSelect: React.FC<Props> = ({
   const selected = options.find(o => o.name === value);
 
   return (
-    <div className="relative max-w-[139px] md:max-w-[155px] lg:max-w-[170px] w-full" ref={ref}>
+
+    <div className={`relative w-full ${className}`} ref={ref}>
       <label className="text-[#86878A] md:text-[14px] text-[12px] font-normal font-secondary leading-[120%] mb-[7px] block">
         {label}
       </label>
       <button
         type="button"
-        className={`input overflow-hidden cursor-pointer !rounded-[4px] w-full flex items-center justify-between !bg-mono-0 !border-2 !border-solid !border-border-100 md:px-4 px-2 py-2 md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%] !text-[#86878A] ${
-          disabled ? 'opacity-60 pointer-events-none' : ''
+        className={`input overflow-hidden cursor-pointer !rounded-[4px] w-full flex items-center justify-between !bg-mono-0 !border-2 !border-solid !border-border-100 md:pl-3 md:pr-6 pl-2 pr-5 py-2 md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%] !text-[#86878A] ${
+          disabled ? 'opacity-80 pointer-events-none' : ''
         }`}
         onClick={() => setOpen(o => !o)}
         disabled={disabled}
@@ -53,7 +56,7 @@ const CustomSelect: React.FC<Props> = ({
             : placeholder}
         </span>
         <span
-          className={`arrow absolute right-0 w-5 flex justify-center items-center h-full bg-mono-0 top-0 ${
+          className={`arrow absolute right-0 w-7 flex justify-center items-center border-l-2 border-border-100 h-full bg-mono-0 top-0 ${
             open ? 'open' : 'closed'
           }`}
         >

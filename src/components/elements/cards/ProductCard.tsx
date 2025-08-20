@@ -198,10 +198,15 @@ const isFavorited = useMemo(() => {
         return '#b7e4f9';
     }
   };
+  // const extractSpec = (dimension: string) => {
+  //   const parts = dimension.split(' ');
+  //   return parts.length > 1 ? parts.slice(1).join(' ') : '';
+  // };
+
 const uuidCookie = Cookies.get('uuid') || 'guest';
   return (
     <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex flex-col duration-300">
-      <div className="card-header py-3 px-4 relative">
+      <div className="p-card-header py-3 px-4 relative">
         <div className="status-area absolute top-0 z-50 left-0 w-full py-3 px-4 flex items-center justify-between">
           <p className="review-rating text-[14px] font-normal font-secondary leading-[150%] text-[#404042] flex items-center gap-[3px]">
             <Image
@@ -209,9 +214,12 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               alt="average rating"
               width={16}
               height={16}
-            />{' '}
-            {average_rating > 0 && <span>{average_rating}</span>}
+            />
+            {average_rating > 0 && (
+              <span>{average_rating.toFixed(1).replace('.', ',')}</span>
+            )}
           </p>
+
           <button onClick={handleToggleWishlist} className="cursor-pointer">
             <div className="relative w-5 h-5">
               <Image
@@ -269,12 +277,16 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           </p>
         </div>
       </div>
-      <div className="card-body !flex !flex-col !gap-0 px-4 pt-3 pb-0">
-        <h3 className="h6 text-[15px]  text-[#404042] h-[37px] font-medium font-primary mb-3">
+      <div className="p-card-body px-4 pt-3 pb-0">
+        <h3 className="h6 text-[15px] text-[#404042] h-[37px] font-medium font-primary mb-3">
           <Link href={`/products/${_id}`} passHref>
-            {product_name}
+            {[brand_name, product_name]
+              .filter(Boolean)
+              .join(' ')
+              .toUpperCase()}
           </Link>
         </h3>
+
         <div className="cat-diameter-box flex items-center justify-between w-full gap-1">
           <p className="tyres-category text-left font-normal capitalize text-[#89898B] text-[14px] font-secondary">
             {merchant_product_third_category}
@@ -406,82 +418,85 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
             </>
           )}
         </p>
+        <div className="button-box pt-4">
+          <Link href={`/products/${_id}`} passHref>
+            <button
+              type="button"
+              className="max-w-full flex items-center w-full text-[14px] md:text-[14px] font-medium leading-[120%] font-secondary xl:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"
+            >
+              Alle Angebote{' '}
+              {Array.isArray(offers) && offers.length > 0 && (
+                <>({offers.length})</>
+              )}{' '}
+              anzeigen
+            </button>
+          </Link>
+          {showCompareButton && (
+            <button
+              type="button"
+              onClick={handleCompare}
+              className="flex items-center gap-2 mt-3 text-[14px] font-normal font-secondary text-primary-100 justify-center w-full cursor-pointer"
+            >
+              {isAlreadyCompared ? (
+                <>
+                  <span className="text-green-600">✔</span> Zum Vergleich
+                  hinzugefügt
+                </>
+              ) : (
+                <>
+                  <Image
+                    src="/images/icons/tabler_plus.svg"
+                    alt="Add to comparison"
+                    width={20}
+                    height={20}
+                  />{' '}
+                  Alle Angebote anzeigen
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
-      <div className="card-foot px-4 pb-3 pt-4">
-        <Link href={`/products/${_id}`} passHref>
-          <button
-            type="button"
-            className="max-w-full flex items-center w-full text-[14px] font-medium leading-[120%] font-secondary max-md:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"
-          >
-            Alle Angebote{' '}
-            {Array.isArray(offers) && offers.length > 0 && (
-              <>({offers.length})</>
-            )}{' '}
-            anzeigen
-          </button>
-        </Link>
-        {showCompareButton && (
-          <button
-            type="button"
-            onClick={handleCompare}
-            className="flex items-center gap-2 mt-3 text-[14px] font-normal font-secondary text-primary-100 justify-center w-full cursor-pointer"
-          >
-            {isAlreadyCompared ? (
-              <>
-                <span className="text-green-600">✔</span> Zum Vergleich
-                hinzugefügt
-              </>
-            ) : (
-              <>
-                <Image
-                  src="/images/icons/tabler_plus.svg"
-                  alt="Add to comparison"
-                  width={20}
-                  height={20}
-                />{' '}
-                Alle Angebote anzeigen
-              </>
-            )}
-          </button>
-        )}
+      <div className="p-card-foot   px-4 pb-3 ">
         {Array.isArray(offers) && offers.length > 0 && (
           <>
             <div className="divider !h-[1px] !mt-3 !mb-1 !bg-[#F0F0F2]"></div>
-            <h4 className="font-primary font-normal text-[12px] mb-[6px] text-left text-[#86878a] leading-[140%]">
-              Direkt zum günstigsten Angebot
-            </h4>
-            <ul className="competitor-product-lists flex flex-col gap-[2px]">
-              {[...offers]
-                .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
-                .slice(0, 3)
-                .map((item) => {
-                  
-                  return (
-                    <li
-                      key={item.vendor_id}
-                      className="competitor-lists-item flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`${apiUrl}/out/${
-                            item.affiliate_product_cloak_url
-                          }?product=${_id}&uuid=${
-                            uuidCookie || 'guest'
-                          }&from=product-page`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-secondary font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
-                        >
-                          {item.vendor}
-                        </Link>
-                      </div>
-                      <span className="font-secondary font-normal text-[14px] text-left text-[#86878A] leading-[140%]">
-                        <span>{item.price + ' €'}</span>
-                      </span>
-                    </li>
-                  );
-                })}
-            </ul>
+            <div className="mt-auto">
+              <h4 className="font-primary font-normal text-[12px] mb-[6px] text-left text-[#86878a] leading-[140%]">
+                Direkt zum günstigsten Angebot
+              </h4>
+              <ul className="competitor-product-lists flex flex-col gap-[2px]">
+                {[...offers]
+                  .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+                  .slice(0, 3)
+                  .map(item => {
+                    return (
+                      <li
+                        key={item.vendor_id}
+                        className="competitor-lists-item flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`${apiUrl}/out/${
+                              item.affiliate_product_cloak_url
+                            }?product=${_id}&uuid=${
+                              uuidCookie || 'guest'
+                            }&from=product-page`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-secondary font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
+                          >
+                            {item.vendor}
+                          </Link>
+                        </div>
+                        <span className="font-secondary font-normal text-[14px] text-left text-[#86878A] leading-[140%]">
+                          <span>{item.price + ' €'}</span>
+                        </span>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
           </>
         )}
       </div>

@@ -162,7 +162,7 @@ const ProductListingsSec = () => {
           <div className="product-list-header border-b border-b-[#F5F5F7] mb-6 max-md:mb-4 flex items-center justify-between pb-5 gap-5 w-full">
             <div className="filter-area-box flex items-center gap-8">
               {/* mobile view filter style start */}
-              <div className="filter-sidebar-search hidden max-md:block">
+              <div className="filter-sidebar-search xl:hidden block">
                 <input
                   id="my-drawer-filter"
                   type="checkbox"
@@ -171,7 +171,7 @@ const ProductListingsSec = () => {
                 <div className="drawer-content">
                   <label
                     htmlFor="my-drawer-filter"
-                    className="drawer-button btn text-mono-100 !outline-none text-[18px]  !shadow-none !bg-transparent !p-0 !border-none"
+                    className="drawer-button btn text-mono-100 !outline-none text-base md:text-[18px]  !shadow-none !bg-transparent !p-0 !border-none"
                   >
                     Filtern: {'  '} <FilterIcon />
                   </label>
@@ -244,7 +244,7 @@ const ProductListingsSec = () => {
                 </div>
               </div>
               {/* mobile view filter style end */}
-              <div className="product-selected-category-lists max-sm:hidden flex flex-wrap items-center gap-2">
+              <div className="product-selected-category-lists hidden xl:flex flex-wrap items-center gap-2">
                 {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
                   mergedFilters[key].map((val, idx) => (
                     <span
@@ -265,13 +265,13 @@ const ProductListingsSec = () => {
             </div>
             <SortingSearch
               onSortChange={(field, order) => {
-                dispatch(setSort({ field, order }));
+                dispatch(setSort({ field, order }));  
                 dispatch(setPage(1));
               }}
             />
           </div>
           <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6  max-xl:gap-4">
-            <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky max-md:relative max-md:h-auto top-9 max-w-[282px] max-xl:max-w-[220px]  max-md:max-w-[160px] w-full max-md:hidden">
+            <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky max-md:relative max-md:h-auto top-9 max-w-[282px] max-xl:max-w-[220px]  max-md:max-w-[160px] w-full hidden xl:block">
               <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
                 Filtern nach
               </h4>

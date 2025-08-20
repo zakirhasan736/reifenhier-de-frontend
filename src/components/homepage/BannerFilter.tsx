@@ -43,7 +43,7 @@ const FilterForm = () => {
     fuelClass,
     noise
   });
- 
+  console.log(data);
   const handleSearch = () => {
     const params = new URLSearchParams();
     params.set('category', category);
@@ -78,62 +78,79 @@ const FilterForm = () => {
 
       <div className="tyres-search-content md:absolute top-0 left-0 w-full bg-mono-0 md:px-[30px] px-4 py-4 md:py-6 rounded-[10px]">
         <div className="tyre-search-box lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
-          <div className="tyre-type-area flex-wrap flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
-            <CustomSelect
-              label="Reifentyp"
-              value={category}
-              onChange={val => {
-                setCategory(val);
-                setWidth('');
-                setHeight('');
-                setDiameter('');
-              }}
-              options={data.categories || []}
-              placeholder="Reifentyp auswählen"
-            />
+          <div className="tyre-type-area w-full">
+            <div className="max-sm:flex-wrap tyre-type-top-filter-area flex w-full items-end justify-start gap-x-4 lg:gap-y-5 gap-y-4">
+              <CustomSelect
+                label="Reifentyp"
+                value={category}
+                onChange={val => {
+                  setCategory(val);
+                  setWidth('');
+                  setHeight('');
+                  setDiameter('');
+                }}
+                className="categories-select"
+                options={(data.categories || []).filter(
+                  opt => opt.name && opt.name.trim() !== ''
+                )}
+                placeholder="Auswählen..."
+              />
 
-            <CustomSelect
-              label="Breite"
-              value={width}
-              onChange={val => {
-                setWidth(val);
-                setHeight('');
-                setDiameter('');
-              }}
-              options={data.widths || []}
-              placeholder="Breite auswählen"
-              disabled={!category}
-            />
+              <CustomSelect
+                label="Breite"
+                value={width}
+                onChange={val => {
+                  setWidth(val);
+                  setHeight('');
+                  setDiameter('');
+                }}
+                className="brand-select"
+                options={(data.widths || []).filter(
+                  opt => opt.name && opt.name.trim() !== ''
+                )}
+                placeholder="Auswählen..."
+                disabled={!category}
+              />
 
-            <CustomSelect
-              label="Höhe"
-              value={height}
-              onChange={val => {
-                setHeight(val);
-                setDiameter('');
-              }}
-              options={data.heights || []}
-              placeholder="Höhe auswählen"
-              disabled={!width}
-            />
+              <CustomSelect
+                label="Höhe"
+                value={height}
+                onChange={val => {
+                  setHeight(val);
+                  setDiameter('');
+                }}
+                className="height-select"
+                options={(data.heights || []).filter(
+                  opt => opt.name && opt.name.trim() !== ''
+                )}
+                placeholder="Auswählen..."
+                disabled={!width}
+              />
 
-            <CustomSelect
-              label="Durchmesser (Zoll)"
-              value={diameter}
-              onChange={setDiameter}
-              options={data.diameters || []}
-              placeholder="Durchmesser auswählen"
-              disabled={!height}
-            />
+              <CustomSelect
+                label="Durchmesser (Zoll)"
+                value={diameter}
+                onChange={setDiameter}
+                options={(data.diameters || []).filter(
+                  opt => opt.name && opt.name.trim() !== ''
+                )}
+                className="diameter-select"
+                placeholder="Auswählen..."
+                disabled={!height}
+              />
+            </div>
 
             {showMoreFilters && (
-              <>
+              <div className="tyre-type-bottom-filter-area w-full gap-x-4 lg:gap-y-5 gap-y-4 mt-4 md:mt-5 grid grid-cols-2 md:grid-cols-4">
                 <CustomSelect
                   label="Lastenindex"
                   value={lastIndex}
                   onChange={setLastIndex}
-                  options={data.lastIndexes || []}
-                  placeholder="Lastenindex auswählen"
+                  options={(data.lastIndexes || []).filter(
+                    opt => opt.name && opt.name.trim() !== ''
+                  )}
+                  placeholder="Auswählen..."
+                  className="lastindex-select"
                   disabled={!diameter}
                 />
 
@@ -141,8 +158,11 @@ const FilterForm = () => {
                   label="Nasshaftung"
                   value={wetGrip}
                   onChange={setWetGrip}
-                  options={data.wetGrips || []}
-                  placeholder="Nasshaftung auswählen"
+                  options={(data.wetGrips || []).filter(
+                    opt => opt.name && opt.name.trim() !== ''
+                  )}
+                  placeholder="Auswählen..."
+                  className="wetgrid-select"
                   disabled={!diameter}
                 />
 
@@ -150,20 +170,26 @@ const FilterForm = () => {
                   label="Kraftstoffeffizienz"
                   value={fuelClass}
                   onChange={setFuelClass}
-                  options={data.fuelClasses || []}
-                  placeholder="Kraftstoffeffizienz auswählen"
+                  options={(data.fuelClasses || []).filter(
+                    opt => opt.name && opt.name.trim() !== ''
+                  )}
+                  className="fuelclass-select"
+                  placeholder="Auswählen..."
                   disabled={!diameter}
                 />
 
                 <CustomSelect
-                  label="Externes Rollgeräusch in dB"
+                  label="Rollgeräusch in dB"
                   value={noise}
                   onChange={setNoise}
-                  options={data.noises || []}
-                  placeholder="Externes Rollgeräusch in dB"
+                  options={(data.noises || []).filter(
+                    opt => opt.name && opt.name.trim() !== ''
+                  )}
+                  className="noise-select"
+                  placeholder="Auswählen..."
                   disabled={!diameter}
                 />
-              </>
+              </div>
             )}
           </div>
 
@@ -186,7 +212,7 @@ const FilterForm = () => {
         <button
           type="button"
           onClick={() => setShowMoreFilters(prev => !prev)}
-          className="text-primary-100 mt-5 text-[14px] text-left font-secondary font-normal leading-[120%] cursor-pointer lg:relative lg:bottom-0 lg:left-0 absolute bottom-10 left-8 max-sm:left-4"
+          className="filter-type-view-more-button text-primary-100 mt-5 text-[14px] text-left font-secondary font-normal leading-[120%] cursor-pointer lg:relative lg:bottom-0 lg:left-0 absolute bottom-10 left-8 max-sm:left-4"
         >
           {showMoreFilters ? 'Weniger Filter' : 'Weitere Filteroptionen'}
         </button>

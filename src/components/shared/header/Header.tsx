@@ -10,7 +10,7 @@ const Header: React.FC = () => {
  const { data = { count: 0 }, isLoading } = useGetWishlistCountQuery();
 
   return (
-    <header className="header-section bg-mono-0 z-50 ">
+    <header className="header-section relative bg-mono-0 z-[999] ">
       <div className="development-mood-banner">
         <p className="text text-center text-mono-40 font-bold bg-[#3a64f6]  py-1">
           Demo-Modus

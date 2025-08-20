@@ -63,7 +63,8 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
               breakpoints={{
                 640: { slidesPerView: 1, spaceBetween: 10 },
                 768: { slidesPerView: 2, spaceBetween: 15 },
-                1024: { slidesPerView: 4, spaceBetween: 19 },
+                1024: { slidesPerView: 3, spaceBetween: 19 },
+                1100: { slidesPerView: 4, spaceBetween: 19 },
               }}
             >
               {loading

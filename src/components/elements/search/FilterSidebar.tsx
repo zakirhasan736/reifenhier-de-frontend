@@ -149,6 +149,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [handleClickOutside]);
+  console.log(availableProducts)
   return (
     <div className="filter-sidebar" ref={sidebarRef}>
       {/* Category filter */}
@@ -168,7 +169,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               </span>
             </h4>
             <span
-              className={`arrow ${openSections.category ? 'open' : 'closed'}`}
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                openSections.category ? 'open' : 'closed'
+              }`}
             >
               <ArrowDownIcon />
             </span>
@@ -230,7 +233,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   : ''}
               </span>
             </h4>
-            <span className={`arrow ${openSections.brand ? 'open' : 'closed'}`}>
+            <span
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                openSections.brand ? 'open' : 'closed'
+              }`}
+            >
               <ArrowDownIcon />
             </span>
           </div>
@@ -259,6 +266,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               {/* Filtered & Sorted Brand List */}
               <ul className="overflow-y-auto flex-1 gap-2 flex flex-col px-3 pt-0 pb-2">
                 {[...availableProducts.brands]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
                   .filter(item =>
                     String(item.name)
                       .toLowerCase()
@@ -316,39 +328,48 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${openSections.width ? 'open' : 'closed'}`}
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                  openSections.width ? 'open' : 'closed'
+                }`}
               >
                 <ArrowDownIcon />
               </span>
             </div>
             {openSections.width && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.widths.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
+                {[...availableProducts.widths]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort widths numerically
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
 
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.width.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('width', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                          <Checkbox
+                            checked={selectedFilters.width.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('width', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -369,39 +390,47 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${openSections.height ? 'open' : 'closed'}`}
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                  openSections.height ? 'open' : 'closed'
+                }`}
               >
                 <ArrowDownIcon />
               </span>
             </div>
             {openSections.height && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.heights.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.height.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('height', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                {[...availableProducts.heights]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort heights numerically
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                          <Checkbox
+                            checked={selectedFilters.height.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('height', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -422,39 +451,47 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${openSections.diameter ? 'open' : 'closed'}`}
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
+                  openSections.diameter ? 'open' : 'closed'
+                }`}
               >
                 <ArrowDownIcon />
               </span>
             </div>
             {openSections.diameter && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.diameters.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.diameter.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('diameter', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                {[...availableProducts.diameters]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort diameters numerically
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                          <Checkbox
+                            checked={selectedFilters.diameter.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('diameter', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -462,11 +499,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         {availableProducts.speedIndexes && (
           <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
             <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
+              className="filter-item-title-box overflow-hidden flex items-center w-full justify-between pr-2"
               onClick={() => toggleSection('speedIndex')}
               style={{ cursor: 'pointer' }}
             >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
                 Geschwindigkeitsindex{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.speedIndex.length > 0
@@ -475,7 +512,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
                   openSections.speedIndex ? 'open' : 'closed'
                 }`}
               >
@@ -484,32 +521,38 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.speedIndex && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.speedIndexes.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.speedIndex.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('speedIndex', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                {[...availableProducts.speedIndexes]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => String(a.name).localeCompare(String(b.name))) // A-Z sort
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                          <Checkbox
+                            checked={selectedFilters.speedIndex.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('speedIndex', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -530,7 +573,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
                   openSections.lastIndex ? 'open' : 'closed'
                 }`}
               >
@@ -539,32 +582,39 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.lastIndex && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.lastIndexes.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
+                {[...availableProducts.lastIndexes]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort lastIndexes numerically
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
 
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.lastIndex.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('lastIndex', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                          <Checkbox
+                            checked={selectedFilters.lastIndex.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('lastIndex', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -588,7 +638,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
                   openSections.fuelClass ? 'open' : 'closed'
                 }`}
               >
@@ -597,38 +647,44 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             {openSections.fuelClass && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.fuelClasses.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label
-                        style={{
-                          color: gradeFuelColor(String(label)),
-                          fontWeight: 500,
-                        }}
-                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
-                      >
-                        <Checkbox
-                          checked={selectedFilters.fuelClass.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('fuelClass', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                {[...availableProducts.fuelClasses]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => String(a.name).localeCompare(String(b.name))) // A-Z sort
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label
+                          style={{
+                            color: gradeFuelColor(String(label)),
+                            fontWeight: 500,
+                          }}
+                          className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
+                        >
+                          <Checkbox
+                            checked={selectedFilters.fuelClass.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('fuelClass', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -650,45 +706,55 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${openSections.wetGrip ? 'open' : 'closed'}`}
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                  openSections.wetGrip ? 'open' : 'closed'
+                }`}
               >
                 <ArrowDownIcon />
               </span>
             </div>
             {openSections.wetGrip && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.wetGrips.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label
-                        style={{
-                          color: gradeGripColor(String(label)),
-                          fontWeight: 500,
-                        }}
-                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
-                      >
-                        <Checkbox
-                          checked={selectedFilters.wetGrip.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('wetGrip', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                {[...availableProducts.wetGrips]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string'
+                        ? item.name.trim().toLowerCase()
+                        : '';
+                    return name !== '';
+                  })
+                  .sort((a, b) => String(a.name).localeCompare(String(b.name))) // A-Z sort
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label
+                          style={{
+                            color: gradeGripColor(String(label)),
+                            fontWeight: 500,
+                          }}
+                          className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
+                        >
+                          <Checkbox
+                            checked={selectedFilters.wetGrip.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('wetGrip', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>
@@ -710,39 +776,47 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </span>
               </h4>
               <span
-                className={`arrow ${openSections.noise ? 'open' : 'closed'}`}
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                  openSections.noise ? 'open' : 'closed'
+                }`}
               >
                 <ArrowDownIcon />
               </span>
             </div>
             {openSections.noise && (
               <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {availableProducts.noises.map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.noise.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('noise', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
+                {[...availableProducts.noises]
+                  .filter(item => {
+                    const name =
+                      typeof item.name === 'string' ? item.name.trim() : '';
+                     return name && name !== 'unbekannt' && name !== '0'; 
+                  })
+                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort noises numerically
+                  .map((item, index) => {
+                    const label =
+                      typeof item.name === 'string' ||
+                      typeof item.name === 'number'
+                        ? item.name
+                        : JSON.stringify(item.name);
+                    return (
+                      <li key={`${label}-${index}`}>
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                          <Checkbox
+                            checked={selectedFilters.noise.includes(
+                              String(label)
+                            )}
+                            onChange={() =>
+                              handleFilterChange('noise', String(label))
+                            }
+                          />
+                          {label || 'Unbekannt'}
+                          <span className="ml-1 text-gray-400">
+                            ({item.count ?? 0})
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
               </ul>
             )}
           </div>

@@ -17,14 +17,16 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
     <div className="relative min-h-[200px]">
       <div className="">
         {products.length === 0 ? (
-          <div className="grid grid-cols-4 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-3 product-listing-grid-wrapper gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
               <ProductSkeletonCard key={`skeleton-${i}`} />
             ))}
           </div>
         ) : (
           <div
-            className={`grid grid-cols-3 max-md:grid-cols-1 max-lg:grid-cols-2 gap-4 ${loading ? 'pointer-events-none' : ''}`}
+            className={`grid lg:grid-cols-3 grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-6 product-listing-grid-wrapper ${
+              loading ? 'pointer-events-none' : ''
+            }`}
           >
             {products.map(p => (
               <ProductCard key={p._id} {...p} />

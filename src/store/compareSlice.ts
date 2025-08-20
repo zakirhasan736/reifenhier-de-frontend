@@ -11,6 +11,8 @@ interface Product {
   fuel_class: string;
   noise_class: string;
   wet_grip: string;
+  lastIndex?: string;
+  speedIndex?: string;
 }
 
 interface CompareState {

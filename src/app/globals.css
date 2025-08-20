@@ -1841,3 +1841,88 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 .select-area-sort-filter {
     border-radius: 20px !important;
 }
+.categories-select {
+    max-width: 220px;
+}
+.tyre-type-top-filter-area > div:not(:first-child) {
+  max-width: 150px;
+}
+@media screen and (max-width: 800px) {
+    .tyre-type-top-filter-area > div:not(:first-child) {
+  max-width: 130px;
+}
+}
+@media screen and (max-width: 859px) and (min-width:601px) {
+    .product-listing-grid-wrapper{
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+    }
+}
+@media screen and (max-width: 600px) {
+.categories-select {
+    max-width: 180px;
+}
+ .tyre-type-top-filter-area > div:nth-child(2) {
+    max-width: calc(100% - (180px + 16px));
+ }
+.tyre-type-top-filter-area > div:nth-child(3) {
+    max-width: calc(100% - (50% + 8px));
+ }
+.tyre-type-top-filter-area > div:nth-child(4) {
+    max-width: calc(100% - (50% + 8px));
+}
+.product-listing-main-wrapper .product-listings-sec .custom-container {
+    padding-left: 28px;
+    padding-right: 28px;
+}
+}
+@media screen and (max-width: 405px) {
+.product-listing-main-wrapper .product-listings-sec .custom-container {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+.offer-list-item-area .offer-product-card-item .offer-product-card-footer {
+flex-direction: column;
+}
+.cta-button-shop{
+    max-width: 300px;
+    width: 100%;
+    margin: 0 auto;
+}
+}
+@media screen and (max-width: 350px) {
+    .tyre-type-bottom-filter-area,
+    .tyre-type-top-filter-area{
+        row-gap: 10px;
+        column-gap: 10px;
+    }
+ .tyre-type-top-filter-area > div:first-child {
+     max-width: 100%;
+}
+ .tyre-type-top-filter-area > div:nth-child(2) {
+    max-width: 100%;
+ }
+.tyre-type-top-filter-area > div:nth-child(3) {
+    max-width: calc(100% - (50% + 8px));
+ }
+.tyre-type-top-filter-area > div:nth-child(4) {
+    max-width: calc(100% - (50% + 8px));
+}
+.filter-type-view-more-button{
+        position: relative !important;
+        top: 0;
+        right: 0;
+        left: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+}
+.tyre-search-box button {
+    width: 100%;
+    max-width: 100%;
+    height: 40px;
+}
+.featured-product-list-area.product-slides-area {
+    padding-right: 20px;
+}
+}
