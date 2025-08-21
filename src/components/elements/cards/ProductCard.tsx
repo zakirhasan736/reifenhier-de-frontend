@@ -153,6 +153,7 @@ const isFavorited = useMemo(() => {
     dispatch(
       addProduct({
         _id,
+        slug,
         product_name,
         brand_name,
         product_image,

@@ -82,6 +82,7 @@ interface CheapestVendor {
 
 interface Product {
   _id: string;
+  slug: string;
   product_name: string;
   brand_name: string;
   product_image: string;
@@ -127,6 +128,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
       dispatch(
         addProduct({
           _id: product._id,
+          slug: product.slug,
           product_name: product.product_name,
           brand_name: product.brand_name,
           product_image: product.product_image,

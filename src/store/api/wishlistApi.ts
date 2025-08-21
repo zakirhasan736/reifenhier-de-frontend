@@ -8,6 +8,7 @@ interface RelatedCheaperItem {
 // Define the wishlist item shape
 export interface WishlistProduct {
   _id: string;
+  slug: string;
   brand_logo: string;
   product_image: string;
   merchant_product_third_category: string;

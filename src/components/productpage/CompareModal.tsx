@@ -18,6 +18,7 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { AppDispatch, RootState } from '@/store/store';
+import Link from 'next/link';
 
 const downloadCSV = (products: Product[]) => {
   const csvContent = [
@@ -147,14 +148,13 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                       height={60}
                     />
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full">
-                    {[
-                      p.brand_name,
-                      p.product_name
-                    ]
-                      .filter(Boolean)
-                      .join(' ')
-                      .toUpperCase()}
+                  <td className="px-3 py-2 text-left text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full">
+                    <Link href={`/products/${p.slug}`}>
+                      {[p.brand_name, p.product_name]
+                        .filter(Boolean)
+                        .join(' ')
+                        .toUpperCase()}
+                    </Link>
                   </td>
                   {/* <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.brand_name}

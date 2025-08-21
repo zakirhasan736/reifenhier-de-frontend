@@ -40,6 +40,7 @@ interface CheapestVendor {
 
 interface Product {
   _id: string;
+  slug: string;
   product_name: string;
   brand_name: string;
   product_image: string;
@@ -73,6 +74,7 @@ interface Product {
 
 interface RelatedProduct {
   _id: string;
+  slug: string;
   product_name: string;
   brand_name: string;
   product_image: string;
