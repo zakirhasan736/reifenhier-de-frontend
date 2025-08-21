@@ -111,16 +111,16 @@ const ProductDetailsPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const params = useParams();
-  const slug = params?.slug as string;
+  const productid = params?.productid as string;
 
   useEffect(() => {
-    if (!slug) return;
+    if (!productid) return;
 
     const fetchProductDetails = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${apiUrl}/api/products/product-details/${slug}`
+          `${apiUrl}/api/products/product-details/${productid}`
         );
         setProduct(response.data.product);
         setRelatedProducts(response.data.relatedProducts);
@@ -134,7 +134,7 @@ const ProductDetailsPage = () => {
     };
 
     fetchProductDetails();
-  }, [slug]);
+  }, [productid]);
 
   if (error) return <div>{error}</div>;
 

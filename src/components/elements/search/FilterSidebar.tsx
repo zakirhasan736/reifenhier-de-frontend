@@ -565,7 +565,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Lastenindex{' '}
+                Lastindex{' '}
                 <span className="text-[#404042] absolute right-2">
                   {selectedFilters.lastIndex.length > 0
                     ? `(${selectedFilters.lastIndex.length})`

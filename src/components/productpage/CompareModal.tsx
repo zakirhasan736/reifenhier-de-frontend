@@ -30,7 +30,7 @@ const downloadCSV = (products: Product[]) => {
       'Kraftstoffeffizienz',
       'Rollgeräusch in dB	',
       'Geschwindigkeitsindex',
-      'Lastenindex',
+      'Lastindex',
     ],
     ...products.map(p => [
       p.product_name,

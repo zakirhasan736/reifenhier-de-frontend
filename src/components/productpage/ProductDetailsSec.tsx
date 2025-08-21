@@ -591,7 +591,7 @@ const handleToggleWishlist = async () => {
                       className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
                       href="/"
                     >
-                      Heim
+                      Home
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>
@@ -606,10 +606,7 @@ const handleToggleWishlist = async () => {
                   </li>
                   <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-mono-70 flex items-center gap-[10px]">
                     <span className="body-caption text-[12px] lg:text-base text-mono-70">
-                      {[
-                        product.brand_name,
-                        product.product_name
-                      ]
+                      {[product.brand_name, product.product_name]
                         .filter(Boolean)
                         .join(' ')
                         .toUpperCase()}
@@ -800,10 +797,7 @@ const handleToggleWishlist = async () => {
                     </ul>
                     <div className="product-details-title-box mb-4">
                       <h2 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
-                        {[
-                          product.brand_name,
-                          product.product_name
-                        ]
+                        {[product.brand_name, product.product_name]
                           .filter(Boolean)
                           .join(' ')
                           .toUpperCase()}
@@ -832,16 +826,29 @@ const handleToggleWishlist = async () => {
                     </div>
                     <div className="product-details-brand-info">
                       <p className="text-base font-normal font-secondary text-[#404042] leading-[140%] flex md:flex-row flex-col items-start justify-start md:items-center gap-2">
-                        <span className="text-[14px] whitespace-nowrap">Bester Preis:</span>{' '}
-                        <Image
-                          src={product.cheapest_vendor?.vendor_logo}
-                          width={140}
-                          height={37}
-                          loading="lazy"
-                          className="lg:w-auto lg:h-[37px] h-[27px] w-auto object-contain"
-                          alt="vendor image"
-                        />{' '}
-                        {product.cheapest_vendor?.vendor}
+                        <span className="text-[14px] whitespace-nowrap">
+                          Bester Preis:
+                        </span>{' '}
+                        <Link
+                          href={`${apiUrl}/out/${
+                            product.cheapest_vendor?.affiliate_product_cloak_url
+                          }?product=${product._id}&uuid=${
+                            uuidCookie || 'guest'
+                          }&from=product-page`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
+                        >
+                          <Image
+                            src={product.cheapest_vendor?.vendor_logo}
+                            width={140}
+                            height={37}
+                            loading="lazy"
+                            className="lg:w-auto lg:h-[37px] h-[27px] w-auto object-contain"
+                            alt="vendor image"
+                          />{' '}
+                          {product.cheapest_vendor?.vendor}
+                        </Link>
                       </p>
                       <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
@@ -1016,26 +1023,61 @@ const handleToggleWishlist = async () => {
                       onClick={handleCompareClick}
                       className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
                     >
-                      Zur Vergleichsliste hinzufügen
+                      Zum Vergleich hinzufügen
                     </button>
                   </div>
                   <ul className="payment-method-list flex flex-wrap items-center gap-2 mt-6">
                     {product.cheapest_vendor?.payment_icons?.map(
-                      (icon: string, idx: number) => (
-                        <li
-                          className="payment-item lg:h-9 h-7 lg:w-[56px] w-auto"
-                          key={idx}
-                        >
-                          <Image
-                            src={icon}
-                            alt="payment methods icons"
-                            width={70}
-                            height={36}
-                            loading="lazy"
-                            className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
-                          />
-                        </li>
-                      )
+                      (icon: string, idx: number) => {
+                        // Map known payment icon names to display names
+                        const paymentNameMap: Record<string, string> = {
+                          sofort: 'Sofortüberweisung',
+                          amazonpay: 'Amazon Pay',
+                          paypal: 'PayPal',
+                          banktransfer: 'Banküberweisung',
+                          american_express: 'American Express (AMEX)',
+                          amex: 'American Express (AMEX)',
+                          sepa: 'SEPA',
+                          applepay: 'Apple Pay',
+                          'apple-pay': 'Apple Pay',
+                          payu: 'PayU',
+                        };
+
+                        const match = icon.match(
+                          /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i
+                        );
+                        let paymentName = match
+                          ? match[1]
+                              .replace(/-/g, '')
+                              .replace(/_/g, '')
+                              .toLowerCase()
+                          : '';
+                        paymentName =
+                          paymentNameMap[paymentName] ||
+                          (match
+                            ? match[1].replace(/-/g, ' ').replace(/_/g, ' ')
+                            : `Zahlungsmethode ${idx + 1}`);
+                        return (
+                          <li
+                            className="payment-item cursor-pointer lg:h-9 h-7 lg:w-[56px] w-auto"
+                            key={idx}
+                          >
+                            <span
+                              className="tooltip tooltip-top"
+                              data-tip={paymentName}
+                            >
+                              <Image
+                                src={icon}
+                                width={70}
+                                height={36}
+                                loading="lazy"
+                                alt={paymentName}
+                                className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
+                              />
+                            </span>
+                          </li>
+                        );
+                      }
                     )}
                   </ul>
                   <div className="product-specification-box mt-6">
@@ -1050,8 +1092,9 @@ const handleToggleWishlist = async () => {
                           Beschreibung
                         </div>
                         <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#86878A] leading-[140%]">
-                          {product.description ||
-                            'Keine Beschreibung verfügbar'}
+                          {product.description
+                            ? product.description.replace(/[^\x00-\x7F]+/g, '')
+                            : 'Keine Beschreibung verfügbar'}
                         </div>
                       </div>
                       <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
@@ -1273,7 +1316,12 @@ const handleToggleWishlist = async () => {
                                       </div>
 
                                       <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
-                                        Inklusive Versandpreis
+                                        {offer.delivery_cost === '' ||
+                                        offer.delivery_cost === '0' ||
+                                        offer.delivery_cost === '0.00' ||
+                                        offer.delivery_cost == null
+                                          ? 'Inklusive Versandpreis'
+                                          : 'inklusive Versandkosten'}
                                       </p>
                                     </div>
                                     <Link
@@ -1323,13 +1371,42 @@ const handleToggleWishlist = async () => {
                                       <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
                                         {offer.payment_icons?.map(
                                           (icon: string, index: number) => {
-                                            // Extract payment name from icon path, e.g. '/images/icons/payments/Visa.png' → 'Visa'
+                                            // Map known payment icon names to display names
+                                            const paymentNameMap: Record<
+                                              string,
+                                              string
+                                            > = {
+                                              sofort: 'Sofortüberweisung',
+                                              amazonpay: 'Amazon Pay',
+                                              paypal: 'PayPal',
+                                              banktransfer: 'Banküberweisung',
+                                              american_express:
+                                                'American Express (AMEX)',
+                                              amex: 'American Express (AMEX)',
+                                              sepa: 'SEPA',
+                                              applepay: 'Apple Pay',
+                                              'apple-pay': 'Apple Pay',
+                                              payu: 'PayU',
+                                            };
+
                                             const match = icon.match(
                                               /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i
                                             );
-                                            const paymentName = match
-                                              ? match[1].replace(/-/g, ' ')
-                                              : `Zahlungsmethode ${index + 1}`;
+                                            let paymentName = match
+                                              ? match[1]
+                                                  .replace(/-/g, '')
+                                                  .replace(/_/g, '')
+                                                  .toLowerCase()
+                                              : '';
+                                            paymentName =
+                                              paymentNameMap[paymentName] ||
+                                              (match
+                                                ? match[1]
+                                                    .replace(/-/g, ' ')
+                                                    .replace(/_/g, ' ')
+                                                : `Zahlungsmethode ${
+                                                    index + 1
+                                                  }`);
                                             return (
                                               <li
                                                 key={index}
@@ -1380,10 +1457,17 @@ const handleToggleWishlist = async () => {
                                       />{' '}
                                       <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
                                         {offer.delivery_cost === '0.00' ||
-                                        offer.delivery_cost === '0'
+                                        offer.delivery_cost === '0' ||
+                                        offer.delivery_cost === '' ||
+                                        offer.delivery_cost == null
                                           ? 'Kostenloser Versand'
-                                          : 'Versandkosten: ' +
-                                            offer.delivery_cost}
+                                          : `Versandkosten: ${parseFloat(
+                                              offer.delivery_cost
+                                                .toString()
+                                                .replace(/[^\d.]/g, '')
+                                            )
+                                              .toFixed(2)
+                                              .replace('.', ',')} €`}
                                       </span>
                                     </li>
                                   </ul>

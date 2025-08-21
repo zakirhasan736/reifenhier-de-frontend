@@ -23,6 +23,7 @@ interface RelatedCheaperItem {
 
 interface ProductCardProps {
   _id: string;
+  slug: string;
   brand_logo: string;
   product_image: string;
   merchant_product_third_category: string;
@@ -84,6 +85,7 @@ interface WishlistProduct {
 }
 const ProductCard: React.FC<ProductCardProps> = ({
   _id,
+  slug,
   brand_logo,
   product_image,
   merchant_product_third_category,
@@ -237,7 +239,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           </button>
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
-          <Link href={`/products/${_id}`} passHref>
+          <Link href={`/products/${slug}`} passHref>
             <Image
               loading="lazy"
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
@@ -279,11 +281,8 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
       </div>
       <div className="p-card-body px-4 pt-3 pb-0">
         <h3 className="h6 text-[15px] text-[#404042] h-[37px] font-medium font-primary mb-3">
-          <Link href={`/products/${_id}`} passHref>
-            {[brand_name, product_name]
-              .filter(Boolean)
-              .join(' ')
-              .toUpperCase()}
+          <Link href={`/products/${slug}`} passHref>
+            {[brand_name, product_name].filter(Boolean).join(' ').toUpperCase()}
           </Link>
         </h3>
 
@@ -392,7 +391,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
         </div>
         <p className="product-price text-primary-100 font-normal font-secondary text-[14px] mt-4 flex items-center gap-1">
           <span className="text-[14px] font-normal font-secondary text-[#86878A]">
-            Aus:
+            Ab:
           </span>{' '}
           {cheapest_offer === expensive_offer ? (
             <>
@@ -419,7 +418,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           )}
         </p>
         <div className="button-box pt-4">
-          <Link href={`/products/${_id}`} passHref>
+          <Link href={`/products/${slug}`} passHref>
             <button
               type="button"
               className="max-w-full flex items-center w-full text-[14px] md:text-[14px] font-medium leading-[120%] font-secondary xl:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"
@@ -450,7 +449,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
                     width={20}
                     height={20}
                   />{' '}
-                  Alle Angebote anzeigen
+                  Zum Vergleich hinzufügen
                 </>
               )}
             </button>

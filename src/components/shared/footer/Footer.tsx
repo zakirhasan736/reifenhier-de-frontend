@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
                         href="/"
                       >
-                        Heim
+                        Home
                       </Link>
                     </li>
                     <li>

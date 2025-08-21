@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useGetTyreFiltersQuery } from '@/store/api/filterApi';
 import CustomSelect from '@/components/elements/inputs/CustomCategorySelect';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
+
 interface FilterOption {
   name: string;
   count?: number;
@@ -19,6 +21,7 @@ interface FilterResponse {
   fuelClasses: FilterOption[];
   noises: FilterOption[];
 }
+
 const FilterForm = () => {
   const router = useRouter();
 
@@ -30,7 +33,6 @@ const FilterForm = () => {
   const [wetGrip, setWetGrip] = useState('');
   const [fuelClass, setFuelClass] = useState('');
   const [noise, setNoise] = useState('');
-
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   const { data = {} as FilterResponse } = useGetTyreFiltersQuery({
@@ -41,10 +43,43 @@ const FilterForm = () => {
     lastIndex,
     wetGrip,
     fuelClass,
-    noise
+    noise,
   });
-  console.log(data);
+
+  const validateFields = () => {
+    const baseFields = [
+      { label: 'Reifentyp', value: category },
+      { label: 'Breite', value: width },
+      { label: 'Höhe', value: height },
+      { label: 'Durchmesser', value: diameter },
+    ];
+
+    const moreFields = showMoreFilters
+      ? [
+          { label: 'Lastindex', value: lastIndex },
+          { label: 'Nasshaftung', value: wetGrip },
+          { label: 'Kraftstoffeffizienz', value: fuelClass },
+          { label: 'Rollgeräusch in dB', value: noise },
+        ]
+      : [];
+
+    const allFields = [...baseFields, ...moreFields];
+
+    const firstEmpty = allFields.find(
+      field => !field.value || field.value.trim() === ''
+    );
+
+    if (firstEmpty) {
+       toast.error(`Bitte wählen Sie ${firstEmpty.label}`);
+       return false;
+    }
+
+    return true;
+  };
+
   const handleSearch = () => {
+    if (!validateFields()) return;
+
     const params = new URLSearchParams();
     params.set('category', category);
     params.set('width', width);
@@ -61,17 +96,6 @@ const FilterForm = () => {
     router.push(`/products?${params.toString()}`);
   };
 
-  const canSearch = showMoreFilters
-    ? category &&
-      width &&
-      height &&
-      diameter &&
-      lastIndex &&
-      wetGrip &&
-      fuelClass &&
-      noise
-    : category && width && height && diameter;
-
   return (
     <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto">
       <div className="lg:h-[152px] h-[188px] md:block hidden w-full"></div>
@@ -79,7 +103,7 @@ const FilterForm = () => {
       <div className="tyres-search-content md:absolute top-0 left-0 w-full bg-mono-0 md:px-[30px] px-4 py-4 md:py-6 rounded-[10px]">
         <div className="tyre-search-box lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
           <div className="tyre-type-area w-full">
-            <div className="max-sm:flex-wrap tyre-type-top-filter-area flex w-full items-end justify-start gap-x-4 lg:gap-y-5 gap-y-4">
+            <div className="max-sm:flex-wrap tyre-type-top-filter-area flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
               <CustomSelect
                 label="Reifentyp"
                 value={category}
@@ -90,8 +114,8 @@ const FilterForm = () => {
                   setDiameter('');
                 }}
                 className="categories-select"
-                options={(data.categories || []).filter(
-                  opt => opt.name && opt.name.trim() !== ''
+                options={(data.categories || []).filter(opt =>
+                  opt.name?.trim()
                 )}
                 placeholder="Auswählen..."
               />
@@ -105,9 +129,7 @@ const FilterForm = () => {
                   setDiameter('');
                 }}
                 className="brand-select"
-                options={(data.widths || []).filter(
-                  opt => opt.name && opt.name.trim() !== ''
-                )}
+                options={(data.widths || []).filter(opt => opt.name?.trim())}
                 placeholder="Auswählen..."
                 disabled={!category}
               />
@@ -120,9 +142,7 @@ const FilterForm = () => {
                   setDiameter('');
                 }}
                 className="height-select"
-                options={(data.heights || []).filter(
-                  opt => opt.name && opt.name.trim() !== ''
-                )}
+                options={(data.heights || []).filter(opt => opt.name?.trim())}
                 placeholder="Auswählen..."
                 disabled={!width}
               />
@@ -131,9 +151,7 @@ const FilterForm = () => {
                 label="Durchmesser (Zoll)"
                 value={diameter}
                 onChange={setDiameter}
-                options={(data.diameters || []).filter(
-                  opt => opt.name && opt.name.trim() !== ''
-                )}
+                options={(data.diameters || []).filter(opt => opt.name?.trim())}
                 className="diameter-select"
                 placeholder="Auswählen..."
                 disabled={!height}
@@ -143,11 +161,11 @@ const FilterForm = () => {
             {showMoreFilters && (
               <div className="tyre-type-bottom-filter-area w-full gap-x-4 lg:gap-y-5 gap-y-4 mt-4 md:mt-5 grid grid-cols-2 md:grid-cols-4">
                 <CustomSelect
-                  label="Lastenindex"
+                  label="Lastindex"
                   value={lastIndex}
                   onChange={setLastIndex}
-                  options={(data.lastIndexes || []).filter(
-                    opt => opt.name && opt.name.trim() !== ''
+                  options={(data.lastIndexes || []).filter(opt =>
+                    opt.name?.trim()
                   )}
                   placeholder="Auswählen..."
                   className="lastindex-select"
@@ -158,8 +176,8 @@ const FilterForm = () => {
                   label="Nasshaftung"
                   value={wetGrip}
                   onChange={setWetGrip}
-                  options={(data.wetGrips || []).filter(
-                    opt => opt.name && opt.name.trim() !== ''
+                  options={(data.wetGrips || []).filter(opt =>
+                    opt.name?.trim()
                   )}
                   placeholder="Auswählen..."
                   className="wetgrid-select"
@@ -170,8 +188,8 @@ const FilterForm = () => {
                   label="Kraftstoffeffizienz"
                   value={fuelClass}
                   onChange={setFuelClass}
-                  options={(data.fuelClasses || []).filter(
-                    opt => opt.name && opt.name.trim() !== ''
+                  options={(data.fuelClasses || []).filter(opt =>
+                    opt.name?.trim()
                   )}
                   className="fuelclass-select"
                   placeholder="Auswählen..."
@@ -182,9 +200,7 @@ const FilterForm = () => {
                   label="Rollgeräusch in dB"
                   value={noise}
                   onChange={setNoise}
-                  options={(data.noises || []).filter(
-                    opt => opt.name && opt.name.trim() !== ''
-                  )}
+                  options={(data.noises || []).filter(opt => opt.name?.trim())}
                   className="noise-select"
                   placeholder="Auswählen..."
                   disabled={!diameter}
@@ -195,7 +211,6 @@ const FilterForm = () => {
 
           <button
             onClick={handleSearch}
-            disabled={!canSearch}
             className="md:max-w-[170px] flex items-center justify-center md:gap-[10px] gap-2 max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:opacity-85 transition ease !border-primary-100 cursor-pointer py-2 px-3"
           >
             Reifen suchen{' '}
