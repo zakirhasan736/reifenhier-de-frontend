@@ -281,7 +281,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
         </div>
       </div>
       <div className="p-card-body px-4 pt-3 pb-0">
-        <h3 className="h6 text-[15px] text-[#404042] h-[37px] font-medium font-primary mb-3">
+        <h3 className="h6 text-[15px] text-[#404042] h-[37px] font-medium font-primary mb-3 leading-tight line-clamp-2">
           <Link href={`/products/${slug}`} passHref>
             {[brand_name, product_name].filter(Boolean).join(' ').toUpperCase()}
           </Link>

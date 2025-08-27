@@ -99,7 +99,7 @@ const BlogListPage = () => {
                           </h5>
                           <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
                             {new Date(blog.createdAt).toLocaleDateString(
-                              'de-DE',
+                              'en-US',
                               {
                                 year: 'numeric',
                                 month: 'long',

@@ -91,7 +91,7 @@ const BlogDetailPage = () => {
                   {blog.title}
                 </h1>
                 <p className="text-gray-600 mb-4">
-                  {new Date(blog.createdAt).toLocaleDateString('de-DE', {
+                  {new Date(blog.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
