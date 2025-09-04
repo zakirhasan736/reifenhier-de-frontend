@@ -28,20 +28,54 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
     <div className="sorting flex items-center gap-2">
       <label
         htmlFor="sort-select"
-        className="font-secondary font-normal text-[14px] max-sm:hidden leading-[100%] text-[#404042]"
+        className="font-secondary whitespace-nowrap font-normal text-[14px] max-sm:hidden leading-[100%] text-[#404042]"
       >
         Sortieren nach:
       </label>
-      <select
-        id="sort-select"
-        onChange={handleChange}
-        defaultValue="date-desc"
-        className="text-[14px] text-center font-normal font-secondary h-[38px] leading-[100%] text-[#404042] px-2 py-1 border !border-primary-100 select-area-sort-filter"
-      >
-        <option value="price-asc">Preis: Niedrig bis Hoch</option>
-        <option value="price-desc">Preis: Hoch bis Niedrig</option>
-        <option value="date-desc">Neueste</option>
-      </select>
+
+      {/* Wrapper to position the custom arrow */}
+      <div className="relative inline-block">
+        <select
+          id="sort-select"
+          onChange={handleChange}
+          defaultValue="date-desc"
+          className={[
+            // your existing styles
+            'select-area-sort-filter',
+            'text-[14px] text-left font-normal font-secondary h-[38px] leading-[100%] text-[#404042]',
+            'px-3 py-1 border !border-primary-100',
+            // hide native arrow & make room for custom one
+            'appearance-none pr-9',
+            // nice rounding & bg
+            'rounded-md bg-white',
+            // focus ring
+            'focus:outline-none focus:ring-2 focus:ring-primary-100/40',
+          ].join(' ')}
+        >
+          <option value="price-asc">Preis: Niedrig bis Hoch</option>
+          <option value="price-desc">Preis: Hoch bis Niedrig</option>
+          <option value="date-desc">Neueste</option>
+        </select>
+
+        {/* Custom down arrow (non-interactive) */}
+        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="#404042"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </div>
     </div>
   );
 };

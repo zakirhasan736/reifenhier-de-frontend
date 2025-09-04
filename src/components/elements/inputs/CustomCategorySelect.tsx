@@ -51,9 +51,7 @@ const CustomSelect: React.FC<Props> = ({
         disabled={disabled}
       >
         <span>
-          {selected
-            ? `${selected.name}${selected.count ? ` (${selected.count})` : ''}`
-            : placeholder}
+            {selected ? selected.name : placeholder}
         </span>
         <span
           className={`arrow absolute right-0 w-7 flex justify-center items-center border-l-2 border-border-100 h-full bg-mono-0 top-0 ${
@@ -88,7 +86,6 @@ const CustomSelect: React.FC<Props> = ({
               }}
             >
               {item.name}
-              {item.count ? ` (${item.count})` : ''}
             </li>
           ))}
         </ul>

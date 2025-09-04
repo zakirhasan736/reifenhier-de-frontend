@@ -8,9 +8,10 @@ import Checkbox from '../input-fields/checkbox';
 import PriceRangeSlider from '@/components/elements/search/PriceFilter';
 import { RootState } from '@/store/store';
 import Image from 'next/image';
+
 interface FilterItem {
   name: string | number;
-  count: number  | string;
+  count: number | string;
 }
 
 interface FilterGroups {
@@ -25,6 +26,7 @@ interface FilterGroups {
   fuelClasses?: FilterItem[];
   wetGrips?: FilterItem[];
 }
+
 interface SelectedFilters {
   category: string[];
   brand: string[];
@@ -37,7 +39,6 @@ interface SelectedFilters {
   fuelClass: string[];
   wetGrip: string[];
 }
-
 
 interface FilterSidebarProps {
   availableProducts?: FilterGroups;
@@ -55,9 +56,14 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   max,
 }) => {
   const [brandSearch, setBrandSearch] = useState('');
-
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
+
+  // Treat price as "selected" if the active range differs from full range
+  const hasPriceActive =
+    (typeof filters.minPrice === 'number' ? filters.minPrice : min) > min ||
+    (typeof filters.maxPrice === 'number' ? filters.maxPrice : max) < max;
+
   const [openSections, setOpenSections] = useState({
     category: true,
     brand: false,
@@ -71,45 +77,46 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     speedIndex: false,
     lastIndex: false,
   });
-  // You can adjust these colors as you want!
+
+  // Colors
   const gradeFuelColor = (grade: string) => {
     switch ((grade || '').toUpperCase()) {
       case 'A':
-        return '#2d8934'; // Green
+        return '#2d8934';
       case 'B':
-        return '#a4c600'; // Light Green
+        return '#a4c600';
       case 'C':
-        return '#FFC300'; // Deeper yellow, better contrast on white
+        return '#FFC300';
       case 'D':
-        return '#f5b602'; // Orange Yellow
+        return '#f5b602';
       case 'E':
-        return '#e81401'; // Orange
+        return '#e81401';
       case 'F':
-        return '#e81401'; // Red
+        return '#e81401';
       case 'G':
-        return '#e81401'; // Dark Red
+        return '#e81401';
       default:
-        return '#404042'; // Gray (for unknown)
+        return '#404042';
     }
   };
   const gradeGripColor = (grade: string) => {
     switch ((grade || '').toUpperCase()) {
       case 'A':
-        return '#2c5aa9'; // Green
+        return '#2c5aa9';
       case 'B':
-        return '#377ac1'; // Light Green
+        return '#377ac1';
       case 'C':
-        return '#5ba7db'; // Yellow
+        return '#5ba7db';
       case 'D':
-        return '#87c2ea'; // Orange Yellow
+        return '#87c2ea';
       case 'E':
-        return '#b7e4f9'; // Orange
+        return '#b7e4f9';
       case 'F':
-        return '#b7e4f9'; // Red
+        return '#b7e4f9';
       case 'G':
-        return '#b7e4f9'; // Dark Red
+        return '#b7e4f9';
       default:
-        return '#404042'; // Gray (for unknown)
+        return '#404042';
     }
   };
 
@@ -131,28 +138,59 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
+  // Helper: is a given section "selected" (has active filters)?
+  const sectionHasSelection = (section: keyof typeof openSections): boolean => {
+    if (section === 'price') return hasPriceActive;
+    const key = section as keyof SelectedFilters;
+    const arr = selectedFilters[key] as unknown as string[] | undefined;
+    return Array.isArray(arr) && arr.length > 0;
+  };
+
+  // Expand sections that have selections on mount and whenever selections change.
+  useEffect(() => {
+    setOpenSections(prev => ({
+      ...prev,
+      category: prev.category || sectionHasSelection('category'),
+      brand: prev.brand || sectionHasSelection('brand'),
+      price: prev.price || sectionHasSelection('price'),
+      width: prev.width || sectionHasSelection('width'),
+      height: prev.height || sectionHasSelection('height'),
+      diameter: prev.diameter || sectionHasSelection('diameter'),
+      speedIndex: prev.speedIndex || sectionHasSelection('speedIndex'),
+      lastIndex: prev.lastIndex || sectionHasSelection('lastIndex'),
+      noise: prev.noise || sectionHasSelection('noise'),
+      fuelClass: prev.fuelClass || sectionHasSelection('fuelClass'),
+      wetGrip: prev.wetGrip || sectionHasSelection('wetGrip'),
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilters, hasPriceActive]);
+
+  // Click-outside: close only sections WITHOUT selections; keep selected sections open.
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       const sidebarEl = sidebarRef.current;
       if (sidebarEl && !sidebarEl.contains(event.target as Node)) {
-        const allClosed = Object.keys(openSections).reduce((acc, key) => {
-          acc[key as keyof typeof openSections] = false;
-          return acc;
-        }, {} as typeof openSections);
-        setOpenSections(allClosed);
+        setOpenSections(prev => {
+          const next = { ...prev };
+          (Object.keys(prev) as (keyof typeof prev)[]).forEach(key => {
+            next[key] = sectionHasSelection(key) ? true : false;
+          });
+          return next;
+        });
       }
     },
-    [openSections]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedFilters, hasPriceActive]
   );
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [handleClickOutside]);
-  console.log(availableProducts)
+
   return (
     <div className="filter-sidebar" ref={sidebarRef}>
-      {/* Category filter */}
+      {/* Category */}
       {availableProducts.categories && (
         <div className="relative mb-2  border-b border-b-[#C6C7CC]">
           <div
@@ -207,8 +245,132 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           )}
         </div>
       )}
-      {/* Price filter */}
-      {/* {openSections.price && min !== max && ( */}
+      {/* Speed Index */}
+      {availableProducts.speedIndexes && (
+        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
+          <div
+            className="filter-item-title-box overflow-hidden flex items-center w-full justify-between pr-2"
+            onClick={() => toggleSection('speedIndex')}
+            style={{ cursor: 'pointer' }}
+          >
+            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
+              Geschwindigkeitsindex{' '}
+              <span className="text-[#404042] absolute right-2">
+                {selectedFilters.speedIndex.length > 0
+                  ? `(${selectedFilters.speedIndex.length})`
+                  : ''}
+              </span>
+            </h4>
+            <span
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
+                openSections.speedIndex ? 'open' : 'closed'
+              }`}
+            >
+              <ArrowDownIcon />
+            </span>
+          </div>
+          {openSections.speedIndex && (
+            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
+              {[...availableProducts.speedIndexes]
+                .filter(item => {
+                  const name =
+                    typeof item.name === 'string' ? item.name.trim() : '';
+                  return name && name !== 'unbekannt' && name !== '0';
+                })
+                .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+                .map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <Checkbox
+                          checked={selectedFilters.speedIndex.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('speedIndex', String(label))
+                          }
+                        />
+                        {label || 'Unbekannt'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* Last Index */}
+      {availableProducts.lastIndexes && (
+        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
+          <div
+            className="filter-item-title-box flex items-center  justify-between  pr-2"
+            onClick={() => toggleSection('lastIndex')}
+            style={{ cursor: 'pointer' }}
+          >
+            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              Lastindex{' '}
+              <span className="text-[#404042] absolute right-2">
+                {selectedFilters.lastIndex.length > 0
+                  ? `(${selectedFilters.lastIndex.length})`
+                  : ''}
+              </span>
+            </h4>
+            <span
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
+                openSections.lastIndex ? 'open' : 'closed'
+              }`}
+            >
+              <ArrowDownIcon />
+            </span>
+          </div>
+          {openSections.lastIndex && (
+            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
+              {[...availableProducts.lastIndexes]
+                .filter(item => {
+                  const name =
+                    typeof item.name === 'string' ? item.name.trim() : '';
+                  return name && name !== 'unbekannt' && name !== '0';
+                })
+                .sort((a, b) => Number(a.name) - Number(b.name))
+                .map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <Checkbox
+                          checked={selectedFilters.lastIndex.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('lastIndex', String(label))
+                          }
+                        />
+                        {label || 'Unbekannt'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </div>
+      )}
+      {/* Price */}
       <PriceRangeSlider
         min={min}
         max={max}
@@ -216,8 +378,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         maxPrice={filters.maxPrice}
         onChange={handlePriceChange}
       />
-      {/* // )} */}
-      {/* Brand filter */}
+
+      {/* Brand */}
       {availableProducts.brands && (
         <div className="relative mb-2 pb-1  border-b border-b-[#C6C7CC]">
           <div
@@ -243,7 +405,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </div>
           {openSections.brand && (
             <div className="px-2 pt-1 pb-1 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[190px] max-md:max-h-[180px]">
-              {/* Search Input */}
               <div className="px-2">
                 <div className="search-brand-box relative">
                   <input
@@ -263,13 +424,12 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                 </div>
               </div>
 
-              {/* Filtered & Sorted Brand List */}
               <ul className="overflow-y-auto flex-1 gap-2 flex flex-col px-3 pt-0 pb-2">
                 {[...availableProducts.brands]
                   .filter(item => {
                     const name =
                       typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
+                    return name && name !== 'unbekannt' && name !== '0';
                   })
                   .filter(item =>
                     String(item.name)
@@ -283,7 +443,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       typeof item.name === 'number'
                         ? item.name
                         : JSON.stringify(item.name);
-
                     return (
                       <li key={`${label}-${index}`}>
                         <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
@@ -310,8 +469,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       )}
 
       <div className="flex-group-box">
-        {/* Tyres Index Filter */}
-
+        {/* Width */}
         {availableProducts.widths && (
           <div className="relative mb-2 pb-1  border-b border-b-[#C6C7CC]">
             <div
@@ -341,16 +499,15 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   .filter(item => {
                     const name =
                       typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
+                    return name && name !== 'unbekannt' && name !== '0';
                   })
-                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort widths numerically
+                  .sort((a, b) => Number(a.name) - Number(b.name))
                   .map((item, index) => {
                     const label =
                       typeof item.name === 'string' ||
                       typeof item.name === 'number'
                         ? item.name
                         : JSON.stringify(item.name);
-
                     return (
                       <li key={`${label}-${index}`}>
                         <label className="flex items-center gap-2 !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
@@ -374,6 +531,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             )}
           </div>
         )}
+
+        {/* Height */}
         {availableProducts.heights && (
           <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
             <div
@@ -403,9 +562,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   .filter(item => {
                     const name =
                       typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
+                    return name && name !== 'unbekannt' && name !== '0';
                   })
-                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort heights numerically
+                  .sort((a, b) => Number(a.name) - Number(b.name))
                   .map((item, index) => {
                     const label =
                       typeof item.name === 'string' ||
@@ -435,6 +594,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             )}
           </div>
         )}
+
+        {/* Diameter */}
         {availableProducts.diameters && (
           <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
             <div
@@ -464,9 +625,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   .filter(item => {
                     const name =
                       typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
+                    return name && name !== 'unbekannt' && name !== '0';
                   })
-                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort diameters numerically
+                  .sort((a, b) => Number(a.name) - Number(b.name))
                   .map((item, index) => {
                     const label =
                       typeof item.name === 'string' ||
@@ -496,332 +657,210 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             )}
           </div>
         )}
-        {availableProducts.speedIndexes && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box overflow-hidden flex items-center w-full justify-between pr-2"
-              onClick={() => toggleSection('speedIndex')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
-                Geschwindigkeitsindex{' '}
-                <span className="text-[#404042] absolute right-2">
-                  {selectedFilters.speedIndex.length > 0
-                    ? `(${selectedFilters.speedIndex.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
-                  openSections.speedIndex ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.speedIndex && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.speedIndexes]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
-                  })
-                  .sort((a, b) => String(a.name).localeCompare(String(b.name))) // A-Z sort
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.speedIndex.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('speedIndex', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-        )}
-        {availableProducts.lastIndexes && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between  pr-2"
-              onClick={() => toggleSection('lastIndex')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Lastindex{' '}
-                <span className="text-[#404042] absolute right-2">
-                  {selectedFilters.lastIndex.length > 0
-                    ? `(${selectedFilters.lastIndex.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
-                  openSections.lastIndex ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.lastIndex && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.lastIndexes]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
-                  })
-                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort lastIndexes numerically
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
+      </div>
 
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.lastIndex.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('lastIndex', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-        )}
-      </div>
-      <div className="tyres-additional-info">
-        {/* Product Fuel class Filter */}
-        {availableProducts.fuelClasses && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
-              onClick={() => toggleSection('fuelClass')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Kraftstoffeffizienz{' '}
-                <span className="text-[#404042] absolute right-2">
-                  {selectedFilters.fuelClass.length > 0
-                    ? `(${selectedFilters.fuelClass.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                  openSections.fuelClass ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
+      {/* Fuel Class */}
+      {availableProducts.fuelClasses && (
+        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
+          <div
+            className="filter-item-title-box flex items-center  justify-between pr-2"
+            onClick={() => toggleSection('fuelClass')}
+            style={{ cursor: 'pointer' }}
+          >
+            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              Kraftstoffeffizienz{' '}
+              <span className="text-[#404042] absolute right-2">
+                {selectedFilters.fuelClass.length > 0
+                  ? `(${selectedFilters.fuelClass.length})`
+                  : ''}
               </span>
-            </div>
-            {openSections.fuelClass && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.fuelClasses]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
-                  })
-                  .sort((a, b) => String(a.name).localeCompare(String(b.name))) // A-Z sort
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label
-                          style={{
-                            color: gradeFuelColor(String(label)),
-                            fontWeight: 500,
-                          }}
-                          className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
-                        >
-                          <Checkbox
-                            checked={selectedFilters.fuelClass.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('fuelClass', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-        )}
-        {/* Produkt Wet grip class Filter */}
-        {availableProducts.wetGrips && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
-              onClick={() => toggleSection('wetGrip')}
-              style={{ cursor: 'pointer' }}
+            </h4>
+            <span
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                openSections.fuelClass ? 'open' : 'closed'
+              }`}
             >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Nasshaftung{' '}
-                <span className="text-[#404042] absolute right-2">
-                  {selectedFilters.wetGrip.length > 0
-                    ? `(${selectedFilters.wetGrip.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                  openSections.wetGrip ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.wetGrip && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.wetGrips]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string'
-                        ? item.name.trim().toLowerCase()
-                        : '';
-                    return name !== '';
-                  })
-                  .sort((a, b) => String(a.name).localeCompare(String(b.name))) // A-Z sort
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label
-                          style={{
-                            color: gradeGripColor(String(label)),
-                            fontWeight: 500,
-                          }}
-                          className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
-                        >
-                          <Checkbox
-                            checked={selectedFilters.wetGrip.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('wetGrip', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
+              <ArrowDownIcon />
+            </span>
           </div>
-        )}
-        {/* Noise Filter */}
-        {availableProducts.noises && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
-              onClick={() => toggleSection('noise')}
-              style={{ cursor: 'pointer' }}
+          {openSections.fuelClass && (
+            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
+              {[...availableProducts.fuelClasses]
+                .filter(item => {
+                  const name =
+                    typeof item.name === 'string' ? item.name.trim() : '';
+                  return name && name !== 'unbekannt' && name !== '0';
+                })
+                .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+                .map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label
+                        style={{
+                          color: gradeFuelColor(String(label)),
+                          fontWeight: 500,
+                        }}
+                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
+                      >
+                        <Checkbox
+                          checked={selectedFilters.fuelClass.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('fuelClass', String(label))
+                          }
+                        />
+                        {label || 'Unbekannt'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* Wet Grip */}
+      {availableProducts.wetGrips && (
+        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
+          <div
+            className="filter-item-title-box flex items-center  justify-between pr-2"
+            onClick={() => toggleSection('wetGrip')}
+            style={{ cursor: 'pointer' }}
+          >
+            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              Nasshaftung{' '}
+              <span className="text-[#404042] absolute right-2">
+                {selectedFilters.wetGrip.length > 0
+                  ? `(${selectedFilters.wetGrip.length})`
+                  : ''}
+              </span>
+            </h4>
+            <span
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                openSections.wetGrip ? 'open' : 'closed'
+              }`}
             >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Externes Rollgeräusch in dB{' '}
-                <span className="text-[#404042] absolute right-2">
-                  {selectedFilters.noise.length > 0
-                    ? `(${selectedFilters.noise.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                  openSections.noise ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.noise && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.noises]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                     return name && name !== 'unbekannt' && name !== '0'; 
-                  })
-                  .sort((a, b) => Number(a.name) - Number(b.name)) // sort noises numerically
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.noise.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('noise', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
+              <ArrowDownIcon />
+            </span>
           </div>
-        )}
-      </div>
+          {openSections.wetGrip && (
+            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
+              {[...availableProducts.wetGrips]
+                .filter(item => {
+                  const name =
+                    typeof item.name === 'string'
+                      ? item.name.trim().toLowerCase()
+                      : '';
+                  return name !== '';
+                })
+                .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+                .map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label
+                        style={{
+                          color: gradeGripColor(String(label)),
+                          fontWeight: 500,
+                        }}
+                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
+                      >
+                        <Checkbox
+                          checked={selectedFilters.wetGrip.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('wetGrip', String(label))
+                          }
+                        />
+                        {label || 'Unbekannt'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* Noise */}
+      {availableProducts.noises && (
+        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
+          <div
+            className="filter-item-title-box flex items-center  justify-between pr-2"
+            onClick={() => toggleSection('noise')}
+            style={{ cursor: 'pointer' }}
+          >
+            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              Externes Rollgeräusch in dB{' '}
+              <span className="text-[#404042] absolute right-2">
+                {selectedFilters.noise.length > 0
+                  ? `(${selectedFilters.noise.length})`
+                  : ''}
+              </span>
+            </h4>
+            <span
+              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                openSections.noise ? 'open' : 'closed'
+              }`}
+            >
+              <ArrowDownIcon />
+            </span>
+          </div>
+          {openSections.noise && (
+            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
+              {[...availableProducts.noises]
+                .filter(item => {
+                  const name =
+                    typeof item.name === 'string' ? item.name.trim() : '';
+                  return name && name !== 'unbekannt' && name !== '0';
+                })
+                .sort((a, b) => Number(a.name) - Number(b.name))
+                .map((item, index) => {
+                  const label =
+                    typeof item.name === 'string' ||
+                    typeof item.name === 'number'
+                      ? item.name
+                      : JSON.stringify(item.name);
+                  return (
+                    <li key={`${label}-${index}`}>
+                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <Checkbox
+                          checked={selectedFilters.noise.includes(
+                            String(label)
+                          )}
+                          onChange={() =>
+                            handleFilterChange('noise', String(label))
+                          }
+                        />
+                        {label || 'Unbekannt'}
+                        <span className="ml-1 text-gray-400">
+                          ({item.count ?? 0})
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 };

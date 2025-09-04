@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProducts,
@@ -11,7 +11,7 @@ import {
 } from '@/store/productSlice';
 import { debounce } from 'lodash';
 import { CloseIcon, FilterIcon } from '@/icons';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 import SortingSearch from '@elements/search/SortingSearch';
 import Pagination from '@elements/Pagination';
@@ -37,7 +37,6 @@ interface Filters {
   minPrice: number;
   maxPrice: number;
 }
-
 type ArrayFilterKey = Exclude<keyof Filters, 'minPrice' | 'maxPrice'>;
 
 const ARRAY_FILTER_KEYS: ArrayFilterKey[] = [
@@ -72,9 +71,42 @@ const DEFAULT_FILTERS: Filters = {
   maxPrice: 99999,
 };
 
-const ProductListingsSec = () => {
+const FILTER_LABELS: Record<ArrayFilterKey, string> = {
+  category: 'Reifentyp',
+  brand: 'Marke',
+  condition: 'Zustand',
+  width: 'Breite',
+  height: 'Höhe',
+  diameter: 'Durchmesser',
+  speedIndex: 'Geschwindigkeitsindex',
+  lastIndex: 'Lastindex',
+  noise: 'Geräusch',
+  fuelClass: 'Kraftstoffeffizienz',
+  wetGrip: 'Nasshaftung',
+  additionalOptions: 'Optionen',
+};
+
+const formatFilterValue = (key: ArrayFilterKey, val: string) => {
+  if (!val) return val;
+  switch (key) {
+    case 'diameter':
+      return `R${val}`;
+    case 'speedIndex':
+      return `SI ${val}`;
+    case 'lastIndex':
+      return `LI ${val}`;
+    case 'noise':
+      return /^\d+$/.test(val) ? `${val} dB` : val;
+    default:
+      return val;
+  }
+};
+
+const ProductListingsSec: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const {
     products,
@@ -88,67 +120,113 @@ const ProductListingsSec = () => {
     minPriceLimit,
     maxPriceLimit,
   } = useSelector((state: RootState) => state.products);
-  const mergedFilters = useMemo(() => {
-    return { ...DEFAULT_FILTERS, ...filters };
-  }, [filters]);
-// console.log(products, 'Products in ProductListingsSec');
+
+  const mergedFilters = useMemo(
+    () => ({ ...DEFAULT_FILTERS, ...filters }),
+    [filters]
+  );
+
+  // ---- URL helpers
+  const buildSearchParamsFromFilters = (f: Filters) => {
+    const params = new URLSearchParams();
+    ARRAY_FILTER_KEYS.forEach(key => {
+      (f[key] || []).forEach(v => {
+        if (v != null && String(v).trim() !== '') params.append(key, String(v));
+      });
+    });
+    if (typeof f.minPrice === 'number')
+      params.set('minPrice', String(f.minPrice));
+    if (typeof f.maxPrice === 'number')
+      params.set('maxPrice', String(f.maxPrice));
+    if (sortField) params.set('sortField', String(sortField));
+    if (sortOrder) params.set('sortOrder', String(sortOrder));
+    if (page) params.set('page', String(page));
+    return params;
+  };
+
+  // Unique request key per state snapshot
+  const requestKey = (f: Filters, p: number, sf: string, so: string) =>
+    `${JSON.stringify(f)}|${p}|${sf}|${so}`;
+
+  // Ready flag after URL init
+  const [isReady, setIsReady] = useState(false);
+  // Last fetched key
+  const lastKeyRef = useRef<string>('');
+  // Last URL we wrote (to avoid redundant replace)
+  const lastQsRef = useRef<string>('');
+
+  // Init from URL ONCE, and trigger first fetch via the same debounced path
   useEffect(() => {
-    if (!searchParams) return;
+    if (!searchParams || isReady) return;
 
-    const initialFilters: Partial<Filters> = {};
-
+    const initial: Partial<Filters> = {};
     ARRAY_FILTER_KEYS.forEach(key => {
       const values = searchParams.getAll(key);
-      if (values.length > 0) {
-        initialFilters[key] = values;
-      }
+      if (values.length > 0) initial[key] = values;
     });
+    const qsMin = searchParams.get('minPrice');
+    const qsMax = searchParams.get('maxPrice');
+    if (qsMin) initial.minPrice = Number(qsMin);
+    if (qsMax) initial.maxPrice = Number(qsMax);
 
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
-    if (minPrice) initialFilters.minPrice = Number(minPrice);
-    if (maxPrice) initialFilters.maxPrice = Number(maxPrice);
+    const qsSortField = searchParams.get('sortField');
+    const qsSortOrder = searchParams.get('sortOrder') as 'asc' | 'desc' | null;
+    const qsPage = Number(searchParams.get('page') || 1);
 
-    if (Object.keys(initialFilters).length > 0) {
-      dispatch(setFilters(initialFilters as Filters));
-      dispatch(setPage(1));
-    }
-  }, [dispatch, searchParams]);
+    if (Object.keys(initial).length > 0)
+      dispatch(setFilters(initial as Filters));
+    if (qsSortField && qsSortOrder)
+      dispatch(setSort({ field: qsSortField, order: qsSortOrder }));
+    if (!Number.isNaN(qsPage) && qsPage > 0) dispatch(setPage(qsPage));
 
+    setIsReady(true);
+  }, [dispatch, searchParams, isReady]);
+
+  // Single debounced fetch (leading-only so it fires immediately, and never twice)
   const debouncedFetch = useRef(
-    debounce(() => {
-      dispatch(fetchProducts());
-    }, 300)
+    debounce(
+      (key: string) => {
+        if (lastKeyRef.current === key) return; // guard
+        lastKeyRef.current = key;
+        dispatch(fetchProducts());
+      },
+      250,
+      { leading: true, trailing: false } // fire once immediately, no trailing call
+    )
   ).current;
 
+  // Kick off fetch whenever state really changes (after init)
   useEffect(() => {
+    if (!isReady) return;
+    const key = requestKey(mergedFilters, page, sortField, sortOrder);
+    debouncedFetch(key);
     return () => {
       debouncedFetch.cancel();
     };
-  }, [debouncedFetch]);
+  }, [isReady, mergedFilters, page, sortField, sortOrder, debouncedFetch]);
 
-  const mergedFilterHash = useMemo(
+  // Sync URL without causing extra renders
+  const mergedHash = useMemo(
     () => JSON.stringify(mergedFilters),
     [mergedFilters]
   );
+  
+useEffect(() => {
+  if (!isReady || !pathname) return; // <- guard null pathname
 
-  const hasMounted = useRef(false);
+  const qs = buildSearchParamsFromFilters(mergedFilters).toString();
+  if (qs === lastQsRef.current) return;
 
-  useEffect(() => {
-    if (!hasMounted.current) {
-      hasMounted.current = true;
-      return;
-    }
-    debouncedFetch();
-  }, [mergedFilterHash, page, sortField, sortOrder, debouncedFetch]);
+  lastQsRef.current = qs;
 
-  useEffect(() => {
-    debouncedFetch();
-    return debouncedFetch.cancel;
-  }, [mergedFilterHash, page, sortField, sortOrder, debouncedFetch]);
+  const href = qs ? `${pathname}?${qs}` : pathname; // pathname is narrowed to string
+  router.replace(href, { scroll: false });
+}, [isReady, mergedHash, pathname, router, sortField, sortOrder, page]);
+
 
   const handleRemoveFilter = (filterType: ArrayFilterKey, value: string) => {
     dispatch(removeFilter({ filterType, value }));
+    dispatch(setPage(1));
   };
 
   const totalPages = Math.ceil(total / productsPerPage);
@@ -161,7 +239,7 @@ const ProductListingsSec = () => {
         <div className="product-listing-wrapper">
           <div className="product-list-header border-b border-b-[#F5F5F7] mb-6 max-md:mb-4 flex items-center justify-between pb-5 gap-5 w-full">
             <div className="filter-area-box flex items-center gap-8">
-              {/* mobile view filter style start */}
+              {/* Mobile off-canvas */}
               <div className="filter-sidebar-search xl:hidden block">
                 <input
                   id="my-drawer-filter"
@@ -171,7 +249,7 @@ const ProductListingsSec = () => {
                 <div className="drawer-content">
                   <label
                     htmlFor="my-drawer-filter"
-                    className="drawer-button btn text-mono-100 !outline-none text-base md:text-[18px]  !shadow-none !bg-transparent !p-0 !border-none"
+                    className="drawer-button btn text-mono-100 !outline-none text-base md:text-[18px] !shadow-none !bg-transparent !p-0 !border-none"
                   >
                     Filtern: {'  '} <FilterIcon />
                   </label>
@@ -181,7 +259,7 @@ const ProductListingsSec = () => {
                     htmlFor="my-drawer-filter"
                     aria-label="close sidebar"
                     className="drawer-overlay"
-                  ></label>
+                  />
                   <div className="menu offcanvas-main-wrapper bg-mono-0 text-base-content min-h-full max-w-[430px] w-full p-0">
                     <div className="offcanvas-head mini-cart-header-and-main-wrea min-h-full">
                       <div className="minicart-header px-6">
@@ -189,7 +267,6 @@ const ProductListingsSec = () => {
                           <p className="eyebrow-large">Filtersuche</p>
                           <label
                             htmlFor="my-drawer-filter"
-                            aria-label="close sidebar"
                             className="close-btn !border-0 !outline-none !shadow-none w-8 h-8 flex items-center justify-center cursor-pointer"
                           >
                             <CloseIcon />
@@ -198,32 +275,48 @@ const ProductListingsSec = () => {
                       </div>
 
                       <div className="filter-body-product-info px-6">
-                        <div className="empty-product-listing-message my-auto py-12 hidden">
-                          <p className="font-secondary font-medium text-body-caption text-center text-mono-100">
-                            Die Liste ist leer
-                          </p>
-                        </div>
-
                         <div className="cart-add-product-item-wrapper pt-4">
                           <div className="product-selected-category-lists flex flex-wrap items-center gap-2">
-                            {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
-                              mergedFilters[key].map((val, idx) => (
+                            {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) => {
+                              const selectedValues = mergedFilters[key];
+                              if (
+                                !selectedValues ||
+                                selectedValues.length === 0
+                              )
+                                return null;
+
+                              return (
                                 <span
-                                  key={`${key}-${val}-${idx}`}
+                                  key={key}
                                   className="selected-filter px-4 py-1 h-9 bg-[#F5F5F7] rounded-full text-[14px] font-normal font-secondary leading-[100%] text-[#404042] flex items-center"
                                 >
-                                  {typeof val === 'object'
-                                    ? JSON.stringify(val)
-                                    : val}
-                                  <button
-                                    onClick={() => handleRemoveFilter(key, val)}
-                                    className="ml-2 text-primary-100 cursor-pointer"
-                                  >
-                                    ×
-                                  </button>
+                                  <strong className="mr-1">
+                                    {FILTER_LABELS[key]}:
+                                  </strong>{' '}
+                                  <span className="flex items-center gap-1">
+                                    {selectedValues.map((val, idx) => (
+                                      <span
+                                        key={idx}
+                                        className="flex items-center"
+                                      >
+                                        {formatFilterValue(key, String(val))}
+                                        {/* add comma except last */}
+                                        {idx < selectedValues.length - 1 && ','}
+                                        <button
+                                          onClick={() =>
+                                            handleRemoveFilter(key, String(val))
+                                          }
+                                          className="ml-1 text-primary-100 cursor-pointer"
+                                          title={`${FILTER_LABELS[key]} entfernen: ${val}`}
+                                        >
+                                          ×
+                                        </button>
+                                      </span>
+                                    ))}
+                                  </span>
                                 </span>
-                              ))
-                            )}
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
@@ -234,7 +327,6 @@ const ProductListingsSec = () => {
                         <FilterSidebar
                           availableProducts={filterProducts}
                           selectedFilters={mergedFilters}
-                          // onFilterChange={handleFilterChange}
                           min={minPriceLimit}
                           max={maxPriceLimit}
                         />
@@ -243,46 +335,65 @@ const ProductListingsSec = () => {
                   </div>
                 </div>
               </div>
-              {/* mobile view filter style end */}
-              <div className="product-selected-category-lists hidden xl:flex flex-wrap items-center gap-2">
-                {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) =>
-                  mergedFilters[key].map((val, idx) => (
+
+              {/* Desktop chips */}
+              <div className="product-selected-category-lists flex flex-wrap items-center gap-2">
+                {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) => {
+                  const selectedValues = mergedFilters[key];
+                  if (!selectedValues || selectedValues.length === 0)
+                    return null;
+
+                  return (
                     <span
-                      key={`${key}-${val}-${idx}`}
+                      key={key}
                       className="selected-filter px-4 py-1 h-9 bg-[#F5F5F7] rounded-full text-[14px] font-normal font-secondary leading-[100%] text-[#404042] flex items-center"
                     >
-                      {typeof val === 'object' ? JSON.stringify(val) : val}
-                      <button
-                        onClick={() => handleRemoveFilter(key, val)}
-                        className="ml-2 text-primary-100 cursor-pointer"
-                      >
-                        ×
-                      </button>
+                      <strong className="mr-1">{FILTER_LABELS[key]}:</strong>{' '}
+                      <span className="flex items-center gap-1">
+                        {selectedValues.map((val, idx) => (
+                          <span key={idx} className="flex items-center">
+                            {formatFilterValue(key, String(val))}
+                            {/* add comma except last */}
+                            {idx < selectedValues.length - 1 && ','}
+                            <button
+                              onClick={() =>
+                                handleRemoveFilter(key, String(val))
+                              }
+                              className="ml-1 text-primary-100 cursor-pointer"
+                              title={`${FILTER_LABELS[key]} entfernen: ${val}`}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </span>
                     </span>
-                  ))
-                )}
+                  );
+                })}
               </div>
             </div>
+
             <SortingSearch
               onSortChange={(field, order) => {
-                dispatch(setSort({ field, order }));  
+                dispatch(setSort({ field, order }));
                 dispatch(setPage(1));
               }}
             />
           </div>
-          <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6  max-xl:gap-4">
-            <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky max-md:relative max-md:h-auto top-9 max-w-[282px] max-xl:max-w-[220px]  max-md:max-w-[160px] w-full hidden xl:block">
+
+          <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6 max-xl:gap-4">
+            <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky top-9 max-w-[282px] max-xl:max-w-[220px] max-md:max-w-[160px] w-full hidden xl:block">
               <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
                 Filtern nach
               </h4>
               <FilterSidebar
                 availableProducts={filterProducts}
                 selectedFilters={mergedFilters}
-                // onFilterChange={handleFilterChange}
                 min={minPriceLimit}
                 max={maxPriceLimit}
               />
             </div>
+
             <div className="products-list-main-right-cont w-full max-md:w-full">
               <ProductList products={products} loading={loading} />
               <div className="product-lists-footer mt-[38px] max-md:mt-6 flex max-md:flex-row-reverse max-md:justify-between max-sm:flex-col max-sm:mt-4 items-center">
@@ -290,13 +401,13 @@ const ProductListingsSec = () => {
                   <Pagination
                     currentPage={page}
                     totalPages={totalPages}
-                    onPageChange={page => dispatch(setPage(page))}
+                    onPageChange={p => dispatch(setPage(p))}
                   />
                 </div>
                 <div className="showing-current-product">
                   <span className="caption pr-3 max-md:pr-1">Anzeigen</span>{' '}
                   <span className="caption">
-                    {startIndex + 1} bis {endIndex} von{' '}
+                    {total === 0 ? 0 : startIndex + 1} bis {endIndex} von{' '}
                   </span>
                   <span className="caption-bold">{total} Produkte</span>
                 </div>

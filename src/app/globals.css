@@ -432,7 +432,7 @@
     }
     .banner-section{
         /* background: url('/images/banner-image.webp') no-repeat center center/cover; */
-        height: 468px; 
+        height: 515px; 
         width: 100%;
     }
 
@@ -1926,3 +1926,60 @@ flex-direction: column;
     padding-right: 20px;
 }
 }
+.custom-cookie-banner {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.5s ease; 
+}
+
+.custom-cookie-banner.slide-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.react-cookie-law-dialog.custom-cookie-banner.slide-up button span {
+    color: #fff !important;
+}
+.tyre-filter-lists{
+    left: calc(50% - 32px);
+    transform: translateX(-50%);
+}
+.filter-item.height{
+    transform: rotate(25deg);   
+}
+.filter-item.diameter{
+ transform: rotate(40deg);
+ left: 4px;
+}
+
+    .listing-product-loader  .loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 2px solid #00be00;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.listing-product-loader .loader::after {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  border: 2px solid #00be00;
+  background-color: #3a64f6;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+    
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 

@@ -301,13 +301,18 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
             {fuel_class && (
               <>
                 <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px]">
-                  <Image
-                    src="/images/icons/fuel.svg"
-                    alt="Fuel Class"
-                    width={16}
-                    height={16}
-                    loading="lazy"
-                  />{' '}
+                  <span
+                    className="tooltip tooltip-bottom cursor-pointer flex items-center"
+                    data-tip="Kraftstoffeffizienzklasse"
+                  >
+                    <Image
+                      src="/images/icons/fuel.svg"
+                      alt="Fuel Class"
+                      width={16}
+                      height={16}
+                      loading="lazy"
+                    />
+                  </span>
                   <span
                     style={{
                       color: gradeFuelColor(fuel_class),
@@ -323,13 +328,18 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
             {wet_grip && (
               <>
                 <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px]">
-                  <Image
-                    src="/images/icons/weight.svg"
-                    alt="Weight"
-                    width={16}
-                    height={16}
-                    loading="lazy"
-                  />{' '}
+                  <span
+                    className="tooltip tooltip-bottom cursor-pointer flex items-center"
+                    data-tip="Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch."
+                  >
+                    <Image
+                      src="/images/icons/heavy-rain.png"
+                      alt="Wet Grip"
+                      width={16}
+                      height={16}
+                      loading="lazy"
+                    />
+                  </span>
                   <span
                     style={{
                       color: gradeGripColor(wet_grip),
@@ -344,13 +354,18 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
             )}
             {noise_class && (
               <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px]">
-                <Image
-                  src="/images/icons/noise.svg"
-                  alt="External Rolling Noise"
-                  width={16}
-                  height={16}
-                  loading="lazy"
-                />{' '}
+                <span
+                  className="tooltip tooltip-bottom cursor-pointer flex items-center"
+                  data-tip="Nasshaftung: Wie gut ist der Reifen bei Nässe."
+                >
+                  <Image
+                    src="/images/icons/noise.svg"
+                    alt="External Rolling Noise"
+                    width={16}
+                    height={16}
+                    loading="lazy"
+                  />
+                </span>
                 {noise_class}
               </li>
             )}
