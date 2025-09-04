@@ -224,6 +224,7 @@ useEffect(() => {
 }, [isReady, mergedHash, pathname, router, sortField, sortOrder, page]);
 
 
+
   const handleRemoveFilter = (filterType: ArrayFilterKey, value: string) => {
     dispatch(removeFilter({ filterType, value }));
     dispatch(setPage(1));
