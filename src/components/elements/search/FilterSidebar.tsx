@@ -1,13 +1,21 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilters } from '@/store/productSlice';
+import { debounce } from 'lodash';
+
+import {
+  setFilters,
+  setPage,
+  setSort,
+  // fetchProducts,
+} from '@/store/productSlice';
+import { RootState } from '@/store/store';
+
 import { ArrowDownIcon } from '@/icons';
 import Checkbox from '../input-fields/checkbox';
 import PriceRangeSlider from '@/components/elements/search/PriceFilter';
-import { RootState } from '@/store/store';
-import Image from 'next/image';
 
 interface FilterItem {
   name: string | number;
@@ -43,7 +51,7 @@ interface SelectedFilters {
 interface FilterSidebarProps {
   availableProducts?: FilterGroups;
   selectedFilters: SelectedFilters;
-  onFilterChange?: (filters: SelectedFilters) => void; // if used
+  onFilterChange?: (filters: SelectedFilters) => void; // optional external
   min: number;
   max: number;
 }
@@ -51,7 +59,6 @@ interface FilterSidebarProps {
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
   availableProducts = {} as FilterGroups,
   selectedFilters,
-  // onFilterChange,
   min,
   max,
 }) => {
@@ -59,7 +66,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
 
-  // Treat price as "selected" if the active range differs from full range
+  // treat price as "selected" if active range differs from full range
   const hasPriceActive =
     (typeof filters.minPrice === 'number' ? filters.minPrice : min) > min ||
     (typeof filters.maxPrice === 'number' ? filters.maxPrice : max) < max;
@@ -78,58 +85,34 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     lastIndex: false,
   });
 
-  // Colors
-  const gradeFuelColor = (grade: string) => {
-    switch ((grade || '').toUpperCase()) {
-      case 'A':
-        return '#2d8934';
-      case 'B':
-        return '#a4c600';
-      case 'C':
-        return '#FFC300';
-      case 'D':
-        return '#f5b602';
-      case 'E':
-        return '#e81401';
-      case 'F':
-        return '#e81401';
-      case 'G':
-        return '#e81401';
-      default:
-        return '#404042';
-    }
-  };
-  const gradeGripColor = (grade: string) => {
-    switch ((grade || '').toUpperCase()) {
-      case 'A':
-        return '#2c5aa9';
-      case 'B':
-        return '#377ac1';
-      case 'C':
-        return '#5ba7db';
-      case 'D':
-        return '#87c2ea';
-      case 'E':
-        return '#b7e4f9';
-      case 'F':
-        return '#b7e4f9';
-      case 'G':
-        return '#b7e4f9';
-      default:
-        return '#404042';
-    }
-  };
+  // debounced backend commit for price changes
+  const debouncedCommitPrice = useRef(
+    debounce((lo: number, hi: number) => {
+      // merge only changed fields
+      dispatch(setFilters({ minPrice: lo, maxPrice: hi }));
+      // force price ascending
+      dispatch(setSort({ field: 'price', order: 'asc' }));
+      // start from first page
+      dispatch(setPage(1));
+      // // silent refresh (no overlay)
+      // dispatch(fetchProducts({ silent: true }));
+    }, 180)
+  ).current;
 
   const handleFilterChange = (key: keyof SelectedFilters, value: string) => {
-    const currentValues = filters[key] || [];
+    const currentValues = (filters as SelectedFilters)[key] || [];
     const updated = currentValues.includes(value)
       ? currentValues.filter((v: string) => v !== value)
       : [...currentValues, value];
-    dispatch(setFilters({ ...filters, [key]: updated }));
+    dispatch(setFilters({ [key]: updated } as Partial<SelectedFilters>));
+    // regular filters: reset page & fetch normally (non-silent shows overlay)
+    dispatch(setPage(1));
   };
 
   const handlePriceChange = (minPrice: number, maxPrice: number) => {
-    dispatch(setFilters({ ...filters, minPrice, maxPrice }));
+    // update quickly in store for URL/sync, but main fetch is debounced
+    dispatch(setFilters({ minPrice, maxPrice }));
+    debouncedCommitPrice(minPrice, maxPrice);
   };
 
   const toggleSection = (section: keyof typeof openSections) => {
@@ -138,7 +121,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  // Helper: is a given section "selected" (has active filters)?
+  // section selected?
   const sectionHasSelection = (section: keyof typeof openSections): boolean => {
     if (section === 'price') return hasPriceActive;
     const key = section as keyof SelectedFilters;
@@ -146,7 +129,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     return Array.isArray(arr) && arr.length > 0;
   };
 
-  // Expand sections that have selections on mount and whenever selections change.
+  // keep selected sections expanded
   useEffect(() => {
     setOpenSections(prev => ({
       ...prev,
@@ -165,11 +148,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters, hasPriceActive]);
 
-  // Click-outside: close only sections WITHOUT selections; keep selected sections open.
+  // click outside → close only un-selected sections
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
-      const sidebarEl = sidebarRef.current;
-      if (sidebarEl && !sidebarEl.contains(event.target as Node)) {
+      const el = sidebarRef.current;
+      if (el && !el.contains(event.target as Node)) {
         setOpenSections(prev => {
           const next = { ...prev };
           (Object.keys(prev) as (keyof typeof prev)[]).forEach(key => {
@@ -187,6 +170,43 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [handleClickOutside]);
+
+  const gradeFuelColor = (grade: string) => {
+    switch ((grade || '').toUpperCase()) {
+      case 'A':
+        return '#2d8934';
+      case 'B':
+        return '#a4c600';
+      case 'C':
+        return '#FFC300';
+      case 'D':
+        return '#f5b602';
+      case 'E':
+      case 'F':
+      case 'G':
+        return '#e81401';
+      default:
+        return '#404042';
+    }
+  };
+  const gradeGripColor = (grade: string) => {
+    switch ((grade || '').toUpperCase()) {
+      case 'A':
+        return '#2c5aa9';
+      case 'B':
+        return '#377ac1';
+      case 'C':
+        return '#5ba7db';
+      case 'D':
+        return '#87c2ea';
+      case 'E':
+      case 'F':
+      case 'G':
+        return '#b7e4f9';
+      default:
+        return '#404042';
+    }
+  };
 
   return (
     <div className="filter-sidebar" ref={sidebarRef}>
@@ -245,6 +265,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           )}
         </div>
       )}
+
       {/* Speed Index */}
       {availableProducts.speedIndexes && (
         <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
@@ -370,6 +391,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           )}
         </div>
       )}
+
       {/* Price */}
       <PriceRangeSlider
         min={min}

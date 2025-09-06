@@ -409,6 +409,7 @@
 // export const { setFilters, removeFilter, setSort, setPage } =
 //   productSlice.actions;
 // export default productSlice.reducer;
+// store/productSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -498,13 +499,12 @@ type QueryParamValue =
 type QueryParams = Record<string, QueryParamValue>;
 
 interface ApiRequestParams extends QueryParams {
-  // explicitly list the keys we know the backend expects
   page: number;
   limit: number;
   sortField: string;
   sortOrder: string;
   includeFilters?: boolean;
-  // plus all filters spread in
+  // filters (optional)
   category?: string[];
   brand?: string[];
   condition?: string[];
@@ -584,11 +584,14 @@ export const fetchProducts = createAsyncThunk<
   const state = getState().products;
   const { filters, page, sortField, sortOrder } = state;
 
-  const params: ApiRequestParams = {
+  // Send both new and legacy sort params for backend compatibility.
+  const params: ApiRequestParams & { sort?: string; order?: string } = {
     page,
     limit: 12,
     sortField,
     sortOrder,
+    sort: sortField,
+    order: sortOrder,
     ...filters,
     includeFilters: page === 1 ? true : undefined,
   };
@@ -597,7 +600,7 @@ export const fetchProducts = createAsyncThunk<
   try {
     inflightController?.abort();
   } catch {
-    // no-op
+    /* no-op */
   }
   inflightController = new AbortController();
 
@@ -619,8 +622,12 @@ const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    setFilters(state, action: PayloadAction<Filters>) {
-      state.filters = action.payload;
+    /**
+     * Merge-only update for filters so partial changes (like min/max price)
+     * don’t wipe the rest of the filter object.
+     */
+    setFilters(state, action: PayloadAction<Partial<Filters>>) {
+      state.filters = { ...state.filters, ...action.payload };
     },
     removeFilter(
       state,
@@ -694,6 +701,7 @@ export const selectVisibleProducts = (state: { products: ProductState }) => {
     : Number.MAX_SAFE_INTEGER;
 
   return products.filter(p => {
+    // prefer search_price, fallback to main_price; both are expected numeric
     const price = Number.isFinite(p.search_price)
       ? p.search_price
       : Number.isFinite(p.main_price)
@@ -705,3 +713,5 @@ export const selectVisibleProducts = (state: { products: ProductState }) => {
 
 export const selectVisibleCount = (state: { products: ProductState }) =>
   selectVisibleProducts(state).length;
+
+

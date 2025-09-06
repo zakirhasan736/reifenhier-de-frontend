@@ -5,7 +5,6 @@ import ClientProviders from '@/utils/Provider';
 import Head from 'next/head';
 import Script from 'next/script';
 import { Poppins } from 'next/font/google';
-import CookiesBanner from "@/components/CookiesBanner";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -59,12 +58,18 @@ export default function RootLayout({
             gtag('config', 'G-XXXXXXX', { anonymize_ip: true });
           `}
           </Script>
+          <Script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="1011cf97-2ce9-406a-85a7-8249e98f91c3"
+            data-blockingmode="auto"
+            type="text/javascript"
+          />
         </>
       </Head>
       <body className="angelpage-body-wrapper-area">
         <main className="angelpage-main-wrapper">
           <ClientProviders>{children}</ClientProviders>
-          <CookiesBanner />
         </main>
       </body>
     </html>

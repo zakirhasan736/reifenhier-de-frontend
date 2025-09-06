@@ -180,6 +180,7 @@ const ProductListingsSec: React.FC = () => {
     if (!Number.isNaN(qsPage) && qsPage > 0) dispatch(setPage(qsPage));
 
     setIsReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, searchParams, isReady]);
 
   // Single debounced fetch (leading-only so it fires immediately, and never twice)
