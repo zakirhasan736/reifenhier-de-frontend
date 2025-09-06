@@ -141,6 +141,11 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     product,
     loading
   }) => {
+    const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>(
+      'price'
+    );
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
     const uuidCookie = Cookies.get('uuid') || 'guest';
     const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
     const dispatch = useDispatch<AppDispatch>();
@@ -1270,7 +1275,7 @@ const handleToggleWishlist = async () => {
             </div>
             <div className="custom-container-full lg:pt-[55px] pt-9">
               {/* name of each tab group should be unique */}
-              <div className="custom-container relative flex md:flex-row flex-col items-end md:items-center md:justify-between max-sm:mb-6">
+              <div className="custom-container relative flex md:flex-row gap-6 md:gap-2 flex-col items-start md:items-center md:justify-between max-sm:mb-6">
                 <div className="best-offer-vendor-sec-title">
                   <h2 className="md:text-[28px] text-[26px] font-medium font-primary text-[#16171A] leading-[120%] mb-1 md:mb-3">
                     Bestes Angebot
@@ -1279,9 +1284,53 @@ const handleToggleWishlist = async () => {
                     Vertrauenswürdige Marken und täglich die niedrigsten Preise!
                   </p>
                 </div>
-                <div className="offer-vendor-navigator hidden items-baseline-last gap-5">
-                  <div className="swiper-button-prev !relative"></div>
-                  <div className="swiper-button-next !relative"></div>
+                <div className="offer-vendor-navigator  items-baseline-last gap-5">
+                  <div className="flex items-center justify-end">
+                    <label
+                      htmlFor="sort"
+                      className="mr-2 text-sm text-[#404042]"
+                    >
+                      Sortierung:
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="sort"
+                        className="appearance-none border border-primary-100 px-3 py-2 text-sm pr-8"
+                        value={`${sortBy}_${sortOrder}`}
+                        onChange={e => {
+                          const [sortKey, sortDir] = e.target.value.split('_');
+                          setSortBy(sortKey as 'price' | 'priceWithDelivery');
+                          setSortOrder(sortDir as 'asc' | 'desc');
+                        }}
+                      >
+                        <option value="price_asc">Preis aufsteigend</option>
+                        <option value="price_desc">Preis absteigend</option>
+                        <option value="priceWithDelivery_asc">
+                          Preis mit Versand aufsteigend
+                        </option>
+                        <option value="priceWithDelivery_desc">
+                          Preis mit Versand absteigend
+                        </option>
+                      </select>
+
+                      {/* Dropdown arrow */}
+                      <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                        <svg
+                          className="w-4 h-4 text-gray-500"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="tabs tabs-box bg-mono-0 pb-10 lg:pb-16 ">
@@ -1297,10 +1346,25 @@ const handleToggleWishlist = async () => {
                     <div className="custom-container">
                       <div className="offer-list-item-area">
                         {([...(product.offers || [])] as Offer[])
-                          .sort(
-                            (a, b) =>
-                              parseMoneyEU(a.price) - parseMoneyEU(b.price)
-                          )
+                          .sort((a, b) => {
+                            const priceA = parseMoneyEU(a.price);
+                            const deliveryA = parseMoneyEU(a.delivery_cost);
+                            const priceB = parseMoneyEU(b.price);
+                            const deliveryB = parseMoneyEU(b.delivery_cost);
+
+                            const valA =
+                              sortBy === 'priceWithDelivery'
+                                ? priceA + deliveryA
+                                : priceA;
+                            const valB =
+                              sortBy === 'priceWithDelivery'
+                                ? priceB + deliveryB
+                                : priceB;
+
+                            return sortOrder === 'asc'
+                              ? valA - valB
+                              : valB - valA;
+                          })
                           .map((offer, index) => {
                             const price = parseMoneyEU(offer.price);
                             const delivery = parseMoneyEU(offer.delivery_cost);
