@@ -320,7 +320,7 @@ const FilterForm = () => {
         </div>
         <div className="tyre-model-image bottom-0 left-0 right-0 mx-auto absolute hidden md:flex flex-col items-center pl-20 justify-center">
           <div
-            className={`tyre-filter-lists flex items-center pl-20 pt-10 justify-center gap-1 bg-transparent absolute h-9 max-w-42 rounded-tr-full rounded-tl-full w-full ${
+            className={`tyre-filter-lists flex items-center pl-0 pt-10 justify-center gap-1 bg-transparent absolute h-9 max-w-42 rounded-tr-full rounded-tl-full w-full ${
               width && height && diameter
                 ? '-rotate-28 -top-[32px]'
                 : width && height && !diameter
