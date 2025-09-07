@@ -1,72 +1,79 @@
-import type { Metadata } from "next";
-import type { Viewport } from 'next';
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
 import ClientProviders from '@/utils/Provider';
-import Head from 'next/head';
 import Script from 'next/script';
 import { Poppins } from 'next/font/google';
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'], // choose weights you use
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-poppins', // optional: for CSS custom property usage
+  variable: '--font-poppins',
 });
+
 export const metadata: Metadata = {
   title: 'Reifenpreisvergleich: Finden Sie die günstigsten Reifen',
-  description: 'Entdecken Sie Reifenhier.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
+  description:
+    'Entdecken Sie Reifenhier.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
   icons: { icon: '/images/favicon.png', apple: '/images/favicon.png' },
 };
-export const viewport: Viewport = {
-  themeColor: 'light',
-};
+
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="de" className={poppins.className}>
-      <Head>
-        <>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="robots" content="noindex, nofollow" />
+      {/* Cookiebot — must load before any tags that use cookies */}
+      <Script
+        id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="1011cf97-2ce9-406a-85a7-8249e98f91c3"
+        data-blockingmode="auto"
+        strategy="beforeInteractive"
+      />
 
-          {/* Consent Mode defaults (v2) — must run before any Google tags */}
-          <Script id="consent-defaults" strategy="beforeInteractive">
-            {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            gtag('consent', 'default', {
-              ad_storage: 'denied',
-              analytics_storage: 'denied',
-              ad_user_data: 'denied',
-              ad_personalization: 'denied'
-            });
-          `}
-          </Script>
-          <Script
-            id="gtag-src"
-            src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX`}
-            strategy="afterInteractive"
-          />
-          <Script id="gtag-init" strategy="afterInteractive">
-            {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XXXXXXX', { anonymize_ip: true });
-          `}
-          </Script>
-          <Script
-            id="Cookiebot"
-            src="https://consent.cookiebot.com/uc.js"
-            data-cbid="1011cf97-2ce9-406a-85a7-8249e98f91c3"
-            data-blockingmode="auto"
-            type="text/javascript"
-          />
-        </>
-      </Head>
+      {/* Default consent for GTM/Analytics */}
+      <Script id="consent-defaults" strategy="beforeInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            ad_storage: 'denied',
+            analytics_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied'
+          });
+        `}
+      </Script>
+
+      {/* Google Analytics */}
+      <Script
+        id="gtag-src"
+        src="https://www.googletagmanager.com/gtag/js?id=G-GJPR5ZRS4G"
+        strategy="afterInteractive"
+      />
+      <Script id="gtag-init" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-GJPR5ZRS4G');
+        `}
+      </Script>
+
+      {/* Microsoft Clarity */}
+      <Script id="clarity" strategy="afterInteractive">
+        {`
+          (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "synxux4l9y");
+        `}
+      </Script>
+
       <body className="angelpage-body-wrapper-area">
         <main className="angelpage-main-wrapper">
           <ClientProviders>{children}</ClientProviders>
