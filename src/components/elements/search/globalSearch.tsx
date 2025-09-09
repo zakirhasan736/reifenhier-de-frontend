@@ -5,15 +5,14 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 interface Suggestion {
-  id: string;
+  slug: string;
   name: string;
   type: 'Product' | 'Category' | 'Brand' | 'Charity';
   storefrontId?: string;
   brand?: string;
 }
 interface RawSuggestion {
-  _id?: string;
-  id?: string;
+  slug?: string;
   name: string;
   type?: 'Product' | 'Category' | 'Brand' | 'Charity';
   storefrontId?: string;
@@ -47,7 +46,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
 
       if (Array.isArray(data)) {
         const mapped = data.map((item: RawSuggestion) => ({
-          id: item.id || item._id || '',
+          slug: item.slug || '',
           name: item.name,
           type: item.type || 'Product',
           storefrontId: item.storefrontId,
@@ -71,15 +70,20 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
     fetchSuggestions(value);
   };
 
-  const handleSuggestionClick = (suggestion: Suggestion) => {
-    if (suggestion.type === 'Product') {
-      router.push(`/products/${suggestion.id}`);
-    } else if (suggestion.type === 'Category') {
-      router.push(`/products?category=${encodeURIComponent(suggestion.name)}`);
-    } else if (suggestion.type === 'Brand') {
-      router.push(`/products?brand=${encodeURIComponent(suggestion.name)}`);
-    } else if (suggestion.type === 'Charity' && suggestion.storefrontId) {
-      router.push(`/charity/store/${suggestion.storefrontId}`);
+  const handleSuggestionClick = (s: Suggestion) => {
+    if (s.type === 'Product') {
+      // ✅ route by slug; fallback to search if slug somehow missing
+      if (s.slug) {
+        router.push(`/products/${s.slug}`);
+      } else {
+        router.push(`/products?q=${encodeURIComponent(s.name)}`);
+      }
+    } else if (s.type === 'Category') {
+      router.push(`/products?category=${encodeURIComponent(s.name)}`);
+    } else if (s.type === 'Brand') {
+      router.push(`/products?brand=${encodeURIComponent(s.name)}`);
+    } else if (s.type === 'Charity' && s.storefrontId) {
+      router.push(`/charity/store/${s.storefrontId}`);
     }
 
     setSuggestions([]);
@@ -90,7 +94,10 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
     <div
       className={`global-search-bar max-sm:hidden max-w-[300px] w-full relative ${className}`}
     >
-      <form className="global-search-form global-search w-full">
+      <form
+        className="global-search-form global-search w-full"
+        onSubmit={e => e.preventDefault()}
+      >
         <div className="global-search-group-field relative w-full">
           <input
             id="searchid1"
@@ -130,7 +137,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
           ) : suggestions.length > 0 ? (
             suggestions.map((sugg, idx) => (
               <div
-                key={idx}
+                key={`${sugg.type}-${sugg.slug || sugg.name}-${idx}`}
                 onClick={() => handleSuggestionClick(sugg)}
                 className="p-3 text-sm hover:bg-gray-100 cursor-pointer border-b last:border-0"
               >

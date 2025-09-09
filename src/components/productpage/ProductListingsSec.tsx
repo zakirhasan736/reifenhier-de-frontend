@@ -339,7 +339,7 @@ useEffect(() => {
               </div>
 
               {/* Desktop chips */}
-              <div className="product-selected-category-lists flex flex-wrap items-center gap-2">
+              <div className="product-selected-category-lists hidden lg:flex flex-wrap items-center gap-2">
                 {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) => {
                   const selectedValues = mergedFilters[key];
                   if (!selectedValues || selectedValues.length === 0)
