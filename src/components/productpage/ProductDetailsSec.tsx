@@ -871,7 +871,12 @@ const handleToggleWishlist = async () => {
                             width={140}
                             height={37}
                             loading="lazy"
-                            className="lg:w-auto lg:h-[37px] h-[27px] w-auto object-contain"
+                            className={`lg:h-[37px] h-[27px] object-contain ${
+                              product.cheapest_vendor?.vendor_logo ===
+                              '/images/vendors/reifendirekt-de.png'
+                                ? 'lg:w-[140px] w-[120px]'
+                                : 'lg:w-auto w-auto'
+                            }`}
                             alt="vendor image"
                           />{' '}
                           {product.cheapest_vendor?.vendor}
