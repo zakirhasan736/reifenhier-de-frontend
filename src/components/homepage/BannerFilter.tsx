@@ -205,9 +205,9 @@ const FilterForm = () => {
       : undefined;
   };
 
-  const openDialogById = (id: string) => {
-    (document.getElementById(id) as HTMLDialogElement | null)?.showModal();
-  };
+  // const openDialogById = (id: string) => {
+  //   (document.getElementById(id) as HTMLDialogElement | null)?.showModal();
+  // };
 
   return (
     <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto">
