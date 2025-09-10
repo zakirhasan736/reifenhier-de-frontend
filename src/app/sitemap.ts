@@ -1,27 +1,57 @@
-/* ===================== FILE: app/sitemap.ts ===================== */
 import type { MetadataRoute } from 'next';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://reifencheck.de';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  // Static routes you currently have
-  const staticPaths = ['/', '/terms', '/privacy'];
+  // Static routes
+  const staticPaths = [
+    '/',
+    '/terms-services',
+    '/privacy-policy',
+    '/blogs',
+    '/favorites',
+    '/products',
+  ];
 
-  // If you have dynamic content (e.g., /blog/[slug] or /products/[id]),
-  // fetch/compose those URLs here and push into the list.
-  // Example placeholder:
-  // const dynamicEntries = await fetch(`${process.env.CMS_URL}/api/entries`).then(r => r.json());
-  // urls.push(...dynamicEntries.map((e: { slug: string }) => ({ url: `${siteUrl}/blog/${e.slug}`, lastModified: now })));
+  // Fetch dynamic blog slugs (adjust API endpoint to your CMS)
+  const blogSlugs: string[] = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/blogs`
+  )
+    .then(res => res.json())
+    .then((data: { slug: string }[]) => data.map(b => b.slug))
+    .catch(() => []);
 
-  const urls: MetadataRoute.Sitemap = staticPaths.map(path => ({
-    url: `${siteUrl.replace(/\/$/, '')}${path}`,
-    lastModified: now,
-    changeFrequency: path === '/' ? 'daily' : 'weekly',
-    priority: path === '/' ? 1 : 0.6,
-  }));
+  const productSlugs: string[] = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/products`
+  )
+    .then(res => res.json())
+    .then((data: { slug: string }[]) => data.map(p => p.slug))
+    .catch(() => []);
+
+  const urls: MetadataRoute.Sitemap = [
+    ...staticPaths.map(path => ({
+      url: `${siteUrl.replace(/\/$/, '')}${path}`,
+      lastModified: now,
+      changeFrequency: (path === '/' ? 'daily' : 'weekly') as
+        | 'daily'
+        | 'weekly',
+      priority: path === '/' ? 1 : 0.6,
+    })),
+    ...blogSlugs.map(slug => ({
+      url: `${siteUrl.replace(/\/$/, '')}/blogs/${slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+    })),
+    ...productSlugs.map(slug => ({
+      url: `${siteUrl.replace(/\/$/, '')}/products/${slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+    })),
+  ];
 
   return urls;
 }
-/* ===================== END OF FILE ===================== */
