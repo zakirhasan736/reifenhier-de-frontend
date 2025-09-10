@@ -220,7 +220,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Reifentyp{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.category.length > 0
                   ? `(${selectedFilters.category.length})`
                   : ''}
@@ -276,7 +276,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
               Geschwindigkeitsindex{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.speedIndex.length > 0
                   ? `(${selectedFilters.speedIndex.length})`
                   : ''}
@@ -339,7 +339,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Lastindex{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.lastIndex.length > 0
                   ? `(${selectedFilters.lastIndex.length})`
                   : ''}
@@ -411,7 +411,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Marke{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.brand.length > 0
                   ? `(${selectedFilters.brand.length})`
                   : ''}
@@ -495,13 +495,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         {availableProducts.widths && (
           <div className="relative mb-2 pb-1  border-b border-b-[#C6C7CC]">
             <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
+              className="filter-item-title-box flex items-center  justify-between pr-6"
               onClick={() => toggleSection('width')}
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
                 Breite{' '}
-                <span className="text-[#404042] absolute right-2">
+                <span className="text-[#404042] absolute right-2 text-[14px]">
                   {selectedFilters.width.length > 0
                     ? `(${selectedFilters.width.length})`
                     : ''}
@@ -558,13 +558,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         {availableProducts.heights && (
           <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
             <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
+              className="filter-item-title-box flex items-center  justify-between pr-6"
               onClick={() => toggleSection('height')}
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
                 Höhe{' '}
-                <span className="text-[#404042] absolute right-2">
+                <span className="text-[#404042] absolute right-2 text-[14px]">
                   {selectedFilters.height.length > 0
                     ? `(${selectedFilters.height.length})`
                     : ''}
@@ -621,13 +621,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         {availableProducts.diameters && (
           <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
             <div
-              className="filter-item-title-box flex items-center  justify-between pr-2"
+              className="filter-item-title-box flex items-center  justify-between pr-6"
               onClick={() => toggleSection('diameter')}
               style={{ cursor: 'pointer' }}
             >
               <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
                 Durchmesser{' '}
-                <span className="text-[#404042] absolute right-2">
+                <span className="text-[#404042] absolute right-2 text-[14px]">
                   {selectedFilters.diameter.length > 0
                     ? `(${selectedFilters.diameter.length})`
                     : ''}
@@ -685,13 +685,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       {availableProducts.fuelClasses && (
         <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
           <div
-            className="filter-item-title-box flex items-center  justify-between pr-2"
+            className="filter-item-title-box flex items-center  justify-between pr-6"
             onClick={() => toggleSection('fuelClass')}
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Kraftstoffeffizienz{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.fuelClass.length > 0
                   ? `(${selectedFilters.fuelClass.length})`
                   : ''}
@@ -754,13 +754,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       {availableProducts.wetGrips && (
         <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
           <div
-            className="filter-item-title-box flex items-center  justify-between pr-2"
+            className="filter-item-title-box flex items-center  justify-between pr-6"
             onClick={() => toggleSection('wetGrip')}
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Nasshaftung{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.wetGrip.length > 0
                   ? `(${selectedFilters.wetGrip.length})`
                   : ''}
@@ -825,13 +825,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       {availableProducts.noises && (
         <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
           <div
-            className="filter-item-title-box flex items-center  justify-between pr-2"
+            className="filter-item-title-box flex items-center  justify-between pr-6"
             onClick={() => toggleSection('noise')}
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Externes Rollgeräusch in dB{' '}
-              <span className="text-[#404042] absolute right-2">
+              <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.noise.length > 0
                   ? `(${selectedFilters.noise.length})`
                   : ''}
