@@ -218,7 +218,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('category')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Reifentyp{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.category.length > 0
@@ -274,7 +274,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('speedIndex')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
+            <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
               Geschwindigkeitsindex{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.speedIndex.length > 0
@@ -337,7 +337,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('lastIndex')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Lastindex{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.lastIndex.length > 0
@@ -409,7 +409,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('brand')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Marke{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.brand.length > 0
@@ -499,7 +499,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               onClick={() => toggleSection('width')}
               style={{ cursor: 'pointer' }}
             >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
                 Breite{' '}
                 <span className="text-[#404042] absolute right-2 text-[14px]">
                   {selectedFilters.width.length > 0
@@ -562,7 +562,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               onClick={() => toggleSection('height')}
               style={{ cursor: 'pointer' }}
             >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
                 Höhe{' '}
                 <span className="text-[#404042] absolute right-2 text-[14px]">
                   {selectedFilters.height.length > 0
@@ -625,7 +625,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               onClick={() => toggleSection('diameter')}
               style={{ cursor: 'pointer' }}
             >
-              <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+              <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
                 Durchmesser{' '}
                 <span className="text-[#404042] absolute right-2 text-[14px]">
                   {selectedFilters.diameter.length > 0
@@ -689,7 +689,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('fuelClass')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Kraftstoffeffizienz{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.fuelClass.length > 0
@@ -758,7 +758,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('wetGrip')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Nasshaftung{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.wetGrip.length > 0
@@ -829,7 +829,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('noise')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[15px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title w-full text-[15px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Externes Rollgeräusch in dB{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.noise.length > 0
