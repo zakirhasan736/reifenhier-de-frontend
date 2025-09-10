@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/contact-us"
+                        href="/products"
                       >
                         Produkte
                       </Link>
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/privacy-policy"
+                        href="/blogs"
                       >
                         Der Blog
                       </Link>
@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/terms-of-service"
+                        href="/favorites"
                       >
                         Favoriten
                       </Link>
@@ -102,7 +102,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/"
+                        href="/products?category=Sommerreifen"
                       >
                         Sommerreifen
                       </Link>
@@ -110,7 +110,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/contact-us"
+                        href="/products?category=Winterreifen"
                       >
                         Winterreifen
                       </Link>
@@ -118,7 +118,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/privacy-policy"
+                        href="/products?category=Ganzjahresreifen"
                       >
                         Ganzjahresreifen
                       </Link>
@@ -126,7 +126,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/terms-of-service"
+                        href="./#byBrand"
                       >
                         Nach Marke
                       </Link>
@@ -141,7 +141,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/"
+                        href="https://facebook.com"
                       >
                         Facebook
                       </Link>
@@ -149,7 +149,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/contact-us"
+                        href="https://instagram.com"
                       >
                         Instagram
                       </Link>
@@ -157,7 +157,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
-                        href="/privacy-policy"
+                        href="https://x.com"
                       >
                         X.com
                       </Link>
@@ -185,13 +185,12 @@ const Footer: React.FC = () => {
                   <li className="foot-middle-item">
                     <Link
                       className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#86878A]"
-                      href="/terms-of-service"
+                      href="/term-services"
                     >
                       Nutzungsbedingungen
                     </Link>
                   </li>
                 </ul>
-               
               </div>
             </div>
           </div>

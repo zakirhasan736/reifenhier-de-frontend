@@ -15,7 +15,7 @@ const BrandCategory = () => {
    const brands = data?.brands || [];
 
   return (
-    <section className="brand-category-section lg:pb-[70] pb-14 bg-mono-0">
+    <section className="brand-category-section lg:pb-[70] pb-14 bg-mono-0" id='byBrand'>
       <div className="custom-container">
         <div className="brand-category-content">
           <div className="section-header text-center mb-9">

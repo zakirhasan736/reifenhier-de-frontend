@@ -3,13 +3,13 @@ import type { Metadata } from 'next';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 
 export const metadata: Metadata = {
-  title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifenhier.de',
+  title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifencheck.de',
   description:
-    'AGB für Reifenhier.de (Preisvergleich & Informationen zu Reifenangeboten). Geltungsbereich, Leistungen, Haftung, Pflichten der Nutzer, Datenschutz & Schlussbestimmungen.',
+    'AGB für Reifencheck.de (Preisvergleich & Informationen zu Reifenangeboten). Geltungsbereich, Leistungen, Haftung, Pflichten der Nutzer, Datenschutz & Schlussbestimmungen.',
   openGraph: {
-    title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifenhier.de',
+    title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifencheck.de',
     description:
-      'AGB für Reifenhier.de (Preisvergleich & Informationen zu Reifenangeboten).',
+      'AGB für Reifencheck.de (Preisvergleich & Informationen zu Reifenangeboten).',
     type: 'article',
   },
   robots: { index: true, follow: true },
@@ -21,7 +21,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
         <div className="mb-10">
           <h1 className="text-3xl font-bold tracking-tight">
-            Allgemeine Geschäftsbedingungen (AGB) für Reifenhier.de
+            Allgemeine Geschäftsbedingungen (AGB) für Reifencheck.de
           </h1>
           <p className="mt-2 text-sm text-gray-500">
             Zuletzt aktualisiert: {new Date().toLocaleDateString('de-DE')}
@@ -73,7 +73,7 @@ export default function TermsPage() {
           </h2>
           <p className="mt-3">
             1.1 Diese AGB gelten für die Nutzung der Webseite{' '}
-            <strong>Reifenhier.de</strong>, betrieben von{' '}
+            <strong>Reifencheck.de</strong>, betrieben von{' '}
             <strong>Jens Kippels</strong>. Mit Nutzung der Plattform akzeptieren
             Sie diese AGB in ihrer jeweils aktuellen Fassung.
           </p>
@@ -194,7 +194,7 @@ export default function TermsPage() {
         <div className="mt-12 border-t pt-6 text-sm text-gray-500">
           <p>
             Betreiber: <strong>Jens Kippels</strong> · Plattform:{' '}
-            <strong>Reifenhier.de</strong>
+            <strong>Reifencheck.de</strong>
           </p>
           <p className="mt-2">
             Hinweis: Diese AGB dienen als Vorlage. Lassen Sie die Inhalte ggf.

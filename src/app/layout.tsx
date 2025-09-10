@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Reifenpreisvergleich: Finden Sie die günstigsten Reifen',
     description:
-      'Entdecken Sie Reifenhier.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
-    url: 'https://reifenhier.de',
-    siteName: 'Reifenhier.de',
+      'Entdecken Sie Reifencheck.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
+    url: 'https://reifencheck.de',
+    siteName: 'Reifencheck.de',
     images: [
       {
-        url: '/images/og-image.png',
+        url: '/images/banner-og-image.png',
         width: 1200,
         height: 630,
         alt: 'Reifenpreisvergleich bei Reifenhier.de',

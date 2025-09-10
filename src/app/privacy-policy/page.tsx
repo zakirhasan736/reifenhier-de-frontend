@@ -3,13 +3,13 @@ import Head from 'next/head';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
-    title: 'Datenschutzerklärung – Reifenhier.de',
+    title: 'Datenschutzerklärung – Reifencheck.de',
     description:
-        'Datenschutzerklärung von Reifenhier.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
+        'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
     openGraph: {
-        title: 'Datenschutzerklärung – Reifenhier.de',
+        title: 'Datenschutzerklärung – Reifencheck.de',
         description:
-            'Datenschutzerklärung von Reifenhier.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
+            'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
         type: 'article',
     },
     robots: { index: true, follow: true },
@@ -18,25 +18,25 @@ const PrivacyPolicy: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Datenschutzerklärung – Reifenhier.de</title>
+        <title>Datenschutzerklärung – Reifencheck.de</title>
         <meta
           name="description"
-          content="Datenschutzerklärung von Reifenhier.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m."
+          content="Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m."
         />
         <meta name="robots" content="index,follow" />
       </Head>
 
-      <main className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-md">
+      <main className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
         <header className="mb-8 text-center">
           <h1 className="text-3xl font-bold">Datenschutzerklärung</h1>
-          <p className="mt-2 text-sm text-gray-500">Stand: 9. August 2024</p>
+          <p className="mt-2 text-sm text-gray-500">August 9, 2025</p>
         </header>
 
         {/* Verantwortlicher */}
         <section>
           <h2 className="text-xl font-semibold mt-6">Verantwortlicher</h2>
           <p className="mt-2">
-            Reifenhier.de
+            Reifencheck.de
             <br />
             Jens Kippels (Einzelunternehmen)
             <br />
@@ -44,8 +44,8 @@ const PrivacyPolicy: React.FC = () => {
             51766 Engelskirchen
             <br />
             E-Mail:{' '}
-            <a className="underline" href="mailto:info@reifenhier.de">
-              info@reifenhier.de
+            <a className="underline" href="mailto:info@Reifencheck.de">
+              info@Reifencheck.de
             </a>
           </p>
         </section>
