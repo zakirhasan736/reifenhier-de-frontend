@@ -362,12 +362,12 @@ const FilterForm = () => {
           />
         </div>
 
-        <button
+        {/* <button
           className="cursor-pointer md:text-right max-w[235px] ml-auto text-center underline text-primary-100 mt-5 text-sm lg:text-[14px] font-secondary inline-block font-normal leading-[120%] z-50 lg:relative lg:bottom-0 lg:left-0 absolute md:bottom-10 bottom-6 md:left-5 left-0 right-0"
           onClick={() => openDialogById('tyre_size_modal')}
         >
           Wo finde ich die Reifen-Größen?
-        </button>
+        </button> */}
 
         <dialog id="tyre_size_modal" className="modal">
           <div className="modal-box max-w-3xl bg-white">
