@@ -829,7 +829,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onClick={() => toggleSection('noise')}
             style={{ cursor: 'pointer' }}
           >
-            <h4 className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+            <h4 className="filter-sidebar-title text-[15px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Externes Rollgeräusch in dB{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
                 {selectedFilters.noise.length > 0
@@ -838,7 +838,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               </span>
             </h4>
             <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+              className={`arrow absolute right-0 top-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
                 openSections.noise ? 'open' : 'closed'
               }`}
             >
