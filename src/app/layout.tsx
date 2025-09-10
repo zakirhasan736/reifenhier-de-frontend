@@ -16,6 +16,23 @@ export const metadata: Metadata = {
   description:
     'Entdecken Sie Reifenhier.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
   icons: { icon: '/images/favicon.png', apple: '/images/favicon.png' },
+  openGraph: {
+    title: 'Reifenpreisvergleich: Finden Sie die günstigsten Reifen',
+    description:
+      'Entdecken Sie Reifenhier.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
+    url: 'https://reifenhier.de',
+    siteName: 'Reifenhier.de',
+    images: [
+      {
+        url: '/images/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Reifenpreisvergleich bei Reifenhier.de',
+      },
+    ],
+    locale: 'de_DE',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({

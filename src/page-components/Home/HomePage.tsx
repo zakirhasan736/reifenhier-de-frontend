@@ -6,7 +6,6 @@ import FeaturedProducts from '@/components/homepage/FeaturedProducts'
 import HowItWorks from '@/components/homepage/HowItWorks'
 import LatestProducts from '@/components/homepage/LatestProducts'
 import NewArticles from '@/components/homepage/Blogs'
-// import ProductCategory from '@/components/homepage/ProductCategory'
 import React from 'react'
 
 const HomePageMain = () => {
