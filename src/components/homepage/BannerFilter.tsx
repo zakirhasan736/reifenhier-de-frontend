@@ -213,7 +213,7 @@ const FilterForm = () => {
     <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto">
       <div className="lg:h-[207px] h-[260px] md:block hidden w-full" />
       <div className="tyres-search-content md:absolute flex flex-col top-0 left-0 w-full bg-mono-0 md:px-[30px] px-4 py-4 md:py-6 rounded-[10px]">
-        <div className="lg:pb-8 pb-14 relative">
+        <div className="lg:pb-14 pb-14 relative">
           <div className="tyre-search-box relative lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
             <div className="tyre-type-area w-full relative  z-150">
               <div className="max-sm:flex-wrap tyre-type-top-filter-area flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
@@ -363,7 +363,7 @@ const FilterForm = () => {
         </div>
 
         {/* <button
-          className="cursor-pointer md:text-right max-w[235px] ml-auto text-center underline text-primary-100 mt-5 text-sm lg:text-[14px] font-secondary inline-block font-normal leading-[120%] z-50 lg:relative lg:bottom-0 lg:left-0 absolute md:bottom-10 bottom-6 md:left-5 left-0 right-0"
+          className="cursor-pointer md:text-right max-w-[235px] ml-auto text-center underline text-primary-100 mt-5 text-sm lg:text-[14px] font-secondary inline-block font-normal leading-[120%] z-50 lg:relative lg:bottom-0 lg:left-0 absolute md:bottom-10 bottom-6 md:left-5 left-0 right-0"
           onClick={() => openDialogById('tyre_size_modal')}
         >
           Wo finde ich die Reifen-Größen?
