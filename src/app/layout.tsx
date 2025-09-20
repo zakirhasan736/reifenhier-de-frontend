@@ -140,7 +140,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Microsoft Clarity */}
+        {/* Microsoft Clarity
         <Script id="clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){
@@ -149,6 +149,45 @@ export default function RootLayout({
               y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "synxux4l9y");
           `}
+        </Script> */}
+        {/* Microsoft Clarity – load only after Cookiebot consent; guard duplicates */}
+        <Script id="clarity-loader" strategy="afterInteractive">
+          {`
+    (function () {
+      var CLARITY_ID = "synxux4l9y";
+
+      function injectClarity() {
+        // If clarity exists but is not a function (bad state), reset it
+        if (typeof window.clarity !== 'undefined' && typeof window.clarity !== 'function') {
+          try { delete window.clarity; } catch (_) { window.clarity = undefined; }
+        }
+        // If already installed as a function, stop
+        if (typeof window.clarity === 'function') return;
+        // Install stub + load script
+        (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", CLARITY_ID);
+      }
+
+      function tryLoadClarity() {
+        if (!window.Cookiebot || !Cookiebot.consent) return;
+        // Load when user has allowed Statistics OR Marketing
+        if (Cookiebot.consent.statistics || Cookiebot.consent.marketing) {
+          injectClarity();
+        }
+      }
+
+      // Try now if Cookiebot already present
+      if (window.Cookiebot) tryLoadClarity();
+
+      // React to consent lifecycle
+      window.addEventListener("CookiebotOnLoad", tryLoadClarity);
+      window.addEventListener("CookiebotOnAccept", tryLoadClarity);
+      // Optional: on decline do nothing
+    })();
+  `}
         </Script>
 
         {/* JSON-LD: Organization + WebSite (global) */}
@@ -223,7 +262,6 @@ export default function RootLayout({
             ],
           })}
         </Script>
-
       </head>
 
       <body className="angelpage-body-wrapper-area">
