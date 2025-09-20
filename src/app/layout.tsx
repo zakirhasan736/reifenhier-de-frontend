@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     'reifen test',
     'reifen größen',
     'reifengrößen',
+    'reifencheck',
+    'reifen',
+    'check',
+    'best reifen',
+    'top reifen',
+    'best selling reifen',
 
     // Top 20 targeted ideas
     'Winterreifen 205/55 R16',
@@ -42,7 +48,6 @@ export const metadata: Metadata = {
     'Reifen passend fürs Auto Modell',
     'Reifenprofil gesetzlich vorgeschrieben Deutschland',
     'Reifenpflege Tipps',
-    'Michelin Primacy 4 Test',
     'Geräusch Werte Reifen Vergleich',
     'Winterreifenpflicht Deutschland',
     'Sommerreifen Ratgeber',
@@ -51,7 +56,6 @@ export const metadata: Metadata = {
     'Reifen für SUV Modelle',
     'Ganzjahresreifen Vorteil Nachteil',
     'Leise Reifen Geräuschwert',
-    'Kompletträder Angebote mit Felgen',
   ],
   openGraph: {
     type: 'website',

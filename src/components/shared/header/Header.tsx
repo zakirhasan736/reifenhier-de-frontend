@@ -11,12 +11,11 @@ const Header: React.FC = () => {
 
   return (
     <header className="header-section relative bg-mono-0 z-[999] ">
-      <div className="development-mood-banner">
+      {/* <div className="development-mood-banner">
         <p className="text text-center text-mono-40 font-bold bg-[#3a64f6]  py-1">
           Demo-Modus
         </p>
-      </div>
-
+      </div> */}
       <div className="header-content-area border-b border-border-100 pt-4 pb-5  max-sm:pb-2 max-sm:pt-3">
         <div className="custom-container flex items-center justify-between max-sm:items-center">
           <div className="logo-section max-sm:justify-center items-center gap-8 flex max-w:w-full max-sm:pt-1">
