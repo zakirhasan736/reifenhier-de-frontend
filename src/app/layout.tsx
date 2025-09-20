@@ -12,27 +12,72 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Reifenpreisvergleich: Finden Sie die günstigsten Reifen',
+  metadataBase: new URL('https://reifencheck.de'),
+  title: 'Reifencheck.de – Reifenpreisvergleich & günstige Reifen',
   description:
-    'Entdecken Sie Reifenhier.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
+    'Vergleichen Sie Reifenpreise in Sekunden. Sommer-, Winter- & Ganzjahresreifen günstig finden und direkt beim Händler kaufen.',
   icons: { icon: '/images/favicon.png', apple: '/images/favicon.png' },
+  alternates: { canonical: 'https://reifencheck.de/' },
+  keywords: [
+    // Core
+    'reifenpreisvergleich',
+    'günstige reifen',
+    'reifen online kaufen',
+    'sommerreifen',
+    'winterreifen',
+    'ganzjahresreifen',
+    'reifenangebote',
+    'reifen test',
+    'reifen größen',
+    'reifengrößen',
+
+    // Top 20 targeted ideas
+    'Winterreifen 205/55 R16',
+    'Sommerreifen 225/45 R17 günstig',
+    'Ganzjahresreifen Test 2025',
+    'EU Reifenlabel Nasshaftung erklärt',
+    'Markenreifen online kaufen',
+    'Reifen Angebote Deutschland',
+    'Billige Winterreifen ab 50 Euro',
+    'Reifen passend fürs Auto Modell',
+    'Reifenprofil gesetzlich vorgeschrieben Deutschland',
+    'Reifenpflege Tipps',
+    'Michelin Primacy 4 Test',
+    'Geräusch Werte Reifen Vergleich',
+    'Winterreifenpflicht Deutschland',
+    'Sommerreifen Ratgeber',
+    'Reifen Versandkosten vergleichen',
+    'Reifen Bewertungen',
+    'Reifen für SUV Modelle',
+    'Ganzjahresreifen Vorteil Nachteil',
+    'Leise Reifen Geräuschwert',
+    'Kompletträder Angebote mit Felgen',
+  ],
   openGraph: {
-    title: 'Reifenpreisvergleich: Finden Sie die günstigsten Reifen',
-    description:
-      'Entdecken Sie Reifencheck.de für den besten Reifenpreisvergleich. Informieren Sie sich über Angebote und sparen Sie Geld beim Kauf.',
-    url: 'https://reifencheck.de',
+    type: 'website',
+    locale: 'de_DE',
+    url: 'https://reifencheck.de/',
     siteName: 'Reifencheck.de',
+    title: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
+    description:
+      'Markenreifen vergleichen, Angebote finden und beim besten Händler kaufen.',
     images: [
       {
         url: '/images/banner-og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Reifenpreisvergleich bei Reifenhier.de',
+        alt: 'Reifenpreisvergleich bei Reifencheck.de',
       },
     ],
-    locale: 'de_DE',
-    type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
+    description:
+      'Sommer-, Winter- & Ganzjahresreifen im Preisvergleich. Jetzt sparen.',
+    images: ['/images/banner-og-image.png'],
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -102,6 +147,111 @@ export default function RootLayout({
             })(window, document, "clarity", "script", "synxux4l9y");
           `}
         </Script>
+
+        {/* JSON-LD: Organization + WebSite (global) */}
+        <Script
+          id="ld-org-website"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [
+              {
+                '@type': 'Organization',
+                '@id': 'https://reifencheck.de/#org',
+                name: 'Reifencheck.de',
+                url: 'https://reifencheck.de/',
+                logo: 'https://reifencheck.de/images/logo.png',
+                sameAs: [
+                  'https://www.facebook.com/REPLACE',
+                  'https://www.instagram.com/REPLACE',
+                ],
+              },
+              {
+                '@type': 'WebSite',
+                '@id': 'https://reifencheck.de/#website',
+                url: 'https://reifencheck.de/',
+                name: 'Reifencheck.de',
+                publisher: { '@id': 'https://reifencheck.de/#org' },
+                inLanguage: 'de-DE',
+              },
+            ],
+          })}
+        </Script>
+
+        {/* JSON-LD: Homepage WebPage */}
+        <Script
+          id="ld-homepage"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            '@id': 'https://reifencheck.de/#webpage',
+            url: 'https://reifencheck.de/',
+            name: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
+            isPartOf: { '@id': 'https://reifencheck.de/#website' },
+            inLanguage: 'de-DE',
+            about: {
+              '@type': 'Thing',
+              name: 'Reifenpreisvergleich, Sommerreifen, Winterreifen, Ganzjahresreifen',
+            },
+          })}
+        </Script>
+
+        {/* JSON-LD: Breadcrumbs */}
+        <Script
+          id="ld-breadcrumbs"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Startseite',
+                item: 'https://reifencheck.de/',
+              },
+            ],
+          })}
+        </Script>
+
+        
+          {/* JSON-LD: Optional Featured ItemList (enable when you have real slugs)
+          <Script id="ld-home-items" type="application/ld+json" strategy="afterInteractive">
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'ItemList',
+              name: 'Top Angebote',
+              itemListOrder: 'https://schema.org/ItemListOrderDescending',
+              itemListElement: [
+                {
+                  '@type': 'ListItem',
+                  position: 1,
+                  url: 'https://reifencheck.de/p/michelin-primacy-4-205-55-r16',
+                  name: 'MICHELIN Primacy 4 205/55 R16',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  url: 'https://reifencheck.de/p/continental-wintercontact-ts-870-195-65-r15',
+                  name: 'Continental WinterContact TS 870 195/65 R15',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 3,
+                  url: 'https://reifencheck.de/p/goodyear-vector-4seasons-gen-3-225-45-r17',
+                  name: 'Goodyear Vector 4Seasons Gen-3 225/45 R17',
+                },
+              ],
+            })}
+          </Script> */}
+       
       </head>
 
       <body className="angelpage-body-wrapper-area">

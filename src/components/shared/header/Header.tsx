@@ -16,6 +16,7 @@ const Header: React.FC = () => {
           Demo-Modus
         </p>
       </div>
+
       <div className="header-content-area border-b border-border-100 pt-4 pb-5  max-sm:pb-2 max-sm:pt-3">
         <div className="custom-container flex items-center justify-between max-sm:items-center">
           <div className="logo-section max-sm:justify-center items-center gap-8 flex max-w:w-full max-sm:pt-1">
