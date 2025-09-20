@@ -37,7 +37,6 @@ export const metadata: Metadata = {
     'top reifen',
     'best selling reifen',
 
-    // Top 20 targeted ideas
     'Winterreifen 205/55 R16',
     'Sommerreifen 225/45 R17 günstig',
     'Ganzjahresreifen Test 2025',
