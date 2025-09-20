@@ -221,37 +221,6 @@ export default function RootLayout({
           })}
         </Script>
 
-        
-          {/* JSON-LD: Optional Featured ItemList (enable when you have real slugs)
-          <Script id="ld-home-items" type="application/ld+json" strategy="afterInteractive">
-            {JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'ItemList',
-              name: 'Top Angebote',
-              itemListOrder: 'https://schema.org/ItemListOrderDescending',
-              itemListElement: [
-                {
-                  '@type': 'ListItem',
-                  position: 1,
-                  url: 'https://reifencheck.de/p/michelin-primacy-4-205-55-r16',
-                  name: 'MICHELIN Primacy 4 205/55 R16',
-                },
-                {
-                  '@type': 'ListItem',
-                  position: 2,
-                  url: 'https://reifencheck.de/p/continental-wintercontact-ts-870-195-65-r15',
-                  name: 'Continental WinterContact TS 870 195/65 R15',
-                },
-                {
-                  '@type': 'ListItem',
-                  position: 3,
-                  url: 'https://reifencheck.de/p/goodyear-vector-4seasons-gen-3-225-45-r17',
-                  name: 'Goodyear Vector 4Seasons Gen-3 225/45 R17',
-                },
-              ],
-            })}
-          </Script> */}
-       
       </head>
 
       <body className="angelpage-body-wrapper-area">
