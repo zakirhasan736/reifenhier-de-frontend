@@ -132,7 +132,7 @@ function buildCategoryLink(
   sp: Record<string, string | string[] | undefined>
 ) {
   const u = new URL(base);
-  u.pathname = '/produkte';
+  u.pathname = '/products';
   u.searchParams.set('category', category);
   const size = norm(sp.size);
   const brand = norm(sp.brand);
@@ -258,7 +258,7 @@ export default async function ProductsPage({
   return (
     <>
       {/* Schnellzugriff: Kategorie-Links */}
-      <nav aria-label="Schnellzugriff" className="container mx-auto mb-4 px-3">
+      <nav aria-label="Schnellzugriff" className="container hidden mx-auto mb-4 px-3">
         <ul className="flex flex-wrap gap-3 text-sm">
           <li>
             <a href={catSommer} className="underline hover:no-underline">
