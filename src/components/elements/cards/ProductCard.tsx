@@ -239,7 +239,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
-         
+          {/* <Link href={`/products/${slug}`} passHref>
+            <Image
+              className="w-auto h-[159px] max-md:h-[159px] object-cover"
+              width={200}
+              height={200}
+              src={product_image}
+              alt="product"
+              priority
+              fetchPriority="high"
+            />
+          </Link> */}
           <Link href={`/products/${slug}`} prefetch passHref>
             <Image
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
