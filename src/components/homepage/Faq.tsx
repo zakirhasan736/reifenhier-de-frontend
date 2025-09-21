@@ -61,13 +61,15 @@ const FaqSection = async () => {
                     className="collapse rounded-[12px] bg-[#F5F5F7] collapse-plus mb-2"
                   >
                     <label
-                      htmlFor="faq-accordion"
+                      htmlFor={faq._id}
                       className="cursor-pointer"
                     ></label>
                     <input
                       type="radio"
+                      id={faq._id}
                       name="faq-accordion"
                       defaultChecked={index === 0}
+                      aria-label={faq.question}
                     />
                     <div className="collapse-title max-sm:text-[16px] text-[#404042] font-primary font-medium text-[20px] leading-[130%]">
                       {faq.question}
