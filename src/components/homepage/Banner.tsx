@@ -1,21 +1,12 @@
-// app/(home)/_components/BannerSection.tsx
-// ✅ Server Component (no "use client")
+'use client'
+import React from 'react';
+import FilterForm from './BannerFilter';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 
-// Load the heavy form client-side, *after* the banner starts painting
-const FilterForm = dynamic(() => import('./BannerFilter'), {
-  ssr: false,
-  loading: () => null,
-});
-
-export default function BannerSection() {
+const BannerSection = () => {
+ 
   return (
-    <section
-      className="banner-section relative font-primary max-sm:h-auto"
-      // helps browsers skip work below the fold in complex sections
-      style={{ contain: 'layout style paint' }}
-    >
+    <section className="banner-section relative font-primary max-sm:h-auto">
       <Image
         className="banner-image-fill object-cover"
         src="/images/banner-image.webp" // Prefer a ~150–250 KB file
@@ -34,12 +25,11 @@ export default function BannerSection() {
         // but improves perceived UX.
         placeholder="empty"
       />
-
       <div className="custom-container h-full">
-        <div className="banner-content w-full lg:pt-[56px] md:pt-[42px] lg:pb-[55px] md:pb-[36px] pt-10 pb-6 h-full">
+        <div className="banner-content w-full lg:pt-[56px] md:pt-[42px]  lg:pb-[55px] md:pb-[36px] pt-10 pb-6 h-full">
           <div className="tyres-search-area w-full h-full flex items-end justify-center">
             <div className="tyres-search-content w-full relative">
-              <div className="tyres-search-left-content lg:mb-10 md:mb-8 mb-7 relative">
+              <div className="tyres-search-left-content lg:mb-10 md:mb-8 mb-7  relative">
                 <h1 className="h2 text-mono-0 text-center mb-2 md:mb-4 md:text-[38px] lg:text-[48px] leading-[115%] font-medium font-primary text-[26px]">
                   Finden Sie die perfekten Reifen{' '}
                   <br className="max-sm:hidden" />
@@ -50,8 +40,6 @@ export default function BannerSection() {
                   Fahrstil passen.
                 </p>
               </div>
-
-              {/* Render the form client-side to avoid blocking LCP */}
               <FilterForm />
             </div>
           </div>
@@ -59,4 +47,6 @@ export default function BannerSection() {
       </div>
     </section>
   );
-}
+};
+
+export default BannerSection;
