@@ -1630,7 +1630,7 @@ const handleToggleWishlist = async () => {
                                     >
                                       <button
                                         type="button"
-                                        className="w-full flex items-center shop-info-btn text-[14px] lg:text-base justify-center gap-2 underline bg-transparent text-primary-100 py-1 cursor-pointer"
+                                        className="w-full flex items-center shop-info-btn text-[14px] lg:text-base justify-center gap-2 underline bg-transparent text-primary-100 py-[6px] px-2 cursor-pointer"
                                       >
                                         Shop Informationen
                                       </button>
