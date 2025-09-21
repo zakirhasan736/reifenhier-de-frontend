@@ -104,7 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static, canonical routes (no query strings)
   const staticPaths: string[] = [
     '/', // homepage
-    '/products', // listing canonical (if you prefer /produkte, switch here)
+    '/products', // listing canonical (if you prefer /products, switch here)
     '/blogs', // blog index
     '/favorites',
     '/privacy-policy',

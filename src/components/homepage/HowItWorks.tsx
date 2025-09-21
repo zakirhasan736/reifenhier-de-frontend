@@ -22,7 +22,7 @@ const HowItWorks: React.FC = () => {
                     <h2 className="work-process-title w-full lg:text-[20px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Schneller Versand
                     </h2>
-                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#16171A] font-normal font-secondary">
                       In ganz Deutschland
                     </p>
                   </div>
@@ -41,7 +41,7 @@ const HowItWorks: React.FC = () => {
                     <h2 className="work-process-title w-full lg:text-[20px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       zuverlässig Produkt
                     </h2>
-                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#16171A] font-normal font-secondary">
                       Nur Teile von zuverlässig Marken
                     </p>
                   </div>
@@ -60,7 +60,7 @@ const HowItWorks: React.FC = () => {
                     <h2 className="work-process-title w-full lg:text-[20px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Bester Preis
                     </h2>
-                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#16171A] font-normal font-secondary">
                       Wir vergleichen die besten Preise
                     </p>
                   </div>
@@ -79,7 +79,7 @@ const HowItWorks: React.FC = () => {
                     <h2 className="work-process-title w-full lg:text-[20px] text-[16px] text[#404042] font-medium font-primary text-center mb-2">
                       Einfache Rückgabe
                     </h2>
-                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#86878A] font-normal font-secondary">
+                    <p className="work-process-text lg:h-full h-9 w-full lg:text-[16px] text-[12px] text-center text-[#16171A] font-normal font-secondary">
                       Einfache Rückgabebedingungen
                     </p>
                   </div>

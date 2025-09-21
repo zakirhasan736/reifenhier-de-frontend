@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
                     <input
                       type="email"
                       placeholder="Ihre E-Mail-Adresse"
-                      className="border form-subs-input text-[16px] text-left font-normal font-secondary border-[#FFFFFF1F] md:max-w-[344px] placeholder:!text-[#FFFFFFB2] text-[#FFFFFFB2] !shadow-none w-full h-[47px] !bg-[#FFFFFF14] px-6 py-[15px] !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none focus:outline-none"
+                      className="border form-subs-input text-[16px] text-left font-normal font-secondary border-[#FFFFFF1F] md:max-w-[344px] placeholder:!text-[#FFFFFF] text-[#FFFFFFB2] !shadow-none w-full h-[47px] !bg-[#FFFFFF14] px-6 py-[15px] !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none focus:outline-none"
                     />
                     <button
                       type="submit"
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
                   width={180}
                   height={70}
                 />
-                <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#16171A] md:text-[#86878A] leading-[150%] mt-3">
+                <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#16171A] md:text-[#16171A] leading-[150%] mt-3">
                   Ihre zuverlässige Quelle für hochwertige Reifen von
                   Top-Marken. Wir machen es Ihnen leicht, die perfekte Passform
                   für Ihr Fahrzeug zu finden – mit schnellem Versand und

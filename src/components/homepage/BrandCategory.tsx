@@ -15,14 +15,17 @@ const BrandCategory = () => {
    const brands = data?.brands || [];
 
   return (
-    <section className="brand-category-section lg:pb-[70] pb-14 bg-mono-0" id='byBrand'>
+    <section
+      className="brand-category-section lg:pb-[70] pb-14 bg-mono-0"
+      id="byBrand"
+    >
       <div className="custom-container">
         <div className="brand-category-content">
           <div className="section-header text-center mb-9">
             <h2 className="h3 font-primary font-medium  md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3">
               Nach Marke einkaufen
             </h2>
-            <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#89898B]">
+            <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#16171A]">
               Entdecken Sie Reifen von Top-Marken, um Qualität und Leistung
               sicherzustellen.
             </p>
@@ -76,7 +79,6 @@ const BrandCategory = () => {
                             height={27}
                             className="w-auto md:h-[27px] mx-auto"
                             loading="lazy"
-                            
                           />
                         ) : (
                           <span className="font-medium font-primary text-center md:text-[20px] text-[16px] leading-[140%] text-[#404042]">
@@ -87,7 +89,7 @@ const BrandCategory = () => {
                       <h3 className="font-medium font-primary text-center md:text-[20px] text-[16px] leading-[140%] text-[#404042]">
                         {brandItem.brand_name}
                       </h3>
-                      <p className="number-of-products md:text-[16px] text-[12px] text-center font-medium font-secondary md:mt-2 mt-1 text-[#86878A]">
+                      <p className="number-of-products md:text-[16px] text-[12px] text-center font-medium font-secondary md:mt-2 mt-1 text-[#16171A]">
                         {brandItem.count} Tyres
                       </p>
                     </div>

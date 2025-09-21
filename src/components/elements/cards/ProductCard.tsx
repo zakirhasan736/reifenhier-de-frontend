@@ -476,7 +476,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               <h4 className="font-primary font-normal text-[14px] mb-[6px] text-left text-[#16171A] leading-[140%]">
                 Direkt zum günstigsten Angebot
               </h4>
-              <ul className="competitor-product-lists flex flex-col gap-[2px]">
+              <ul className="competitor-product-lists flex flex-col">
                 {[...offers]
                   .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
                   .slice(0, 3)
@@ -495,7 +495,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
                             }&from=product-page`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-secondary font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
+                            className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
                           >
                             {item.vendor}
                           </Link>
