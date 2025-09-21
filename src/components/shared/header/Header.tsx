@@ -45,7 +45,7 @@ const Header: React.FC = () => {
                       pathname: '/products',
                       query: { category: 'Sommerreifen' },
                     }}
-                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#16171A] cursor-pointer px-[18px] py-3 hover:text-primary-100"
+                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
                   >
                     Sommerreifen
                   </Link>
@@ -56,7 +56,7 @@ const Header: React.FC = () => {
                       pathname: '/products',
                       query: { category: 'Winterreifen' },
                     }}
-                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#16171A] cursor-pointer px-[18px] py-3 hover:text-primary-100"
+                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
                   >
                     Winterreifen
                   </Link>
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
                       pathname: '/products',
                       query: { category: 'Ganzjahresreifen' },
                     }}
-                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#16171A] cursor-pointer px-[18px] py-3 hover:text-primary-100"
+                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
                   >
                     Ganzjahresreifen
                   </Link>

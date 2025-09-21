@@ -62,7 +62,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
             <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
               News & Artikel
             </h2>
-            <p className="font-normal font-secondary text-[16px] text-center text-[#16171A]">
+            <p className="font-normal font-secondary text-[16px] text-center text-[#404042]">
               Bleiben Sie auf dem Laufenden mit den neuesten Erkenntnissen und
               Tipps zu Reifen.
             </p>

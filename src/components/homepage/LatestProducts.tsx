@@ -26,7 +26,7 @@ const { data, isLoading } = useGetLatestProductsQuery(undefined, {
             <h2 className="h3 font-primary font-medium md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3 leading-[120%]">
               Neueste Produkte
             </h2>
-            <p className="font-normal font-secondary text-center lg:text-[18px] text-[16px] leading-[140%] text-[#16171A]">
+            <p className="font-normal font-secondary text-center lg:text-[18px] text-[16px] leading-[140%] text-[#404042]">
               Erhalten Sie schnell die passenden Reifen für Ihr Fahrzeug und
               Ihren Fahrstil.
             </p>

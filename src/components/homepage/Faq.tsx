@@ -60,10 +60,7 @@ const FaqSection = async () => {
                     key={faq._id}
                     className="collapse rounded-[12px] bg-[#F5F5F7] collapse-plus mb-2"
                   >
-                    <label
-                      htmlFor={faq._id}
-                      className="cursor-pointer"
-                    ></label>
+                    <label htmlFor={faq._id} className="cursor-pointer"></label>
                     <input
                       type="radio"
                       id={faq._id}
@@ -74,7 +71,7 @@ const FaqSection = async () => {
                     <div className="collapse-title max-sm:text-[16px] text-[#404042] font-primary font-medium text-[20px] leading-[130%]">
                       {faq.question}
                     </div>
-                    <div className="collapse-content max-sm:text-[14px] font-secondary font-normal text-[16px] text-left text-[#16171A] leading-[150%]">
+                    <div className="collapse-content max-sm:text-[14px] font-secondary font-normal text-[16px] text-left text-[#404042] leading-[150%]">
                       {faq.answer}
                     </div>
                   </div>
