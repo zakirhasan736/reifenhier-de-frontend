@@ -244,7 +244,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
                 return (
                   <li key={`${label}-${index}`}>
-                    <label className="flex items-center gap-[10px] !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                    <label className="flex items-center gap-[10px] !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                       <Checkbox
                         checked={selectedFilters.category.includes(
                           String(label)
@@ -254,7 +254,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         }
                       />
                       {label || 'Unbekannt'}
-                      <span className="ml-1 text-[#86878A]">
+                      <span className="ml-1 text-[#404042]">
                         ({item.count ?? 0})
                       </span>
                     </label>
@@ -307,7 +307,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       : JSON.stringify(item.name);
                   return (
                     <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                         <Checkbox
                           checked={selectedFilters.speedIndex.includes(
                             String(label)
@@ -370,7 +370,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       : JSON.stringify(item.name);
                   return (
                     <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                         <Checkbox
                           checked={selectedFilters.lastIndex.includes(
                             String(label)
@@ -434,7 +434,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                     value={brandSearch}
                     onChange={e => setBrandSearch(e.target.value)}
                     placeholder="Marke suchen …"
-                    className="pr-3 pl-9 py-2 w-full focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#86878A]"
+                    className="pr-3 pl-9 py-2 w-full focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#404042]"
                   />
                   <Image
                     className="absolute top-2 left-3"
@@ -467,7 +467,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         : JSON.stringify(item.name);
                     return (
                       <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                           <Checkbox
                             checked={selectedFilters.brand.includes(
                               String(label)
@@ -532,7 +532,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         : JSON.stringify(item.name);
                     return (
                       <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <label className="flex items-center gap-2 !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                           <Checkbox
                             checked={selectedFilters.width.includes(
                               String(label)
@@ -595,7 +595,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         : JSON.stringify(item.name);
                     return (
                       <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                           <Checkbox
                             checked={selectedFilters.height.includes(
                               String(label)
@@ -658,7 +658,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                         : JSON.stringify(item.name);
                     return (
                       <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                           <Checkbox
                             checked={selectedFilters.diameter.includes(
                               String(label)
@@ -727,7 +727,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                           color: gradeFuelColor(String(label)),
                           fontWeight: 500,
                         }}
-                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
+                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0"
                       >
                         <Checkbox
                           checked={selectedFilters.fuelClass.includes(
@@ -798,7 +798,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                           color: gradeGripColor(String(label)),
                           fontWeight: 500,
                         }}
-                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0"
+                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0"
                       >
                         <Checkbox
                           checked={selectedFilters.wetGrip.includes(
@@ -862,7 +862,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                       : JSON.stringify(item.name);
                   return (
                     <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#86878A] !py-0">
+                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                         <Checkbox
                           checked={selectedFilters.noise.includes(
                             String(label)

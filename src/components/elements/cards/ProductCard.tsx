@@ -44,6 +44,7 @@ interface ProductCardProps {
   in_stock: string;
   showCompareButton?: boolean;
   offers?: Offer[];
+  isPriority?: boolean;
 }
 interface Offer {
   brand: string;
@@ -103,6 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   noise_class,
   in_stock,
   showCompareButton = false,
+  isPriority = false,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -112,13 +114,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // Ensure wishlist is always an array
 
-const wishlist: WishlistProduct[] = useMemo(() => {
-  return wishlistData?.wishlist ?? [];
-}, [wishlistData]);
+  const wishlist: WishlistProduct[] = useMemo(() => {
+    return wishlistData?.wishlist ?? [];
+  }, [wishlistData]);
 
-const isFavorited = useMemo(() => {
-  return wishlist.some(item => item._id === _id);
-}, [wishlist, _id]);
+  const isFavorited = useMemo(() => {
+    return wishlist.some(item => item._id === _id);
+  }, [wishlist, _id]);
 
   const handleToggleWishlist = async () => {
     try {
@@ -202,7 +204,7 @@ const isFavorited = useMemo(() => {
     }
   };
 
-const uuidCookie = Cookies.get('uuid') || 'guest';
+  const uuidCookie = Cookies.get('uuid') || 'guest';
   return (
     <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex flex-col duration-300">
       <div className="p-card-header py-3 px-4 relative">
@@ -213,6 +215,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               alt="average rating"
               width={16}
               height={16}
+              loading="lazy"
             />
             {average_rating > 0 && (
               <span>{average_rating.toFixed(1).replace('.', ',')}</span>
@@ -236,15 +239,24 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           </button>
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
-          <Link href={`/products/${slug}`} passHref>
+         
+          <Link href={`/products/${slug}`} prefetch passHref>
             <Image
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
-              width={200}
-              height={200}
+              // pick a realistic intrinsic size close to display; Next will downscale via `sizes`
+              width={320}
+              height={159}
               src={product_image}
-              alt="product"
-              priority
-              fetchPriority="high"
+              alt={`${brand_name} ${product_name}`}
+              // ✅ LCP: only for the first/above-the-fold card
+              priority={isPriority}
+              // Next calculates lazy/eager from priority; no need for fetchPriority here
+              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
+              onError={e => {
+                // Optional: fallback if an image 404s
+                (e.currentTarget as HTMLImageElement).src =
+                  '/images/fallback-product.png';
+              }}
             />
           </Link>
         </div>
