@@ -3,6 +3,8 @@ import './globals.css';
 import ClientProviders from '@/utils/Provider';
 import Script from 'next/script';
 import { Poppins } from 'next/font/google';
+import Header from '@/components/shared/header/Header';
+import Footer from '@/components/shared/footer/Footer';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -276,7 +278,11 @@ export default function RootLayout({
         </noscript>
 
         <main className="angelpage-main-wrapper">
-          <ClientProviders>{children}</ClientProviders>
+          <ClientProviders>
+            <Header />
+            {children}
+            <Footer />
+          </ClientProviders>
         </main>
       </body>
     </html>
