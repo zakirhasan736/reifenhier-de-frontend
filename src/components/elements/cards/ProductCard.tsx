@@ -264,7 +264,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               </p>
             )}
           </div>
-          <p className="flex items-center gap-[6px] text-[#00BE00] text-[16px] font-normal font-secondary">
+          <p className="flex items-center gap-[6px] text-[#16171A] text-[16px] font-normal font-secondary">
             <Image
               src="/images/icons/tick-square.svg"
               alt="search price"
@@ -369,7 +369,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           {savings_percent &&
             savings_percent !== '0%' &&
             savings_percent !== '-0%' && (
-              <p className="px-2 py-[3px] border text-[16px] border-[#E66605] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
+              <p className="px-3 py-[3px] border text-[14px] border-[#16171A] gap-1 flex items-center justify-center text-[#16171A] h-[26px] max-w-[65px] rounded-[6px] w-full">
                 {savings_percent}
                 <span
                   className="tooltip tooltip-left cursor-pointer flex items-center"
