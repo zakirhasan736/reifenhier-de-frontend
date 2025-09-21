@@ -47,6 +47,7 @@ const Footer: React.FC = () => {
                   alt="company logo"
                   width={180}
                   height={70}
+                  loading="lazy"
                 />
                 <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#404042] md:text-[#404042] leading-[150%] mt-3">
                   Ihre zuverlässige Quelle für hochwertige Reifen von

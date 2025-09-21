@@ -104,7 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   noise_class,
   in_stock,
   showCompareButton = false,
-  isPriority = false,
+  isPriority = true,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -258,7 +258,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               height={159}
               src={product_image}
               alt={`${brand_name} ${product_name}`}
-              // ✅ LCP: only for the first/above-the-fold card
+              fetchPriority="high"
               priority={isPriority}
               // Next calculates lazy/eager from priority; no need for fetchPriority here
               sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"

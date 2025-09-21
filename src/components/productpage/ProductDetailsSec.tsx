@@ -632,7 +632,7 @@ const handleToggleWishlist = async () => {
                     <span className="angle">{'>'}</span>
                   </li>
                   <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-[#16171A] flex items-center gap-[10px]">
-                    <span className="body-caption text-[12px] lg:text-base text-mono-70">
+                    <span className="body-caption text-[12px] lg:text-base text-[#16171A]">
                       {[product.brand_name, product.product_name]
                         .filter(Boolean)
                         .join(' ')
@@ -1409,7 +1409,7 @@ const handleToggleWishlist = async () => {
                                         </h4>
 
                                         {showSavings && (
-                                          <p className="px-1 py-[2px] border border-[#E66605] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                          <p className="px-1 py-[2px] border border-[#16171A] text-[14px] gap-1 flex items-center justify-center text-[#16171A] h-[24px] max-w-[65px] rounded-[6px] w-full">
                                             {offer.savings_percent}
                                             <span
                                               className="tooltip tooltip-right cursor-pointer flex items-center"
