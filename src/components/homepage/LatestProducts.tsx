@@ -23,7 +23,7 @@ const { data, isLoading } = useGetLatestProductsQuery(undefined, {
       <div className="custom-container">
         <div className="featured-product-content flex justify-between items-end lg:mb-8 mb-6">
           <div className="featured-product-left-content w-full">
-            <h2 className="h3 font-primary font-medium md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3 leading-[120%]">
+            <h2 className="h3 font-primary font-medium md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#404042] mb-3 leading-[120%]">
               Neueste Produkte
             </h2>
             <p className="font-normal font-secondary text-center lg:text-[18px] text-[16px] leading-[140%] text-[#404042]">

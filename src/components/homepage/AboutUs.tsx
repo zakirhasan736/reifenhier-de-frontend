@@ -10,25 +10,25 @@ const AboutUs = () => {
               <h2 className="h3 about-sec-title  md:text-[28px] text-[26px] lg:text-[34px] text-left font-primary leading-[120%] font-medium text-[#16171A] lg:max-w-[586px] max-w-full mb-5">
                 Willkommen bei Reifencheck.de
               </h2>
-              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#16171A] md:mb-3 mb-2">
+              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042] md:mb-3 mb-2">
                 Ihrer zentralen Plattform für den umfassenden Reifenvergleich
                 mit einem besonderen Fokus auf Nachhaltigkeit und die Mobilität
                 der Zukunft.
               </p>
-              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#16171A] md:mb-3 mb-2">
+              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042] md:mb-3 mb-2">
                 Unser Ziel ist es, Ihnen nicht nur dabei zu helfen, die besten
                 Reifen für Ihr Fahrzeug zu finden, sondern auch diejenigen, die
                 unsere Umwelt schonen und optimal für Elektrofahrzeuge
                 (EVs)/Hybrid geeignet sind.
               </p>
-              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#16171A] md:mb-3 mb-2">
+              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042] md:mb-3 mb-2">
                 Bei Reifenhier.de vergleichen wir eine Vielzahl von
                 Reifenmodellen und bieten Ihnen aktuelle Informationen über
                 Preise, Verfügbarkeit und Leistung. Besonders stolz sind wir auf
                 unseren Blog, der sich intensiv mit Reifen für Elektrofahrzeuge
                 und ECO-Reifen auseinandersetzt.
               </p>
-              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#16171A] md:mb-3 mb-2">
+              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042] md:mb-3 mb-2">
                 Unser Team aus Auto- und Umweltenthusiasten arbeitet
                 kontinuierlich daran, die neuesten Entwicklungen in der
                 Reifenindustrie zu verfolgen und Ihnen fundierte Empfehlungen zu
@@ -36,7 +36,7 @@ const AboutUs = () => {
                 grün ist, und möchten Ihnen helfen, eine kluge und nachhaltige
                 Entscheidung für Ihr Fahrzeug zu treffen.
               </p>
-              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#16171A]">
+              <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042]">
                 3 Mit Reifenhier.de setzen Sie auf Expertise, Transparenz und
                 Nachhaltigkeit. Lassen Sie uns gemeinsam den Weg in eine
                 umweltbewusste und sichere Mobilität gestalten.

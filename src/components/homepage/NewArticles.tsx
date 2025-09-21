@@ -105,7 +105,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
                             <h3 className="text-[#404042] font-medium h6 font-primary">
                               {blog.title}
                             </h3>
-                            <p className="text-[#16171A] text-[12px] font-medium font-primary mt-2">
+                            <p className="text-[#404042] text-[12px] font-medium font-primary mt-2">
                               {new Date(blog.createdAt).toLocaleDateString(
                                 'en-US',
                                 {

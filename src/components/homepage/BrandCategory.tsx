@@ -25,7 +25,7 @@ const BrandCategory = () => {
             <h2 className="h3 font-primary font-medium  md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3">
               Nach Marke einkaufen
             </h2>
-            <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#16171A]">
+            <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#404042]">
               Entdecken Sie Reifen von Top-Marken, um Qualität und Leistung
               sicherzustellen.
             </p>
@@ -89,7 +89,7 @@ const BrandCategory = () => {
                       <h3 className="font-medium font-primary text-center md:text-[20px] text-[16px] leading-[140%] text-[#404042]">
                         {brandItem.brand_name}
                       </h3>
-                      <p className="number-of-products md:text-[16px] text-[12px] text-center font-medium font-secondary md:mt-2 mt-1 text-[#16171A]">
+                      <p className="number-of-products md:text-[16px] text-[12px] text-center font-medium font-secondary md:mt-2 mt-1 text-[#404042]">
                         {brandItem.count} Tyres
                       </p>
                     </div>
