@@ -1,4 +1,4 @@
-'use client'
+
 import React from 'react';
 import FilterForm from './BannerFilter';
 import Image from 'next/image';
