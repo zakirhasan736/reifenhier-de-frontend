@@ -625,13 +625,13 @@ const handleToggleWishlist = async () => {
                   <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
                     <Link
                       className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                      href=""
+                      href={`/products?category=${product.merchant_product_third_category}`}
                     >
                       {product.merchant_product_third_category || 'Products'}
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>
-                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-mono-70 flex items-center gap-[10px]">
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-[#16171A] flex items-center gap-[10px]">
                     <span className="body-caption text-[12px] lg:text-base text-mono-70">
                       {[product.brand_name, product.product_name]
                         .filter(Boolean)
@@ -809,14 +809,14 @@ const handleToggleWishlist = async () => {
                           height={16}
                           loading="lazy"
                         />{' '}
-                        <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#00BE00]">
+                        <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#16171A]">
                           {product.in_stock === 'true'
                             ? 'Auf Lager'
                             : 'Nicht Verfügbar'}
                         </p>
                       </li>
                       <li className="product-category">
-                        <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#89898B] leading-[140%]">
+                        <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
                           {' '}
                           {product.merchant_product_third_category || 'N/A'}
                         </p>
@@ -920,7 +920,7 @@ const handleToggleWishlist = async () => {
                           </span>
                           <span
                             style={{ textDecoration: 'line-through' }}
-                            className="text-[18px] md:text-[20px] font-secondary font-medium text-[#86878A] leading-[140%] text-line-through"
+                            className="text-[18px] md:text-[20px] font-secondary font-medium text-[#404042] leading-[140%] text-line-through"
                           >
                             {product.expensive_offer} €
                           </span>
@@ -929,7 +929,7 @@ const handleToggleWishlist = async () => {
                       {product.savings_percent &&
                         product.savings_percent !== '0%' &&
                         product.savings_percent !== '-0%' && (
-                          <p className="px-2 py-[3px] border border-[#E66605] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[75px] rounded-[28px] w-full">
+                          <p className="px-2 py-[3px] border border-[#404042] gap-1 flex items-center justify-center text-[#404042] h-[26px] max-w-[75px] rounded-[28px] w-full">
                             {product.savings_percent}
                             <span
                               className="tooltip tooltip-left cursor-pointer flex items-center"
@@ -1155,7 +1155,7 @@ const handleToggleWishlist = async () => {
                         <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
                           Beschreibung
                         </div>
-                        <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#86878A] leading-[140%]">
+                        <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%]">
                           {product.description
                             ? product.description.replace(/[^\x00-\x7F]+/g, '')
                             : 'Keine Beschreibung verfügbar'}
@@ -1174,99 +1174,99 @@ const handleToggleWishlist = async () => {
                         <div className="collapse-content caption-regular font-primary border-t border-t-border-100 !px-0 !pb-0 !pt-0">
                           <ul className="product-specification-table border border-border-100 border-b-transparent">
                             <li className="details-items bg-[#C6C7CC] flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
                                 Eigenschaften
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
                                 Details
                               </div>
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Reifentyp
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.merchant_product_third_category ||
                                   'N/A'}
                               </div>
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Marke
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.brand_name || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Kraftstoffeffizienz
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.fuel_class || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Nasshaftung
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.wet_grip || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Größe
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.dimensions}
                               </div>
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Breite
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.width || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Höhe
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.height || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items  bg-[#F5F5F7] flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Durchmesser
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.diameter || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Geschwindigkeitsindex
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.speedIndex || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 Lastenindex
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.lastIndex || 'N/A'}
                               </div>
                             </li>
                             <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 GTIN / EAN
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#86878A]">
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
                                 {product.ean}
                               </div>
                             </li>
@@ -1285,7 +1285,7 @@ const handleToggleWishlist = async () => {
                   <h2 className="md:text-[28px] text-[26px] font-medium font-primary text-[#16171A] leading-[120%] mb-1 md:mb-3">
                     Bestes Angebot
                   </h2>
-                  <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#89898B]">
+                  <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#404042]">
                     Vertrauenswürdige Marken und täglich die niedrigsten Preise!
                   </p>
                 </div>
@@ -1293,7 +1293,7 @@ const handleToggleWishlist = async () => {
                   <div className="flex items-center justify-end">
                     <label
                       htmlFor="sort"
-                      className="mr-2 text-sm text-[#404042]"
+                      className="mr-2 text-sm text-[#16171A]"
                     >
                       Sortierung:
                     </label>
@@ -1321,7 +1321,7 @@ const handleToggleWishlist = async () => {
                       {/* Dropdown arrow */}
                       <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
                         <svg
-                          className="w-4 h-4 text-gray-500"
+                          className="w-4 h-4 text-[#404042]"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth="2"
@@ -1447,7 +1447,7 @@ const handleToggleWishlist = async () => {
                                         )}
                                       </div>
 
-                                      <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#89898B]">
+                                      <p className="text-[14px] lg:text-[16px] font-normal mt-[4px] font-secondary text-left text-[#404042]">
                                         {hasFreeShipping
                                           ? 'Versandkostenfrei'
                                           : `${formatEUR(price)} + ${formatEUR(

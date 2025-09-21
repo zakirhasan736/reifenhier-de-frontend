@@ -126,7 +126,6 @@ const ProductDetailsPage = () => {
         );
         setProduct(response.data.product);
         setRelatedProducts(response.data.relatedProducts);
-        // console.log('response related product', response.data.relatedProducts);
 
       } catch {
         setError('Failed to load product details.');

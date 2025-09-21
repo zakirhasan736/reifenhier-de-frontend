@@ -422,7 +422,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               <span className="ml-3 text-[#C6C7CC]"></span>
               <span
                 style={{ textDecoration: 'line-through' }}
-                className="text-[16px] font-secondary font-normal text-[#16171A] leading-[140%] text-line-through"
+                className="text-[16px] font-secondary font-normal text-[#404042] leading-[140%] text-line-through"
               >
                 {expensive_offer} €
               </span>{' '}
@@ -473,7 +473,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           <>
             <div className="divider !h-[1px] !mt-3 !mb-1 !bg-[#F0F0F2]"></div>
             <div className="mt-auto">
-              <h4 className="font-primary font-normal text-[14px] mb-[6px] text-left text-[#16171A] leading-[140%]">
+              <h4 className="font-primary font-normal text-[14px] mb-[6px] text-left text-[#404042] leading-[140%]">
                 Direkt zum günstigsten Angebot
               </h4>
               <ul className="competitor-product-lists flex flex-col">
@@ -500,7 +500,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
                             {item.vendor}
                           </Link>
                         </div>
-                        <span className="font-secondary font-normal text-[14px] text-left text-[#86878A] leading-[140%]">
+                        <span className="font-secondary font-normal text-[14px] text-left text-[#404042] leading-[140%]">
                           <span>{item.price + ' €'}</span>
                         </span>
                       </li>
