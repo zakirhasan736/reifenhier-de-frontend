@@ -39,12 +39,12 @@ const CustomSelect: React.FC<Props> = ({
   return (
 
     <div className={`relative w-full ${className}`} ref={ref}>
-      <label className="text-[#86878A] md:text-[14px] text-[12px] font-normal font-secondary leading-[120%] mb-[7px] block">
+      <label className="text-[#16171A] md:text-[14px] text-[12px] font-normal font-secondary leading-[120%] mb-[7px] block">
         {label}
       </label>
       <button
         type="button"
-        className={`input overflow-hidden cursor-pointer !rounded-[4px] w-full flex items-center justify-between !bg-mono-0 !border-2 !border-solid !border-border-100 md:pl-3 md:pr-6 pl-2 pr-5 py-2 md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%] !text-[#86878A] ${
+        className={`input overflow-hidden cursor-pointer !rounded-[4px] w-full flex items-center justify-between !bg-mono-0 !border-2 !border-solid !border-border-100 md:pl-3 md:pr-6 pl-2 pr-5 py-2 md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%] !text-[#16171A] ${
           disabled ? 'opacity-80 pointer-events-none' : ''
         }`}
         onClick={() => setOpen(o => !o)}
@@ -64,7 +64,7 @@ const CustomSelect: React.FC<Props> = ({
       {open && (
         <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/2 focus:outline-none">
           <li
-            className="cursor-pointer select-none px-3 py-2 text-[#86878A] hover:bg-primary-100 hover:text-white md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%]"
+            className="cursor-pointer select-none px-3 py-2 text-[#16171A] hover:bg-primary-100 hover:text-white md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%]"
             onClick={() => {
               onChange('');
               setOpen(false);

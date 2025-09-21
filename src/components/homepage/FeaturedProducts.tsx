@@ -27,7 +27,7 @@ const productData = data?.products || [];
             <h2 className="h3 font-primary font-medium md:text-[28px] text-[26px] lg:text-[36px] text-center text-[#16171A] mb-3 leading-[120%]">
               {title}
             </h2>
-            <p className="font-normal font-secondary text-center lg:text-[18px] text-[14px] leading-[140%] text-[#89898B]">
+            <p className="font-normal font-secondary text-center lg:text-[18px] text-[16px] leading-[140%] text-[#89898B]">
               Erhalten Sie schnell die passenden Reifen für Ihr Fahrzeug und
               Ihren Fahrstil.
             </p>

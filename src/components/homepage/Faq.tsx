@@ -72,7 +72,7 @@ const FaqSection = async () => {
                     <div className="collapse-title max-sm:text-[16px] text-[#404042] font-primary font-medium text-[20px] leading-[130%]">
                       {faq.question}
                     </div>
-                    <div className="collapse-content max-sm:text-[14px] font-secondary font-normal text-[16px] text-left text-[#86878A] leading-[150%]">
+                    <div className="collapse-content max-sm:text-[14px] font-secondary font-normal text-[16px] text-left text-[#16171A] leading-[150%]">
                       {faq.answer}
                     </div>
                   </div>

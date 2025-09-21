@@ -201,10 +201,6 @@ const isFavorited = useMemo(() => {
         return '#b7e4f9';
     }
   };
-  // const extractSpec = (dimension: string) => {
-  //   const parts = dimension.split(' ');
-  //   return parts.length > 1 ? parts.slice(1).join(' ') : '';
-  // };
 
 const uuidCookie = Cookies.get('uuid') || 'guest';
   return (
@@ -257,7 +253,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               <Image
                 loading="lazy"
                 src={brand_logo}
-                className="h-[35px] object-contain mr-auto"
+                className="h-[30px] object-contain mr-auto"
                 alt="product brand"
                 width={110}
                 height={35}
@@ -268,7 +264,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               </p>
             )}
           </div>
-          <p className="flex items-center gap-[6px] text-[#00BE00] text-[14px] font-normal font-secondary">
+          <p className="flex items-center gap-[6px] text-[#00BE00] text-[16px] font-normal font-secondary">
             <Image
               src="/images/icons/tick-square.svg"
               alt="search price"
@@ -288,10 +284,10 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
         </h3>
 
         <div className="cat-diameter-box flex items-center justify-between w-full gap-1">
-          <p className="tyres-category text-left font-normal capitalize text-[#89898B] text-[14px] font-secondary">
+          <p className="tyres-category text-left font-normal capitalize text-[#16171A] text-[14px] font-secondary">
             {merchant_product_third_category}
           </p>
-          <p className="product-sku font-medium text-right text-[#89898B] text-[14px] font-secondary">
+          <p className="product-sku font-medium text-right text-[#16171A] text-[14px] font-secondary">
             {dimensions}
           </p>
         </div>
@@ -373,7 +369,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           {savings_percent &&
             savings_percent !== '0%' &&
             savings_percent !== '-0%' && (
-              <p className="px-2 py-[3px] border text-[14px] border-[#E66605] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
+              <p className="px-2 py-[3px] border text-[16px] border-[#E66605] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
                 {savings_percent}
                 <span
                   className="tooltip tooltip-left cursor-pointer flex items-center"
@@ -406,7 +402,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
             )}
         </div>
         <p className="product-price text-primary-100 font-normal font-secondary text-[14px] mt-4 flex items-center gap-1">
-          <span className="text-[14px] font-normal font-secondary text-[#86878A]">
+          <span className="text-[14px] font-normal font-secondary text-[#16171A]">
             Ab:
           </span>{' '}
           {cheapest_offer === expensive_offer ? (
@@ -426,7 +422,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
               <span className="ml-3 text-[#C6C7CC]"></span>
               <span
                 style={{ textDecoration: 'line-through' }}
-                className="text-[16px] font-secondary font-normal text-[#C6C7CC] leading-[140%] text-line-through"
+                className="text-[16px] font-secondary font-normal text-[#16171A] leading-[140%] text-line-through"
               >
                 {expensive_offer} €
               </span>{' '}
@@ -477,7 +473,7 @@ const uuidCookie = Cookies.get('uuid') || 'guest';
           <>
             <div className="divider !h-[1px] !mt-3 !mb-1 !bg-[#F0F0F2]"></div>
             <div className="mt-auto">
-              <h4 className="font-primary font-normal text-[12px] mb-[6px] text-left text-[#86878a] leading-[140%]">
+              <h4 className="font-primary font-normal text-[14px] mb-[6px] text-left text-[#16171A] leading-[140%]">
                 Direkt zum günstigsten Angebot
               </h4>
               <ul className="competitor-product-lists flex flex-col gap-[2px]">

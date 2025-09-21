@@ -1,4 +1,4 @@
-// app/produkte/page.tsx
+// app/products/page.tsx
 import Script from 'next/script';
 import type { Metadata } from 'next';
 import ProductsListing from '@/page-components/products/ProductsListing';
@@ -112,7 +112,7 @@ function buildListingKeywords({
 
 // Keep canonical clean: only SEO-relevant filters
 function buildCanonical(sp: Record<string, string | string[] | undefined>) {
-  const u = new URL('https://reifencheck.de/produkte');
+  const u = new URL('https://reifencheck.de/products');
   (
     [
       ['category', norm(sp.category)],

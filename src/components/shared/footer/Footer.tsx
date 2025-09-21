@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
                   <h2 className="font-medium font-primary text-[24px] lg:text-[30px] md:text-left text-center text-mono-0 leading-[120%]">
                     Abonnieren Sie unseren Newsletter
                   </h2>
-                  <p className="font-normal font-secondary text-[14px] lg:text-[16px] md:text-left text-center text-mono-0 mt-3 leading-[150%]">
+                  <p className="font-normal font-secondary text-[16px] lg:text-[16px] md:text-left text-center text-mono-0 mt-3 leading-[150%]">
                     Bleiben Sie auf dem Laufenden mit exklusiven Angeboten
                   </p>
                 </div>
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
                   width={180}
                   height={70}
                 />
-                <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#86878A] leading-[150%] mt-3">
+                <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#16171A] md:text-[#86878A] leading-[150%] mt-3">
                   Ihre zuverlässige Quelle für hochwertige Reifen von
                   Top-Marken. Wir machen es Ihnen leicht, die perfekte Passform
                   für Ihr Fahrzeug zu finden – mit schnellem Versand und
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/"
                       >
                         Home
@@ -70,7 +70,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/products"
                       >
                         Produkte
@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/blogs"
                       >
                         Der Blog
@@ -86,7 +86,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/favorites"
                       >
                         Favoriten
@@ -101,7 +101,7 @@ const Footer: React.FC = () => {
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/products?category=Sommerreifen"
                       >
                         Sommerreifen
@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/products?category=Winterreifen"
                       >
                         Winterreifen
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="/products?category=Ganzjahresreifen"
                       >
                         Ganzjahresreifen
@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="./#byBrand"
                       >
                         Nach Marke
@@ -140,7 +140,7 @@ const Footer: React.FC = () => {
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="https://facebook.com"
                       >
                         Facebook
@@ -148,7 +148,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="https://instagram.com"
                       >
                         Instagram
@@ -156,7 +156,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#86878A]"
+                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="https://x.com"
                       >
                         X.com
@@ -169,14 +169,14 @@ const Footer: React.FC = () => {
             <div className="footer-bottom-area w-full pt-[13px] pb-[20px] border-t border-t-border-100 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
               <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
                 <div className="foot-left-content">
-                  <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#86878A] leading-[150%]">
+                  <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#16171A] leading-[150%]">
                     © 2025 reifencheck.de Alle Rechte vorbehalten.
                   </p>
                 </div>
                 <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">
                   <li className="foot-middle-item">
                     <Link
-                      className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#86878A]"
+                      className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#16171A]"
                       href="/privacy-policy"
                     >
                       Datenschutz-Bestimmungen
@@ -184,7 +184,7 @@ const Footer: React.FC = () => {
                   </li>
                   <li className="foot-middle-item">
                     <Link
-                      className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#86878A]"
+                      className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#16171A]"
                       href="/term-services"
                     >
                       Nutzungsbedingungen

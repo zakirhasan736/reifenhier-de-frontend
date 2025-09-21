@@ -62,7 +62,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
             <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
               News & Artikel
             </h2>
-            <p className="font-normal font-secondary text-center text-[#89898B]">
+            <p className="font-normal font-secondary text-[16px] text-center text-[#89898B]">
               Bleiben Sie auf dem Laufenden mit den neuesten Erkenntnissen und
               Tipps zu Reifen.
             </p>
@@ -105,7 +105,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
                             <h3 className="text-[#404042] font-medium h6 font-primary">
                               {blog.title}
                             </h3>
-                            <p className="text-[#89898B] text-[12px] font-medium font-primary mt-2">
+                            <p className="text-[#16171A] text-[12px] font-medium font-primary mt-2">
                               {new Date(blog.createdAt).toLocaleDateString(
                                 'en-US',
                                 {
