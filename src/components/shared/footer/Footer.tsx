@@ -187,7 +187,7 @@ const Footer: React.FC = () => {
                   <li className="foot-middle-item">
                     <Link
                       className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042]"
-                      href="/term-services"
+                      href="/terms-of-service"
                     >
                       Nutzungsbedingungen
                     </Link>

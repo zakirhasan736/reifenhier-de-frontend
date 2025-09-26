@@ -108,7 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/blogs', // blog index
     '/favorites',
     '/privacy-policy',
-    '/terms-services',
+    '/terms-of-service',
   ];
 
   const [productSlugs, blogSlugs] = await Promise.all([
