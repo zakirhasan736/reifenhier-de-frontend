@@ -8,10 +8,26 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: [],
+        disallow: [
+          '/*?sort=',
+          '/*?page=',
+          '/*?brand=',
+          '/*?width=',
+          '/*?height=',
+          '/*?diameter=',
+          '/*?speedIndex=',
+          '/*?lastIndex=',
+          '/*?noise=',
+          '/*?fuelClass=',
+          '/*?wetGrip=',
+        ],
       },
     ],
-    sitemap: `${baseUrl.replace(/\/$/, '')}/sitemap.xml`,
+    sitemap: [
+      `${baseUrl.replace(/\/$/, '')}/sitemap.xml`,
+      `${baseUrl.replace(/\/$/, '')}/sitemap-products.xml`,
+      `${baseUrl.replace(/\/$/, '')}/sitemap-blogs.xml`,
+    ],
     host: baseUrl.replace(/\/$/, ''),
   };
 }

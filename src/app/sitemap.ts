@@ -40,7 +40,7 @@ function hasItems(x: unknown): x is ItemsShape {
   );
 }
 
-/** Safe fetch that supports {results:[{slug}]} | [{slug}] | {items:[{slug}]} */
+/** Extract slugs from common response shapes: {results:[]}|{items:[]}|[] */
 async function fetchSlugs(endpoint: string): Promise<string[]> {
   try {
     const res = await fetch(endpoint, { next: { revalidate: 3600 } });
@@ -49,53 +49,79 @@ async function fetchSlugs(endpoint: string): Promise<string[]> {
 
     let candidates: SlugItem[] = [];
     if (isArrayOfSlugItem(data)) candidates = data;
-    else if (hasResults(data) && Array.isArray(data.results))
-      candidates = data.results ?? [];
-    else if (hasItems(data) && Array.isArray(data.items))
-      candidates = data.items ?? [];
+    else if (hasResults(data)) candidates = data.results ?? [];
+    else if (hasItems(data)) candidates = data.items ?? [];
 
-    const slugs = candidates
-      .map(i => i.slug)
-      .filter((s): s is string => typeof s === 'string' && s.length > 0);
-
-    return Array.from(new Set(slugs));
+    return Array.from(
+      new Set(
+        candidates
+          .map(i => i.slug)
+          .filter((s): s is string => typeof s === 'string' && s.length > 0)
+      )
+    );
   } catch {
     return [];
   }
 }
 
-/** Pull many product slugs; adjust params to your API if needed */
+/** Page through an endpoint until it returns no slugs (defensive caps included) */
+async function fetchPagedSlugs(
+  base: string,
+  {
+    pageParam = 'page',
+    limitParam = 'limit',
+    limit = 1000,
+    maxPages = 200, // enough for 200k items at 1k/page
+  }: {
+    pageParam?: string;
+    limitParam?: string;
+    limit?: number;
+    maxPages?: number;
+  } = {}
+): Promise<string[]> {
+  const all: string[] = [];
+
+  for (let page = 1; page <= maxPages; page++) {
+    const url = new URL(base);
+    url.searchParams.set(limitParam, String(limit));
+    url.searchParams.set(pageParam, String(page));
+    // If your API supports "fields=slug", keep responses tiny:
+    if (!url.searchParams.has('fields')) url.searchParams.set('fields', 'slug');
+
+    const slugs = await fetchSlugs(url.toString());
+    if (!slugs.length) break;
+
+    all.push(...slugs);
+  }
+  return Array.from(new Set(all));
+}
+
+/** Pull many product slugs with a fast path + paged fallback */
 async function fetchAllProductSlugs(): Promise<string[]> {
+  // Fast path (single large response if your API supports it)
   const direct = await fetchSlugs(`${apiUrl}/products?limit=10000&fields=slug`);
   if (direct.length) return direct;
 
-  const stitched: string[] = [];
-  const MAX_PAGES = 10;
-  for (let page = 1; page <= MAX_PAGES; page++) {
-    const pageSlugs = await fetchSlugs(
-      `${apiUrl}/products?page=${page}&limit=1000&fields=slug`
-    );
-    if (!pageSlugs.length) break;
-    stitched.push(...pageSlugs);
-  }
-  return Array.from(new Set(stitched));
+  // Fallback: page through
+  return fetchPagedSlugs(`${apiUrl}/products`, {
+    pageParam: 'page',
+    limitParam: 'limit',
+    limit: 1000,
+    maxPages: 200,
+  });
 }
 
-/** Pull many blog slugs; adjust params to your CMS if needed */
+/** Pull many blog slugs with a fast path + paged fallback */
 async function fetchAllBlogSlugs(): Promise<string[]> {
   const direct = await fetchSlugs(`${apiUrl}/blogs?limit=10000&fields=slug`);
   if (direct.length) return direct;
 
-  const stitched: string[] = [];
-  const MAX_PAGES = 10;
-  for (let page = 1; page <= MAX_PAGES; page++) {
-    const pageSlugs = await fetchSlugs(
-      `${apiUrl}/blogs?page=${page}&limit=1000&fields=slug`
-    );
-    if (!pageSlugs.length) break;
-    stitched.push(...pageSlugs);
-  }
-  return Array.from(new Set(stitched));
+  return fetchPagedSlugs(`${apiUrl}/blogs`, {
+    pageParam: 'page',
+    limitParam: 'limit',
+    limit: 1000,
+    maxPages: 200,
+  });
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -103,12 +129,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Static, canonical routes (no query strings)
   const staticPaths: string[] = [
-    '/', // homepage
-    '/products', // listing canonical (if you prefer /products, switch here)
-    '/blogs', // blog index
+    '/',
+    '/products', // keep listing canonical clean (no params)
+    '/blogs',
     '/favorites',
     '/privacy-policy',
-    '/terms-of-service',
+    '/terms-of-service', // if your route is /terms-of-service, keep that instead
   ];
 
   const [productSlugs, blogSlugs] = await Promise.all([
@@ -119,7 +145,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = staticPaths.map(path => ({
     url: `${siteUrl}${path}`,
     lastModified: now,
-    changeFrequency: path === '/' ? 'daily' : 'weekly',
+    changeFrequency: (path === '/' ? 'daily' : 'weekly') as 'daily' | 'weekly',
     priority: path === '/' ? 1 : 0.6,
   }));
 
