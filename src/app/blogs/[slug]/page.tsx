@@ -1,155 +1,231 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+// app/blogs/[slug]/page.tsx
+import type { Metadata } from 'next';
 import type { JSX } from 'react';
-import { useGetBlogsQuery } from '@/store/api/blogApi';
-import { useParams } from 'next/navigation';
+import React from 'react';
+import Script from 'next/script';
 import Image from 'next/image';
-import Link from 'next/link';
-import NewArticles from '@/components/homepage/NewArticles';
-import Loading from '@/app/loading';
+import BlogSidebar from '@/page-components/blogs/RelatedBlogsSectiob';
 
-const apiUrl =
+const SITE_URL = 'https://www.reifencheck.de';
+const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
-  'http://localhost:8001';
+  'https://api.reifencheck.de';
 
 type ContentBlock =
-  | {
-      type: 'heading';
-      level: string;
-      text: string;
-    }
-  | { type: 'paragraph'; text: string }
-  | { type: 'list'; style: 'ul' | 'ol'; items: string[] };
+  | { type: 'heading'; level?: string; text?: string }
+  | { type: 'paragraph'; text?: string }
+  | { type: 'list'; style?: 'ul' | 'ol'; items?: string[] };
 
 interface Blog {
   title: string;
   slug: string;
   coverImage?: string;
-  metaDescription: string;
-  contentBlocks: ContentBlock[][]; // nested array support
+  metaDescription?: string;
+  contentBlocks?: ContentBlock[][];
   createdAt: string;
+  updatedAt?: string;
 }
 
-const BlogDetailPage = () => {
-  const { slug } = useParams() as { slug: string };
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [error, setError] = useState<string | null>(null);
- const { data: blogsData } = useGetBlogsQuery({ page: 1, limit: 6 });
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/blogs/slug/${slug}`);
-        setBlog(res.data);
-        setError(null);
-      } catch  {
-        console.error('Fehler beim Abrufen des Blogs:');
-        setError('Fehler beim Laden des Blogs.');
-        setBlog(null);
-      }
+// ---- Server fetch ----
+async function fetchBlog(slug: string): Promise<Blog | null> {
+  try {
+    const res = await fetch(
+      `${API_URL}/api/blogs/slug/${encodeURIComponent(slug)}`,
+      { cache: 'no-store' }
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as Blog;
+  } catch {
+    return null;
+  }
+}
+
+// ---- Utilities (type-safe rendering) ----
+const allowedHeadings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+type AllowedHeading = (typeof allowedHeadings)[number];
+
+function resolveHeadingTag(level?: string): AllowedHeading {
+  const lower = (level ?? '').toLowerCase();
+  return (allowedHeadings as readonly string[]).includes(lower)
+    ? (lower as AllowedHeading)
+    : 'h2';
+}
+
+function renderBlock(block: ContentBlock, key: number): React.ReactNode {
+  if (block.type === 'heading') {
+    const Tag = resolveHeadingTag(block.level);
+    const text = block.text ?? '';
+    return React.createElement(
+      Tag,
+      { key, className: 'text-xl font-semibold mt-6 mb-2' },
+      text
+    );
+  }
+
+  if (block.type === 'paragraph') {
+    return (
+      <p key={key} className="mb-4">
+        {block.text ?? ''}
+      </p>
+    );
+  }
+
+  if (block.type === 'list') {
+    const style: 'ul' | 'ol' = block.style === 'ol' ? 'ol' : 'ul';
+    const ListTag: keyof JSX.IntrinsicElements = style;
+    const cls = style === 'ol' ? 'list-decimal' : 'list-disc';
+    return React.createElement(
+      ListTag,
+      { key, className: `mb-4 ${cls} pl-6` },
+      (block.items ?? []).map((item, i) => <li key={i}>{item}</li>)
+    );
+  }
+
+  return null;
+}
+
+// ---- Metadata ----
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = await fetchBlog(slug);
+
+  if (!blog) {
+    return {
+      title: 'Blog nicht gefunden | Reifencheck.de',
+      description: 'Dieser Blogartikel ist nicht verfügbar.',
+      robots: { index: false, follow: true },
+      alternates: { canonical: `${SITE_URL}/blogs/${slug}` },
     };
+  }
 
-    fetchBlog();
-  }, [slug]);
+  const title = `${blog.title} | Reifencheck.de`;
+  const description =
+    blog.metaDescription?.slice(0, 155) ||
+    `Lesen Sie den Blogartikel „${blog.title}“ auf Reifencheck.de.`;
+  const canonical = `${SITE_URL}/blogs/${blog.slug}`;
 
-  if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
-  if (!blog) return <div className="p-6 text-center"><Loading /></div>;
+  return {
+    metadataBase: new URL(SITE_URL),
+    title,
+    description,
+    keywords: [
+      'reifencheck blog',
+      'autoreifen tipps',
+      'reifenratgeber',
+      blog.title,
+    ],
+    alternates: { canonical },
+    openGraph: {
+      type: 'article',
+      locale: 'de_DE',
+      url: canonical,
+      siteName: 'Reifencheck.de',
+      title,
+      description,
+      images: [
+        {
+          url: blog.coverImage || '/images/blog-og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [blog.coverImage || '/images/blog-og-image.jpg'],
+    },
+    robots: { index: true, follow: true },
+  };
+}
+
+// ---- Page (await params) ----
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const blog = await fetchBlog(slug);
+
+  if (!blog) {
+    return (
+      <main className="container mx-auto py-10">
+        <h1 className="text-xl font-semibold mb-2">Blog nicht gefunden</h1>
+        <p>Dieser Blogartikel ist nicht verfügbar.</p>
+      </main>
+    );
+  }
+
+  const date = new Date(blog.createdAt).toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${SITE_URL}/blogs/${blog.slug}#article`,
+    headline: blog.title,
+    description: blog.metaDescription || blog.title,
+    image: blog.coverImage ? [blog.coverImage] : undefined,
+    datePublished: blog.createdAt,
+    dateModified: blog.updatedAt || blog.createdAt,
+    author: { '@type': 'Organization', name: 'Reifencheck.de' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Reifencheck.de',
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/logo.png` },
+    },
+    mainEntityOfPage: `${SITE_URL}/blogs/${blog.slug}`,
+  };
 
   return (
     <>
       <section className="blog-details-page">
-        <div className="blog-details-banner hidden  bg-mono-0 py-8 max-sm:py-5">
-          <div className="custom-container">
-            <div className="product-banner-wrapper flex flex-col items-center justify-center">
-              <ul className="breadcrumb-area flex items-center gap-[10px]">
-                <li className="breadcrumb-item body-caption prev-pages flex items-center gap-[10px]">
-                  <Link
-                    className="body-caption text-mono-100"
-                    href="/"
-                    passHref
-                  >
-                    Heim
-                  </Link>
-                  <span className="angle">&gt;</span>
-                </li>
-                <li className="breadcrumb-item body-caption capitalize text-mono-70">
-                  Blogs
-                </li>
-              </ul>
-              <h4 className="h6 current-category-title capitalize mt-[15px] max-md:mt-2">
-                Blog Details
-              </h4>
-            </div>
-          </div>
-        </div>
-        <div className="custom-container">
-          <div className="blog-details-wrapper bg-bg-opacity pt-12">
-            <div className="blog-dtails-right-cont">
-              <div className="md:max-w-4xl w-full mx-auto">
-                <h1 className="text-[24px] md:text-[28px] lg:text-[36px] font-medium font-primary text-[#404042] mb-2">
-                  {blog.title}
-                </h1>
-                <p className="text-gray-600 mb-4">
-                  {new Date(blog.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </p>
-                {blog.coverImage && (
-                  <Image
-                    src={blog.coverImage}
-                    alt={blog.title}
-                    className="w-full rounded mb-6"
-                    width={848}
-                    priority
-                    fetchPriority="high"
-                    height={558}
-                  />
-                )}
-                <div className="blog-details-tabs-link"></div>
-                {blog.contentBlocks?.map((group, gIdx) => (
-                  <div key={gIdx} className="mb-6 blog-details-content-block">
-                    {group.map((block, idx) => {
-                      if (block.type === 'heading') {
-                        const Tag = block.level as keyof JSX.IntrinsicElements;
-                        return (
-                          <Tag
-                            key={idx}
-                            className="text-xl font-semibold mt-6 mb-2"
-                          >
-                            {block.text}
-                          </Tag>
-                        );
-                      } else if (block.type === 'paragraph') {
-                        return (
-                          <p key={idx} className="mb-4">
-                            {block.text}
-                          </p>
-                        );
-                      } else if (block.type === 'list') {
-                        const ListTag = block.style === 'ol' ? 'ol' : 'ul';
-                        return (
-                          <ListTag key={idx} className="mb-4 list-disc pl-6">
-                            {block.items.map((item, i) => (
-                              <li key={i}>{item}</li>
-                            ))}
-                          </ListTag>
-                        );
-                      }
-                      return null;
-                    })}
-                  </div>
-                ))}
+        <div className="custom-container pt-12">
+          <article className="md:max-w-4xl w-full mx-auto">
+            <h1 className="text-3xl font-semibold mb-2">{blog.title}</h1>
+            <p className="text-gray-600 mb-4">{date}</p>
+
+            {blog.coverImage && (
+              <Image
+                src={blog.coverImage}
+                alt={blog.title}
+                className="w-full rounded mb-6"
+                width={848}
+                height={558}
+                priority
+                sizes="(max-width: 900px) 100vw, 848px"
+              />
+            )}
+
+            {blog.contentBlocks?.map((group, gIdx) => (
+              <div key={gIdx} className="mb-6">
+                {group.map((block, idx) => renderBlock(block, idx))}
               </div>
-            </div>
-          </div>
+            ))}
+          </article>
         </div>
       </section>
-      <NewArticles blogs={blogsData?.blogs || []} />
+
+      {/* Client-side related blogs (RTK/Redux handled inside) */}
+      <BlogSidebar />
+
+      <Script
+        id="ld-blog-article"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd)}
+      </Script>
     </>
   );
-};
-
-export default BlogDetailPage;
+}

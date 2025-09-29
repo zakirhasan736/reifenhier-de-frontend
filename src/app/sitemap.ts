@@ -4,137 +4,156 @@ import type { MetadataRoute } from 'next';
 const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifencheck.de'
 ).replace(/\/$/, '');
+
 const apiUrl = (
   process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de/api'
 ).replace(/\/$/, '');
 
-type SlugItem = { slug?: string };
-type ResultsShape = { results?: SlugItem[] };
-type ItemsShape = { items?: SlugItem[] };
+type Product = {
+  slug?: string;
+  product_name?: string;
+  product_image?: string;
+  search_price?: number;
+  cheapest_offer?: number;
+  expensive_offer?: number;
+  offers?: unknown[]; // some APIs return this, some don't
+};
 
-function isArrayOfSlugItem(x: unknown): x is SlugItem[] {
-  return (
-    Array.isArray(x) &&
-    x.every(
-      i =>
-        typeof i === 'object' &&
-        i !== null &&
-        'slug' in (i as Record<string, unknown>)
-    )
-  );
-}
-function hasResults(x: unknown): x is ResultsShape {
-  return (
-    typeof x === 'object' &&
-    x !== null &&
-    'results' in (x as Record<string, unknown>) &&
-    isArrayOfSlugItem((x as ResultsShape).results)
-  );
-}
-function hasItems(x: unknown): x is ItemsShape {
-  return (
-    typeof x === 'object' &&
-    x !== null &&
-    'items' in (x as Record<string, unknown>) &&
-    isArrayOfSlugItem((x as ItemsShape).items)
-  );
-}
+type Blog = {
+  slug?: string;
+  title?: string;
+  body?: string;
+};
 
-/** Extract slugs from common response shapes: {results:[]}|{items:[]}|[] */
-async function fetchSlugs(endpoint: string): Promise<string[]> {
+type PagedResponse<T> =
+  | { results?: T[]; total?: number; page?: number; limit?: number }
+  | { items?: T[]; total?: number; page?: number; limit?: number }
+  | T[];
+
+/* ---------- small utils ---------- */
+const unique = <T>(arr: T[]) => Array.from(new Set(arr));
+
+async function safeFetchJSON<T>(url: string): Promise<T | null> {
   try {
-    const res = await fetch(endpoint, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    const data: unknown = await res.json();
-
-    let candidates: SlugItem[] = [];
-    if (isArrayOfSlugItem(data)) candidates = data;
-    else if (hasResults(data)) candidates = data.results ?? [];
-    else if (hasItems(data)) candidates = data.items ?? [];
-
-    return Array.from(
-      new Set(
-        candidates
-          .map(i => i.slug)
-          .filter((s): s is string => typeof s === 'string' && s.length > 0)
-      )
-    );
+    const res = await fetch(url, { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
   } catch {
-    return [];
+    return null;
   }
 }
 
-/** Page through an endpoint until it returns no slugs (defensive caps included) */
-async function fetchPagedSlugs(
-  base: string,
-  {
-    pageParam = 'page',
-    limitParam = 'limit',
-    limit = 1000,
-    maxPages = 200, // enough for 200k items at 1k/page
-  }: {
-    pageParam?: string;
-    limitParam?: string;
-    limit?: number;
-    maxPages?: number;
-  } = {}
-): Promise<string[]> {
-  const all: string[] = [];
+function getArrayFromPaged<T>(data: PagedResponse<T> | null): T[] {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if ('results' in data && Array.isArray(data.results)) return data.results;
+  if ('items' in data && Array.isArray(data.items)) return data.items;
+  return [];
+}
+
+/** Looser, practical “value” check to avoid soft-404s */
+function isValidProduct(p: Product): boolean {
+  if (!p?.slug || !p?.product_name) return false;
+  const hasImage = Boolean(p.product_image);
+  const hasPrice =
+    typeof p.search_price === 'number' ||
+    typeof p.cheapest_offer === 'number' ||
+    typeof p.expensive_offer === 'number' ||
+    (Array.isArray(p.offers) && p.offers.length > 0);
+  return hasImage || hasPrice;
+}
+
+function isValidBlog(b: Blog): boolean {
+  return Boolean(b?.slug && (b?.title || b?.body));
+}
+
+/** Generic pager with optional field selection & per-item validator */
+async function fetchPaged<T>({
+  base,
+  pageParam = 'page',
+  limitParam = 'limit',
+  limit = 1000,
+  maxPages = 200,
+  fields,
+  validate,
+}: {
+  base: string;
+  pageParam?: string;
+  limitParam?: string;
+  limit?: number;
+  maxPages?: number;
+  fields?: string; // e.g. "slug,product_name,product_image,search_price,cheapest_offer"
+  validate?: (item: T) => boolean;
+}): Promise<T[]> {
+  const out: T[] = [];
 
   for (let page = 1; page <= maxPages; page++) {
     const url = new URL(base);
-    url.searchParams.set(limitParam, String(limit));
     url.searchParams.set(pageParam, String(page));
-    // If your API supports "fields=slug", keep responses tiny:
-    if (!url.searchParams.has('fields')) url.searchParams.set('fields', 'slug');
+    url.searchParams.set(limitParam, String(limit));
+    if (fields && !url.searchParams.has('fields')) {
+      url.searchParams.set('fields', fields);
+    }
 
-    const slugs = await fetchSlugs(url.toString());
-    if (!slugs.length) break;
+    const data = await safeFetchJSON<PagedResponse<T>>(url.toString());
+    const batch = getArrayFromPaged<T>(data);
+    if (!batch.length) break;
 
-    all.push(...slugs);
+    out.push(...(validate ? batch.filter(validate) : batch));
+
+    if (batch.length < limit) break; // last page
   }
-  return Array.from(new Set(all));
+
+  return out;
 }
 
-/** Pull many product slugs with a fast path + paged fallback */
+/** Products — paginated & validated */
 async function fetchAllProductSlugs(): Promise<string[]> {
-  // Fast path (single large response if your API supports it)
-  const direct = await fetchSlugs(`${apiUrl}/products?limit=10000&fields=slug`);
-  if (direct.length) return direct;
-
-  // Fallback: page through
-  return fetchPagedSlugs(`${apiUrl}/products`, {
-    pageParam: 'page',
-    limitParam: 'limit',
+  const products = await fetchPaged<Product>({
+    base: `${apiUrl}/products`,
     limit: 1000,
     maxPages: 200,
+    // request fields commonly available; safe if API ignores unknown query
+    fields:
+      'slug,product_name,product_image,search_price,cheapest_offer,expensive_offer',
+    validate: isValidProduct,
   });
+
+  return unique(
+    products
+      .map(p => p.slug)
+      .filter((s): s is string => typeof s === 'string' && s.length > 0)
+  );
 }
 
-/** Pull many blog slugs with a fast path + paged fallback */
+/** Blogs — paginated & validated */
 async function fetchAllBlogSlugs(): Promise<string[]> {
-  const direct = await fetchSlugs(`${apiUrl}/blogs?limit=10000&fields=slug`);
-  if (direct.length) return direct;
-
-  return fetchPagedSlugs(`${apiUrl}/blogs`, {
-    pageParam: 'page',
-    limitParam: 'limit',
+  const blogs = await fetchPaged<Blog>({
+    base: `${apiUrl}/blogs`,
     limit: 1000,
     maxPages: 200,
+    fields: 'slug,title,body',
+    validate: isValidBlog,
   });
+
+  return unique(
+    blogs
+      .map(b => b.slug)
+      .filter((s): s is string => typeof s === 'string' && s.length > 0)
+  );
 }
 
+/* ---------- sitemap ---------- */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  // Static, canonical routes (no query strings)
+  // Keep static canonicals clean (no params). EXCLUDE /favorites here.
   const staticPaths: string[] = [
     '/',
-    '/products', // keep listing canonical clean (no params)
+    '/products',
     '/blogs',
-    '/favorites',
     '/privacy-policy',
-    '/terms-of-service', // if your route is /terms-of-service, keep that instead
+    '/terms-of-service',
   ];
 
   const [productSlugs, blogSlugs] = await Promise.all([
@@ -145,7 +164,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = staticPaths.map(path => ({
     url: `${siteUrl}${path}`,
     lastModified: now,
-    changeFrequency: (path === '/' ? 'daily' : 'weekly') as 'daily' | 'weekly',
+    changeFrequency: path === '/' ? 'daily' : 'weekly',
     priority: path === '/' ? 1 : 0.6,
   }));
 
@@ -163,8 +182,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  // Dedupe (defensive)
   const all = [...staticEntries, ...productEntries, ...blogEntries];
+
+  // Paranoid dedupe
   const seen = new Set<string>();
   const deduped = all.filter(item => {
     if (seen.has(item.url)) return false;

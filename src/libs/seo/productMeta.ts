@@ -1,4 +1,3 @@
-// lib/seo/productMeta.ts
 import type { Metadata } from 'next';
 
 export interface Product {
@@ -6,30 +5,32 @@ export interface Product {
   slug: string;
   brand_logo: string;
   product_image: string;
-  merchant_product_third_category: string; // e.g., "Sommerreifen" | "Winterreifen" | "Ganzjahresreifen"
+  merchant_product_third_category: string; // Sommerreifen | Winterreifen | Ganzjahresreifen
   search_price: number;
-  main_price: number;
-  average_rating: number; // 0..5
+  main_price?: number;
+  average_rating: number;
   rating_count: number;
-  cheapest_offer: number; // min price across partners
-  expensive_offer: number; // max price across partners
-  savings_percent: string; // "12%"
-  savings_amount: number; // 12.34
-  related_cheaper: [];
-  brand_name: string; // e.g. "MICHELIN"
-  product_name: string; // e.g. "Primacy 4 205/55 R16 91V"
-  in_stock: string; // "InStock" | "OutOfStock" | etc.
-  delivery_time: string; // e.g. "2-4 Werktage"
-  ean: string;
-  product_url: string; // external merchant URL (affiliate)
-  dimensions: string; // optional, can duplicate size
-  fuel_class: string; // EU label rolling resistance (A–E)
-  wet_grip: string; // EU label wet grip (A–E)
-  noise_class: string; // EU label noise (A–C or dB class)
+  cheapest_offer: number;
+  expensive_offer: number;
+  savings_percent: string;
+  savings_amount?: number;
+  related_cheaper?: unknown[];
+  brand_name: string;
+  product_name: string;
+  in_stock: string; // "instock" | "outofstock" | etc. (your API uses lowercase strings often)
+  delivery_time?: string;
+  ean?: string;
+  product_url?: string;
+  dimensions?: string;
+  fuel_class?: string;
+  wet_grip?: string;
+  noise_class?: string;
 }
 
+export type FullProduct = Product;
+
+// --- small utilities ---
 function extractSize(p: Product): string | undefined {
-  // Try to pull a "205/55 R16" pattern from product_name or dimensions
   const source = `${p.product_name} ${p.dimensions || ''}`;
   const m = source.match(/\b\d{3}\/\d{2}\s?R?\s?\d{2}\b/i);
   return m ? m[0].replace(/\s+/g, ' ').toUpperCase() : undefined;
@@ -44,11 +45,22 @@ function normalizeSeason(p: Product): string | undefined {
   return undefined;
 }
 
+// --- Thin content heuristic (optional, helpful for SEO quality) ---
+export function isThinProduct(p: Product): boolean {
+  const hasName = Boolean(p.brand_name && p.product_name);
+  const hasMediaOrOffers =
+    Boolean(p.product_image) ||
+    Number.isFinite(p.search_price) ||
+    Number.isFinite(p.cheapest_offer);
+
+  return !hasName || !hasMediaOrOffers;
+}
+
+// --- Keyword builder ---
 export function buildProductKeywords(p: Product): string[] {
   const season = normalizeSeason(p);
   const size = extractSize(p);
-  const brand = p.brand_name?.trim();
-  // Pull the "model" part by removing brand from product_name where possible
+  const brand = (p.brand_name || '').trim();
   const modelGuess = brand
     ? p.product_name.replace(new RegExp(`^${brand}\\s*`, 'i'), '').trim()
     : p.product_name;
@@ -70,75 +82,67 @@ export function buildProductKeywords(p: Product): string[] {
     'Reifenpreisvergleich',
   ].filter(Boolean) as string[];
 
-  // Add a few long-tails if we have data
-  if (typeof p.cheapest_offer === 'number') {
+  if (Number.isFinite(p.cheapest_offer)) {
     base.push(`ab ${p.cheapest_offer.toFixed(2)} €`);
   }
   if (size) base.push(`${size} günstig kaufen`);
 
-  // De-duplicate
   return Array.from(new Set(base));
 }
 
+// --- Title / Description ---
 export function buildProductTitle(p: Product): string {
   const size = extractSize(p);
-  // Short, punchy, ≤60 chars-ish
-  // Example: "MICHELIN Primacy 4 205/55 R16 – Preisvergleich"
-  const main = [p.brand_name, p.product_name].filter(Boolean).join(' ');
+  const main = [p.brand_name, p.product_name].filter(Boolean).join(' ').trim();
   const suffix = '– Preisvergleich';
-  const title =
-    size && !main.toUpperCase().includes(size)
-      ? `${main} ${size} ${suffix}`
-      : `${main} ${suffix}`;
-  return title.trim();
+  const includeSize = size && !main.toUpperCase().includes(size);
+  return `${main}${includeSize ? ` ${size}` : ''} ${suffix}`.trim();
 }
 
 export function buildProductDescription(p: Product): string {
-  // Aim for ≤160 chars; highlight season, EU-label, and price range if present
   const season = normalizeSeason(p);
   const size = extractSize(p);
   const parts: string[] = [];
 
   parts.push(`${p.brand_name} ${p.product_name}${size ? ' ' + size : ''}`);
-  if (season) parts.push(`${season}`);
+  if (season) parts.push(season);
   parts.push('im Test & Preisvergleich.');
 
-  const euBits = [];
-  if (p.wet_grip) euBits.push(`Nasshaftung ${p.wet_grip}`);
-  if (p.fuel_class) euBits.push(`Rollwiderstand ${p.fuel_class}`);
-  if (p.noise_class) euBits.push(`Geräusch ${p.noise_class}`);
-  if (euBits.length) parts.push(euBits.join(', ') + '.');
+  const eu: string[] = [];
+  if (p.wet_grip) eu.push(`Nasshaftung ${p.wet_grip}`);
+  if (p.fuel_class) eu.push(`Rollwiderstand ${p.fuel_class}`);
+  if (p.noise_class) eu.push(`Geräusch ${p.noise_class}`);
+  if (eu.length) parts.push(eu.join(', ') + '.');
 
-  if (
-    typeof p.cheapest_offer === 'number' &&
-    typeof p.expensive_offer === 'number'
-  ) {
+  if (Number.isFinite(p.cheapest_offer) && Number.isFinite(p.expensive_offer)) {
     parts.push(
       `Preise ${p.cheapest_offer.toFixed(2)}–${p.expensive_offer.toFixed(2)} €.`
     );
-  } else if (typeof p.search_price === 'number') {
+  } else if (Number.isFinite(p.search_price)) {
     parts.push(`ab ${p.search_price.toFixed(2)} €.`);
   }
 
   return parts.join(' ').trim();
 }
 
+// --- Metadata (Next.js) ---
 export function buildProductMetadata(p: Product): Metadata {
   const title = buildProductTitle(p);
   const description = buildProductDescription(p);
   const keywords = buildProductKeywords(p);
   const image = p.product_image || '/images/product-detailspage.png';
+  const url = `https://reifencheck.de/products/${p.slug}`;
 
   return {
     metadataBase: new URL('https://reifencheck.de'),
     title,
     description,
-    alternates: { canonical: `https://reifencheck.de/p/${p.slug}` },
+    alternates: { canonical: url },
     keywords,
     openGraph: {
       type: 'website',
       locale: 'de_DE',
-      url: `https://reifencheck.de/p/${p.slug}`,
+      url,
       siteName: 'Reifencheck.de',
       title,
       description,
@@ -161,7 +165,7 @@ export function buildProductMetadata(p: Product): Metadata {
   };
 }
 
-// JSON-LD builder
+// --- JSON-LD ---
 export function buildProductJsonLd(p: Product) {
   const size = extractSize(p);
   const availabilityMap: Record<string, string> = {
@@ -175,7 +179,7 @@ export function buildProductJsonLd(p: Product) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    '@id': `https://reifencheck.de/p/${p.slug}#product`,
+    '@id': `https://reifencheck.de/products/${p.slug}#product`,
     name: `${p.brand_name} ${p.product_name}`,
     image: [p.product_image].filter(Boolean),
     description: buildProductDescription(p),
@@ -215,8 +219,8 @@ export function buildProductJsonLd(p: Product) {
         : undefined,
     ].filter(Boolean),
     aggregateRating:
-      typeof p.average_rating === 'number' &&
-      typeof p.rating_count === 'number' &&
+      Number.isFinite(p.average_rating) &&
+      Number.isFinite(p.rating_count) &&
       p.rating_count > 0
         ? {
             '@type': 'AggregateRating',
@@ -226,19 +230,16 @@ export function buildProductJsonLd(p: Product) {
         : undefined,
     offers: {
       '@type': 'AggregateOffer',
-      url: `https://reifencheck.de/p/${p.slug}`,
+      url: `https://reifencheck.de/products/${p.slug}`,
       priceCurrency: 'EUR',
-      lowPrice:
-        typeof p.cheapest_offer === 'number'
-          ? Number(p.cheapest_offer.toFixed(2))
-          : typeof p.search_price === 'number'
-          ? Number(p.search_price.toFixed(2))
-          : undefined,
-      highPrice:
-        typeof p.expensive_offer === 'number'
-          ? Number(p.expensive_offer.toFixed(2))
-          : undefined,
-      offerCount: undefined, // set if you know partner count
+      lowPrice: Number.isFinite(p.cheapest_offer)
+        ? Number(p.cheapest_offer.toFixed(2))
+        : Number.isFinite(p.search_price)
+        ? Number(p.search_price.toFixed(2))
+        : undefined,
+      highPrice: Number.isFinite(p.expensive_offer)
+        ? Number(p.expensive_offer.toFixed(2))
+        : undefined,
       availability,
     },
   };
