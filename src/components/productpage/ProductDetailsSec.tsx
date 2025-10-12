@@ -311,12 +311,12 @@ const handleToggleWishlist = async () => {
                       <div className="skeleton h-3 w-20 bg-mono-60"></div>
                     </li>
                   </ul>
-                  <p className="product-brand mb-2 text-primary-100 font-bold text-[18px] uppercase text-left">
+                  <div className="product-brand mb-2 text-primary-100 font-bold text-[18px] uppercase text-left">
                     <div className="skeleton h-4 w-[160px] bg-mono-60"></div>
-                  </p>
-                  <h5 className="product-title h4 font-secondary text-primary-70 mb-2">
+                  </div>
+                  <div className="product-title h4 font-secondary text-primary-70 mb-2">
                     <div className="skeleton h-4 w-[300px] bg-mono-60 mb-1"></div>
-                  </h5>
+                  </div>
 
                   <div className="product-price-group flex flex-col gap-2 mb-4 max-w-[306px] sm:max-w-[375px] w-full">
                     <p className="input-type-text text-primary-70 font-medium text-[18px] capitalized text-left w-full">
@@ -823,12 +823,12 @@ const handleToggleWishlist = async () => {
                       </li>
                     </ul>
                     <div className="product-details-title-box mb-4">
-                      <h2 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
+                      <h1 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
                         {[product.brand_name, product.product_name]
                           .filter(Boolean)
                           .join(' ')
                           .toUpperCase()}
-                      </h2>
+                      </h1>
                       <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
                         <span className="flex items-center gap-2">
                           <Image
