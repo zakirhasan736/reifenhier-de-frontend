@@ -3,8 +3,7 @@ import { Metadata } from "next";
 import Script from "next/script";
 export const metadata: Metadata = {
   metadataBase: new URL('https://reifencheck.de'),
-  title:
-    'Reifenangebote – Sommer-, Winter- & Ganzjahresreifen günstig vergleichen',
+  title: 'Reifen günstig vergleichen & kaufen | Reifencheck',
   description:
     'Finden Sie günstige Reifenangebote auf Reifencheck.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
   alternates: { canonical: 'https://reifencheck.de/produkte' },

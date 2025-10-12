@@ -93,29 +93,6 @@ export default function RootLayout({
   return (
     <html lang="de" className={poppins.className}>
       <head>
-        {/* Cookiebot — must load before any tags that use cookies */}
-        <Script
-          id="Cookiebot"
-          src="https://consent.cookiebot.com/uc.js"
-          data-cbid="1011cf97-2ce9-406a-85a7-8249e98f91c3"
-          data-blockingmode="auto"
-          strategy="beforeInteractive"
-        />
-
-        {/* Default consent for GTM/Analytics */}
-        <Script id="consent-defaults" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            gtag('consent', 'default', {
-              ad_storage: 'denied',
-              analytics_storage: 'denied',
-              ad_user_data: 'denied',
-              ad_personalization: 'denied'
-            });
-          `}
-        </Script>
-
         {/* Google Tag Manager */}
         <Script id="gtm-init" strategy="afterInteractive">
           {`
@@ -142,127 +119,128 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Microsoft Clarity
-        <Script id="clarity" strategy="afterInteractive">
+        {/* JSON-LD basic org data */}
+        <Script
+          id="ld-org"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Reifencheck.de',
+              url: 'https://reifencheck.de/',
+              logo: 'https://reifencheck.de/images/logo.png',
+            }),
+          }}
+        />
+
+        {/* Silktide Cookie Manager */}
+        <link
+          rel="stylesheet"
+          href="/cookie-banner/silktide-consent-manager.css"
+          id="silktide-consent-manager-css"
+        />
+        <Script
+          src="/cookie-banner/silktide-consent-manager.js"
+          strategy="afterInteractive"
+        />
+
+        {/* Safe Silktide Init + Conditional Clarity */}
+        <Script id="silktide-init" strategy="afterInteractive">
           {`
-            (function(c,l,a,r,i,t,y){
-              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "synxux4l9y");
+            (function initSilktide() {
+              function loadClarity() {
+                if (window.__clarityLoaded) return; // prevent duplicate loads
+                window.__clarityLoaded = true;
+                (function(c,l,a,r,i,t,y){
+                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "synxux4l9y");
+              }
+
+              function setupSilktide() {
+                if (typeof window.silktideCookieBannerManager === 'undefined') {
+                  return false;
+                }
+
+                window.silktideCookieBannerManager.updateCookieBannerConfig({
+                  background: { showBackground: true },
+                  cookieIcon: { position: "bottomLeft" },
+                  cookieTypes: [
+                    {
+                      id: "necessary",
+                      name: "Necessary",
+                      description: "<p>Essential cookies needed for site functionality.</p>",
+                      required: true
+                    },
+                    {
+                      id: "analytics",
+                      name: "Analytics",
+                      description: "<p>Helps us understand how visitors use the website.</p>",
+                      defaultValue: true,
+                      onAccept: function() {
+                        if (typeof gtag === 'function') {
+                          gtag('consent', 'update', { analytics_storage: 'granted' });
+                          dataLayer.push({ event: 'consent_accepted_analytics' });
+                        }
+                        loadClarity(); // load Clarity when analytics is accepted
+                      },
+                      onReject: function() {
+                        if (typeof gtag === 'function') {
+                          gtag('consent', 'update', { analytics_storage: 'denied' });
+                        }
+                      }
+                    },
+                    {
+                      id: "advertising",
+                      name: "Advertising",
+                      description: "<p>Enables personalization and ads.</p>",
+                      onAccept: function() {
+                        if (typeof gtag === 'function') {
+                          gtag('consent', 'update', {
+                            ad_storage: 'granted',
+                            ad_user_data: 'granted',
+                            ad_personalization: 'granted',
+                          });
+                          dataLayer.push({ event: 'consent_accepted_advertising' });
+                        }
+                        loadClarity(); // also load Clarity when advertising is accepted
+                      },
+                      onReject: function() {
+                        if (typeof gtag === 'function') {
+                          gtag('consent', 'update', {
+                            ad_storage: 'denied',
+                            ad_user_data: 'denied',
+                            ad_personalization: 'denied',
+                          });
+                        }
+                      }
+                    }
+                  ],
+                  text: {
+                    banner: {
+                      description: "<p>We use cookies to improve your experience. <a href='/cookie-policy' target='_blank'>Cookie Policy</a></p>",
+                      acceptAllButtonText: "Accept all",
+                      rejectNonEssentialButtonText: "Reject non-essential",
+                      preferencesButtonText: "Preferences"
+                    },
+                    preferences: {
+                      title: "Customize your cookie preferences",
+                      description: "<p>Choose which cookies you want to allow.</p>"
+                    }
+                  }
+                });
+                return true;
+              }
+
+              // Check every 100ms until script is ready
+              const interval = setInterval(() => {
+                if (setupSilktide()) clearInterval(interval);
+              }, 100);
+            })();
           `}
-        </Script> */}
-        {/* Microsoft Clarity – load only after Cookiebot consent; guard duplicates */}
-        <Script id="clarity-loader" strategy="afterInteractive">
-          {`
-    (function () {
-      var CLARITY_ID = "synxux4l9y";
-
-      function injectClarity() {
-        // If clarity exists but is not a function (bad state), reset it
-        if (typeof window.clarity !== 'undefined' && typeof window.clarity !== 'function') {
-          try { delete window.clarity; } catch (_) { window.clarity = undefined; }
-        }
-        // If already installed as a function, stop
-        if (typeof window.clarity === 'function') return;
-        // Install stub + load script
-        (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", CLARITY_ID);
-      }
-
-      function tryLoadClarity() {
-        if (!window.Cookiebot || !Cookiebot.consent) return;
-        // Load when user has allowed Statistics OR Marketing
-        if (Cookiebot.consent.statistics || Cookiebot.consent.marketing) {
-          injectClarity();
-        }
-      }
-
-      // Try now if Cookiebot already present
-      if (window.Cookiebot) tryLoadClarity();
-
-      // React to consent lifecycle
-      window.addEventListener("CookiebotOnLoad", tryLoadClarity);
-      window.addEventListener("CookiebotOnAccept", tryLoadClarity);
-      // Optional: on decline do nothing
-    })();
-  `}
-        </Script>
-
-        {/* JSON-LD: Organization + WebSite (global) */}
-        <Script
-          id="ld-org-website"
-          type="application/ld+json"
-          strategy="afterInteractive"
-        >
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@graph': [
-              {
-                '@type': 'Organization',
-                '@id': 'https://reifencheck.de/#org',
-                name: 'Reifencheck.de',
-                url: 'https://reifencheck.de/',
-                logo: 'https://reifencheck.de/images/logo.png',
-                sameAs: [
-                  'https://www.facebook.com/REPLACE',
-                  'https://www.instagram.com/REPLACE',
-                ],
-              },
-              {
-                '@type': 'WebSite',
-                '@id': 'https://reifencheck.de/#website',
-                url: 'https://reifencheck.de/',
-                name: 'Reifencheck.de',
-                publisher: { '@id': 'https://reifencheck.de/#org' },
-                inLanguage: 'de-DE',
-              },
-            ],
-          })}
-        </Script>
-
-        {/* JSON-LD: Homepage WebPage */}
-        <Script
-          id="ld-homepage"
-          type="application/ld+json"
-          strategy="afterInteractive"
-        >
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            '@id': 'https://reifencheck.de/#webpage',
-            url: 'https://reifencheck.de/',
-            name: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
-            isPartOf: { '@id': 'https://reifencheck.de/#website' },
-            inLanguage: 'de-DE',
-            about: {
-              '@type': 'Thing',
-              name: 'Reifenpreisvergleich, Sommerreifen, Winterreifen, Ganzjahresreifen',
-            },
-          })}
-        </Script>
-
-        {/* JSON-LD: Breadcrumbs */}
-        <Script
-          id="ld-breadcrumbs"
-          type="application/ld+json"
-          strategy="afterInteractive"
-        >
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Startseite',
-                item: 'https://reifencheck.de/',
-              },
-            ],
-          })}
         </Script>
       </head>
 

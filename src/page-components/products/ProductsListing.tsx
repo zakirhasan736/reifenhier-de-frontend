@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import ProductListingsSec from '@/components/productpage/ProductListingsSec';
 
