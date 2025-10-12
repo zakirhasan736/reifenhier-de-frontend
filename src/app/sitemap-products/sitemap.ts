@@ -41,10 +41,10 @@ function extractProducts<T extends Product>(data: unknown): T[] {
   if (Array.isArray(d.data)) return d.data as T[];
   return [];
 }
-
+const limit = 50000; // Max URLs per sitemap
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const url = `${apiUrl}/api/products/product-lists?page=1&limit=1000`;
+  const url = `${apiUrl}/api/products/product-lists?page=1&limit=${limit}`;
 
   const json = await safeFetchJSON<Product[]>(url);
   const products = extractProducts<Product>(json);
