@@ -253,7 +253,7 @@ function buildJsonLd(p: SeoProduct | null) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }): Promise<Metadata> {
   const { slug } = await params;
   const { product } = await fetchProductData(slug);
