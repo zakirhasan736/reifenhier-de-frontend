@@ -2,11 +2,11 @@ import HomePageMain from "@/page-components/Home/HomePage";
 import { Metadata } from "next";
 import Script from "next/script";
 export const metadata: Metadata = {
-  metadataBase: new URL('https://reifencheck.de'),
+  metadataBase: new URL('https://www.reifencheck.de'),
   title: 'Reifen günstig vergleichen & kaufen | Reifencheck',
   description:
     'Finden Sie günstige Reifenangebote auf Reifencheck.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
-  alternates: { canonical: 'https://reifencheck.de/produkte' },
+  alternates: { canonical: 'https://www.reifencheck.de/products' },
   keywords: [
     // Core
     'reifenpreisvergleich',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://reifencheck.de/produkte',
+    url: 'https://www.reifencheck.de/products',
     siteName: 'Reifencheck.de',
     title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
     description:
@@ -83,10 +83,10 @@ export default function Home() {
           '@graph': [
             {
               '@type': 'Organization',
-              '@id': 'https://reifencheck.de/#org',
+              '@id': 'https://www.reifencheck.de/#org',
               name: 'Reifencheck.de',
-              url: 'https://reifencheck.de/',
-              logo: 'https://reifencheck.de/images/logo.png',
+              url: 'https://www.reifencheck.de/',
+              logo: 'https://www.reifencheck.de/images/logo.png',
               sameAs: [
                 'https://www.facebook.com/REPLACE',
                 'https://www.instagram.com/REPLACE',
@@ -94,10 +94,10 @@ export default function Home() {
             },
             {
               '@type': 'WebSite',
-              '@id': 'https://reifencheck.de/#website',
-              url: 'https://reifencheck.de/',
+              '@id': 'https://www.reifencheck.de/#website',
+              url: 'https://www.reifencheck.de/',
               name: 'Reifencheck.de',
-              publisher: { '@id': 'https://reifencheck.de/#org' },
+              publisher: { '@id': 'https://www.reifencheck.de/#org' },
               inLanguage: 'de-DE',
             },
           ],
@@ -113,10 +113,10 @@ export default function Home() {
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebPage',
-          '@id': 'https://reifencheck.de/#webpage',
-          url: 'https://reifencheck.de/',
+          '@id': 'https://www.reifencheck.de/#webpage',
+          url: 'https://www.reifencheck.de/',
           name: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
-          isPartOf: { '@id': 'https://reifencheck.de/#website' },
+          isPartOf: { '@id': 'https://www.reifencheck.de/#website' },
           inLanguage: 'de-DE',
           about: {
             '@type': 'Thing',
@@ -139,7 +139,7 @@ export default function Home() {
               '@type': 'ListItem',
               position: 1,
               name: 'Startseite',
-              item: 'https://reifencheck.de/',
+              item: 'https://www.reifencheck.de/',
             },
           ],
         })}

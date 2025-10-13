@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
-
 
 interface Blog {
   _id: string;
@@ -23,39 +22,12 @@ interface Blog {
 interface BlogProps {
   blogs: Blog[];
 }
-const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="custom-container max-sm:pr-0">
-        <div className="news-content">
-          <div className="section-header text-left md:mb-8 mb-6">
-            <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
-              News & Articles
-            </h2>
-            <p className="font-normal font-secondary text-center text-[#89898B]">
-              Stay updated with the latest insights and tips about tires.
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <ProductSkeletonCard key={index} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
   const hasBlogs = Array.isArray(blogs) && blogs.length > 0;
 
   return (
-    <section className="news-section lg:pb-[70] pb-14 bg-mono-0">
+    <section className="news-section lg:pb-[70px] pb-14 bg-mono-0">
       <div className="custom-container max-sm:pr-0">
         <div className="news-content">
           <div className="section-header text-left md:mb-8 mb-6">
@@ -78,9 +50,8 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
               pagination={{
                 el: '.blogs-swiper-pagination',
                 clickable: true,
-                renderBullet: (index, className) => {
-                  return `<span class="${className}"></span>`;
-                },
+                renderBullet: (index, className) =>
+                  `<span class="${className}"></span>`,
               }}
               breakpoints={{
                 640: { slidesPerView: 1, spaceBetween: 10 },
@@ -89,8 +60,8 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
               }}
             >
               {hasBlogs
-                ? blogs.map((blog, index) => (
-                    <SwiperSlide key={index}>
+                ? blogs.map(blog => (
+                    <SwiperSlide key={blog._id}>
                       <Link href={`/blogs/${blog.slug}`}>
                         <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
                           <Image
@@ -107,7 +78,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs}) => {
                             </h3>
                             <p className="text-[#404042] text-[12px] font-medium font-primary mt-2">
                               {new Date(blog.createdAt).toLocaleDateString(
-                                'en-US',
+                                'de-DE',
                                 {
                                   year: 'numeric',
                                   month: 'long',

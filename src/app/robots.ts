@@ -34,8 +34,6 @@ export default function robots(): MetadataRoute.Robots {
           '/*?noise=',
           '/*?fuelClass=',
           '/*?wetGrip=',
-          '/images/',
-          '/*.svg$',
         ],
       },
 

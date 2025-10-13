@@ -1,17 +1,38 @@
+import NewArticles from './NewArticles';
 
-'use client';
+interface Blog {
+  _id: string;
+  title: string;
+  slug: string;
+  coverImage: string;
+  metaDescription: string;
+  createdAt: string;
+}
 
-import React from 'react';
-import { useGetBlogsQuery } from '@/store/api/blogApi';
-import NewArticles from './NewArticles'; // Assumes this is a client component
 
-const NewArticlesWrapper = () => {
-  const { data,  isError } = useGetBlogsQuery({ page: 1, limit: 6 });
+const apiUrl =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
+  'http://localhost:8001';
 
+export default async function BlogsPage() {
+  let blogs: Blog[] = [];
 
-  if (isError) return <p>Failed to load blogs.</p>;
+  try {
+    const res = await fetch(`${apiUrl}/api/blogs/list?page=1&limit=6`, {
+      next: { revalidate: 300 }, // cache 5 min (ISR)
+    });
 
-  return <NewArticles blogs={data?.blogs || []} />;
-};
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-export default NewArticlesWrapper;
+    const data = (await res.json()) as { blogs: Blog[]; total: number };
+    blogs = data.blogs || [];
+  } catch (error) {
+    console.error('❌ Failed to fetch SSR blogs:', error);
+  }
+
+  return (
+    <>
+          <NewArticles blogs={blogs} />
+    </>
+  );
+}

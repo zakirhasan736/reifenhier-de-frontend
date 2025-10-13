@@ -8,7 +8,10 @@ import {
   setSort,
   setPage,
   removeFilter,
+  setInitialProducts,
 } from '@/store/productSlice';
+import { Product } from '@/types/product';
+
 import { debounce } from 'lodash';
 import { CloseIcon, FilterIcon } from '@/icons';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -21,6 +24,11 @@ import { AppDispatch, RootState } from '@/store/store';
 
 const productsPerPage = 12;
 
+interface ProductListingProps {
+  initialProducts: Product[];
+  total: number;
+  initialPage: number;
+}
 interface Filters {
   category: string[];
   brand: string[];
@@ -102,7 +110,12 @@ const formatFilterValue = (key: ArrayFilterKey, val: string) => {
   }
 };
 
-const ProductListingsSec: React.FC = () => {
+
+const ProductListingsSec: React.FC<ProductListingProps> = ({
+  initialProducts,
+  total,
+  initialPage,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -111,7 +124,7 @@ const ProductListingsSec: React.FC = () => {
   const {
     products,
     filterProducts,
-    total,
+    total: storeTotal,
     loading,
     filters,
     page,
@@ -120,6 +133,20 @@ const ProductListingsSec: React.FC = () => {
     minPriceLimit,
     maxPriceLimit,
   } = useSelector((state: RootState) => state.products);
+  // 👇 Hydrate Redux store with SSR data on first render
+const hasHydrated = useRef(false);
+
+useEffect(() => {
+  if (hasHydrated.current || !initialProducts?.length) return;
+  dispatch(
+    setInitialProducts({
+      products: initialProducts,
+      total,
+      page: initialPage,
+    })
+  );
+  hasHydrated.current = true;
+}, [dispatch, initialProducts, total, initialPage]);
 
   const mergedFilters = useMemo(
     () => ({ ...DEFAULT_FILTERS, ...filters }),
@@ -211,29 +238,27 @@ const ProductListingsSec: React.FC = () => {
     () => JSON.stringify(mergedFilters),
     [mergedFilters]
   );
-  
-useEffect(() => {
-  if (!isReady || !pathname) return; // <- guard null pathname
 
-  const qs = buildSearchParamsFromFilters(mergedFilters).toString();
-  if (qs === lastQsRef.current) return;
+  useEffect(() => {
+    if (!isReady || !pathname) return; // <- guard null pathname
 
-  lastQsRef.current = qs;
+    const qs = buildSearchParamsFromFilters(mergedFilters).toString();
+    if (qs === lastQsRef.current) return;
 
-  const href = qs ? `${pathname}?${qs}` : pathname; // pathname is narrowed to string
-  router.replace(href, { scroll: false });
-}, [isReady, mergedHash, pathname, router, sortField, sortOrder, page]);
+    lastQsRef.current = qs;
 
-
+    const href = qs ? `${pathname}?${qs}` : pathname; // pathname is narrowed to string
+    router.replace(href, { scroll: false });
+  }, [isReady, mergedHash, pathname, router, sortField, sortOrder, page]);
 
   const handleRemoveFilter = (filterType: ArrayFilterKey, value: string) => {
     dispatch(removeFilter({ filterType, value }));
     dispatch(setPage(1));
   };
 
-  const totalPages = Math.ceil(total / productsPerPage);
+  const totalPages = Math.ceil(storeTotal / productsPerPage);
   const startIndex = (page - 1) * productsPerPage;
-  const endIndex = Math.min(page * productsPerPage, total);
+  const endIndex = Math.min(page * productsPerPage, storeTotal || total);
 
   return (
     <div className="product-listings-sec bg-mono-0 pt-12 pb-9 max-sm:pt-12 max-sm:pb-5">
@@ -397,7 +422,11 @@ useEffect(() => {
             </div>
 
             <div className="products-list-main-right-cont w-full max-md:w-full">
-              <ProductList products={products} loading={loading} />
+              <ProductList
+                products={products.length ? products : initialProducts}
+                loading={loading}
+              />
+
               <div className="product-lists-footer mt-[38px] max-md:mt-6 flex max-md:flex-row-reverse max-md:justify-between max-sm:flex-col max-sm:mt-4 items-center">
                 <div className="pagination-wrapper ml-auto mr-auto max-md:mx-0">
                   <Pagination
@@ -411,7 +440,9 @@ useEffect(() => {
                   <span className="caption">
                     {total === 0 ? 0 : startIndex + 1} bis {endIndex} von{' '}
                   </span>
-                  <span className="caption-bold">{total} Produkte</span>
+                  <span className="caption-bold">
+                    {storeTotal || total} Produkte
+                  </span>
                 </div>
               </div>
             </div>

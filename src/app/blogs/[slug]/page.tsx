@@ -1,4 +1,3 @@
-// app/blogs/[slug]/page.tsx
 import type { Metadata } from 'next';
 import type { JSX } from 'react';
 import React from 'react';
@@ -96,7 +95,7 @@ export async function generateMetadata({
   if (!blog) {
     return {
       title: 'Blog nicht gefunden | Reifencheck.de',
-      description: 'Dieser Blogartikel ist nicht verfügbar.',
+      description: 'Dieser Blogartikel ist nicht verfügbar . ',
       robots: { index: false, follow: true },
       alternates: { canonical: `${SITE_URL}/blogs/${slug}` },
     };
@@ -215,8 +214,6 @@ export default async function BlogDetailPage({
           </article>
         </div>
       </section>
-
-      {/* Client-side related blogs (RTK/Redux handled inside) */}
       <BlogSidebar />
 
       <Script

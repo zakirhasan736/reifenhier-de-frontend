@@ -14,12 +14,12 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://reifencheck.de'),
+  metadataBase: new URL('https://www.reifencheck.de'),
   title: 'Reifencheck.de – Reifenpreisvergleich & günstige Reifen',
   description:
     'Vergleichen Sie Reifenpreise in Sekunden. Sommer-, Winter- & Ganzjahresreifen günstig finden und direkt beim Händler kaufen.',
   icons: { icon: '/images/favicon.png', apple: '/images/favicon.png' },
-  alternates: { canonical: 'https://reifencheck.de/' },
+  alternates: { canonical: 'https://www.reifencheck.de/' },
   keywords: [
     // Core
     'reifenpreisvergleich',
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://reifencheck.de/',
+    url: 'https://www.reifencheck.de/',
     siteName: 'Reifencheck.de',
     title: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
     description:
@@ -129,8 +129,8 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'Reifencheck.de',
-              url: 'https://reifencheck.de/',
-              logo: 'https://reifencheck.de/images/logo.png',
+              url: 'https://www.reifencheck.de/',
+              logo: 'https://www.reifencheck.de/images/logo.png',
             }),
           }}
         />

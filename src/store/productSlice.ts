@@ -233,6 +233,12 @@ const productSlice = createSlice({
     setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
     },
+    setInitialProducts: (state, action) => {
+      const { products, total, page } = action.payload;
+      state.products = products;
+      state.total = total;
+      state.page = page;
+    },
   },
   extraReducers: builder => {
     builder
@@ -274,7 +280,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { setFilters, removeFilter, setSort, setPage } =
+export const { setFilters, removeFilter, setSort, setPage, setInitialProducts } =
   productSlice.actions;
 export default productSlice.reducer;
 

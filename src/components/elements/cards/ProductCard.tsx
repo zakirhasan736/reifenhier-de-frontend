@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -53,11 +51,11 @@ interface Offer {
   brand_name: string;
   product_category: string;
   product_name: string;
-  price: string; // ← Adjusted for flexibility (string or number)
+  price: string;
   vendor_id: string;
   aw_deep_link: string;
   savings_percent: string;
-  delivery_cost: string | number; // ← Adjusted for flexibility (string or number)
+  delivery_cost: string | number;
   delivery_time: string;
   payment_icons: string[];
   original_affiliate_url: string;
