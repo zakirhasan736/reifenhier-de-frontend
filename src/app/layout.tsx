@@ -138,12 +138,13 @@ export default function RootLayout({
         {/* Silktide Cookie Manager */}
         <link
           rel="stylesheet"
-          href="/cookie-banner/silktide-consent-manager.css"
+          href="/cookie-banner/silktide-consent-manager.min.css?v=1.0.1"
           id="silktide-consent-manager-css"
         />
         <Script
-          src="/cookie-banner/silktide-consent-manager.js"
+          src="/cookie-banner/silktide-consent-manager.min.js?v=1.0.1"
           strategy="afterInteractive"
+          defer
         />
 
         {/* Safe Silktide Init + Conditional Clarity */}
