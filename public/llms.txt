@@ -6,35 +6,40 @@
 ## ------------------------------------------------------------
 
 User-agent: GPTBot
-Disallow: /               # Disallow OpenAI model training
+Disallow: /                     ## Block OpenAI training (ChatGPT models)
+Allow: /                        ## Allow for AI Search indexing (ChatGPT Search)
 
 User-agent: ClaudeBot
-Disallow: /               # Disallow Anthropic model training
+Disallow: /                     ## Block Anthropic training (Claude models)
+Allow: /                        ## Allow indexing for answer generation
 
 User-agent: PerplexityBot
-Disallow: /               # Disallow Perplexity.ai crawling
+Allow: /                        ## Allow Perplexity.ai for Search/Answers
 
 User-agent: CCBot
-Disallow: /               # Disallow Common Crawl
+Disallow: /                     ## Block Common Crawl dataset collection
 
 User-agent: AmazonBot
-Disallow: /               # Disallow Amazon data collection
+Disallow: /                     ## Block Amazon data collection / AI training
 
 User-agent: YouBot
-Disallow: /               # Disallow You.com AI crawler
+Allow: /                        ## Allow You.com AI Search indexing
 
 User-agent: Google-Extended
-Allow: /                  # Allow Google AI / Gemini indexing
+Allow: /                        ## Allow Google Gemini / SGE AI indexing
 
 User-agent: *
-Disallow:                 # Default allow for standard crawlers
+Allow: /                        ## Default allow for standard web crawlers
+
 ## ------------------------------------------------------------
-## Training: disallow       (no AI model training on content)
-## Crawling: allow          (AI indexing for answers permitted)
-## Commercial: disallow     (no reuse in commercial AI products)
-## Attribution: required    (cite source when referencing)
-## Contact: support@reifencheck.de
-## Last updated: 2025-10-12
+## AI Usage Directives
+## ------------------------------------------------------------
+Training: disallow              ## ❌ No model training on Reifencheck.de content
+Crawling: allow                 ## ✅ AI indexing for search and summaries allowed
+Commercial: allow               ## ✅ Allow reuse in AI search engines (not for training)
+Attribution: required           ## ✅ Require citation when content is used
+Contact: support@reifencheck.de ## 📧 Contact for data inquiries
+Last-Modified: 2025-10-13
 ## ------------------------------------------------------------
 ## Examples of AI crawlers covered by this policy:
 ## - GPTBot (OpenAI / ChatGPT)
