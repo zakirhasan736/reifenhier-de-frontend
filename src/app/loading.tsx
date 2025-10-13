@@ -1,5 +1,4 @@
 import React from 'react';
-// import LoadingModal from '@/icons/loadingModal';
 
 export default function Loading() {
   return (

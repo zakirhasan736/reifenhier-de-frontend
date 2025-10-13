@@ -3,16 +3,17 @@ import Head from 'next/head';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
+  title: 'Datenschutzerklärung – Reifencheck.de',
+  description:
+    'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
+  alternates: { canonical: 'https://www.reifencheck.de/privacy-policy' },
+  openGraph: {
     title: 'Datenschutzerklärung – Reifencheck.de',
     description:
-        'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
-    openGraph: {
-        title: 'Datenschutzerklärung – Reifencheck.de',
-        description:
-            'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
-        type: 'article',
-    },
-    robots: { index: true, follow: true },
+      'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
+    type: 'article',
+  },
+  robots: { index: true, follow: true },
 };
 const PrivacyPolicy: React.FC = () => {
   return (

@@ -146,61 +146,146 @@ async function fetchProductData(slug: string): Promise<ProductDetailsResponse> {
 }
 // ---- Helpers ----
 function fallbackTitle(p?: SeoProduct): string {
-  const brand = p?.brand_name?.trim() ?? '';
-  const name = p?.dimensions?.trim() ?? '';
-  const merchantCategory = p?.merchant_product_third_category?.trim() ?? '';
-  const main = [brand, name, merchantCategory].filter(Boolean).join(' ');
+  if (!p) return 'Reifencheck.de | Reifen günstig online vergleichen';
 
-  return main
-    ? `${main} | Reifencheck.de`
-    : 'Reifencheck.de | Produkts – Reifen Preisvergleich';
+  const brand = p.brand_name?.trim() ?? '';
+  const dimension = p.dimensions?.trim() ?? '';
+  const category =
+    p.merchant_product_third_category?.trim() || p.category_name?.trim() || '';
+
+  // Create base title
+  const baseTitle = [brand, dimension, category]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+
+  // 🔸 Add fallback uniqueness via EAN or _id if major fields are missing
+  const ean = p.ean?.trim();
+  const fallbackId = ean || p.slug  || '';
+
+  // 🔹 If data is complete
+  if (baseTitle) {
+    return `${baseTitle} | Reifencheck.de`;
+  }
+
+  // 🔹 If data missing (avoid duplicate)
+  return `Reifenprodukt ${fallbackId} | Reifencheck.de`;
 }
 
 function fallbackDescription(p?: SeoProduct): string {
-  if (!p) return 'Produktdetails und Preisvergleich auf Reifencheck.de.';
+  if (!p)
+    return 'Finden und vergleichen Sie günstige Reifen auf Reifencheck.de.';
+
   const brand = p.brand_name?.trim() ?? '';
-  const name = p.dimensions?.trim() ?? '';
-  const merchantCategory = p.merchant_product_third_category?.trim() ?? '';
-  const base =
-    p.descriptions ||
-    p.description ||
-    [brand, name, merchantCategory].filter(Boolean).join(' ') ||
-    'Produktdetails';
-  return `Jetzt Preise für ${base} vergleichen.`.trim();
+  const dimension = p.dimensions?.trim() ?? '';
+  const category =
+    p.merchant_product_third_category?.trim() || p.category_name?.trim() || '';
+  const ean = p.ean?.trim();
+  const fallbackId = ean || p.slug  || '';
+
+  const basePhrase = [brand, dimension, category]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+
+  // 🔹 If we have full product data
+  if (basePhrase) {
+    return `Jetzt ${basePhrase} Reifenpreise vergleichen${
+      ean ? ` (EAN: ${ean})` : ''
+    } – Top ${
+      brand || 'Reifen'
+    } ${category} in Größe ${dimension} günstig online bei Reifencheck.de kaufen.`;
+  }
+
+  // 🔹 If data missing — include fallback unique identifier
+  return `Preisvergleich und Details für Reifenprodukt ${fallbackId} auf Reifencheck.de – jetzt Angebote prüfen und sparen.`;
 }
 
+
+
 function buildKeywords(p?: SeoProduct): string[] {
-  const brand = p?.brand_name?.trim();
-  const name = p?.dimensions?.trim();
-  const category = p?.category_name?.trim();
-  const merchantCategory = p?.merchant_product_third_category?.trim();
+  if (!p) {
+    return [
+      'reifencheck',
+          'reifen',
+          'reifen preisvergleich',
+          'günstige reifen',
+          'reifen online kaufen',
+          'reifen test',
+          'reifen günstig',
+          'reifen marken',
+          'reifen shop',
+          'reifen modelle',
+          'reifen hersteller',
+          'Preisvergleich reifen',
+          'Reifen Preis berechnen',
+          'Reifen Angebote',
+          'Reifen kaufen',
+    ];
+  }
+
+  const brand = p.brand_name?.trim();
+  const dimension = p.dimensions?.trim();
+  const category =
+    p.merchant_product_third_category?.trim() || p.category_name?.trim() || '';
+  const ean = p.ean?.trim();
+  const slug = p.slug?.trim();
+  const fallbackId = ean || slug || '';
+
   const base: string[] = [
     'reifen',
     'reifen preisvergleich',
-    'günstige reifen',
     'reifen online kaufen',
+    'reifen angebote',
+    'günstige reifen',
+    'reifencheck',
     'reifen test',
-    'reifen günstig',
     'reifen marken',
-    'reifen shop',
     'reifen modelle',
-    'reifen hersteller',
-    'Preisvergleich reifen',
-    'Reifen Preis berechnen',
-    'Reifen Angebote',
-    'Reifen kaufen',
+    'reifen kaufen',
   ];
-  if (brand) base.push(`${brand} reifen`, brand);
-  if (name) base.push(name);
-  if (category) base.push(category);
-  if (merchantCategory) base.push(merchantCategory);
-  if (brand && name)
-    base.push(`${brand} ${name}`, `${brand} ${name} preisvergleich`);
-  if (brand && category) base.push(`${brand} ${category}`);
-  if (brand && merchantCategory) base.push(`${brand} ${merchantCategory}`);
-  if (typeof p?.cheapest_offer === 'number')
-    base.push(`ab ${p.cheapest_offer.toFixed(2)} €`);
-  return Array.from(new Set(base));
+
+  if (brand) {
+    base.push(brand, `${brand} reifen`, `${brand} test`, `${brand} angebote`);
+  }
+
+  if (dimension) {
+    base.push(
+      dimension,
+      `${dimension} reifen`,
+      `${dimension} ${brand || ''}`.trim(),
+      `${dimension} ${category || ''}`.trim()
+    );
+  }
+
+  if (category) {
+    base.push(
+      category,
+      `${category} reifen`,
+      `${brand || ''} ${category}`.trim(),
+      `${category} günstig`,
+      `${category} online kaufen`
+    );
+  }
+
+  // Include combinations for long-tail keywords
+  if (brand && dimension && category) {
+    base.push(
+      `${brand} ${dimension} ${category}`,
+      `${brand} ${category} ${dimension} reifen`,
+      `${brand} ${dimension} reifen online kaufen`
+    );
+  }
+
+  // ✅ Fallback uniqueness to prevent duplicate meta tags
+  if (!brand && !dimension && !category && fallbackId) {
+    base.push(`reifen ${fallbackId}`, `produkt ${fallbackId} reifen`);
+  }
+
+  // ✅ Deduplicate keywords and clean up
+  return Array.from(
+    new Set(base.map(k => k.toLowerCase().replace(/\s+/g, ' ').trim()))
+  );
 }
 
 function buildJsonLd(p: SeoProduct | null) {
@@ -275,20 +360,21 @@ export async function generateMetadata({
     // Capitalize the first letter of each word
     readableSlug = readableSlug.replace(/\b\w/g, l => l.toUpperCase());
 
-    // ✅ Limit length to keep SEO-safe (< 60 for title, < 150 for desc)
-    const shortTitle =
-      readableSlug.length > 50
-        ? readableSlug.slice(0, 50).trim() + '…'
-        : readableSlug;
+    // ✅ Extract product ID at the end of the slug (if numeric)
+    const productIdMatch = slug.match(/(\d{5,})$/); // match trailing numbers
+    const productId = productIdMatch ? productIdMatch[1] : null;
 
-    const shortDesc =
-      readableSlug.length > 120
-        ? readableSlug.slice(0, 120).trim() + '…'
-        : readableSlug;
+    // ✅ Create unique fallback title
+    const shortTitle = `${readableSlug}${
+      productId ? ` (ID: ${productId})` : ''
+    }`;
+    const shortDesc = `Preisvergleich und Details für ${readableSlug}${
+      productId ? ` (ID: ${productId})` : ''
+    } auf Reifencheck.de.`;
     return {
       metadataBase: new URL(SITE_URL),
-      title: `${shortTitle} | 'Produkt - Reifencheck.de'`,
-      description: `Preisvergleich und Details für ${shortDesc} auf Reifencheck.de.`,
+      title: `${shortTitle} | Produkt – Reifencheck.de`,
+      description: shortDesc,
       alternates: { canonical: `${SITE_URL}/products/${slug}` },
       robots: { index: false, follow: true },
       keywords: [

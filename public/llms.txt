@@ -1,39 +1,47 @@
-# LLM Access Policy for Reifencheck.de
-# ------------------------------------------------------------
-# This file defines permissions for AI crawlers (Large Language Models)
-# regarding the use, indexing, and training of Reifencheck.de content.
-# It follows emerging standards as referenced by llmcompliance.org.
-# ------------------------------------------------------------
+## LLM Access Policy for Reifencheck.de
+## ------------------------------------------------------------
+## This file defines permissions for AI crawlers (Large Language Models)
+## regarding the use, indexing, and training of Reifencheck.de content.
+## It follows emerging standards as referenced by llmcompliance.org.
+## ------------------------------------------------------------
+
+User-agent: GPTBot
+Disallow: /               # Disallow OpenAI model training
+
+User-agent: ClaudeBot
+Disallow: /               # Disallow Anthropic model training
+
+User-agent: PerplexityBot
+Disallow: /               # Disallow Perplexity.ai crawling
+
+User-agent: CCBot
+Disallow: /               # Disallow Common Crawl
+
+User-agent: AmazonBot
+Disallow: /               # Disallow Amazon data collection
+
+User-agent: YouBot
+Disallow: /               # Disallow You.com AI crawler
+
+User-agent: Google-Extended
+Allow: /                  # Allow Google AI / Gemini indexing
 
 User-agent: *
-Allow: /
-
-# Training permission (AI model training on Reifencheck content)
-# Options: allow | disallow | partial
-Training: disallow
-
-# Crawling permission (AI indexing for answer generation)
-# Options: allow | disallow
-Crawling: allow
-
-# Commercial use permission (AI products reusing site data)
-# Options: allow | disallow
-Commercial: disallow
-
-# Attribution requirement — request AI systems to cite source when referencing
-Attribution: required
-
-# Contact email for data inquiries
-Contact: support@reifencheck.de
-
-# Last updated: 2025-10-12
-# ------------------------------------------------------------
-# Examples of AI crawlers this applies to:
-# - GPTBot (OpenAI / ChatGPT)
-# - ClaudeBot (Anthropic)
-# - Google-Extended (Google Bard / Gemini)
-# - PerplexityBot
-# - CCBot (Common Crawl)
-# - AmazonBot (AWS data collection)
-# - You.com AI Crawler
-# ------------------------------------------------------------
+Disallow:                 # Default allow for standard crawlers
+## ------------------------------------------------------------
+## Training: disallow       (no AI model training on content)
+## Crawling: allow          (AI indexing for answers permitted)
+## Commercial: disallow     (no reuse in commercial AI products)
+## Attribution: required    (cite source when referencing)
+## Contact: support@reifencheck.de
+## Last updated: 2025-10-12
+## ------------------------------------------------------------
+## Examples of AI crawlers covered by this policy:
+## - GPTBot (OpenAI / ChatGPT)
+## - ClaudeBot (Anthropic)
+## - Google-Extended (Gemini)
+## - PerplexityBot
+## - CCBot (Common Crawl)
+## - AmazonBot
+## - You.com AI Crawler
+## ------------------------------------------------------------
