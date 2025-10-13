@@ -1,7 +1,215 @@
+// import type { Metadata } from 'next';
+// import Script from 'next/script';
+// import ProductDetailsPage from '@/page-components/products-details/ProductDetailsPage';
+
+// // ---- Config ----
+// const SITE_URL = 'https://www.reifencheck.de';
+// const API = (
+//   process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de'
+// ).replace(/\/$/, '');
+
+// // ---- Types we need for SEO only ----
+// interface SeoProduct {
+//   slug: string;
+//   brand_name?: string;
+//   product_name?: string;
+//   product_image?: string;
+//   descriptions?: string;
+//   description?: string;
+//   ean?: string;
+//   cheapest_offer?: number;
+//   search_price?: number;
+//   expensive_offer?: number;
+//   in_stock?: string; // "true" | "false" (as string)
+// }
+
+// interface ProductDetailsResponse {
+//   product?: SeoProduct;
+//   relatedProducts?: unknown[];
+// }
+
+// // ---- Fetch a single product for metadata/LD ----
+// async function fetchProductForSeo(slug: string): Promise<SeoProduct | null> {
+//   try {
+//     const res = await fetch(
+//       `${API}/api/products/product-details/${encodeURIComponent(slug)}`,
+//       { next: { revalidate: 1800 } }
+//     );
+//     if (!res.ok) return null;
+//     const json: ProductDetailsResponse = await res.json();
+//     return json.product ?? null;
+//   } catch {
+//     return null;
+//   }
+// }
+
+// // ---- Helpers ----
+// function fallbackTitle(p?: SeoProduct): string {
+//   const brand = p?.brand_name?.trim() ?? '';
+//   const name = p?.product_name?.trim() ?? '';
+//   const main = [brand, name].filter(Boolean).join(' ');
+
+//   return main
+//     ? `Reifencheck.de | Produkts - ${main} – Preisvergleich`
+//     : 'Reifencheck.de | Produkts – Preisvergleich';
+// }
+
+// function fallbackDescription(p?: SeoProduct): string {
+//   if (!p) return 'Produktdetails und Preisvergleich auf Reifencheck.de.';
+//   const brand = p.brand_name?.trim() ?? '';
+//   const name = p.product_name?.trim() ?? '';
+//   const base =
+//     p.descriptions ||
+//     p.description ||
+//     [brand, name].filter(Boolean).join(' ') ||
+//     'Produktdetails';
+//   return `Jetzt Preise für ${base} vergleichen.`.trim();
+// }
+
+// function buildKeywords(p?: SeoProduct): string[] {
+//   const brand = p?.brand_name?.trim();
+//   const name = p?.product_name?.trim();
+//   const base: string[] = [
+//     'reifen',
+//     'reifen preisvergleich',
+//     'günstige reifen',
+//     'reifen online kaufen',
+//   ];
+//   if (brand) base.push(`${brand} reifen`, brand);
+//   if (name) base.push(name);
+//   if (brand && name)
+//     base.push(`${brand} ${name}`, `${brand} ${name} preisvergleich`);
+//   if (typeof p?.cheapest_offer === 'number')
+//     base.push(`ab ${p.cheapest_offer.toFixed(2)} €`);
+//   return Array.from(new Set(base));
+// }
+
+// function buildJsonLd(p: SeoProduct | null) {
+//   if (!p) return null;
+//   const availability =
+//     (p.in_stock || '').toLowerCase() === 'true'
+//       ? 'https://schema.org/InStock'
+//       : 'https://schema.org/OutOfStock';
+
+//   return {
+//     '@context': 'https://schema.org',
+//     '@type': 'Product',
+//     '@id': `${SITE_URL}/products/${p.slug}#product`,
+//     name: `Reifencheck.de - ${(p.brand_name ?? '').trim()} ${(
+//       p.product_name ?? ''
+//     ).trim()}`.trim(),
+//     image: p.product_image ? [p.product_image] : undefined,
+//     description: p.descriptions || p.description || undefined,
+//     sku: p.ean || undefined,
+//     brand: p.brand_name ? { '@type': 'Brand', name: p.brand_name } : undefined,
+//     offers: {
+//       '@type': 'AggregateOffer',
+//       url: `${SITE_URL}/products/${p.slug}`,
+//       priceCurrency: 'EUR',
+//       lowPrice:
+//         typeof p.cheapest_offer === 'number'
+//           ? p.cheapest_offer
+//           : typeof p.search_price === 'number'
+//           ? p.search_price
+//           : undefined,
+//       highPrice:
+//         typeof p.expensive_offer === 'number' ? p.expensive_offer : undefined,
+//       availability,
+//     },
+//   };
+// }
+
+// // ---- Metadata (SSR) ----
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: Promise<{ slug: string }>;
+// }): Promise<Metadata> {
+//   const { slug } = await params;
+//   const p = await fetchProductForSeo(slug);
+
+//   // If API failed, still ship a stable canonical and noindex to avoid soft-404s
+//   if (!p) {
+//     return {
+//       metadataBase: new URL(SITE_URL),
+//       title: 'Produkt | Reifencheck.de',
+//       description: 'Produktdetails und Preisvergleich auf Reifencheck.de.',
+//       alternates: { canonical: `${SITE_URL}/products/${slug}` },
+//       robots: { index: false, follow: true },
+//       keywords: [
+//         'reifen',
+//         'reifen preisvergleich',
+//         'reifen online kaufen',
+//         'reifen test',
+//         'Reifen Preis berechnen',
+//       ],
+//     };
+//   }
+
+//   const title = fallbackTitle(p);
+//   const description = fallbackDescription(p);
+//   const canonical = `${SITE_URL}/products/${p.slug}`;
+//   const keywords = buildKeywords(p);
+//   const ogImage = p.product_image || '/images/product-detailspage.png';
+//   const ogAlt =
+//     `${(p.brand_name ?? '').trim()} ${(p.product_name ?? '').trim()}`.trim() ||
+//     'Produkt';
+
+//   return {
+//     metadataBase: new URL(SITE_URL),
+//     title,
+//     description,
+//     keywords,
+//     alternates: { canonical },
+//     openGraph: {
+//       type: 'website',
+//       locale: 'de_DE',
+//       url: canonical,
+//       siteName: 'Reifencheck.de',
+//       title,
+//       description,
+//       images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
+//     },
+//     twitter: {
+//       card: 'summary_large_image',
+//       title,
+//       description,
+//       images: [ogImage],
+//     },
+//     robots: { index: true, follow: true },
+//   };
+// }
+
+// // ---- Page (SSR wrapper) — pass slug only; let client fetch & render ----
+// export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+//   const { slug } = await params; 
+//   const p = await fetchProductForSeo(slug);
+//   const jsonLd = buildJsonLd(p);
+
+//   return (
+//     <>
+//       <ProductDetailsPage slug={slug} />
+//       {jsonLd && (
+//         <Script
+//           id="ld-product"
+//           type="application/ld+json"
+//           strategy="afterInteractive"
+//         >
+//           {JSON.stringify(jsonLd)}
+//         </Script>
+//       )}
+//     </>
+//   );
+// }
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
-import ProductDetailsPage from '@/page-components/products-details/ProductDetailsPage';
+// import ProductDetailsPage from '@/page-components/products-details/ProductDetailsPage';
+import ProductSinglepage from '@/components/productpage/ProductDetailsSec';
+import HowItWorks from '@/components/homepage/HowItWorks';
+import RelatedProducts from '@/components/productpage/RelatedProducts';
+import CompareFloatingButton from '@/components/productpage/CompareFloatingButton';
+import CompareModal from '@/components/productpage/CompareModal';
 
 // ---- Config ----
 const SITE_URL = 'https://www.reifencheck.de';
@@ -24,7 +232,7 @@ interface SeoProduct {
   cheapest_offer?: number;
   search_price?: number;
   expensive_offer?: number;
-  in_stock?: string; 
+  in_stock?: string;
 }
 interface Offer {
   brand: string;
@@ -123,6 +331,7 @@ interface RelatedProduct {
 interface ProductDetailsResponse {
   product?: Product;
   relatedProducts?: RelatedProduct[];
+  // loading?: Boolean;
 }
 
 // ---- Fetch a single product for metadata/LD ----
@@ -207,8 +416,8 @@ function buildJsonLd(p: SeoProduct | null) {
 
   // Safely handle category/dimension/brand
   const brand = p.brand_name?.trim() ?? '';
-  const dimension = (p).dimensions?.trim?.() ?? ''; // if your API sends it
-  const category = (p).merchant_product_third_category?.trim?.() ?? '';
+  const dimension = p.dimensions?.trim?.() ?? ''; // if your API sends it
+  const category = p.merchant_product_third_category?.trim?.() ?? '';
   const name = [brand, dimension, category, p.product_name?.trim()]
     .filter(Boolean)
     .join(' ');
@@ -228,7 +437,11 @@ function buildJsonLd(p: SeoProduct | null) {
     brand: brand ? { '@type': 'Brand', name: brand } : undefined,
     category: category || undefined,
     price: p.search_price
-      ? `${typeof p.search_price === 'number' ? p.search_price.toFixed(2) : p.search_price}`
+      ? `${
+          typeof p.search_price === 'number'
+            ? p.search_price.toFixed(2)
+            : p.search_price
+        }`
       : undefined,
     url: `${SITE_URL}/products/${p.slug}`,
     offers: {
@@ -248,12 +461,11 @@ function buildJsonLd(p: SeoProduct | null) {
   };
 }
 
-
 // ---- Metadata (SSR) ----
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const { product } = await fetchProductData(slug);
@@ -298,8 +510,9 @@ export async function generateMetadata({
   const keywords = buildKeywords(product);
   const ogImage = product.product_image || '/images/product-detailspage.png';
   const ogAlt =
-    `${(product.brand_name ?? '').trim()} ${(product.product_name ?? '').trim()}`.trim() ||
-    'Produkt';
+    `${(product.brand_name ?? '').trim()} ${(
+      product.product_name ?? ''
+    ).trim()}`.trim() || 'Produkt';
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -331,24 +544,30 @@ export async function generateMetadata({
 export default async function ProductPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
   const { product, relatedProducts } = await fetchProductData(slug);
 
   if (!product) {
-    console.warn('Missing product slug:', params.slug);
-     notFound();
+    console.warn('Missing product slug:', await fetchProductData(slug));
+    notFound();
   }
 
   const jsonLd = buildJsonLd(product);
 
   return (
     <>
-      <ProductDetailsPage
-        product={product}
-        relatedProducts={relatedProducts ?? []}
-      />
+      <div className="product-details-cont-wrapper">
+        <ProductSinglepage product={product} loading={false} />
+        <HowItWorks />
+        <RelatedProducts
+          relatedProductData={relatedProducts ?? []}
+          loading={false}
+        />
+        <CompareFloatingButton />
+        <CompareModal relatedProducts={relatedProducts ?? []} />
+      </div>
       {jsonLd && (
         <Script
           id="ld-product"
