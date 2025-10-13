@@ -310,7 +310,21 @@ function buildJsonLd(p: SeoProduct | null) {
     .filter(Boolean)
     .join(' ')
     .trim();
+  // ✅ Ensure numeric types (no .toFixed)
+  const lowPrice =
+    typeof p.cheapest_offer === 'number'
+      ? p.cheapest_offer
+      : typeof p.search_price === 'number'
+      ? p.search_price
+      : undefined;
 
+  const highPrice =
+    typeof p.expensive_offer === 'number' ? p.expensive_offer : undefined;
+
+  const offerCount =
+    typeof p.offers?.length === 'number' && p.offers.length > 0
+      ? p.offers.length
+      : 1;
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -329,17 +343,9 @@ function buildJsonLd(p: SeoProduct | null) {
       '@type': 'AggregateOffer',
       url: `${SITE_URL}/products/${p.slug}`,
       priceCurrency: 'EUR',
-      lowPrice:
-        typeof p.cheapest_offer === 'number'
-          ? p.cheapest_offer.toFixed(2)
-          : typeof p.search_price === 'number'
-          ? p.search_price.toFixed(2)
-          : undefined,
-      highPrice:
-        typeof p.expensive_offer === 'number'
-          ? p.expensive_offer.toFixed(2)
-          : undefined,
-      offerCount: p.offers?.length || 1,
+      lowPrice,
+      highPrice,
+      offerCount,
       availability,
     },
   };
@@ -495,7 +501,7 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const { product, relatedProducts } = await fetchProductData(slug);
-
+console.log('product details', product);
   if (!product) {
     console.warn('Missing product slug:', await fetchProductData(slug));
     notFound();
