@@ -312,15 +312,9 @@ function buildJsonLd(p: SeoProduct | null) {
     .trim();
   // ✅ Ensure numeric types (no .toFixed)
   // ✅ Ensure numeric type, no string conversion
-  const lowPrice =
-    typeof p.cheapest_offer === 'number'
-      ? p.cheapest_offer
-      : typeof p.search_price === 'number'
-      ? p.search_price
-      : null;
+  const lowPrice = p.cheapest_offer;
 
-  const highPrice =
-    typeof p.expensive_offer === 'number' ? p.expensive_offer : lowPrice;
+  const highPrice = p.expensive_offer;
 
   // ✅ Build individual offers if data exists
   const individualOffers =
@@ -334,10 +328,6 @@ function buildJsonLd(p: SeoProduct | null) {
           seller: { '@type': 'Organization', name: o.vendor },
         }))
       : undefined;
-  const offerCount =
-    typeof p.offers?.length === 'number' && p.offers.length > 0
-      ? p.offers.length
-      : 1;
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -358,7 +348,7 @@ function buildJsonLd(p: SeoProduct | null) {
       priceCurrency: 'EUR',
       lowPrice: lowPrice ?? 0,
       highPrice: highPrice ?? lowPrice ?? 0,
-      offerCount,
+      offerCount: p.offers?.length || 1,
       availability,
       offers: individualOffers,
     },
