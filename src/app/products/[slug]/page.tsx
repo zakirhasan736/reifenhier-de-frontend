@@ -358,7 +358,7 @@ function buildJsonLd(p: SeoProduct | null) {
       priceCurrency: 'EUR',
       lowPrice: lowPrice ?? 0,
       highPrice: highPrice ?? lowPrice ?? 0,
-      offerCount: p.offers?.length || 1,
+      offerCount,
       availability,
       offers: individualOffers,
     },
