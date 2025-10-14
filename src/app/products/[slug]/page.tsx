@@ -311,16 +311,29 @@ function buildJsonLd(p: SeoProduct | null) {
     .join(' ')
     .trim();
   // ✅ Ensure numeric types (no .toFixed)
+  // ✅ Ensure numeric type, no string conversion
   const lowPrice =
     typeof p.cheapest_offer === 'number'
       ? p.cheapest_offer
       : typeof p.search_price === 'number'
       ? p.search_price
-      : undefined;
+      : null;
 
   const highPrice =
-    typeof p.expensive_offer === 'number' ? p.expensive_offer : undefined;
+    typeof p.expensive_offer === 'number' ? p.expensive_offer : lowPrice;
 
+  // ✅ Build individual offers if data exists
+  const individualOffers =
+    p.offers && p.offers.length > 0
+      ? p.offers.map(o => ({
+          '@type': 'Offer',
+          priceCurrency: 'EUR',
+          price: o.price,
+          url: o.affiliate_product_cloak_url || o.aw_deep_link,
+          availability: availability,
+          seller: { '@type': 'Organization', name: o.vendor },
+        }))
+      : undefined;
   const offerCount =
     typeof p.offers?.length === 'number' && p.offers.length > 0
       ? p.offers.length
@@ -343,10 +356,11 @@ function buildJsonLd(p: SeoProduct | null) {
       '@type': 'AggregateOffer',
       url: `${SITE_URL}/products/${p.slug}`,
       priceCurrency: 'EUR',
-      lowPrice,
-      highPrice,
-      offerCount,
+      lowPrice: lowPrice ?? 0,
+      highPrice: highPrice ?? lowPrice ?? 0,
+      offerCount: p.offers?.length || 1,
       availability,
+      offers: individualOffers,
     },
   };
 
