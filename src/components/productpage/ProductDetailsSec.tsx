@@ -30,7 +30,7 @@ import { useDispatch } from 'react-redux';
 import { addProduct, openModal } from '@/store/compareSlice';
 import { AppDispatch } from '@/store/store';
 import type { Swiper as SwiperClass } from 'swiper';
-import NotFound from '@/app/Produkte/not-found';
+import NotFound from '@/app/produkte/not-found';
 
 interface WishlistProduct {
   _id: string;
