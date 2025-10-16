@@ -73,7 +73,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/products"
+                        href="/produkte"
                       >
                         Produkte
                       </Link>
@@ -104,7 +104,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/products?category=Sommerreifen"
+                        href="/produkte?category=Sommerreifen"
                       >
                         Sommerreifen
                       </Link>
@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/products?category=Winterreifen"
+                        href="/produkte?category=Winterreifen"
                       >
                         Winterreifen
                       </Link>
@@ -120,7 +120,7 @@ const Footer: React.FC = () => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/products?category=Ganzjahresreifen"
+                        href="/produkte?category=Ganzjahresreifen"
                       >
                         Ganzjahresreifen
                       </Link>
@@ -179,17 +179,17 @@ const Footer: React.FC = () => {
                   <li className="foot-middle-item">
                     <Link
                       className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042]"
-                      href="/privacy-policy"
+                      href="/impressum-datenschutz"
                     >
-                      Datenschutz-Bestimmungen
+                      Impressum & Datenschutz
                     </Link>
                   </li>
                   <li className="foot-middle-item">
                     <Link
                       className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042]"
-                      href="/terms-of-service"
+                      href="/AGB"
                     >
-                      Nutzungsbedingungen
+                      Nutzungsbedingung AGB
                     </Link>
                   </li>
                 </ul>

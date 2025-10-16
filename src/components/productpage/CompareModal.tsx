@@ -149,7 +149,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                     />
                   </td>
                   <td className="px-3 py-2 text-left text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full">
-                    <Link href={`/products/${p.slug}`}>
+                    <Link href={`/produkte/${p.slug}`}>
                       {[p.brand_name, p.product_name]
                         .filter(Boolean)
                         .join(' ')

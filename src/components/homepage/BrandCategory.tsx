@@ -63,7 +63,7 @@ const BrandCategory = () => {
                 <SwiperSlide key={index}>
                   <Link
                     href={{
-                      pathname: '/products',
+                      pathname: '/produkte',
                       query: { brand: brandItem.brand_name },
                     }}
                     passHref

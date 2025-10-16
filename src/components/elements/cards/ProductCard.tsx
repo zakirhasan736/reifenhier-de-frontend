@@ -237,18 +237,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
-          {/* <Link href={`/products/${slug}`} passHref>
-            <Image
-              className="w-auto h-[159px] max-md:h-[159px] object-cover"
-              width={200}
-              height={200}
-              src={product_image}
-              alt="product"
-              priority
-              fetchPriority="high"
-            />
-          </Link> */}
-          <Link href={`/products/${slug}`} prefetch passHref>
+          <Link href={`/produkte/${slug}`} prefetch passHref>
             <Image
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
               // pick a realistic intrinsic size close to display; Next will downscale via `sizes`
@@ -299,7 +288,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
       <div className="p-card-body px-4 pt-3 pb-0">
         <h3 className="h6 text-[16px] text-[#404042] h-[37px] font-medium font-primary mb-3 leading-tight line-clamp-2">
-          <Link href={`/products/${slug}`} passHref>
+          <Link href={`/produkte/${slug}`} passHref>
             {[brand_name, product_name].filter(Boolean).join(' ').toUpperCase()}
           </Link>
         </h3>
@@ -451,7 +440,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </p>
         <div className="button-box pt-4">
-          <Link href={`/products/${slug}`} passHref>
+          <Link href={`/produkte/${slug}`} passHref>
             <button
               type="button"
               className="max-w-full flex items-center w-full text-[14px] md:text-[14px] font-medium leading-[120%] font-secondary xl:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"

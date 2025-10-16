@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Reifen günstig vergleichen & kaufen | Reifencheck',
   description:
     'Finden Sie günstige Reifenangebote auf Reifencheck.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
-  alternates: { canonical: 'https://www.reifencheck.de/products' },
+  alternates: { canonical: 'https://www.reifencheck.de/produkte' },
   keywords: [
     // Core
     'reifenpreisvergleich',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifencheck.de/products',
+    url: 'https://www.reifencheck.de/produkte',
     siteName: 'Reifencheck.de',
     title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
     description:

@@ -44,7 +44,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
                   Wir konnten keine ähnlichen Produkte für Ihre Auswahl finden.
                 </p>
                 <Link
-                  href="/products"
+                  href="/produkte"
                   className="primary-btn btn-styles mt-6 mx-auto block"
                 >
                   Alle Produkte durchsuchen

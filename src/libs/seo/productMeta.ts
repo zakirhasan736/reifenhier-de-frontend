@@ -131,7 +131,7 @@ export function buildProductMetadata(p: Product): Metadata {
   const description = buildProductDescription(p);
   const keywords = buildProductKeywords(p);
   const image = p.product_image || '/images/product-detailspage.png';
-  const url = `https://reifencheck.de/products/${p.slug}`;
+  const url = `https://reifencheck.de/produkte/${p.slug}`;
 
   return {
     metadataBase: new URL('https://reifencheck.de'),
@@ -179,7 +179,7 @@ export function buildProductJsonLd(p: Product) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    '@id': `https://reifencheck.de/products/${p.slug}#product`,
+    '@id': `https://reifencheck.de/produkte/${p.slug}#product`,
     name: `${p.brand_name} ${p.product_name}`,
     image: [p.product_image].filter(Boolean),
     description: buildProductDescription(p),
@@ -230,7 +230,7 @@ export function buildProductJsonLd(p: Product) {
         : undefined,
     offers: {
       '@type': 'AggregateOffer',
-      url: `https://reifencheck.de/products/${p.slug}`,
+      url: `https://reifencheck.de/produkte/${p.slug}`,
       priceCurrency: 'EUR',
       lowPrice: Number.isFinite(p.cheapest_offer)
         ? Number(p.cheapest_offer.toFixed(2))

@@ -37,7 +37,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: {
-      canonical: `${baseUrl}/products${
+      canonical: `${baseUrl}/produkte${
         category ? `?category=${category}` : ''
       }`,
     },
@@ -53,7 +53,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'website',
       locale: 'de_DE',
-      url: `${baseUrl}/products${category ? `?category=${category}` : ''}`,
+      url: `${baseUrl}/produkte${category ? `?category=${category}` : ''}`,
       siteName: 'Reifencheck.de',
       title,
       description,
@@ -113,15 +113,15 @@ export default async function ProductsPage({ searchParams }: Props) {
         initialPage={page}
       />
       <Script
-        id="ld-products-static"
+        id="ld-produkte-static"
         type="application/ld+json"
         strategy="afterInteractive"
       >
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          '@id': 'https://www.reifencheck.de/products#collection',
-          url: 'https://www.reifencheck.de/products',
+          '@id': 'https://www.reifencheck.de/produkte#collection',
+          url: 'https://www.reifencheck.de/produkte',
           name: 'Reifenangebote',
           inLanguage: 'de-DE',
         })}

@@ -33,7 +33,7 @@ const { data, isLoading } = useGetLatestProductsQuery(undefined, {
           </div>
           <div className="featured-product-right-content hidden">
             <Link
-              href="/products"
+              href="/produkte"
               className="ml-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
             >
               Alle ansehen
@@ -81,7 +81,7 @@ const { data, isLoading } = useGetLatestProductsQuery(undefined, {
       </div>
       <div className="featured-product-right-content mt-6 hidden justify-center">
         <Link
-          href="/products"
+          href="/produkte"
           className="mx-auto block underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
         >
           View all

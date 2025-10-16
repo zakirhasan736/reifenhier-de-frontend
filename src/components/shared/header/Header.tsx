@@ -42,7 +42,7 @@ const Header: React.FC = () => {
                 <li>
                   <Link
                     href={{
-                      pathname: '/products',
+                      pathname: '/produkte',
                       query: { category: 'Sommerreifen' },
                     }}
                     className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
                 <li>
                   <Link
                     href={{
-                      pathname: '/products',
+                      pathname: '/produkte',
                       query: { category: 'Winterreifen' },
                     }}
                     className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
                 <li>
                   <Link
                     href={{
-                      pathname: '/products',
+                      pathname: '/produkte',
                       query: { category: 'Ganzjahresreifen' },
                     }}
                     className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"

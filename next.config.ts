@@ -48,8 +48,8 @@ const nextConfig = {
     return [
       {
         source: '/p/:slug',
-        destination: '/products/:slug',
-        permanent: true, // 308
+        destination: '/produkte/:slug',
+        permanent: true,
       },
     ];
   },

@@ -74,7 +74,7 @@ const productData = data?.products || [];
         <div className="featured-product-right-content max-md:flex justify-center mt-5 mx-auto w-full">
           <Link
             href={{
-              pathname: '/products',
+              pathname: '/produkte',
               query: { category },
             }}
             className="mx-auto block text-center underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"

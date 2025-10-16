@@ -74,14 +74,14 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
     if (s.type === 'Product') {
       // ✅ route by slug; fallback to search if slug somehow missing
       if (s.slug) {
-        router.push(`/products/${s.slug}`);
+        router.push(`/produkte/${s.slug}`);
       } else {
-        router.push(`/products?q=${encodeURIComponent(s.name)}`);
+        router.push(`/produkte?q=${encodeURIComponent(s.name)}`);
       }
     } else if (s.type === 'Category') {
-      router.push(`/products?category=${encodeURIComponent(s.name)}`);
+      router.push(`/produkte?category=${encodeURIComponent(s.name)}`);
     } else if (s.type === 'Brand') {
-      router.push(`/products?brand=${encodeURIComponent(s.name)}`);
+      router.push(`/produkte?brand=${encodeURIComponent(s.name)}`);
     } else if (s.type === 'Charity' && s.storefrontId) {
       router.push(`/charity/store/${s.storefrontId}`);
     }

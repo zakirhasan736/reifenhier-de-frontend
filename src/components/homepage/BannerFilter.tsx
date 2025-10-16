@@ -109,7 +109,7 @@ const FilterForm = () => {
     if (fuelClass) params.set('fuelClass', fuelClass);
     if (noise) params.set('noise', noise);
 
-    router.push(`/products?${params.toString()}`);
+    router.push(`/produkte?${params.toString()}`);
   };
 
   // speed + load helpers (unchanged)

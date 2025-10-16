@@ -1,4 +1,3 @@
-// app/sitemap-products/sitemap.ts
 import type { MetadataRoute } from 'next';
 
 const siteUrl = (
@@ -65,9 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return valid.map(p => ({
-    url: `${siteUrl}/products/${encodeURIComponent(
-      p.slug!
-    )}`,
+    url: `${siteUrl}/produkte/${encodeURIComponent(p.slug!)}`,
     lastModified: now,
     changeFrequency: 'weekly',
     priority: 0.6,

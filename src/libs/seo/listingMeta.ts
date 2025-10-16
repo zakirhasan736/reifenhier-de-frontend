@@ -101,7 +101,7 @@ export function buildListingKeywords({
 export function buildListingCanonical(
   sp: Record<string, string | string[] | undefined>
 ) {
-  const u = new URL('https://reifencheck.de/products');
+  const u = new URL('https://reifencheck.de/produkte');
   (
     [
       ['category', norm(sp.category)],

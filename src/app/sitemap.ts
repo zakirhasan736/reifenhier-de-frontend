@@ -1,4 +1,3 @@
-// app/sitemap.ts
 import type { MetadataRoute } from 'next';
 
 const siteUrl = (
@@ -11,10 +10,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Static/parent pages
   const staticPaths: string[] = [
     '/',
-    '/products',
+    '/produkte',
     '/blogs',
-    '/privacy-policy',
-    '/terms-of-service',
+    '/impressum-datenschutz',
+    '/AGB',
   ];
 
   // Create entries for each static route

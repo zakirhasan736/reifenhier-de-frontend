@@ -30,11 +30,6 @@ const compareSlice = createSlice({
   name: 'compare',
   initialState,
   reducers: {
-    // addProduct: (state, action: PayloadAction<Product>) => {
-    //   if (!state.products.find(p => p._id === action.payload._id)) {
-    //     state.products.push(action.payload);
-    //   }
-    // },
     addProduct: (state, action: PayloadAction<Product>) => {
       if (state.products.find(p => p._id === action.payload._id)) return;
       const exists = state.products.find(p => p._id === action.payload._id);

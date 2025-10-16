@@ -30,7 +30,7 @@ import { useDispatch } from 'react-redux';
 import { addProduct, openModal } from '@/store/compareSlice';
 import { AppDispatch } from '@/store/store';
 import type { Swiper as SwiperClass } from 'swiper';
-import NotFound from '@/app/products/not-found';
+import NotFound from '@/app/Produkte/not-found';
 
 interface WishlistProduct {
   _id: string;
@@ -596,7 +596,7 @@ const handleToggleWishlist = async () => {
           <section className="product-singlepage-section overflow-hidden">
             <div className="custom-container w-full">
               <div className="product-breadcrumb-area pt-6 pb-8 max-sm:pb-4 flex items-center justify-start gap-3">
-                <Link href="/products" className="">
+                <Link href="/produkte" className="">
                   <button
                     type="button"
                     className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
@@ -625,9 +625,9 @@ const handleToggleWishlist = async () => {
                   <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
                     <Link
                       className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                      href={`/products?category=${product.merchant_product_third_category}`}
+                      href={`/produkte?category=${product.merchant_product_third_category}`}
                     >
-                      {product.merchant_product_third_category || 'Products'}
+                      {product.merchant_product_third_category || 'produkte'}
                     </Link>
                     <span className="angle">{'>'}</span>
                   </li>

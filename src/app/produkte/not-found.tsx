@@ -121,7 +121,7 @@ export default async function NotFound({
             related.map((p: RelatedProduct) => (
               <Link
                 key={p._id || p.slug}
-                href={`/products/${p.slug}`}
+                href={`/produkte/${p.slug}`}
                 className="border rounded-2xl p-4 hover:shadow-md transition text-left bg-white"
               >
                 <Image
