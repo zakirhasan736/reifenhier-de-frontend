@@ -172,14 +172,14 @@ export default function RootLayout({
                   cookieTypes: [
                     {
                       id: "necessary",
-                      name: "Necessary",
-                      description: "<p>Essential cookies needed for site functionality.</p>",
+                      name: "Notwendig",
+                      description: "<p>Für die Funktionalität der Website sind unbedingt erforderliche Cookies erforderlich.</p>",
                       required: true
                     },
                     {
                       id: "analytics",
-                      name: "Analytics",
-                      description: "<p>Helps us understand how visitors use the website.</p>",
+                      name: "Analyse",
+                      description: "<p>Hilft uns zu verstehen, wie Besucher die Website nutzen.</p>",
                       defaultValue: true,
                       onAccept: function() {
                         if (typeof gtag === 'function') {
@@ -196,8 +196,8 @@ export default function RootLayout({
                     },
                     {
                       id: "advertising",
-                      name: "Advertising",
-                      description: "<p>Enables personalization and ads.</p>",
+                      name: "Werbung",
+                      description: "<p>Ermöglicht Personalisierung und Werbung.</p>",
                       onAccept: function() {
                         if (typeof gtag === 'function') {
                           gtag('consent', 'update', {
@@ -222,14 +222,14 @@ export default function RootLayout({
                   ],
                   text: {
                     banner: {
-                      description: "<p>We use cookies to improve your experience. <a href='/cookie-policy' target='_blank'>Cookie Policy</a></p>",
-                      acceptAllButtonText: "Accept all",
-                      rejectNonEssentialButtonText: "Reject non-essential",
-                      preferencesButtonText: "Preferences"
+                      description: "<p>Hiermit informieren wir Sie darüber, dass auf dieser Website Cookies verwendet werden. <a href='/cookie-policy' target='_blank'>Cookie-Richtlinie</a></p>",
+                      acceptAllButtonText: "Alle akzeptieren",
+                      rejectNonEssentialButtonText: "Alle ablehnen",
+                      preferencesButtonText: "Einstellungen"
                     },
                     preferences: {
-                      title: "Customize your cookie preferences",
-                      description: "<p>Choose which cookies you want to allow.</p>"
+                      title: "Passen Sie Ihre Cookie-Einstellungen an",
+                      description: "<p>Wählen Sie aus, welche Cookies Sie zulassen möchten.</p>"
                     }
                   }
                 });
