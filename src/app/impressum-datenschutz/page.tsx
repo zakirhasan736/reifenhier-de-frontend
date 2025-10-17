@@ -3,7 +3,7 @@ import Head from 'next/head';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
-  title: 'Datenschutzerklärung – Reifencheck.de',
+  title: 'Impressum & Datenschutz – Reifencheck.de',
   description:
     'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
   alternates: { canonical: 'https://www.reifencheck.de/privacy-policy' },
@@ -19,7 +19,7 @@ const PrivacyPolicy: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Datenschutzerklärung – Reifencheck.de</title>
+        <title>Impressum & Datenschutz – Reifencheck.de</title>
         <meta
           name="description"
           content="Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m."
@@ -28,14 +28,14 @@ const PrivacyPolicy: React.FC = () => {
       </Head>
 
       <main className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Datenschutzerklärung</h1>
+        {/* <header className="mb-8 text-center">
+          <h1 className="text-3xl font-bold">Impressum & Datenschutz</h1>
           <p className="mt-2 text-sm text-gray-500">August 9, 2025</p>
-        </header>
+        </header> */}
 
         {/* Verantwortlicher */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">Verantwortlicher</h2>
+          <p className="text-xl font-semibold mt-6">Verantwortlicher</p>
           <p className="mt-2">
             Reifencheck.de
             <br />
@@ -51,6 +51,8 @@ const PrivacyPolicy: React.FC = () => {
           </p>
         </section>
 
+        <h1 className="mt-5 text-3xl font-bold">Impressum & Datenschutz</h1>
+
         {/* Übersicht der Verarbeitungen */}
         <section>
           <h2 className="text-xl font-semibold mt-6">
@@ -62,7 +64,9 @@ const PrivacyPolicy: React.FC = () => {
           </p>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-xl bg-gray-50 p-4">
-              <h3 className="font-medium">Arten der verarbeiteten Daten</h3>
+              <h3 className="font-medium text-[18px]">
+                Arten der verarbeiteten Daten
+              </h3>
               <ul className="mt-2 list-disc pl-5 text-sm space-y-1">
                 <li>Bestandsdaten</li>
                 <li>Kontaktdaten</li>
@@ -75,7 +79,9 @@ const PrivacyPolicy: React.FC = () => {
               </ul>
             </div>
             <div className="rounded-xl bg-gray-50 p-4">
-              <h3 className="font-medium">Kategorien betroffener Personen</h3>
+              <h3 className="font-medium text-[18px]">
+                Kategorien betroffener Personen
+              </h3>
               <ul className="mt-2 list-disc pl-5 text-sm space-y-1">
                 <li>Nutzer (Webseitenbesucher)</li>
                 <li>Kommunikationspartner</li>
@@ -84,7 +90,9 @@ const PrivacyPolicy: React.FC = () => {
               </ul>
             </div>
             <div className="rounded-xl bg-gray-50 p-4 md:col-span-2">
-              <h3 className="font-medium">Zwecke der Verarbeitung</h3>
+              <h3 className="font-medium text-[18px]">
+                Zwecke der Verarbeitung
+              </h3>
               <ul className="mt-2 list-disc pl-5 text-sm columns-1 md:columns-2 space-y-1">
                 <li>
                   Bereitstellung des Onlineangebotes & Nutzerfreundlichkeit
@@ -285,7 +293,7 @@ const PrivacyPolicy: React.FC = () => {
             gebildet; IP‑Adressen werden gekürzt (IP‑Masking), sofern technisch
             möglich.
           </p>
-          <h3 className="mt-4 font-medium">Google Analytics</h3>
+          <h3 className="mt-4 font-medium text-xl">Google Analytics</h3>
           <p className="mt-2 text-sm">
             Dienstanbieter: Google Ireland Limited, Gordon House, Barrow Street,
             Dublin 4, Irland. Verarbeitung auf Basis Ihrer Einwilligung.
@@ -370,18 +378,6 @@ const PrivacyPolicy: React.FC = () => {
               Einbindung grundsätzlich nur mit Einwilligung.
             </li>
           </ul>
-        </section>
-
-        {/* Cookie Consent Tool */}
-        <section>
-          <h2 className="text-xl font-semibold mt-6">Cookie Consent Tool</h2>
-          <p className="mt-2">
-            Zur Verwaltung von Einwilligungen setzen wir{' '}
-            <em>Real Cookie Banner</em> (devowl.io) ein. Rechtsgrundlagen:
-            Art. 6 Abs. 1 lit. c DSGVO (rechtliche Verpflichtung) und Art. 6
-            Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verwaltung von
-            Einwilligungen).
-          </p>
         </section>
 
         <footer className="mt-12 border-t pt-6 text-sm text-gray-500">

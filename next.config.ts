@@ -51,6 +51,41 @@ const nextConfig = {
         destination: '/produkte/:slug',
         permanent: true,
       },
+      {
+        source: '/products/:id([0-9a-fA-F]+)',
+        destination: '/produkte',
+        permanent: true,
+      },
+      {
+        source: '/produkte/:id([0-9a-fA-F]+)',
+        destination: '/produkte',
+        permanent: true,
+      },
+      {
+        source: '/products',
+        destination: '/produkte',
+        permanent: true,
+      },
+      {
+        source: '/privacy-policy',
+        destination: '/impressum-datenschutz',
+        permanent: true,
+      },
+      {
+        source: '/term-of-services',
+        destination: '/AGB',
+        permanent: true,
+      },
+      {
+        source: '/term-of-service',
+        destination: '/AGB',
+        permanent: true,
+      },
+      {
+        source: '/term-services',
+        destination: '/AGB',
+        permanent: true,
+      },
     ];
   },
 };
