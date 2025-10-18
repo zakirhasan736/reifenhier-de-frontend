@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Add sitemap index entries
   const indexEntries: MetadataRoute.Sitemap = [
     {
-      url: `${siteUrl}/sitemap-products/sitemap.xml`,
+      url: `${siteUrl}/sitemap-produkte/sitemap.xml`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,

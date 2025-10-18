@@ -82,7 +82,7 @@ export default function robots(): MetadataRoute.Robots {
     // 🗺️ Sitemaps
     sitemap: [
       `${site}/sitemap.xml`,
-      `${site}/sitemap-products/sitemap.xml`,
+      `${site}/sitemap-produkte/sitemap.xml`,
       `${site}/sitemap-blogs/sitemap.xml`,
     ],
 
