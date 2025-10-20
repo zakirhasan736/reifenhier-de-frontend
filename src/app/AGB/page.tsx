@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifencheck.de',
   description:
     'AGB für Reifencheck.de (Preisvergleich & Informationen zu Reifenangeboten). Geltungsbereich, Leistungen, Haftung, Pflichten der Nutzer, Datenschutz & Schlussbestimmungen.',
-  alternates: { canonical: 'https://www.reifencheck.de/terms-of-service' },
+  alternates: { canonical: 'https://www.reifencheck.de/AGB' },
   openGraph: {
     title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifencheck.de',
     description:

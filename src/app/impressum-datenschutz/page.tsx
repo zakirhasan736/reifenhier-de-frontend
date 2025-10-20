@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Impressum & Datenschutz – Reifencheck.de',
   description:
     'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
-  alternates: { canonical: 'https://www.reifencheck.de/privacy-policy' },
+  alternates: { canonical: 'https://www.reifencheck.de/impressum-datenschutz' },
   openGraph: {
     title: 'Datenschutzerklärung – Reifencheck.de',
     description:
