@@ -514,7 +514,7 @@ console.log('product details', product);
 
     const jsonLd = buildJsonLd(product);
     const breadcrumbLd = buildBreadcrumbJsonLd(product);
-
+console.log(product);
   return (
     <>
       <div className="product-details-cont-wrapper">
