@@ -107,7 +107,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
           ✖
         </button>
 
-        <h2 className="text-[22px] font-semibold mb-6 font-secondary">
+        <h2 className="text-[22px] font-semibold mb-6 font-secondary text-secondary-100">
           Produktvergleich
         </h2>
 
@@ -130,7 +130,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                 ].map((title, i) => (
                   <th
                     key={i}
-                    className="py-4 px-3 text-[13px] font-secondary text-left whitespace-nowrap"
+                    className="py-4 px-3 text-[13px] font-secondary text-left whitespace-nowrap  text-secondary-100"
                   >
                     {title}
                   </th>
@@ -139,8 +139,11 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
             </thead>
             <tbody>
               {products.map(p => (
-                <tr key={p._id} className="text-left border-t">
-                  <td className="px-3 py-2 text-center min-w-[60px]">
+                <tr
+                  key={p._id}
+                  className="text-left border-t  text-secondary-100"
+                >
+                  <td className="px-3 py-2 text-center min-w-[60px]  text-secondary-100">
                     <Image
                       src={p.product_image}
                       alt={p.product_name}
@@ -148,7 +151,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                       height={60}
                     />
                   </td>
-                  <td className="px-3 py-2 text-left text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full">
+                  <td className="px-3 py-2 text-left text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full  text-secondary-100">
                     <Link href={`/produkte/${p.slug}`}>
                       {[p.brand_name, p.product_name]
                         .filter(Boolean)
@@ -159,25 +162,25 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
                   {/* <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
                     {p.brand_name}
                   </td> */}
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.dimensions}
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.search_price} €
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.speedIndex}
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.lastIndex}
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.fuel_class}
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.wet_grip}
                   </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
+                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
                     {p.noise_class}
                   </td>
 
