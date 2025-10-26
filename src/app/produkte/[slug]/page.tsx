@@ -281,12 +281,12 @@ function buildKeywords(p?: SeoProduct): string[] {
     );
   }
 
-  // ✅ Fallback uniqueness to prevent duplicate meta tags
+  //  Fallback uniqueness to prevent duplicate meta tags
   if (!brand && !dimension && !category && fallbackId) {
     base.push(`reifen ${fallbackId}`, `produkt ${fallbackId} reifen`);
   }
 
-  // ✅ Deduplicate keywords and clean up
+  //  Deduplicate keywords and clean up
   return Array.from(
     new Set(base.map(k => k.toLowerCase().replace(/\s+/g, ' ').trim()))
   );
@@ -309,13 +309,13 @@ function buildJsonLd(p: SeoProduct | null) {
     .filter(Boolean)
     .join(' ')
     .trim();
-  // ✅ Ensure numeric types (no .toFixed)
-  // ✅ Ensure numeric type, no string conversion
+  //  Ensure numeric types (no .toFixed)
+  //  Ensure numeric type, no string conversion
   const lowPrice = p.cheapest_offer;
 
   const highPrice = p.expensive_offer;
 
-  // ✅ Build individual offers if data exists
+  //  Build individual offers if data exists
   const individualOffers =
     p.offers && p.offers.length > 0
       ? p.offers.map(o => ({
@@ -378,7 +378,7 @@ function buildJsonLd(p: SeoProduct | null) {
   return jsonLd;
 }
 
-// ✅ Breadcrumb Schema Builder
+//  Breadcrumb Schema Builder
 function buildBreadcrumbJsonLd(p: SeoProduct) {
   const category =
     p.merchant_product_third_category?.trim() || p.category_name?.trim() || '';
@@ -398,7 +398,7 @@ function buildBreadcrumbJsonLd(p: SeoProduct) {
               '@type': 'ListItem',
               position: 2,
               name: category,
-              item: `${SITE_URL}/produkte?category=${encodeURIComponent(
+              item: `${SITE_URL}/produkte?kategorie=${encodeURIComponent(
                 category
               )}`,
             },
@@ -434,11 +434,11 @@ export async function generateMetadata({
     // Capitalize the first letter of each word
     readableSlug = readableSlug.replace(/\b\w/g, l => l.toUpperCase());
 
-    // ✅ Extract product ID at the end of the slug (if numeric)
+    //  Extract product ID at the end of the slug (if numeric)
     const productIdMatch = slug.match(/(\d{5,})$/); // match trailing numbers
     const productId = productIdMatch ? productIdMatch[1] : null;
 
-    // ✅ Create unique fallback title
+    //  Create unique fallback title
     const shortTitle = `${readableSlug}${
       productId ? ` (ID: ${productId})` : ''
     }`;

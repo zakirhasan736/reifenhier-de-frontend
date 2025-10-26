@@ -2,6 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+
 const Footer: React.FC = () => {
   return (
     <footer className="footer-section bg-[#F7F8FA]">
@@ -58,13 +59,13 @@ const Footer: React.FC = () => {
               </div>
               <div className="footer-quick-link-cont max-w-[690px] w-full flex items-start justify-between max-sm:flex-col max-sm:gap-4">
                 <div className="quick-link-cont">
-                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
                     Direktlinks
                   </h3>
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
                         href="/"
                       >
                         Home
@@ -72,7 +73,7 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
                         href="/produkte"
                       >
                         Produkte
@@ -80,15 +81,15 @@ const Footer: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
                         href="/blogs"
                       >
-                        Der Blog
+                        News & Artikel
                       </Link>
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
                         href="/favorites"
                       >
                         Favoriten
@@ -97,73 +98,88 @@ const Footer: React.FC = () => {
                   </ul>
                 </div>
                 <div className="quick-link-cont">
-                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                    Geschäft
+                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                    Direktlinks
                   </h3>
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/produkte?category=Sommerreifen"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        href="/produkte?kategorie=Sommerreifen"
                       >
                         Sommerreifen
                       </Link>
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/produkte?category=Winterreifen"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        href="/produkte?kategorie=Winterreifen"
                       >
                         Winterreifen
                       </Link>
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/produkte?category=Ganzjahresreifen"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        href="/produkte?kategorie=Ganzjahresreifen"
                       >
                         Ganzjahresreifen
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="./#byBrand"
                       >
                         Nach Marke
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
                 <div className="quick-link-cont">
-                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[14px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
                     Soziale Medien
                   </h3>
-                  <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
+                  <ul className="quick-link-list flex gap-3 md:gap-3 pl-0">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="https://facebook.com"
+                        className="p-2 hover:bg-[#f5b602]/60 hover:border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        href="http://facebook.com/reifencheck.de"
                       >
-                        Facebook
+                        <Image
+                          src="/images/facebook.png"
+                          alt="reifencheck facebook icon"
+                          width={20}
+                          height={20}
+                        />
                       </Link>
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="https://instagram.com"
+                        className="p-2 hover:bg-[#f5b602]/60 hover:border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        href="https://www.instagram.com/reifencheck.de"
                       >
-                        Instagram
+                        <Image
+                          src="/images/instagram.png"
+                          alt="reifencheck instagrame icon"
+                          width={20}
+                          height={20}
+                        />
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
-                        className="md:text-[16px] text-[12px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="https://x.com"
+                        className="p-2 hover:bg-[#f5b602]/60 hover:border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        href="https://youtube.com"
                       >
-                        X.com
+                        <Image
+                          src="/images/youtube.png"
+                          alt="reifencheck reifencheck icon"
+                          width={20}
+                          height={20}
+                        />
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>

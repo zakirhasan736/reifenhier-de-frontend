@@ -174,41 +174,41 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     const gradeFuelColor = (grade: string) => {
       switch ((grade || '').toUpperCase()) {
         case 'A':
-          return '#2d8934'; // Green
+          return '#2d8934'; 
         case 'B':
-          return '#a4c600'; // Light Green
+          return '#a4c600'; 
         case 'C':
-          return '#ffd600'; // Deeper yellow, better contrast on white
+          return '#ffd600'; 
         case 'D':
-          return '#f5b602'; // Orange Yellow
+          return '#f5b602'; 
         case 'E':
-          return '#e81401'; // Orange
+          return '#e81401'; 
         case 'F':
-          return '#e81401'; // Red
+          return '#e81401'; 
         case 'G':
-          return '#e81401'; // Dark Red
+          return '#e81401'; 
         default:
-          return '#404042'; // Gray (for unknown)
+          return '#404042'; 
       }
     };
     const gradeGripColor = (grade: string) => {
       switch ((grade || '').toUpperCase()) {
         case 'A':
-          return '#2c5aa9'; // Green
+          return '#2c5aa9'; 
         case 'B':
-          return '#377ac1'; // Light Green
+          return '#377ac1'; 
         case 'C':
-          return '#5ba7db'; // Yellow
+          return '#5ba7db'; 
         case 'D':
-          return '#87c2ea'; // Orange Yellow
+          return '#87c2ea'; 
         case 'E':
-          return '#b7e4f9'; // Orange
+          return '#b7e4f9'; 
         case 'F':
-          return '#b7e4f9'; // Red
+          return '#b7e4f9'; 
         case 'G':
-          return '#b7e4f9'; // Dark Red
+          return '#b7e4f9'; 
         default:
-          return '#404042'; // Gray (for unknown)
+          return '#404042'; 
       }
     };
 const { data: wishlistData } = useGetWishlistQuery();
@@ -625,7 +625,7 @@ const handleToggleWishlist = async () => {
                   <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
                     <Link
                       className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                      href={`/produkte?category=${product.merchant_product_third_category}`}
+                      href={`/produkte?kategorie=${product.merchant_product_third_category}`}
                     >
                       {product.merchant_product_third_category || 'produkte'}
                     </Link>

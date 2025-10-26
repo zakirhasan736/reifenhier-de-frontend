@@ -35,7 +35,7 @@ export interface Product {
 }
 
 export interface Filters {
-  category: string[];
+  kategorie: string[];
   brand: string[];
   condition: string[];
   width: string[];
@@ -93,7 +93,7 @@ interface ApiRequestParams extends QueryParams {
   sortOrder: string;
   includeFilters?: boolean;
   // filters (optional)
-  category?: string[];
+  kategorie?: string[];
   brand?: string[];
   condition?: string[];
   width?: string[];
@@ -131,7 +131,7 @@ const initialState: ProductState = {
   currentRequestId: undefined,
 
   filters: {
-    category: [],
+    kategorie: [],
     brand: [],
     condition: [],
     width: [],

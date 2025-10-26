@@ -70,7 +70,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {pageNumbers.map((page, idx) => (
           <li key={idx}>
             <button
-              className={`body-small py-1 px-2 rounded ${
+              className={`body-small py-1 px-2 rounded cursor-pointer ${
                 page === currentPage
                   ? 'bg-mono-100 text-mono-0'
                   : 'text-[#677788] hover:text-black'

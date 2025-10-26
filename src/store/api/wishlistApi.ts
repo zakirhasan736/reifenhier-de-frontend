@@ -44,19 +44,19 @@ export const wishlistApi = createApi({
   }),
   tagTypes: ['Wishlist'],
   endpoints: builder => ({
-    // ✅ GET: List of wishlist items
+    //  GET: List of wishlist items
     getWishlist: builder.query<{ wishlist: WishlistProduct[] }, void>({
       query: () => `list?uuid=${getOrCreateUuid()}`,
       providesTags: ['Wishlist'],
     }),
 
-    // ✅ GET: Wishlist item count
+    //  GET: Wishlist item count
     getWishlistCount: builder.query<WishlistCountResponse, void>({
       query: () => `count?uuid=${getOrCreateUuid()}`,
       providesTags: ['Wishlist'],
     }),
 
-    // ✅ POST: Add a product to wishlist
+    //  POST: Add a product to wishlist
     addWishlist: builder.mutation<void, string>({
       query: (productId: string) => ({
         url: 'add',
@@ -66,7 +66,7 @@ export const wishlistApi = createApi({
       invalidatesTags: ['Wishlist'],
     }),
 
-    // ✅ POST: Remove a product from wishlist
+    //  POST: Remove a product from wishlist
     removeWishlist: builder.mutation<void, string>({
       query: (productId: string) => ({
         url: 'remove',

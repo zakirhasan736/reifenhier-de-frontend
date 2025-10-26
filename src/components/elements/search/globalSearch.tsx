@@ -3,20 +3,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface Suggestion {
   slug: string;
   name: string;
-  type: 'Product' | 'Category' | 'Brand' | 'Charity';
+  type: 'Produkt' | 'Kategorie' | 'Marke' | 'Charity';
   storefrontId?: string;
   brand?: string;
+  image?: string;
 }
 interface RawSuggestion {
   slug?: string;
   name: string;
-  type?: 'Product' | 'Category' | 'Brand' | 'Charity';
+  type?: 'Produkt' | 'Kategorie' | 'Marke' | 'Charity';
   storefrontId?: string;
   brand?: string;
+  image?: string;
 }
 
 interface GlobalSearchProps {
@@ -48,7 +51,8 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
         const mapped = data.map((item: RawSuggestion) => ({
           slug: item.slug || '',
           name: item.name,
-          type: item.type || 'Product',
+          image: item.image || '',
+          type: item.type || 'Produkt',
           storefrontId: item.storefrontId,
           brand: item.brand,
         }));
@@ -71,16 +75,16 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
   };
 
   const handleSuggestionClick = (s: Suggestion) => {
-    if (s.type === 'Product') {
+    if (s.type === 'Produkt') {
       // ✅ route by slug; fallback to search if slug somehow missing
       if (s.slug) {
         router.push(`/produkte/${s.slug}`);
       } else {
         router.push(`/produkte?q=${encodeURIComponent(s.name)}`);
       }
-    } else if (s.type === 'Category') {
-      router.push(`/produkte?category=${encodeURIComponent(s.name)}`);
-    } else if (s.type === 'Brand') {
+    } else if (s.type === 'Kategorie') {
+      router.push(`/produkte?kategorie=${encodeURIComponent(s.name)}`);
+    } else if (s.type === 'Marke') {
       router.push(`/produkte?brand=${encodeURIComponent(s.name)}`);
     } else if (s.type === 'Charity' && s.storefrontId) {
       router.push(`/charity/store/${s.storefrontId}`);
@@ -92,7 +96,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
 
   return (
     <div
-      className={`global-search-bar max-sm:hidden max-w-[300px] w-full relative ${className}`}
+      className={`global-search-bar max-sm:hidden max-w-[500px]  w-full relative ${className}`}
     >
       <form
         className="global-search-form global-search w-full"
@@ -104,15 +108,15 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
             type="search"
             value={query}
             onChange={handleInputChange}
-            className="search-input-filed h-12  placeholder:text-primary-color-100 !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none w-full !bg-mono-0 !shadow-none !border !border-border-100 text-[14px] font-normal bg-primary-color-70 pr-2 pl-[38px] py-[11.5px] text-primary-color-100 leading-[150%] font-secondary"
-            placeholder="Suchen..."
+            className="search-input-filed h-12  placeholder:text-secondary-100 !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none w-full !bg-mono-0 !shadow-none !border !border-secondary-100/40 text-[14px] font-normal bg-primary-color-70 pr-2 pl-11 py-[11.5px] text-primary-color-100 leading-[150%] font-secondary"
+            placeholder="Suche nach Produkt..."
           />
           <label
             htmlFor="searchid1"
-            className="searchbtn absolute top-[16px] left-3"
+            className="searchbtn absolute top-[16px] left-4"
           >
             <svg
-              className="h-[1em] opacity-50"
+              className="h-[1em] opacity-100"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
             >
@@ -139,11 +143,22 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
               <div
                 key={`${sugg.type}-${sugg.slug || sugg.name}-${idx}`}
                 onClick={() => handleSuggestionClick(sugg)}
-                className="p-3 text-sm hover:bg-gray-100 cursor-pointer border-b last:border-0"
+                className="flex items-center gap-3 p-3 text-sm hover:bg-gray-100 cursor-pointer border-b border-b-black/30 last:border-0"
               >
-                <span className="font-medium">{sugg.name}</span>
-                <div className="text-xs text-gray-500">
-                  {sugg.type} {sugg.brand ? `| Brand: ${sugg.brand}` : ''}
+                {/* ✅ show product image if available */}
+                {sugg.type === 'Produkt' && sugg.image && (
+                  <Image
+                    src={sugg.image}
+                    alt={sugg.name}
+                    className="w-10 h-10 object-contain rounded border border-gray-200"
+                    width={40} height={40}
+                  />
+                )}
+                <div className="flex flex-col">
+                  <span className="font-medium">{sugg.name}</span>
+                  <div className="text-xs text-gray-500">
+                    {sugg.type} {sugg.brand ? `| Marke: ${sugg.brand}` : ''}
+                  </div>
                 </div>
               </div>
             ))

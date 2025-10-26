@@ -5,20 +5,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import GlobalSearch from '@/components/elements/search/globalSearch';
 import { useGetWishlistCountQuery } from '@/store/api/wishlistApi';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const Header: React.FC = () => {
- const { data = { count: 0 }, isLoading } = useGetWishlistCountQuery();
+  const { data = { count: 0 }, isLoading } = useGetWishlistCountQuery();
+  // --- Detect active category from query string ---
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const activeCategory =
+    (searchParams?.get('kategorie') || searchParams?.get('category')) ?? '';
 
+  const isActive = (cat: string) =>
+    pathname === '/produkte' && activeCategory === cat;
   return (
     <header className="header-section relative bg-mono-0 z-[999] ">
-      {/* <div className="development-mood-banner">
-        <p className="text text-center text-mono-40 font-bold bg-[#3a64f6]  py-1">
-          Demo-Modus
-        </p>
-      </div> */}
       <div className="header-content-area border-b border-border-100 pt-4 pb-5  max-sm:pb-2 max-sm:pt-3">
         <div className="custom-container flex items-center justify-between max-sm:items-center">
-          <div className="logo-section max-sm:justify-center items-center gap-8 flex max-w:w-full max-sm:pt-1">
+          <div className="logo-section max-sm:justify-center items-center gap-8 flex max-w-full max-sm:pt-1">
             <Link href="/" className="text-2xl font-bold text-mono-100">
               <Image
                 loading="lazy"
@@ -37,50 +40,69 @@ const Header: React.FC = () => {
                 alt="reifenier brand logo mobile"
               />
             </Link>
-            <nav className="nav-section hidden lg:block px-[6px] border border-border-100 rounded-full">
+            <nav className="nav-section hidden lg:block px-[6px] border !border-secondary-100/20 rounded-full">
               <ul className="flex items-center gap-0">
-                <li>
+                {/* <li>
                   <Link
-                    href={{
-                      pathname: '/produkte',
-                      query: { category: 'Sommerreifen' },
-                    }}
-                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
+                    href="/produkte?kategorie=Sommerreifen"
+                    className="text-[14px] capitalize leading-[1] block transition ease-in duration-500 text-center font-primary font-normal text-[#404042] hover:font-medium cursor-pointer px-[18px] py-3 hover:text-primary-100 "
                   >
                     Sommerreifen
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href={{
-                      pathname: '/produkte',
-                      query: { category: 'Winterreifen' },
-                    }}
-                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
+                    href="/produkte?kategorie=Winterreifen"
+                    className="text-[14px] capitalize leading-[1] block transition ease-in duration-500 text-center font-primary font-normal text-[#404042] hover:font-medium cursor-pointer px-[18px] py-3 hover:text-primary-100 "
                   >
                     Winterreifen
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href={{
-                      pathname: '/produkte',
-                      query: { category: 'Ganzjahresreifen' },
-                    }}
-                    className="text-[14px] capitalize leading-[1] block text-center font-primary font-normal text-[#404042] cursor-pointer px-[18px] py-3 hover:text-primary-100"
+                    href="/produkte?kategorie=Ganzjahresreifen"
+                    className="text-[14px] capitalize leading-[1] block transition ease-in duration-500 text-center font-primary font-normal text-[#404042] hover:font-medium cursor-pointer px-[18px] py-3 hover:text-primary-100 "
                   >
                     Ganzjahresreifen
                   </Link>
-                </li>
+                </li> */}
+                {[
+                  {
+                    name: 'Sommerreifen',
+                    href: '/produkte?kategorie=Sommerreifen',
+                  },
+                  {
+                    name: 'Winterreifen',
+                    href: '/produkte?kategorie=Winterreifen',
+                  },
+                  {
+                    name: 'Ganzjahresreifen',
+                    href: '/produkte?kategorie=Ganzjahresreifen',
+                  },
+                ].map(({ name, href }) => (
+                  <li key={name}>
+                    <Link
+                      href={href}
+                      className={`text-[14px] capitalize leading-[1] block text-center font-primary cursor-pointer px-[18px] py-3 transition duration-300
+                        ${
+                          isActive(name)
+                            ? 'text-primary-100 font-semibold'
+                            : 'text-[#404042] hover:text-primary-100 hover:font-medium'
+                        }`}
+                    >
+                      {name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>
 
-          <div className="global-search flex items-center gap-4">
+          <div className="global-search w-full max-w-[380px] flex items-center gap-4">
             <GlobalSearch />
             <div className="header-action-comp">
               <ul className="flex items-center gap-4">
-                <li className="!border relative rounded-full !border-[#F0F0F2] h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center">
+                <li className="!border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center">
                   <Link
                     href="/favorites"
                     className="flex p-3 max-sm:p-2 items-center"

@@ -23,7 +23,7 @@ interface FilterItem {
 }
 
 interface FilterGroups {
-  categories?: FilterItem[];
+  kategories?: FilterItem[];
   brands?: FilterItem[];
   widths?: FilterItem[];
   heights?: FilterItem[];
@@ -36,7 +36,7 @@ interface FilterGroups {
 }
 
 interface SelectedFilters {
-  category: string[];
+  kategorie: string[];
   brand: string[];
   width: string[];
   height: string[];
@@ -72,7 +72,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     (typeof filters.maxPrice === 'number' ? filters.maxPrice : max) < max;
 
   const [openSections, setOpenSections] = useState({
-    category: true,
+    kategorie: true,
     brand: false,
     price: true,
     width: false,
@@ -133,7 +133,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   useEffect(() => {
     setOpenSections(prev => ({
       ...prev,
-      category: prev.category || sectionHasSelection('category'),
+      kategorie: prev.kategorie || sectionHasSelection('kategorie'),
       brand: prev.brand || sectionHasSelection('brand'),
       price: prev.price || sectionHasSelection('price'),
       width: prev.width || sectionHasSelection('width'),
@@ -210,33 +210,33 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   return (
     <div className="filter-sidebar" ref={sidebarRef}>
-      {/* Category */}
-      {availableProducts.categories && (
+      {/* kategorie */}
+      {availableProducts.kategories && (
         <div className="relative mb-2  border-b border-b-[#C6C7CC]">
           <div
             className="filter-item-title-box flex items-center justify-between pr-6"
-            onClick={() => toggleSection('category')}
+            onClick={() => toggleSection('kategorie')}
             style={{ cursor: 'pointer' }}
           >
             <h4 className="filter-sidebar-title   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
               Reifentyp{' '}
               <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.category.length > 0
-                  ? `(${selectedFilters.category.length})`
+                {selectedFilters.kategorie.length > 0
+                  ? `(${selectedFilters.kategorie.length})`
                   : ''}
               </span>
             </h4>
             <span
               className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                openSections.category ? 'open' : 'closed'
+                openSections.kategorie ? 'open' : 'closed'
               }`}
             >
               <ArrowDownIcon />
             </span>
           </div>
-          {openSections.category && (
+          {openSections.kategorie && (
             <ul className="px-3 pt-0 pb-2 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2 ">
-              {availableProducts.categories.map((item, index) => {
+              {availableProducts.kategories.map((item, index) => {
                 const label =
                   typeof item.name === 'string' || typeof item.name === 'number'
                     ? item.name
@@ -246,11 +246,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   <li key={`${label}-${index}`}>
                     <label className="flex items-center gap-[10px] !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
                       <Checkbox
-                        checked={selectedFilters.category.includes(
+                        checked={selectedFilters.kategorie.includes(
                           String(label)
                         )}
                         onChange={() =>
-                          handleFilterChange('category', String(label))
+                          handleFilterChange('kategorie', String(label))
                         }
                       />
                       {label || 'Unbekannt'}

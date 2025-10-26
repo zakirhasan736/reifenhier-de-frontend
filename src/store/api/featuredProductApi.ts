@@ -18,9 +18,9 @@ export const featuredProductApi = createApi({
   tagTypes: ['FeaturedProducts'],
   endpoints: builder => ({
     getFeaturedProducts: builder.query<FeaturedProductResponse, void>({
-      query: () => 'sessions-products', // 👈 matches your endpoint
+      query: () => 'sessions-products', 
       providesTags: ['FeaturedProducts'],
-      keepUnusedDataFor: 300, // cache for 5 minutes
+      keepUnusedDataFor: 300, 
     }),
   }),
 });

@@ -1,4 +1,3 @@
-// store/api/filterApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface FilterOption {

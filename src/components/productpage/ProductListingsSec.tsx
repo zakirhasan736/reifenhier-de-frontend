@@ -30,7 +30,7 @@ interface ProductListingProps {
   initialPage: number;
 }
 interface Filters {
-  category: string[];
+  kategorie: string[];
   brand: string[];
   condition: string[];
   width: string[];
@@ -48,7 +48,7 @@ interface Filters {
 type ArrayFilterKey = Exclude<keyof Filters, 'minPrice' | 'maxPrice'>;
 
 const ARRAY_FILTER_KEYS: ArrayFilterKey[] = [
-  'category',
+  'kategorie',
   'brand',
   'condition',
   'width',
@@ -63,7 +63,7 @@ const ARRAY_FILTER_KEYS: ArrayFilterKey[] = [
 ];
 
 const DEFAULT_FILTERS: Filters = {
-  category: [],
+  kategorie: [],
   brand: [],
   condition: [],
   width: [],
@@ -80,7 +80,7 @@ const DEFAULT_FILTERS: Filters = {
 };
 
 const FILTER_LABELS: Record<ArrayFilterKey, string> = {
-  category: 'Reifentyp',
+  kategorie: 'Reifentyp',
   brand: 'Marke',
   condition: 'Zustand',
   width: 'Breite',

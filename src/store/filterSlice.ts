@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 interface FilterParams {
-  category?: string;
+  kategorie?: string;
   width?: string;
   height?: string;
   diameter?: string;
@@ -14,7 +14,7 @@ export interface FilterOption {
 }
 
 interface FilterState {
-  categories: FilterOption[];
+  kategories: FilterOption[];
   widths: FilterOption[];
   heights: FilterOption[];
   diameters: FilterOption[];
@@ -23,7 +23,7 @@ interface FilterState {
 }
 
 const initialState: FilterState = {
-  categories: [],
+  kategories: [],
   widths: [],
   heights: [],
   diameters: [],
@@ -69,7 +69,7 @@ const filterSlice = createSlice({
               : { name: item.name, count: item.count }
           );
 
-        state.categories = mapToOptions(action.payload.categories);
+        state.kategories = mapToOptions(action.payload.kategories);
         state.widths = mapToOptions(action.payload.widths);
         state.heights = mapToOptions(action.payload.heights);
         state.diameters = mapToOptions(action.payload.diameters);

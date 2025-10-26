@@ -38,7 +38,7 @@ export async function generateMetadata({
     description,
     alternates: {
       canonical: `${baseUrl}/produkte${
-        category ? `?category=${category}` : ''
+        category ? `?kategorie=${category}` : ''
       }`,
     },
     keywords: [
@@ -53,7 +53,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'website',
       locale: 'de_DE',
-      url: `${baseUrl}/produkte${category ? `?category=${category}` : ''}`,
+      url: `${baseUrl}/produkte${category ? `?kategorie=${category}` : ''}`,
       siteName: 'Reifencheck.de',
       title,
       description,
@@ -87,7 +87,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   const limit = 12;
 
   const params = new URLSearchParams();
-  if (category) params.append('category', category);
+  if (category) params.append('kategorie', category);
   params.append('page', page.toString());
   params.append('limit', limit.toString());
 
