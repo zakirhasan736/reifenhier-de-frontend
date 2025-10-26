@@ -5,15 +5,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import GlobalSearch from '@/components/elements/search/globalSearch';
 import { useGetWishlistCountQuery } from '@/store/api/wishlistApi';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  activeCategory?: string | null;
+}
+
+const Header: React.FC<HeaderProps> = ({ activeCategory }) => {
   const { data = { count: 0 }, isLoading } = useGetWishlistCountQuery();
-  // --- Detect active category from query string ---
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const activeCategory =
-    (searchParams?.get('kategorie') || searchParams?.get('category')) ?? '';
 
   const isActive = (cat: string) =>
     pathname === '/produkte' && activeCategory === cat;
