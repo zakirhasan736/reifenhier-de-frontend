@@ -97,7 +97,7 @@
     html,
     body {
       box-sizing: border-box;
-      /* color: var(--mono-100); */
+      color: var(--mono-100);
       font-family: var(--secondary-font);
     }
     /* th,td,tr, */
