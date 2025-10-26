@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import toast  from 'react-hot-toast';
+import { FaFacebookF  , FaInstagram } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -102,7 +103,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="footer-top-area flex items-start justify-between pt-8  pb-[19px] max-sm:flex-col lg:gap-0 gap-5">
               <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
                 <Image
-                  src="/images/footer-brand-logo.svg"
+                  src="/images/footer-brand-logo-reifencheck-de.svg"
                   className="opacity-100 max-sm:w-[130px] sm:w-[140px] w-[180px] h-auto"
                   alt="company logo"
                   width={180}
@@ -124,7 +125,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
                         href="/"
                       >
                         Home
@@ -132,7 +133,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
                         href="/produkte"
                       >
                         Produkte
@@ -140,7 +141,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
                         href="/blogs"
                       >
                         News & Artikel
@@ -148,8 +149,8 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
-                        href="/favorites"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
+                        href="/favoriten"
                       >
                         Favoriten
                       </Link>
@@ -163,7 +164,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
                         href="/produkte?kategorie=Sommerreifen"
                       >
                         Sommerreifen
@@ -171,7 +172,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
                         href="/produkte?kategorie=Winterreifen"
                       >
                         Winterreifen
@@ -179,7 +180,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </li>
                     <li>
                       <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]"
+                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
                         href="/produkte?kategorie=Ganzjahresreifen"
                       >
                         Ganzjahresreifen
@@ -202,28 +203,18 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <ul className="quick-link-list flex gap-3 md:gap-3 pl-0">
                     <li>
                       <Link
-                        className="p-2 hover:bg-[#f5b602]/60 hover:border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
-                        href="http://facebook.com/reifencheck.de"
+                        className="p-2 hover:bg-[#f5b602]/60 hover:!border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-primary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        href="https://facebook.com/reifencheck.de"
                       >
-                        <Image
-                          src="/images/facebook.png"
-                          alt="reifencheck facebook icon"
-                          width={20}
-                          height={20}
-                        />
+                        <FaFacebookF className="fill-primary-100 text-[20px]" />
                       </Link>
                     </li>
                     <li>
                       <Link
-                        className="p-2 hover:bg-[#f5b602]/60 hover:border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        className="p-2 hover:bg-[#f5b602]/60 hover:!border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-primary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
                         href="https://www.instagram.com/reifencheck.de"
                       >
-                        <Image
-                          src="/images/instagram.png"
-                          alt="reifencheck instagrame icon"
-                          width={20}
-                          height={20}
-                        />
+                        <FaInstagram className="fill-primary-100 text-[20px]" />
                       </Link>
                     </li>
                     {/* <li>
@@ -253,7 +244,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">
                   <li className="foot-middle-item">
                     <Link
-                      className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042]"
+                      className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
                       href="/impressum-datenschutz"
                     >
                       Impressum & Datenschutz
@@ -261,10 +252,10 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </li>
                   <li className="foot-middle-item">
                     <Link
-                      className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042]"
+                      className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
                       href="/AGB"
                     >
-                      Nutzungsbedingung AGB
+                      AGB
                     </Link>
                   </li>
                 </ul>

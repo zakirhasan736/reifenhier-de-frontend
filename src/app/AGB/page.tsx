@@ -21,7 +21,7 @@ export default function TermsPage() {
     <>
       <div className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
         <div className="mb-10">
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight text-secondary-100">
             Allgemeine Geschäftsbedingungen (AGB) für Reifencheck.de
           </h1>
           <p className="mt-2 text-sm text-gray-500">
@@ -33,7 +33,9 @@ export default function TermsPage() {
           aria-label="Inhaltsverzeichnis"
           className="mb-8 rounded-2xl bg-gray-50 p-4 ring-1 ring-gray-200"
         >
-          <h2 className="text-base font-semibold">Inhaltsverzeichnis</h2>
+          <h2 className="text-base font-semibold  text-secondary-100">
+            Inhaltsverzeichnis
+          </h2>
           <ol className="mt-3 list-decimal space-y-1 pl-6 text-sm">
             <li>
               <a href="#1" className="underline hover:no-underline">
@@ -69,7 +71,7 @@ export default function TermsPage() {
         </nav>
 
         <div id="1" className="scroll-mt-20">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-2xl font-semibold  text-secondary-100">
             1. Geltungsbereich, Änderungen der Nutzungsbedingungen
           </h2>
           <p className="mt-3">
@@ -86,7 +88,7 @@ export default function TermsPage() {
         </div>
 
         <div id="2" className="mt-10 scroll-mt-20">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-2xl font-semibold  text-secondary-100">
             2. Leistungsbeschreibung, Vertragsverhältnisse
           </h2>
           <p className="mt-3">
@@ -116,7 +118,7 @@ export default function TermsPage() {
         </div>
 
         <div id="3" className="mt-10 scroll-mt-20">
-          <h2 className="text-2xl font-semibold">3. Haftungsausschluss</h2>
+          <h2 className="text-2xl font-semibold  text-secondary-100">3. Haftungsausschluss</h2>
           <p className="mt-3">
             3.1 Die Nutzung der Plattform erfolgt auf eigenes Risiko des
             Nutzers. Der Betreiber übernimmt keine Gewährleistung für die
@@ -150,7 +152,7 @@ export default function TermsPage() {
         </div>
 
         <div id="4" className="mt-10 scroll-mt-20">
-          <h2 className="text-2xl font-semibold">4. Pflichten des Nutzers</h2>
+          <h2 className="text-2xl font-semibold  text-secondary-100">4. Pflichten des Nutzers</h2>
           <p className="mt-3">
             4.1 Der Nutzer verpflichtet sich, Handlungen zu unterlassen, die die
             Funktionalität der Plattform beeinträchtigen könnten. Dies umfasst
@@ -167,7 +169,7 @@ export default function TermsPage() {
         </div>
 
         <div id="5" className="mt-10 scroll-mt-20">
-          <h2 className="text-2xl font-semibold">5. Datenschutz</h2>
+          <h2 className="text-2xl font-semibold  text-secondary-100">5. Datenschutz</h2>
           <p className="mt-3">
             Die Erhebung und Verarbeitung personenbezogener Daten erfolgt nach
             den in der Datenschutzerklärung festgelegten Bestimmungen.
@@ -175,7 +177,7 @@ export default function TermsPage() {
         </div>
 
         <div id="6" className="mt-10 scroll-mt-20">
-          <h2 className="text-2xl font-semibold">6. Schlussbestimmungen</h2>
+          <h2 className="text-2xl font-semibold  text-secondary-100">6. Schlussbestimmungen</h2>
           <p className="mt-3">
             6.1 Es gilt das Recht der Bundesrepublik Deutschland unter
             Ausschluss des UN-Kaufrechts.

@@ -12,7 +12,7 @@ interface FilterOption {
   count?: number;
 }
 interface FilterResponse {
-  categories: FilterOption[];
+  kategories: FilterOption[];
   widths: FilterOption[];
   heights: FilterOption[];
   diameters: FilterOption[];
@@ -25,7 +25,7 @@ interface FilterResponse {
 const FilterForm = () => {
   const router = useRouter();
 
-  const [category, setCategory] = useState('Sommerreifen');
+  const [kategorie, setKategories] = useState('Winterreifen');
   const [width, setWidth] = useState('205');
   const [height, setHeight] = useState('55');
   const [diameter, setDiameter] = useState('16');
@@ -36,7 +36,7 @@ const FilterForm = () => {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   const { data = {} as FilterResponse } = useGetTyreFiltersQuery({
-    category,
+    kategorie,
     width,
     height,
     diameter,
@@ -86,7 +86,7 @@ const FilterForm = () => {
 
   const handleSearch = () => {
     if (
-      !category &&
+      !kategorie &&
       !width &&
       !height &&
       !diameter &&
@@ -100,7 +100,7 @@ const FilterForm = () => {
     }
 
     const params = new URLSearchParams();
-    if (category) params.set('category', category);
+    if (kategorie) params.set('kategorie', kategorie);
     if (width) params.set('width', width);
     if (height) params.set('height', height);
     if (diameter) params.set('diameter', diameter);
@@ -213,16 +213,16 @@ const FilterForm = () => {
     <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto">
       <div className="lg:h-[207px] h-[260px] md:block hidden w-full" />
       <div className="tyres-search-content md:absolute flex flex-col top-0 left-0 w-full bg-mono-0 md:px-[30px] px-4 py-4 md:py-6 rounded-[10px]">
-        <div className="lg:pb-16 pb-14 relative">
+        <div className="lg:pb-16 pb-8 relative">
           <div className="tyre-search-box relative lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
             <div className="tyre-type-area w-full relative  z-150">
-              <div className="max-sm:flex-wrap tyre-type-top-filter-area flex w-full items-end justify-between gap-x-4 lg:gap-y-5 gap-y-4">
+              <div className="grid grid-cols-2 tyre-type-top-filter-area sm:flex w-full items-end justify-between gap-x-4 md:gap-x-3 lg:gap-x-4 lg:gap-y-5 gap-y-4">
                 <CustomSelect
                   label="Reifentyp"
-                  value={category}
-                  onChange={setCategory} // ⬅️ no cascading resets
+                  value={kategorie}
+                  onChange={setKategories} // ⬅️ no cascading resets
                   className="categories-select"
-                  options={sortAlphaAsc(data.categories || [])}
+                  options={sortAlphaAsc(data.kategories || [])}
                   placeholder="Auswählen..."
                 />
 
@@ -313,7 +313,7 @@ const FilterForm = () => {
           <button
             type="button"
             onClick={() => setShowMoreFilters(prev => !prev)}
-            className="filter-type-view-more-button cursor-pointer text-primary-100 mt-5 text-[14px] text-left font-secondary inline-block font-normal leading-[120%] z-90 lg:relative lg:bottom-0 lg:left-0 absolute bottom-20 left-0 max-sm:left-0"
+            className="filter-type-view-more-button cursor-pointer text-primary-100 mt-5 text-[14px] text-left font-secondary inline-block font-normal leading-[120%] z-90 lg:relative lg:bottom-0 lg:left-0 absolute bottom-12 left-0 max-sm:left-0"
           >
             {showMoreFilters ? 'Weniger Filter' : 'Weitere Filteroptionen'}
           </button>

@@ -49,7 +49,11 @@ const { data, isLoading } = useGetLatestProductsQuery(undefined, {
             slidesPerView={1}
             navigation
             modules={[Navigation, Autoplay, Pagination]}
-            autoplay={{ delay: 3500, disableOnInteraction: false }}
+            autoplay={{
+              delay: 3500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
             pagination={{
               el: '.latest-swiper-pagination',
               clickable: true,

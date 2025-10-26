@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
+import { MdAddShoppingCart } from 'react-icons/md';
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -1059,15 +1060,7 @@ const handleToggleWishlist = async () => {
                           type="button"
                           className="w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
                         >
-                          <Image
-                            src="/images/icons/shopping-bag.png"
-                            className="w-5 h-5"
-                            alt="cart icon"
-                            width={24}
-                            height={24}
-                            loading="lazy"
-                          />{' '}
-                          Zum Angebot
+                          <MdAddShoppingCart className='text-[22px]' />  Zum Angebot
                         </button>
                       </Link>
                     </div>
@@ -1426,7 +1419,7 @@ const handleToggleWishlist = async () => {
                                         </h4>
 
                                         {showSavings && (
-                                          <p className="px-1 py-[2px] border border-[#00BE00] text-[14px] gap-1 flex items-center justify-center text-[#00BE00] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                          <p className="px-1 py-[2px] border border-[#CC0C39] text-[14px] gap-1 flex items-center justify-center text-[#CC0C39] h-[24px] max-w-[65px] rounded-[6px] w-full">
                                             {offer.savings_percent}
                                             <span
                                               className="tooltip tooltip-right cursor-pointer flex items-center"
@@ -1632,17 +1625,9 @@ const handleToggleWishlist = async () => {
                                     >
                                       <button
                                         type="button"
-                                        className="w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                        className="w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 !text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
                                       >
-                                        <Image
-                                          src="/images/icons/shopping-bag.png"
-                                          className="w-5 h-5"
-                                          alt="cart icon"
-                                          width={24}
-                                          height={24}
-                                          loading="lazy"
-                                        />
-                                        Zum Angebot
+                                        <MdAddShoppingCart className='text-[22px]' /> Zum Angebot
                                       </button>
                                     </Link>
                                     <Link

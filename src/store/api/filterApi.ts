@@ -6,7 +6,7 @@ interface FilterOption {
 }
 
 interface FilterParams {
-  category?: string;
+  kategorie?: string;
   width?: string;
   height?: string;
   diameter?: string;
@@ -17,7 +17,7 @@ interface FilterParams {
 }
 
 interface FilterResponse {
-  categories: FilterOption[];
+  kategories: FilterOption[];
   widths: FilterOption[];
   heights: FilterOption[];
   diameters: FilterOption[];

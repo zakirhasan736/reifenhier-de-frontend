@@ -191,7 +191,9 @@ export default async function BlogDetailPage({
       <section className="blog-details-page">
         <div className="custom-container pt-12">
           <article className="md:max-w-4xl w-full mx-auto">
-            <h1 className="text-3xl font-semibold mb-2">{blog.title}</h1>
+            <h1 className="text-3xl font-semibold mb-2 !text-[#16171A]">
+              {blog.title}
+            </h1>
             <p className="text-gray-600 mb-4">{date}</p>
 
             {blog.coverImage && (

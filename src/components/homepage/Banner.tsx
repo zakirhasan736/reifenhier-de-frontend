@@ -12,13 +12,13 @@ const BannerSection = () => {
         alt="Bannerbild Reifencheck.de"
         // Use fill for full-bleed hero
         fill
-        // ✅ Make the chosen intrinsic size match the viewport width
+        //  Make the chosen intrinsic size match the viewport width
         //    (your previous '1080px' made some browsers pick larger files)
         sizes="100vw"
-        // ✅ Keep the preload hint for real LCP
+        //  Keep the preload hint for real LCP
         priority
         fetchPriority="high"
-        // ✅ Lower quality a bit to reduce bytes (tune 50–70)
+        //  Lower quality a bit to reduce bytes (tune 50–70)
         quality={60}
         // Optional: show a quick blur while decoding; doesn't change LCP,
         // but improves perceived UX.
@@ -29,7 +29,7 @@ const BannerSection = () => {
           <div className="tyres-search-area w-full h-full flex items-end justify-center">
             <div className="tyres-search-content w-full relative">
               <div className="tyres-search-left-content lg:mb-10 md:mb-8 mb-7  relative">
-                <h1 className="h2 text-mono-0 text-center mb-2 md:mb-4 md:text-[38px] lg:text-[48px] leading-[115%] font-medium font-primary text-[26px]">
+                <h1 className="h2 text-mono-0 text-center mb-2 md:mb-4 md:!text-[38px] lg:!text-[48px] leading-[115%] font-medium font-primary !text-[26px]">
                   Finden Sie die perfekten Reifen{' '}
                   <br className="max-sm:hidden" />
                   für Ihr Fahrzeug

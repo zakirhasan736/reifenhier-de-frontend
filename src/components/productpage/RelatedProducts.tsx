@@ -59,7 +59,11 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ relatedProductData, l
               slidesPerView={1}
               navigation
               modules={[Navigation, Autoplay]}
-              autoplay={{ delay: 3900, disableOnInteraction: false }}
+              autoplay={{
+                delay: 3900,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
               breakpoints={{
                 640: { slidesPerView: 1, spaceBetween: 10 },
                 768: { slidesPerView: 2, spaceBetween: 15 },

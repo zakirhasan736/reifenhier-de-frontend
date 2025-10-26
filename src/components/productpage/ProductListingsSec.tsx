@@ -134,19 +134,19 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
     maxPriceLimit,
   } = useSelector((state: RootState) => state.products);
   // 👇 Hydrate Redux store with SSR data on first render
-const hasHydrated = useRef(false);
+  const hasHydrated = useRef(false);
 
-useEffect(() => {
-  if (hasHydrated.current || !initialProducts?.length) return;
-  dispatch(
-    setInitialProducts({
-      products: initialProducts,
-      total,
-      page: initialPage,
-    })
-  );
-  hasHydrated.current = true;
-}, [dispatch, initialProducts, total, initialPage]);
+  useEffect(() => {
+    if (hasHydrated.current || !initialProducts?.length) return;
+    dispatch(
+      setInitialProducts({
+        products: initialProducts,
+        total,
+        page: initialPage,
+      })
+    );
+    hasHydrated.current = true;
+  }, [dispatch, initialProducts, total, initialPage]);
 
   const mergedFilters = useMemo(
     () => ({ ...DEFAULT_FILTERS, ...filters }),
@@ -183,32 +183,74 @@ useEffect(() => {
   const lastQsRef = useRef<string>('');
 
   // Init from URL ONCE, and trigger first fetch via the same debounced path
-  useEffect(() => {
-    if (!searchParams || isReady) return;
+  // useEffect(() => {
+  //   if (!searchParams || isReady) return;
 
-    const initial: Partial<Filters> = {};
+  //   const initial: Partial<Filters> = {};
+  //   ARRAY_FILTER_KEYS.forEach(key => {
+  //     const values = searchParams.getAll(key);
+  //     if (values.length > 0) initial[key] = values;
+  //   });
+  //   const qsMin = searchParams.get('minPrice');
+  //   const qsMax = searchParams.get('maxPrice');
+  //   if (qsMin) initial.minPrice = Number(qsMin);
+  //   if (qsMax) initial.maxPrice = Number(qsMax);
+
+  //   const qsSortField = searchParams.get('sortField');
+  //   const qsSortOrder = searchParams.get('sortOrder') as 'asc' | 'desc' | null;
+  //   const qsPage = Number(searchParams.get('page') || 1);
+
+  //   if (Object.keys(initial).length > 0)
+  //     dispatch(setFilters(initial as Filters));
+  //   if (qsSortField && qsSortOrder)
+  //     dispatch(setSort({ field: qsSortField, order: qsSortOrder }));
+  //   if (!Number.isNaN(qsPage) && qsPage > 0) dispatch(setPage(qsPage));
+
+  //   setIsReady(true);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [dispatch, searchParams, isReady]);
+  // ✅ Initialize and react to URL param changes (including category nav clicks)
+  useEffect(() => {
+    if (!searchParams) return;
+
+    const newFilters: Partial<Filters> = {};
+
+    // Read all array-type filters from query string
     ARRAY_FILTER_KEYS.forEach(key => {
       const values = searchParams.getAll(key);
-      if (values.length > 0) initial[key] = values;
+      newFilters[key] = values.length > 0 ? values : [];
     });
+
+    // Numeric filters
     const qsMin = searchParams.get('minPrice');
     const qsMax = searchParams.get('maxPrice');
-    if (qsMin) initial.minPrice = Number(qsMin);
-    if (qsMax) initial.maxPrice = Number(qsMax);
+    newFilters.minPrice = qsMin ? Number(qsMin) : DEFAULT_FILTERS.minPrice;
+    newFilters.maxPrice = qsMax ? Number(qsMax) : DEFAULT_FILTERS.maxPrice;
 
+    // Sorting + pagination
     const qsSortField = searchParams.get('sortField');
     const qsSortOrder = searchParams.get('sortOrder') as 'asc' | 'desc' | null;
     const qsPage = Number(searchParams.get('page') || 1);
 
-    if (Object.keys(initial).length > 0)
-      dispatch(setFilters(initial as Filters));
-    if (qsSortField && qsSortOrder)
-      dispatch(setSort({ field: qsSortField, order: qsSortOrder }));
-    if (!Number.isNaN(qsPage) && qsPage > 0) dispatch(setPage(qsPage));
+    // Dispatch everything in correct order
+    dispatch(setFilters(newFilters as Filters));
 
-    setIsReady(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, searchParams, isReady]);
+    if (qsSortField && qsSortOrder) {
+      dispatch(setSort({ field: qsSortField, order: qsSortOrder }));
+    } else {
+      // optional: reset to default sort if none in URL
+      dispatch(setSort({ field: '', order: 'asc' }));
+    }
+
+    if (!Number.isNaN(qsPage) && qsPage > 0) {
+      dispatch(setPage(qsPage));
+    } else {
+      dispatch(setPage(1));
+    }
+
+    // Mark ready once first sync happens
+    if (!isReady) setIsReady(true);
+  }, [searchParams?.toString()]);
 
   // Single debounced fetch (leading-only so it fires immediately, and never twice)
   const debouncedFetch = useRef(
@@ -435,7 +477,7 @@ useEffect(() => {
                     onPageChange={p => dispatch(setPage(p))}
                   />
                 </div>
-                <div className="showing-current-product">
+                <div className="showing-current-product text-[#404042]">
                   <span className="caption pr-3 max-md:pr-1">Anzeigen</span>{' '}
                   <span className="caption">
                     {total === 0 ? 0 : startIndex + 1} bis {endIndex} von{' '}

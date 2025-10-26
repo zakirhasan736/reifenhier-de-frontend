@@ -76,7 +76,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
 
   const handleSuggestionClick = (s: Suggestion) => {
     if (s.type === 'Produkt') {
-      // ✅ route by slug; fallback to search if slug somehow missing
+      // route by slug; fallback to search if slug somehow missing
       if (s.slug) {
         router.push(`/produkte/${s.slug}`);
       } else {
@@ -108,7 +108,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
             type="search"
             value={query}
             onChange={handleInputChange}
-            className="search-input-filed h-12  placeholder:text-secondary-100 !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none w-full !bg-mono-0 !shadow-none !border !border-secondary-100/40 text-[14px] font-normal bg-primary-color-70 pr-2 pl-11 py-[11.5px] text-primary-color-100 leading-[150%] font-secondary"
+            className="search-input-filed h-12  placeholder:text-secondary-100 !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none w-full !bg-mono-0 !shadow-none !border !border-secondary-100/40 text-[14px] font-normal bg-primary-color-70 pr-2 pl-11 pt-[11.5px] pb-[10px] text-primary-color-100 leading-[150%] font-secondary"
             placeholder="Suche nach Produkt..."
           />
           <label
@@ -145,13 +145,14 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
                 onClick={() => handleSuggestionClick(sugg)}
                 className="flex items-center gap-3 p-3 text-sm hover:bg-gray-100 cursor-pointer border-b border-b-black/30 last:border-0"
               >
-                {/* ✅ show product image if available */}
+                {/* show product image if available */}
                 {sugg.type === 'Produkt' && sugg.image && (
                   <Image
                     src={sugg.image}
                     alt={sugg.name}
                     className="w-10 h-10 object-contain rounded border border-gray-200"
-                    width={40} height={40}
+                    width={40}
+                    height={40}
                   />
                 )}
                 <div className="flex flex-col">

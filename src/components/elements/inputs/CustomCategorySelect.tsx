@@ -64,7 +64,7 @@ const CustomSelect: React.FC<Props> = ({
       {open && (
         <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/2 focus:outline-none">
           <li
-            className="cursor-pointer select-none px-3 py-2 text-[#16171A] hover:bg-primary-100 hover:text-white md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%]"
+            className="cursor-pointer select-none px-3 py-2 !text-[#16171A] hover:!bg-primary-100 hover:!text-white md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%]"
             onClick={() => {
               onChange('');
               setOpen(false);
@@ -77,7 +77,7 @@ const CustomSelect: React.FC<Props> = ({
               key={idx}
               className={`cursor-pointer select-none px-3 py-2 hover:bg-primary-100 hover:text-white md:text-[14px] text-[12px] text-left font-normal font-secondary leading-[120%] ${
                 value === item.name
-                  ? 'bg-primary-100  text-[#86878A font-bold'
+                  ? 'bg-primary-100  text-white font-bold'
                   : ''
               }`}
               onClick={() => {

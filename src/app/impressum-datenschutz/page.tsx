@@ -28,14 +28,14 @@ const PrivacyPolicy: React.FC = () => {
       </Head>
 
       <main className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
-        {/* <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">Impressum & Datenschutz</h1>
+        <header className="mb-8 text-left">
+          <h1 className="text-3xl font-bold text-secondary-100">Impressum</h1>
           <p className="mt-2 text-sm text-gray-500">August 9, 2025</p>
-        </header> */}
+        </header>
 
         {/* Verantwortlicher */}
         <section>
-          <p className="text-xl font-semibold mt-6">Verantwortlicher</p>
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">Verantwortlicher</h2>
           <p className="mt-2">
             Reifencheck.de
             <br />
@@ -51,11 +51,11 @@ const PrivacyPolicy: React.FC = () => {
           </p>
         </section>
 
-        <h1 className="mt-5 text-3xl font-bold">Impressum & Datenschutz</h1>
+        <h2 className="mt-5 text-3xl font-bold text-secondary-100">Datenschutz</h2>
 
         {/* Übersicht der Verarbeitungen */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Übersicht der Verarbeitungen
           </h2>
           <p className="mt-2">
@@ -64,7 +64,7 @@ const PrivacyPolicy: React.FC = () => {
           </p>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-xl bg-gray-50 p-4">
-              <h3 className="font-medium text-[18px]">
+              <h3 className="font-medium text-[18px]  text-secondary-100">
                 Arten der verarbeiteten Daten
               </h3>
               <ul className="mt-2 list-disc pl-5 text-sm space-y-1">
@@ -79,7 +79,7 @@ const PrivacyPolicy: React.FC = () => {
               </ul>
             </div>
             <div className="rounded-xl bg-gray-50 p-4">
-              <h3 className="font-medium text-[18px]">
+              <h3 className="font-medium text-[18px]  text-secondary-100">
                 Kategorien betroffener Personen
               </h3>
               <ul className="mt-2 list-disc pl-5 text-sm space-y-1">
@@ -90,7 +90,7 @@ const PrivacyPolicy: React.FC = () => {
               </ul>
             </div>
             <div className="rounded-xl bg-gray-50 p-4 md:col-span-2">
-              <h3 className="font-medium text-[18px]">
+              <h3 className="font-medium text-[18px]  text-secondary-100">
                 Zwecke der Verarbeitung
               </h3>
               <ul className="mt-2 list-disc pl-5 text-sm columns-1 md:columns-2 space-y-1">
@@ -114,7 +114,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Rechtsgrundlagen */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Maßgebliche Rechtsgrundlagen
           </h2>
           <p className="mt-2">
@@ -129,7 +129,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Sicherheitsmaßnahmen */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">Sicherheitsmaßnahmen</h2>
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">Sicherheitsmaßnahmen</h2>
           <p className="mt-2">
             Wir treffen geeignete technische und organisatorische Maßnahmen
             (TOM), um ein dem Risiko angemessenes Schutzniveau zu gewährleisten
@@ -141,7 +141,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Übermittlung von personenbezogenen Daten */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Übermittlung von personenbezogenen Daten
           </h2>
           <p className="mt-2">
@@ -154,7 +154,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Internationale Datentransfers */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Internationale Datentransfers
           </h2>
           <p className="mt-2">
@@ -168,7 +168,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Speicherung & Löschung */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Allgemeine Informationen zur Datenspeicherung und Löschung
           </h2>
           <p className="mt-2">
@@ -194,7 +194,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Rechte der betroffenen Personen */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Rechte der betroffenen Personen
           </h2>
           <ul className="mt-2 list-disc pl-5 text-sm space-y-1">
@@ -215,7 +215,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Bereitstellung & Webhosting */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Bereitstellung des Onlineangebotes und Webhosting
           </h2>
           <p className="mt-2">
@@ -228,7 +228,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Cookies */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">Einsatz von Cookies</h2>
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">Einsatz von Cookies</h2>
           <p className="mt-2">
             Wir setzen Cookies und ähnliche Technologien ein. Soweit rechtlich
             erforderlich, holen wir Ihre Einwilligung vorab über ein
@@ -248,7 +248,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Blogs & Publikationsmedien */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Blogs und Publikationsmedien
           </h2>
           <p className="mt-2">
@@ -260,7 +260,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Kontakt- und Anfrageverwaltung */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Kontakt- und Anfrageverwaltung
           </h2>
           <p className="mt-2">
@@ -272,7 +272,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Newsletter */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Newsletter und elektronische Benachrichtigungen
           </h2>
           <p className="mt-2">
@@ -284,7 +284,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Webanalyse */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Webanalyse, Monitoring und Optimierung
           </h2>
           <p className="mt-2">
@@ -293,7 +293,7 @@ const PrivacyPolicy: React.FC = () => {
             gebildet; IP‑Adressen werden gekürzt (IP‑Masking), sofern technisch
             möglich.
           </p>
-          <h3 className="mt-4 font-medium text-xl">Google Analytics</h3>
+          <h3 className="mt-4 font-medium text-xl text-secondary-100">Google Analytics</h3>
           <p className="mt-2 text-sm">
             Dienstanbieter: Google Ireland Limited, Gordon House, Barrow Street,
             Dublin 4, Irland. Verarbeitung auf Basis Ihrer Einwilligung.
@@ -305,7 +305,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Onlinemarketing */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">Onlinemarketing</h2>
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">Onlinemarketing</h2>
           <p className="mt-2">
             Für die Vermarktung von Inhalten können Cookies/Profiling eingesetzt
             werden. Es werden pseudonyme Profile verwendet; IP‑Adressen werden –
@@ -317,7 +317,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Affiliate */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Affiliate-Programme und Affiliate-Links
           </h2>
           <p className="mt-2">
@@ -330,7 +330,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Bewertungen */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Kundenrezensionen und Bewertungsverfahren
           </h2>
           <p className="mt-2">
@@ -342,7 +342,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Social Media */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Präsenzen in sozialen Netzwerken (Social Media)
           </h2>
           <p className="mt-2">
@@ -355,7 +355,7 @@ const PrivacyPolicy: React.FC = () => {
 
         {/* Plug-ins */}
         <section>
-          <h2 className="text-xl font-semibold mt-6">
+          <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Plug-ins und eingebettete Funktionen sowie Inhalte
           </h2>
           <p className="mt-2">

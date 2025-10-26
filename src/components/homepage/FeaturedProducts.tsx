@@ -42,7 +42,11 @@ const productData = data?.products || [];
             slidesPerView={1}
             navigation
             modules={[Navigation, Autoplay, Pagination]}
-            autoplay={{ delay: 3900, disableOnInteraction: false }}
+            autoplay={{
+              delay: 3900,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
             pagination={{
               el: '.custom-swiper-pagination',
               clickable: true,

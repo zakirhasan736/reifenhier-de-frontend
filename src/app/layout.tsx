@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 import ClientProviders from '@/utils/Provider';
 import Script from 'next/script';
-import { use } from 'react';
 import { Poppins } from 'next/font/google';
 import Header from '@/components/shared/header/Header';
 import Footer from '@/components/shared/footer/Footer';
-import { headers } from 'next/headers';
+import { Suspense } from 'react';
+
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -92,9 +92,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const h = use(headers());
-  const url = h.get('x-url') ?? '';
-  const category = new URL(url, 'https://dummy').searchParams.get('kategorie');
+  // const h = use(headers());
+  // const url = h.get('x-url') ?? '';
+  // const category = new URL(url, 'https://dummy').searchParams.get('kategorie');
   return (
     <html lang="de" className={poppins.className}>
       <head>
@@ -263,9 +263,13 @@ export default function RootLayout({
 
         <main className="angelpage-main-wrapper">
           <ClientProviders>
-            <Header activeCategory={category} />
-            {children}
-            <Footer />
+            <Suspense
+              fallback={<div className="p-10 text-center">Lädt...</div>}
+            >
+              <Header />
+              {children}
+              <Footer />
+            </Suspense>
           </ClientProviders>
         </main>
       </body>

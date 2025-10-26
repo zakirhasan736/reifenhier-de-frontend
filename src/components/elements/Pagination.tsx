@@ -55,7 +55,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="p-2 text-[20px] font-bold text-mono-100 disabled:opacity-50"
+        className="p-2 text-[20px] font-bold cursor-pointer text-mono-100 disabled:opacity-50"
         aria-label="Previous page"
       >
         <Image
@@ -88,7 +88,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="p-2 text-[20px] font-bold text-mono-100 disabled:opacity-50"
+        className="p-2 text-[20px] font-bold cursor-pointer text-mono-100 disabled:opacity-50"
         aria-label="Next page"
       >
         <Image

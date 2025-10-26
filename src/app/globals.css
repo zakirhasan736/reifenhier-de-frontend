@@ -70,6 +70,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color: var(--mono-0);
     background-color: #ffffff;
   }
 
@@ -81,6 +82,7 @@
   h1, h2, h3, h4, h5, h6 {
     margin: 0;
     padding: 0;
+    color: #000000;
   }
 
 
@@ -95,10 +97,13 @@
     html,
     body {
       box-sizing: border-box;
-      color: var(--mono-100);
+      /* color: var(--mono-100); */
       font-family: var(--secondary-font);
     }
-
+li,ol,ul,
+svg{
+    color: var(--mono-100);
+}
 
     h1,
     h2,
@@ -1847,29 +1852,30 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 .tyre-type-top-filter-area > div:not(:first-child) {
   max-width: 150px;
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 800px) and (min-width:640px)  {
     .tyre-type-top-filter-area > div:not(:first-child) {
   max-width: 130px;
 }
-}
+} 
 @media screen and (max-width: 859px) and (min-width:601px) {
     .product-listing-grid-wrapper{
         grid-template-columns: repeat(2, 1fr);
         width: 100%;
     }
 }
-@media screen and (max-width: 600px) {
-.categories-select {
-    max-width: 180px;
+@media screen and (max-width: 641px) {
+    .categories-select {
+    max-width: 100%; 
 }
+ 
  .tyre-type-top-filter-area > div:nth-child(2) {
-    max-width: calc(100% - (180px + 16px));
+    max-width: 100%;
  }
 .tyre-type-top-filter-area > div:nth-child(3) {
-    max-width: calc(100% - (50% + 8px));
+    max-width: 100%;
  }
 .tyre-type-top-filter-area > div:nth-child(4) {
-    max-width: calc(100% - (50% + 8px));
+    max-width: 100%;
 }
 .product-listing-main-wrapper .product-listings-sec .custom-container {
     padding-left: 28px;
@@ -1903,10 +1909,10 @@ flex-direction: column;
     max-width: 100%;
  }
 .tyre-type-top-filter-area > div:nth-child(3) {
-    max-width: calc(100% - (50% + 8px));
+    max-width:  100%;
  }
 .tyre-type-top-filter-area > div:nth-child(4) {
-    max-width: calc(100% - (50% + 8px));
+    max-width:  100%;
 }
 .filter-type-view-more-button{
         position: relative !important;

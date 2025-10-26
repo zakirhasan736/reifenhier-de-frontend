@@ -31,17 +31,30 @@ const initialState: FilterState = {
   error: null,
 };
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 type FilterApiItem = string | { name: string; count?: number };
 export const fetchFilters = createAsyncThunk(
   'filters/fetchFilters',
   async (params: FilterParams) => {
-    const res = await axios.get(`${apiUrl}/api/products/filter-tyres`, {
-      params,
-    });
-    return res.data;
+    console.log('🟡 fetchFilters called with params:', params);
+    console.log('🟡 API endpoint:', `${apiUrl}/api/products`);
+
+    try {
+      const res = await axios.get(`${apiUrl}/api/products`, {
+        params,
+      });
+
+      console.log('🟢 RAW FILTER API RESPONSE:', res.data);
+
+      return res.data;
+    } catch (error) {
+      console.error('🔴 fetchFilters error:', error);
+      throw error;
+    }
   }
 );
+
+
 
 const filterSlice = createSlice({
   name: 'filters',

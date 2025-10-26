@@ -1,22 +1,47 @@
-
 'use client';
+import { usePathname, useSearchParams } from 'next/navigation';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import GlobalSearch from '@/components/elements/search/globalSearch';
 import { useGetWishlistCountQuery } from '@/store/api/wishlistApi';
-import { usePathname } from 'next/navigation';
+import { FaRegSnowflake } from 'react-icons/fa';
+import { IoMdSunny } from 'react-icons/io';
+import GlobalSearch from '@/components/elements/search/globalSearch';
 
-interface HeaderProps {
-  activeCategory?: string | null;
-}
-
-const Header: React.FC<HeaderProps> = ({ activeCategory }) => {
+const Header = () => {
   const { data = { count: 0 }, isLoading } = useGetWishlistCountQuery();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const activeCategory = searchParams?.get('kategorie');
 
   const isActive = (cat: string) =>
     pathname === '/produkte' && activeCategory === cat;
+
+  const categories = [
+    {
+      name: 'Sommerreifen',
+      href: '/produkte?kategorie=Sommerreifen',
+      icon: <IoMdSunny className="!fill-[#e9d435] text-lg" />,
+    },
+    {
+      name: 'Winterreifen',
+      href: '/produkte?kategorie=Winterreifen',
+      icon: <FaRegSnowflake className="!fill-[#88cdff] text-lg" />,
+    },
+    {
+      name: 'Ganzjahresreifen',
+      href: '/produkte?kategorie=Ganzjahresreifen',
+      icon: (
+        <Image
+          src={'/images/icons/icon-reifen-com-ico-season-allyear-color.svg'}
+          alt="all seassion icons"
+          width={18}
+          height={18}
+        />
+      ),
+    },
+  ];
   return (
     <header className="header-section relative bg-mono-0 z-[999] ">
       <div className="header-content-area border-b border-border-100 pt-4 pb-5  max-sm:pb-2 max-sm:pt-3">
@@ -42,55 +67,28 @@ const Header: React.FC<HeaderProps> = ({ activeCategory }) => {
             </Link>
             <nav className="nav-section hidden lg:block px-[6px] border !border-secondary-100/20 rounded-full">
               <ul className="flex items-center gap-0">
-                {/* <li>
-                  <Link
-                    href="/produkte?kategorie=Sommerreifen"
-                    className="text-[14px] capitalize leading-[1] block transition ease-in duration-500 text-center font-primary font-normal text-[#404042] hover:font-medium cursor-pointer px-[18px] py-3 hover:text-primary-100 "
-                  >
-                    Sommerreifen
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/produkte?kategorie=Winterreifen"
-                    className="text-[14px] capitalize leading-[1] block transition ease-in duration-500 text-center font-primary font-normal text-[#404042] hover:font-medium cursor-pointer px-[18px] py-3 hover:text-primary-100 "
-                  >
-                    Winterreifen
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/produkte?kategorie=Ganzjahresreifen"
-                    className="text-[14px] capitalize leading-[1] block transition ease-in duration-500 text-center font-primary font-normal text-[#404042] hover:font-medium cursor-pointer px-[18px] py-3 hover:text-primary-100 "
-                  >
-                    Ganzjahresreifen
-                  </Link>
-                </li> */}
-                {[
-                  {
-                    name: 'Sommerreifen',
-                    href: '/produkte?kategorie=Sommerreifen',
-                  },
-                  {
-                    name: 'Winterreifen',
-                    href: '/produkte?kategorie=Winterreifen',
-                  },
-                  {
-                    name: 'Ganzjahresreifen',
-                    href: '/produkte?kategorie=Ganzjahresreifen',
-                  },
-                ].map(({ name, href }) => (
+                {categories.map(({ name, href, icon }) => (
                   <li key={name}>
                     <Link
                       href={href}
-                      className={`text-[14px] capitalize leading-[1] block text-center font-primary cursor-pointer px-[18px] py-3 transition duration-300
-                        ${
-                          isActive(name)
-                            ? 'text-primary-100 font-semibold'
-                            : 'text-[#404042] hover:text-primary-100 hover:font-medium'
-                        }`}
+                      className={`flex items-center  font-notmal gap-2 text-[14px] capitalize leading-[1] font-primary cursor-pointer px-[18px] py-3 transition duration-300
+                ${
+                  isActive(name)
+                    ? 'text-primary-100 font-notmal'
+                    : 'text-[#404042] hover:text-primary-100 hover:font-medium'
+                }`}
                     >
-                      {name}
+                      {icon}
+                      <span
+                        className={`transition duration-300  font-normal
+                ${
+                  isActive(name)
+                    ? 'text-primary-100 font-medium'
+                    : 'text-[#404042] hover:text-primary-100 hover:font-normal'
+                }`}
+                      >
+                        {name}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -104,7 +102,7 @@ const Header: React.FC<HeaderProps> = ({ activeCategory }) => {
               <ul className="flex items-center gap-4">
                 <li className="!border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center">
                   <Link
-                    href="/favorites"
+                    href="/favoriten"
                     className="flex p-3 max-sm:p-2 items-center"
                   >
                     <Image

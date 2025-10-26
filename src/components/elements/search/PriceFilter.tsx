@@ -40,7 +40,7 @@ const PriceRangeSlider: React.FC<PriceRangeSliderProps> = ({
     <div className="flex flex-col gap-4 mb-2 pt-1 pb-3 border-b border-b-[#C6C7CC] bg-transparent rounded">
       <h4
         id={sliderLabelId}
-        className="filter-sidebar-title text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center gap-1 justify-start pl-3"
+        className="filter-sidebar-title text-[16px] !text-[#16171A] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center gap-1 justify-start pl-3"
       >
         Preisbereich
       </h4>
