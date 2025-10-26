@@ -119,6 +119,13 @@ interface ProductProps {
 }
 
 type MoneyLike = string | number | null | undefined;
+function cleanDescription(text: string): string {
+  return text
+    .replace(/\s+/g, ' ') // collapse whitespace
+    .replace(/[^\S\r\n]+/g, ' ') // remove weird spaces
+    .replace(/[\uFFFD]/g, '') // remove replacement chars (�)
+    .trim();
+}
 
 const parseMoneyEU = (val: MoneyLike): number => {
   if (typeof val === 'number') return Number.isFinite(val) ? val : 0;
@@ -1156,9 +1163,19 @@ const handleToggleWishlist = async () => {
                           Beschreibung
                         </div>
                         <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%]">
-                          {product.description
-                            ? product.description.replace(/[^\x00-\x7F]+/g, '')
-                            : 'Keine Beschreibung verfügbar'}
+                          {product.description ? (
+                            <div
+                              className="whitespace-pre-line"
+                              dangerouslySetInnerHTML={{
+                                __html: cleanDescription(
+                                  product.description ||
+                                    'Keine Beschreibung verfügbar'
+                                ),
+                              }}
+                            />
+                          ) : (
+                            'Keine Beschreibung verfügbar'
+                          )}
                         </div>
                       </div>
                       <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
@@ -1453,8 +1470,8 @@ const handleToggleWishlist = async () => {
                                         ) : (
                                           <>
                                             {formatEUR(price)} +{' '}
-                                            {formatEUR(delivery)}
-                                             ={' '} {formatEUR(total)}{' '}
+                                            {formatEUR(delivery)}={' '}
+                                            {formatEUR(total)}{' '}
                                             <span className="whitespace-nowrap">
                                               (inklusive Versandkosten)
                                             </span>

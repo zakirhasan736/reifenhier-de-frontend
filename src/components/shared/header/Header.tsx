@@ -98,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({ activeCategory }) => {
             </nav>
           </div>
 
-          <div className="global-search w-full max-w-[380px] flex items-center gap-4">
+          <div className="global-search lg:w-full max-w-[380px] flex items-center gap-4">
             <GlobalSearch />
             <div className="header-action-comp">
               <ul className="flex items-center gap-4">
