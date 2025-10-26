@@ -6,6 +6,7 @@ import { Poppins } from 'next/font/google';
 import Header from '@/components/shared/header/Header';
 import Footer from '@/components/shared/footer/Footer';
 import { Suspense } from 'react';
+import Loading from './loading';
 
 
 const poppins = Poppins({
@@ -264,7 +265,7 @@ export default function RootLayout({
         <main className="angelpage-main-wrapper">
           <ClientProviders>
             <Suspense
-              fallback={<div className="p-10 text-center">Lädt...</div>}
+              fallback={<Loading />}
             >
               <Header />
               {children}
