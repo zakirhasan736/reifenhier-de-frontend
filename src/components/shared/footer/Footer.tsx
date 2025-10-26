@@ -1,9 +1,59 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import toast  from 'react-hot-toast';
 
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  // const [message, setMessage] = useState<{
+  //   type: 'success' | 'error' | null;
+  //   text: string;
+  // }>({
+  //   type: null,
+  //   text: '',
+  // });
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!email) {
+    toast.error('Bitte geben Sie Ihre E-Mail-Adresse ein.');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'
+      }/api/newsletter/subscribe`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'footer_form' }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+      toast.success(
+        'Danke! Sie haben unseren Newsletter erfolgreich abonniert 🎉'
+      );
+      setEmail('');
+    } else {
+      toast.error(data.message || 'Fehler beim Abonnieren.');
+    }
+  } catch (err) {
+    console.error('Newsletter error:', err);
+    toast.error('Serverfehler. Bitte versuchen Sie es später erneut.');
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <footer className="footer-section bg-[#F7F8FA]">
       <div className="footer-wrapper pt-4">
@@ -21,25 +71,34 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="right-content max-sm:w-full">
                   <form
-                    action="post"
+                    onSubmit={handleSubmit}
                     className="reifencheck-subscription-form w-full flex md:flex-row max-sm:flex-col gap-3 items-center"
                   >
                     <label htmlFor="email" className="sr-only"></label>
                     <input
                       type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
                       placeholder="Ihre E-Mail-Adresse"
-                      className="border form-subs-input text-[16px] text-left font-normal font-secondary border-[#FFFFFF6F] md:max-w-[344px] placeholder:!text-[#FFFFFF] text-[#FFFFFFB2] !shadow-none w-full h-[47px] !bg-[#16171A34] px-6 py-[15px] !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none focus:outline-none"
+                      className="border form-subs-input text-[16px] text-left font-normal font-secondary border-[#FFFFFF6F] md:max-w-[344px] placeholder:!text-[#FFFFFF] !text-[#FFFFFF] focus:!text-[#FFFFFF] focus-within:!text-[#ffffff] !shadow-none w-full h-[47px] !bg-[#16171A34] px-6 py-[15px] !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none focus:outline-none"
+                      disabled={loading}
                     />
                     <button
                       type="submit"
-                      className="bg-mono-0 max-sm:w-full flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 py-2 hover:bg-transparent hover:text-mono-0 border border-primary-100 hover:border-mono-0 transition ease cursor-pointer leading-[100%]"
+                      disabled={loading}
+                      className={`bg-mono-0 whitespace-nowrap max-sm:w-full flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 py-2 border border-primary-100 transition ease cursor-pointer leading-[100%] ${
+                        loading
+                          ? 'opacity-70 cursor-not-allowed'
+                          : 'hover:bg-transparent hover:text-mono-0 hover:border-mono-0'
+                      }`}
                     >
-                      Abonnieren
+                      {loading ? 'Loading …' : 'Abonnieren'}
                     </button>
                   </form>
                 </div>
               </div>
             </div>
+
             <div className="footer-top-area flex items-start justify-between pt-8  pb-[19px] max-sm:flex-col lg:gap-0 gap-5">
               <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
                 <Image
