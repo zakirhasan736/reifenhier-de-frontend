@@ -202,7 +202,7 @@ const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => downloadCSV(products)}
-              className="text-sm bg-gray-200 px-4 py-2 rounded-full cursor-pointer"
+              className="text-sm bg-gray-200 px-4 py-2 rounded-full cursor-pointer  text-secondary-100"
             >
               CSV herunterladen
             </button>
