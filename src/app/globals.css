@@ -104,7 +104,9 @@ li,ol,ul,
 svg{
     color: var(--mono-100);
 }
-
+.primary-button-state svg{
+    color: #ffffff;
+}
     h1,
     h2,
     h3,

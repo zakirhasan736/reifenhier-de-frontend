@@ -1058,7 +1058,7 @@ const handleToggleWishlist = async () => {
                       >
                         <button
                           type="button"
-                          className="w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
+                          className="primary-button-state w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
                         >
                           <MdAddShoppingCart className='text-[22px]' />  Zum Angebot
                         </button>
@@ -1625,9 +1625,10 @@ const handleToggleWishlist = async () => {
                                     >
                                       <button
                                         type="button"
-                                        className="w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 !text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                        className="primary-button-state w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 !text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
                                       >
-                                        <MdAddShoppingCart className='text-[22px]' /> Zum Angebot
+                                        <MdAddShoppingCart className="text-[22px]" />{' '}
+                                        Zum Angebot
                                       </button>
                                     </Link>
                                     <Link
