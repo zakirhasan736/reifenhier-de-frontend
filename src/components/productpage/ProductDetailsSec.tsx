@@ -236,13 +236,13 @@ const handleToggleWishlist = async () => {
   try {
     if (isFavorited) {
       await removeWishlist(product._id);
-      toast.success('Removed from Wishlist');
+      toast.success('Von der Wunschliste entfernt');
     } else {
       await addWishlist(product._id);
-      toast.success('Added to Wishlist');
+      toast.success('Zu den Favoriten hinzugefügt');
     }
   } catch {
-    toast.error('Something went wrong');
+    toast.error('Etwas ist schiefgelaufen.');
   }
 };
 
@@ -617,7 +617,7 @@ const handleToggleWishlist = async () => {
                       height={24}
                       loading="lazy"
                     />{' '}
-                    Zurück zum Produkt
+                    Zurück zu den Suchergebnissen
                   </button>
                 </Link>
                 <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden md:gap-2  lg:gap-[10px] mx-auto">
@@ -937,7 +937,7 @@ const handleToggleWishlist = async () => {
                       {product.savings_percent &&
                         product.savings_percent !== '0%' &&
                         product.savings_percent !== '-0%' && (
-                          <p className="px-2 py-[3px] border border-[#00BE00] gap-1 flex items-center justify-center text-[#00BE00] h-[26px] max-w-[75px] rounded-[28px] w-full">
+                          <p className="px-2 py-[3px] border border-[#00BE00] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[75px] rounded-[6px] w-full">
                             {product.savings_percent}
                             <span
                               className="tooltip tooltip-left cursor-pointer flex items-center"
@@ -1419,7 +1419,7 @@ const handleToggleWishlist = async () => {
                                         </h4>
 
                                         {showSavings && (
-                                          <p className="px-1 py-[2px] border border-[#CC0C39] text-[14px] gap-1 flex items-center justify-center text-[#CC0C39] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                          <p className="px-1 py-[2px] border border-[#CC0C39] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
                                             {offer.savings_percent}
                                             <span
                                               className="tooltip tooltip-right cursor-pointer flex items-center"

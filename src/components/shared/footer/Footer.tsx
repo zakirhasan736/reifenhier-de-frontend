@@ -3,18 +3,10 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import toast  from 'react-hot-toast';
-import { FaFacebookF  , FaInstagram } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  // const [message, setMessage] = useState<{
-  //   type: 'success' | 'error' | null;
-  //   text: string;
-  // }>({
-  //   type: null,
-  //   text: '',
-  // });
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -103,7 +95,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="footer-top-area flex items-start justify-between pt-8  pb-[19px] max-sm:flex-col lg:gap-0 gap-5">
               <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
                 <Image
-                  src="/images/footer-brand-logo-reifencheck-de.svg"
+                  src="/images/logo_footer_no_bg.svg"
                   className="opacity-100 max-sm:w-[130px] sm:w-[140px] w-[180px] h-auto"
                   alt="company logo"
                   width={180}
@@ -200,21 +192,31 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
                     Soziale Medien
                   </h3>
-                  <ul className="quick-link-list flex gap-3 md:gap-3 pl-0">
+                  <ul className="quick-link-list flex gap-3 md:gap-5 pl-0">
                     <li>
                       <Link
-                        className="p-2 hover:bg-[#f5b602]/60 hover:!border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-primary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        className="h-8 w-8"
                         href="https://facebook.com/reifencheck.de"
                       >
-                        <FaFacebookF className="fill-primary-100 text-[20px]" />
+                        <Image
+                          src={'/images/facebook-icon.png'}
+                          alt="reifencheck reifencheck icon"
+                          width={36}
+                          height={36}
+                        />
                       </Link>
                     </li>
                     <li>
                       <Link
-                        className="p-2 hover:bg-[#f5b602]/60 hover:!border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-primary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
+                        className="h-8 w-8"
                         href="https://www.instagram.com/reifencheck.de"
                       >
-                        <FaInstagram className="fill-primary-100 text-[20px]" />
+                        <Image
+                          src={'/images/instagram-icon.png'}
+                          alt="reifencheck reifencheck icon"
+                          width={36}
+                          height={36}
+                        />
                       </Link>
                     </li>
                     {/* <li>

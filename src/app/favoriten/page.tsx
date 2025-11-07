@@ -16,7 +16,7 @@ export default function FavoritesPage() {
     <section className="favorite-page-section pt-8 pb-9">
       <div className="custom-container">
         <h1 className="h4 font-medium font-primary text-[#404042] mb-5">
-          Ihre Wunschliste
+          Ihre Favoriten
         </h1>
         {/* Client side fetch & render */}
         <FavoritesClient />

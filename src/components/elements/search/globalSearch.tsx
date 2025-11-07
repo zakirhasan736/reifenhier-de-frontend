@@ -164,7 +164,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
               </div>
             ))
           ) : (
-            <div className="p-3 text-sm text-gray-500">No results found</div>
+            <div className="p-3 text-sm text-gray-500">Keine passende Suchergebnisse</div>
           )}
         </div>
       )}

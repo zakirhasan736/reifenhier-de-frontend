@@ -124,13 +124,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     try {
       if (isFavorited) {
         await removeWishlist(_id);
-        toast.success('Removed from Wishlist');
+        toast.success('Von der Wunschliste entfernt');
       } else {
         await addWishlist(_id);
-        toast.success('Added to Wishlist');
+        toast.success('Zu den Favoriten hinzugefügt');
       }
     } catch {
-      toast.error('Something went wrong');
+      toast.error('Etwas ist schiefgelaufen.');
     }
   };
 
@@ -141,12 +141,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const isAlreadyCompared = compareProducts.find(p => p._id === _id);
   const handleCompare = () => {
     if (isAlreadyCompared) {
-      toast.error('Product already added');
+      toast.error('Produkt bereits hinzugefügt');
       return;
     }
 
     if (compareProducts.length >= 4) {
-      toast.error('Maximum 4 products allowed in comparison');
+      toast.error('Maximal 4 Produkte im Vergleich zulässig');
       return;
     }
 
@@ -165,7 +165,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       })
     );
     dispatch(openModal());
-    toast.success('Product added to comparison');
+    toast.success('Produkt zum Vergleich hinzugefügt');
   };
 
   const gradeFuelColor = (grade: string) => {
@@ -379,7 +379,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {savings_percent &&
             savings_percent !== '0%' &&
             savings_percent !== '-0%' && (
-              <p className="px-3 py-[3px] border text-[14px] border-[#00BE00] gap-1 flex items-center justify-center text-[#00BE00] h-[26px] max-w-[65px] rounded-[6px] w-full">
+              <p className="px-3 py-[3px] border text-[14px] border-[#CC0C39] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
                 {savings_percent}
                 <span
                   className="tooltip tooltip-left cursor-pointer flex items-center"
