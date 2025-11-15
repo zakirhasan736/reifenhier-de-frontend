@@ -610,14 +610,7 @@ const handleToggleWishlist = async () => {
                     type="button"
                     className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
                   >
-                    <Image
-                      src="/images/icons/arrow-left.svg"
-                      alt="Back"
-                      className="md:h-6 h-4"
-                      width={24}
-                      height={24}
-                      loading="lazy"
-                    />{' '}
+             
                     <OptimizedImage
                       src="/images/icons/arrow-left.svg"
                       alt="Back"
