@@ -12,6 +12,7 @@ import {
 
 import { addProduct, openModal } from '@/store/compareSlice';
 import type { RootState, AppDispatch } from '@/store/store';
+import OptimizedImage from '../OptimizedImage';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 interface RelatedCheaperItem {
   _id: string;
@@ -222,7 +223,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           <button onClick={handleToggleWishlist} className="cursor-pointer">
             <div className="relative w-5 h-5">
-              <Image
+              {/* <Image
+                src={
+                  isFavorited
+                    ? '/images/icons/heart-filled.svg'
+                    : '/images/icons/heart.svg'
+                }
+                alt="favorite"
+                fill
+                className="object-contain"
+                loading="lazy"
+              /> */}
+              <OptimizedImage
                 src={
                   isFavorited
                     ? '/images/icons/heart-filled.svg'
@@ -238,7 +250,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
           <Link href={`/produkte/${slug}`} prefetch passHref>
-            <Image
+            {/* <Image
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
               // pick a realistic intrinsic size close to display; Next will downscale via `sizes`
               width={320}
@@ -252,8 +264,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
               onError={e => {
                 // Optional: fallback if an image 404s
                 (e.currentTarget as HTMLImageElement).src =
-                  '/images/fallback-product.png';
+                  '/images/fallback-image.png';
               }}
+            /> */}
+            <OptimizedImage
+              className="w-auto h-[159px] max-md:h-[159px] object-cover"
+              // pick a realistic intrinsic size close to display; Next will downscale via `sizes`
+              width={320}
+              height={159}
+              src={product_image}
+              alt={`${brand_name} ${product_name}`}
+              fetchPriority="high"
+              priority={isPriority}
+              // Next calculates lazy/eager from priority; no need for fetchPriority here
+              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
+              fallback="/images/fallback-product.png"
             />
           </Link>
         </div>

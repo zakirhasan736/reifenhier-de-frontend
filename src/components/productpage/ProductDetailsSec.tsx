@@ -32,6 +32,7 @@ import { addProduct, openModal } from '@/store/compareSlice';
 import { AppDispatch } from '@/store/store';
 import type { Swiper as SwiperClass } from 'swiper';
 import NotFound from '@/app/produkte/not-found';
+import OptimizedImage from '../elements/OptimizedImage';
 
 interface WishlistProduct {
   _id: string;
@@ -617,6 +618,15 @@ const handleToggleWishlist = async () => {
                       height={24}
                       loading="lazy"
                     />{' '}
+                    <OptimizedImage
+                      src="/images/icons/arrow-left.svg"
+                      alt="Back"
+                      className="md:h-6 h-4"
+                      width={24}
+                      height={24}
+                      loading='lazy'
+                      fallback="/images/fallback-image.png"
+                    />
                     Zurück zu den Suchergebnissen
                   </button>
                 </Link>
@@ -710,7 +720,7 @@ const handleToggleWishlist = async () => {
                                 (image: string, index: number) => (
                                   <SwiperSlide key={index}>
                                     <div className="slide-view-item flex justify-center">
-                                      <Image
+                                      <OptimizedImage
                                         src={image}
                                         alt="product image item"
                                         className="lg:h-[417px] h-[218px] max-md:w-auto"
@@ -718,6 +728,7 @@ const handleToggleWishlist = async () => {
                                         height={417}
                                         priority
                                         fetchPriority="high"
+                                        fallback="/images/fallback-image.png"
                                       />
                                     </div>
                                   </SwiperSlide>
@@ -726,7 +737,7 @@ const handleToggleWishlist = async () => {
                             ) : (
                               <SwiperSlide key={0}>
                                 <div className="slide-view-item flex justify-center">
-                                  <Image
+                                  <OptimizedImage
                                     src={product.product_image}
                                     alt="product image item"
                                     className="lg:h-[417px] h-[218px] max-md:w-auto object-contain"
@@ -734,6 +745,7 @@ const handleToggleWishlist = async () => {
                                     height={417}
                                     priority
                                     fetchPriority="high"
+                                    fallback="/images/fallback-image.png"
                                   />
                                 </div>
                               </SwiperSlide>
@@ -769,7 +781,7 @@ const handleToggleWishlist = async () => {
                                 <SwiperSlide key={index}>
                                   <div className="slide-tab-item">
                                     <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] md:py-3 py-2 px-3 md:px-4 flex justify-center">
-                                      <Image
+                                      <OptimizedImage
                                         src={image}
                                         alt="product image item"
                                         className="w-[87px] xl:w-auto xl:h-[106px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
@@ -777,6 +789,7 @@ const handleToggleWishlist = async () => {
                                         height={106}
                                         priority
                                         fetchPriority="high"
+                                        fallback="/images/fallback-image.png"
                                       />
                                     </div>
                                   </div>
@@ -787,7 +800,7 @@ const handleToggleWishlist = async () => {
                             <SwiperSlide key={0}>
                               <div className="slide-tab-item">
                                 <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] py-3 px-4 flex justify-center">
-                                  <Image
+                                  <OptimizedImage
                                     src={product.product_image}
                                     alt="product image item"
                                     className="w-[87px] xl:w-auto xl:h-[106px] max-sm:h-[78px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
@@ -795,6 +808,7 @@ const handleToggleWishlist = async () => {
                                     height={106}
                                     priority
                                     fetchPriority="high"
+                                    fallback="/images/fallback-image.png"
                                   />
                                 </div>
                               </div>
@@ -1060,7 +1074,8 @@ const handleToggleWishlist = async () => {
                           type="button"
                           className="primary-button-state w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
                         >
-                          <MdAddShoppingCart className='text-[22px]' />  Zum Angebot
+                          <MdAddShoppingCart className="text-[22px]" /> Zum
+                          Angebot
                         </button>
                       </Link>
                     </div>
