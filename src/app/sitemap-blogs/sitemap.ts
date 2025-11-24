@@ -5,17 +5,17 @@ const siteUrl = (
   process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifencheck.de'
 ).replace(/\/$/, '');
 
-const apiUrl = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de/api'
+const wpUrl = (
+  process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://wp.reifencheck.de'
 ).replace(/\/$/, '');
 
-type Blog = {
-  slug?: string;
-  title?: string;
-  body?: string;
+type WPPost = {
+  slug: string;
+  modified: string;
+  date: string;
 };
 
-// Safely fetch JSON with revalidation
+// Safe fetch helper
 async function safeFetchJSON<T>(url: string): Promise<T | null> {
   try {
     const res = await fetch(url, { next: { revalidate: 3600 } });
@@ -30,33 +30,16 @@ async function safeFetchJSON<T>(url: string): Promise<T | null> {
   }
 }
 
-// Handle different possible API shapes
-function extractBlogs<T extends Blog>(data: unknown): T[] {
-  if (!data || typeof data !== 'object') return [];
-  const d = data as Record<string, unknown>;
-
-  if (Array.isArray(data)) return data as T[];
-  if (Array.isArray(d.results)) return d.results as T[];
-  if (Array.isArray(d.items)) return d.items as T[];
-  if (Array.isArray(d.blogs)) return d.blogs as T[];
-  if (Array.isArray(d.data)) return d.data as T[];
-  return [];
-}
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  // ✅ Use the correct backend endpoint for blogs
-  const url = `${apiUrl}/api/blogs/list`;
+  // WordPress REST endpoint
+  const url = `${wpUrl}/wp-json/wp/v2/posts?per_page=100&_fields=slug,date,modified`;
 
-  const json = await safeFetchJSON<Blog[]>(url);
-  const blogs = extractBlogs<Blog>(json);
-  const valid = blogs.filter(b => b.slug);
+  const posts = await safeFetchJSON<WPPost[]>(url);
 
-  console.log('✅ Sitemap blogs count:', valid.length);
-
-  // Fallback if API returned nothing
-  if (valid.length === 0) {
+  if (!posts || posts.length === 0) {
+    console.warn('⚠️ No WordPress posts found for sitemap.');
     return [
       {
         url: `${siteUrl}/blogs`,
@@ -67,11 +50,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   }
 
-  // ✅ Map valid slugs to public blog URLs
-  return valid.map(b => ({
-    url: `${siteUrl}/blogs/${encodeURIComponent(b.slug!)}`,
-    lastModified: now,
+  console.log('✅ Sitemap WP blogs count:', posts.length);
+
+  return posts.map(post => ({
+    url: `${siteUrl}/blogs/${encodeURIComponent(post.slug)}`,
+    lastModified: new Date(post.modified || post.date || now),
     changeFrequency: 'weekly',
-    priority: 0.6,
+    priority: 0.7,
   }));
 }
