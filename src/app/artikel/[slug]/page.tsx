@@ -35,8 +35,8 @@ export async function generateMetadata({
 
   if (!blog) {
     return {
-      title: 'Blog nicht gefunden | Reifencheck.de',
-      description: 'Dieser Blogartikel ist nicht verfügbar.',
+      title: 'Artikel nicht gefunden | Reifencheck.de',
+      description: 'Dieser Artikel ist nicht verfügbar.',
     };
   }
 
@@ -52,10 +52,10 @@ export async function generateMetadata({
   return {
     title,
     description: excerpt,
-    alternates: { canonical: `${SITE_URL}/blogs/${slug}` },
+    alternates: { canonical: `${SITE_URL}/artikel/${slug}` },
     openGraph: {
       type: 'article',
-      url: `${SITE_URL}/blogs/${slug}`,
+      url: `${SITE_URL}/artikel/${slug}`,
       title,
       description: excerpt,
       images: [
@@ -108,7 +108,7 @@ export default async function BlogDetailPage({
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'Artikel',
     headline: blog.title.rendered,
     description:
       blog.yoast_head_json?.description ||
@@ -116,7 +116,7 @@ export default async function BlogDetailPage({
     image: featured,
     datePublished: blog.date,
     author: { '@type': 'Organization', name: 'Reifencheck.de' },
-    mainEntityOfPage: `${SITE_URL}/blogs/${slug}`,
+    mainEntityOfPage: `${SITE_URL}/artikel/${slug}`,
   };
 
   return (

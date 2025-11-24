@@ -37,7 +37,7 @@ const AboutUs = () => {
                 Entscheidung für Ihr Fahrzeug zu treffen.
               </p>
               <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042]">
-                3 Mit Reifenhier.de setzen Sie auf Expertise, Transparenz und
+                3 Mit Reifencheck.de setzen Sie auf Expertise, Transparenz und
                 Nachhaltigkeit. Lassen Sie uns gemeinsam den Weg in eine
                 umweltbewusste und sichere Mobilität gestalten.
               </p>

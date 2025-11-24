@@ -90,7 +90,7 @@ const BrandCategory = () => {
                         {brandItem.brand_name}
                       </h3>
                       <p className="number-of-products md:text-[16px] text-[12px] text-center font-medium font-secondary md:mt-2 mt-1 text-[#404042]">
-                        {brandItem.count} Tyres
+                        {brandItem.count} Reifen
                       </p>
                     </div>
                   </Link>

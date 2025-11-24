@@ -57,11 +57,15 @@ export default function BlogRelated({ blog }: { blog: WPBlog }) {
                 : post.title?.rendered || '';
 
             return (
-              <Link key={post.id} href={`/blogs/${post.slug}`}>
+              <Link key={post.id} href={`/artikel/${post.slug}`}>
                 <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
                   <Image
                     src={media}
-                    alt={typeof post.title === 'string' ? post.title : post.title?.rendered || ''}
+                    alt={
+                      typeof post.title === 'string'
+                        ? post.title
+                        : post.title?.rendered || ''
+                    }
                     className="w-full h-[200px] object-cover rounded-[10px]"
                     width={1024}
                     height={200}

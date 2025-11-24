@@ -75,7 +75,7 @@ export default function BlogPage({
 
   // SSR Pagination Handler
   const handlePageChange = (newPage: number) => {
-    router.push(`/blogs?page=${newPage}`);
+    router.push(`/artikel?page=${newPage}`);
   };
 console.log(blogs);
   return (
@@ -83,7 +83,7 @@ console.log(blogs);
       <div className="blog-page-wrapper bg-mono-0 py-9">
         <div className="custom-container mx-auto p-6">
           <h1 className="text-2xl font-bold mb-5 text-secondary-100">
-            News & Artikels
+            News & Testberichte
           </h1>
 
           {/* 🔍 Search Bar */}
@@ -139,7 +139,7 @@ console.log(blogs);
                 return (
                   <Link
                     key={blog.id}
-                    href={`/blogs/${blog.slug}`}
+                    href={`/artikel/${blog.slug}`}
                     className="max-w-[384px] w-full"
                   >
                     <div className="news-item bg-mono-0 rounded-[4px] cursor-pointer">

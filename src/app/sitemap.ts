@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths: string[] = [
     '/',
     '/produkte',
-    '/blogs',
+    '/artikel',
     '/impressum-datenschutz',
     '/AGB',
   ];

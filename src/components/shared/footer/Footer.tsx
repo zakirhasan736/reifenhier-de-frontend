@@ -134,9 +134,9 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <li>
                       <Link
                         className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                        href="/blogs"
+                        href="/artikel"
                       >
-                        News & Artikel
+                        News & Testberichte
                       </Link>
                     </li>
                     <li>

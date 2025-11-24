@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   title: 'Reifencheck Blog | Reifencheck.de',
   description:
     'Entdecken Sie aktuelle Blogartikel rund um Reifen, Autos und Tipps für Ihren Reifencheck auf Reifencheck.de.',
-  alternates: { canonical: 'https://www.reifencheck.de/blogs' },
+  alternates: { canonical: 'https://www.reifencheck.de/artikel' },
   keywords: [
     'Reifen Blog',
     'Reifencheck Tipps',
@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifencheck.de/blogs',
+    url: 'https://www.reifencheck.de/artikel',
     siteName: 'Reifencheck.de',
-    title: 'Reifencheck Blog | Reifencheck.de',
+    title: 'Reifencheck Artikel | Reifencheck.de',
     description:
       'Lesen Sie spannende Beiträge und erhalten Sie wertvolle Informationen zum Thema Reifencheck.',
     images: [
@@ -53,13 +53,13 @@ export const metadata: Metadata = {
         url: '/images/blog-og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Reifencheck Blog',
+        alt: 'Reifencheck Artikel image',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Reifencheck Blog | Reifencheck.de',
+    title: 'Reifencheck Artikel | Reifencheck.de',
     description:
       'Lesen Sie spannende Beiträge und erhalten Sie wertvolle Informationen zum Thema Reifencheck.',
     images: ['/images/blog-og-image.jpg'],
@@ -80,8 +80,8 @@ export default async function BlogListPage({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
-    '@id': 'https://www.reifencheck.de/blogs#blog',
-    url: 'https://www.reifencheck.de/blogs',
+    '@id': 'https://www.reifencheck.de/artikel#blog',
+    url: 'https://www.reifencheck.de/artikel',
     name: 'Reifencheck Blog',
     description:
       'Reifencheck.de Blog – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
@@ -93,7 +93,7 @@ export default async function BlogListPage({
       <BlogPage blogs={blogs} total={total} currentPage={page} />
 
       <Script
-        id="ld-blog"
+        id="ld-artikel"
         type="application/ld+json"
         strategy="afterInteractive"
       >

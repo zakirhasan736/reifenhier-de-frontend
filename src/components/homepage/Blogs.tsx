@@ -19,7 +19,7 @@ export default async function BlogsPage() {
 
   try {
     // WordPress latest posts with featured images
-    const res = await fetch(`${WP_API}/posts?per_page=6&_embed`, {
+    const res = await fetch(`${WP_API}/posts?per_page=9&_embed`, {
       next: { revalidate: 300 },
     });
 

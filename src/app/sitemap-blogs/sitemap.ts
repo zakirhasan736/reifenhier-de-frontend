@@ -42,7 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.warn('⚠️ No WordPress posts found for sitemap.');
     return [
       {
-        url: `${siteUrl}/blogs`,
+        url: `${siteUrl}/artikel`,
         lastModified: now,
         changeFrequency: 'weekly',
         priority: 0.5,
@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   console.log('✅ Sitemap WP blogs count:', posts.length);
 
   return posts.map(post => ({
-    url: `${siteUrl}/blogs/${encodeURIComponent(post.slug)}`,
+    url: `${siteUrl}/artikel/${encodeURIComponent(post.slug)}`,
     lastModified: new Date(post.modified || post.date || now),
     changeFrequency: 'weekly',
     priority: 0.7,
