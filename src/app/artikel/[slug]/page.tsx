@@ -108,7 +108,7 @@ export default async function BlogDetailPage({
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Artikel',
+    '@type': 'Article',
     headline: blog.title.rendered,
     description:
       blog.yoast_head_json?.description ||

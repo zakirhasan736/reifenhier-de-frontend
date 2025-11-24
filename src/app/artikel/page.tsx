@@ -29,15 +29,17 @@ async function getBlogs(page = 1) {
 }
 
 export const metadata: Metadata = {
-  title: 'Reifencheck Blog | Reifencheck.de',
+  title: 'Reifencheck Artikel | Reifencheck.de',
   description:
-    'Entdecken Sie aktuelle Blogartikel rund um Reifen, Autos und Tipps für Ihren Reifencheck auf Reifencheck.de.',
+    'Entdecken Sie aktuelle Artikel rund um Reifen, Autos und Tipps für Ihren Reifencheck auf Reifencheck.de.',
   alternates: { canonical: 'https://www.reifencheck.de/artikel' },
   keywords: [
-    'Reifen Blog',
+    'Reifen Artikel',
+    'Reifen Blogs',
     'Reifencheck Tipps',
     'Autoreifen Ratgeber',
-    'Winterreifen Sommerreifen Blog',
+    'Winterreifen Sommerreifen Artikel',
+    'Winterreifen Sommerreifen Blogs',
     'Reifenpflege und Sicherheit',
   ],
   openGraph: {
@@ -79,12 +81,12 @@ export default async function BlogListPage({
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Blog',
-    '@id': 'https://www.reifencheck.de/artikel#blog',
+    '@type': 'Artikel',
+    '@id': 'https://www.reifencheck.de/artikel#artikel',
     url: 'https://www.reifencheck.de/artikel',
-    name: 'Reifencheck Blog',
+    name: 'Reifencheck Artikel',
     description:
-      'Reifencheck.de Blog – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
+      'Reifencheck.de Artikel – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
     inLanguage: 'de-DE',
   };
 
