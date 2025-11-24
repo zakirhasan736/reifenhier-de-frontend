@@ -5,22 +5,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, Pagination } from 'swiper/modules';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
 
-interface Blog {
-  _id: string;
+interface WPBlog {
+  id: number;
   title: string;
   slug: string;
   coverImage: string;
-  metaDescription: string;
-  createdAt: string;
+  date: string;
 }
 
 interface BlogProps {
-  blogs: Blog[];
+  blogs: WPBlog[];
 }
 
 const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
@@ -30,6 +30,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
     <section className="news-section lg:pb-[70px] pb-14 bg-mono-0">
       <div className="custom-container max-sm:pr-0">
         <div className="news-content">
+          {/* Header */}
           <div className="section-header text-left md:mb-8 mb-6">
             <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
               News & Artikel
@@ -40,6 +41,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
             </p>
           </div>
 
+          {/* Slider */}
           <div className="news-list blogs-slides-area md:pr-[16px] md:pl-[10px] pr-10 pl-0 overflow-hidden">
             <Swiper
               spaceBetween={20}
@@ -61,9 +63,13 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
             >
               {hasBlogs
                 ? blogs.map(blog => (
-                    <SwiperSlide key={blog._id}>
-                      <Link href={`/blogs/${blog.slug}`}>
+                    <SwiperSlide key={blog.id}>
+                      <Link
+                        href={`/blogs/${blog.slug}`}
+                        className="max-w-[384px] w-full"
+                      >
                         <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
+                          {/* Blog image */}
                           <Image
                             src={blog.coverImage}
                             alt={blog.title}
@@ -72,20 +78,22 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
                             height={200}
                             loading="lazy"
                           />
+
+                          {/* Content */}
                           <div className="news-item-content relative pt-5">
-                            <h3 className="text-[#404042] font-medium h6 font-primary">
-                              {blog.title}
-                            </h3>
+                            <h3
+                              className="text-[#404042] font-medium h6 font-primary line-clamp-2"
+                              dangerouslySetInnerHTML={{ __html: blog.title }}
+                            />
+
                             <p className="text-[#404042] text-[12px] font-medium font-primary mt-2">
-                              {new Date(blog.createdAt).toLocaleDateString(
-                                'de-DE',
-                                {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                }
-                              )}
+                              {new Date(blog.date).toLocaleDateString('de-DE', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
                             </p>
+
                             <span className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block">
                               Mehr lesen
                             </span>
@@ -102,8 +110,10 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
             </Swiper>
           </div>
 
+          {/* Pagination dots */}
           <div className="blogs-swiper-pagination flex justify-center mt-6"></div>
 
+          {/* View all link */}
           <Link
             href="/blogs"
             className="mx-auto block text-center underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"

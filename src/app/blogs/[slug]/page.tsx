@@ -1,89 +1,261 @@
+// import type { Metadata } from 'next';
+// import type { JSX } from 'react';
+// import React from 'react';
+// import Script from 'next/script';
+// import Image from 'next/image';
+// import BlogSidebar from '@/page-components/blogs/RelatedBlogsSectiob';
+
+// const SITE_URL = 'https://www.reifencheck.de';
+// const API_URL =
+//   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
+//   'https://api.reifencheck.de';
+
+// type ContentBlock =
+//   | { type: 'heading'; level?: string; text?: string }
+//   | { type: 'paragraph'; text?: string }
+//   | { type: 'list'; style?: 'ul' | 'ol'; items?: string[] };
+
+// interface Blog {
+//   title: string;
+//   slug: string;
+//   coverImage?: string;
+//   metaDescription?: string;
+//   contentBlocks?: ContentBlock[][];
+//   createdAt: string;
+//   updatedAt?: string;
+// }
+
+// // ---- Server fetch ----
+// async function fetchBlog(slug: string): Promise<Blog | null> {
+//   try {
+//     const res = await fetch(
+//       `${API_URL}/api/blogs/slug/${encodeURIComponent(slug)}`,
+//       { cache: 'no-store' }
+//     );
+//     if (!res.ok) return null;
+//     return (await res.json()) as Blog;
+//   } catch {
+//     return null;
+//   }
+// }
+
+// // ---- Utilities (type-safe rendering) ----
+// const allowedHeadings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+// type AllowedHeading = (typeof allowedHeadings)[number];
+
+// function resolveHeadingTag(level?: string): AllowedHeading {
+//   const lower = (level ?? '').toLowerCase();
+//   return (allowedHeadings as readonly string[]).includes(lower)
+//     ? (lower as AllowedHeading)
+//     : 'h2';
+// }
+
+// function renderBlock(block: ContentBlock, key: number): React.ReactNode {
+//   if (block.type === 'heading') {
+//     const Tag = resolveHeadingTag(block.level);
+//     const text = block.text ?? '';
+//     return React.createElement(
+//       Tag,
+//       { key, className: 'text-xl font-semibold mt-6 mb-2' },
+//       text
+//     );
+//   }
+
+//   if (block.type === 'paragraph') {
+//     return (
+//       <p key={key} className="mb-4">
+//         {block.text ?? ''}
+//       </p>
+//     );
+//   }
+
+//   if (block.type === 'list') {
+//     const style: 'ul' | 'ol' = block.style === 'ol' ? 'ol' : 'ul';
+//     const ListTag: keyof JSX.IntrinsicElements = style;
+//     const cls = style === 'ol' ? 'list-decimal' : 'list-disc';
+//     return React.createElement(
+//       ListTag,
+//       { key, className: `mb-4 ${cls} pl-6` },
+//       (block.items ?? []).map((item, i) => <li key={i}>{item}</li>)
+//     );
+//   }
+
+//   return null;
+// }
+
+// // ---- Metadata ----
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: Promise<{ slug: string }>;
+// }): Promise<Metadata> {
+//   const { slug } = await params;
+//   const blog = await fetchBlog(slug);
+
+//   if (!blog) {
+//     return {
+//       title: 'Blog nicht gefunden | Reifencheck.de',
+//       description: 'Dieser Blogartikel ist nicht verfügbar . ',
+//       robots: { index: false, follow: true },
+//       alternates: { canonical: `${SITE_URL}/blogs/${slug}` },
+//     };
+//   }
+
+//   const title = `${blog.title} | Reifencheck.de`;
+//   const description =
+//     blog.metaDescription?.slice(0, 155) ||
+//     `Lesen Sie den Blogartikel „${blog.title}“ auf Reifencheck.de.`;
+//   const canonical = `${SITE_URL}/blogs/${blog.slug}`;
+
+//   return {
+//     metadataBase: new URL(SITE_URL),
+//     title,
+//     description,
+//     keywords: [
+//       'reifencheck blog',
+//       'autoreifen tipps',
+//       'reifenratgeber',
+//       blog.title,
+//     ],
+//     alternates: { canonical },
+//     openGraph: {
+//       type: 'article',
+//       locale: 'de_DE',
+//       url: canonical,
+//       siteName: 'Reifencheck.de',
+//       title,
+//       description,
+//       images: [
+//         {
+//           url: blog.coverImage || '/images/blog-og-image.jpg',
+//           width: 1200,
+//           height: 630,
+//           alt: blog.title,
+//         },
+//       ],
+//     },
+//     twitter: {
+//       card: 'summary_large_image',
+//       title,
+//       description,
+//       images: [blog.coverImage || '/images/blog-og-image.jpg'],
+//     },
+//     robots: { index: true, follow: true },
+//   };
+// }
+
+// // ---- Page (await params) ----
+// export default async function BlogDetailPage({
+//   params,
+// }: {
+//   params: Promise<{ slug: string }>;
+// }) {
+//   const { slug } = await params;
+//   const blog = await fetchBlog(slug);
+
+//   if (!blog) {
+//     return (
+//       <main className="container mx-auto py-10">
+//         <h1 className="text-xl font-semibold mb-2">Blog nicht gefunden</h1>
+//         <p>Dieser Blogartikel ist nicht verfügbar.</p>
+//       </main>
+//     );
+//   }
+
+//   const date = new Date(blog.createdAt).toLocaleDateString('de-DE', {
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric',
+//   });
+
+//   const jsonLd = {
+//     '@context': 'https://schema.org',
+//     '@type': 'Article',
+//     '@id': `${SITE_URL}/blogs/${blog.slug}#article`,
+//     headline: blog.title,
+//     description: blog.metaDescription || blog.title,
+//     image: blog.coverImage ? [blog.coverImage] : undefined,
+//     datePublished: blog.createdAt,
+//     dateModified: blog.updatedAt || blog.createdAt,
+//     author: { '@type': 'Organization', name: 'Reifencheck.de' },
+//     publisher: {
+//       '@type': 'Organization',
+//       name: 'Reifencheck.de',
+//       logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/logo.png` },
+//     },
+//     mainEntityOfPage: `${SITE_URL}/blogs/${blog.slug}`,
+//   };
+
+//   return (
+//     <>
+//       <section className="blog-details-page">
+//         <div className="custom-container pt-12">
+//           <article className="md:max-w-4xl w-full mx-auto">
+//             <h1 className="text-3xl font-semibold mb-2 !text-[#16171A]">
+//               {blog.title}
+//             </h1>
+//             <p className="text-gray-600 mb-4">{date}</p>
+
+//             {blog.coverImage && (
+//               <Image
+//                 src={blog.coverImage}
+//                 alt={blog.title}
+//                 className="w-full rounded mb-6"
+//                 width={848}
+//                 height={558}
+//                 priority
+//                 sizes="(max-width: 900px) 100vw, 848px"
+//               />
+//             )}
+
+//             {blog.contentBlocks?.map((group, gIdx) => (
+//               <div key={gIdx} className="mb-6">
+//                 {group.map((block, idx) => renderBlock(block, idx))}
+//               </div>
+//             ))}
+//           </article>
+//         </div>
+//       </section>
+//       {/* related blogs lists */}
+//       <BlogSidebar />
+
+//       <Script
+//         id="ld-blog-article"
+//         type="application/ld+json"
+//         strategy="afterInteractive"
+//       >
+//         {JSON.stringify(jsonLd)}
+//       </Script>
+//     </>
+//   );
+// }
 import type { Metadata } from 'next';
-import type { JSX } from 'react';
-import React from 'react';
 import Script from 'next/script';
 import Image from 'next/image';
-import BlogSidebar from '@/page-components/blogs/RelatedBlogsSectiob';
+import BlogRelated from '@/page-components/blogs/RelatedBlogsSectiob';
 
 const SITE_URL = 'https://www.reifencheck.de';
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
-  'https://api.reifencheck.de';
+const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
 
-type ContentBlock =
-  | { type: 'heading'; level?: string; text?: string }
-  | { type: 'paragraph'; text?: string }
-  | { type: 'list'; style?: 'ul' | 'ol'; items?: string[] };
-
-interface Blog {
-  title: string;
-  slug: string;
-  coverImage?: string;
-  metaDescription?: string;
-  contentBlocks?: ContentBlock[][];
-  createdAt: string;
-  updatedAt?: string;
-}
-
-// ---- Server fetch ----
-async function fetchBlog(slug: string): Promise<Blog | null> {
+// -------------------------------
+// Fetch WordPress Post
+// -------------------------------
+async function fetchBlog(slug: string) {
   try {
-    const res = await fetch(
-      `${API_URL}/api/blogs/slug/${encodeURIComponent(slug)}`,
-      { cache: 'no-store' }
-    );
-    if (!res.ok) return null;
-    return (await res.json()) as Blog;
-  } catch {
+    const res = await fetch(`${WP_API}/posts?slug=${slug}&_embed`, {
+      cache: 'no-store',
+    });
+    const data = await res.json();
+    return data[0] || null;
+  } catch (e) {
+    console.error('WP Fetch error:', e);
     return null;
   }
 }
 
-// ---- Utilities (type-safe rendering) ----
-const allowedHeadings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
-type AllowedHeading = (typeof allowedHeadings)[number];
-
-function resolveHeadingTag(level?: string): AllowedHeading {
-  const lower = (level ?? '').toLowerCase();
-  return (allowedHeadings as readonly string[]).includes(lower)
-    ? (lower as AllowedHeading)
-    : 'h2';
-}
-
-function renderBlock(block: ContentBlock, key: number): React.ReactNode {
-  if (block.type === 'heading') {
-    const Tag = resolveHeadingTag(block.level);
-    const text = block.text ?? '';
-    return React.createElement(
-      Tag,
-      { key, className: 'text-xl font-semibold mt-6 mb-2' },
-      text
-    );
-  }
-
-  if (block.type === 'paragraph') {
-    return (
-      <p key={key} className="mb-4">
-        {block.text ?? ''}
-      </p>
-    );
-  }
-
-  if (block.type === 'list') {
-    const style: 'ul' | 'ol' = block.style === 'ol' ? 'ol' : 'ul';
-    const ListTag: keyof JSX.IntrinsicElements = style;
-    const cls = style === 'ol' ? 'list-decimal' : 'list-disc';
-    return React.createElement(
-      ListTag,
-      { key, className: `mb-4 ${cls} pl-6` },
-      (block.items ?? []).map((item, i) => <li key={i}>{item}</li>)
-    );
-  }
-
-  return null;
-}
-
-// ---- Metadata ----
+// -------------------------------
+// Dynamic Metadata
+// -------------------------------
 export async function generateMetadata({
   params,
 }: {
@@ -95,56 +267,49 @@ export async function generateMetadata({
   if (!blog) {
     return {
       title: 'Blog nicht gefunden | Reifencheck.de',
-      description: 'Dieser Blogartikel ist nicht verfügbar . ',
-      robots: { index: false, follow: true },
-      alternates: { canonical: `${SITE_URL}/blogs/${slug}` },
+      description: 'Dieser Blogartikel ist nicht verfügbar.',
     };
   }
 
-  const title = `${blog.title} | Reifencheck.de`;
-  const description =
-    blog.metaDescription?.slice(0, 155) ||
-    `Lesen Sie den Blogartikel „${blog.title}“ auf Reifencheck.de.`;
-  const canonical = `${SITE_URL}/blogs/${blog.slug}`;
+  const title = `${blog.title.rendered} | Reifencheck.de`;
+  const excerpt =
+    blog.yoast_head_json?.description ||
+    blog.excerpt.rendered.replace(/<[^>]+>/g, '').slice(0, 155);
+
+  const featured =
+    blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+    '/images/blog-og-image.jpg';
 
   return {
-    metadataBase: new URL(SITE_URL),
     title,
-    description,
-    keywords: [
-      'reifencheck blog',
-      'autoreifen tipps',
-      'reifenratgeber',
-      blog.title,
-    ],
-    alternates: { canonical },
+    description: excerpt,
+    alternates: { canonical: `${SITE_URL}/blogs/${slug}` },
     openGraph: {
       type: 'article',
-      locale: 'de_DE',
-      url: canonical,
-      siteName: 'Reifencheck.de',
+      url: `${SITE_URL}/blogs/${slug}`,
       title,
-      description,
+      description: excerpt,
       images: [
         {
-          url: blog.coverImage || '/images/blog-og-image.jpg',
+          url: featured,
           width: 1200,
           height: 630,
-          alt: blog.title,
+          alt: blog.title.rendered,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
-      description,
-      images: [blog.coverImage || '/images/blog-og-image.jpg'],
+      description: excerpt,
+      images: [featured],
     },
-    robots: { index: true, follow: true },
   };
 }
 
-// ---- Page (await params) ----
+// -------------------------------
+// PAGE RENDER
+// -------------------------------
 export default async function BlogDetailPage({
   params,
 }: {
@@ -162,7 +327,11 @@ export default async function BlogDetailPage({
     );
   }
 
-  const date = new Date(blog.createdAt).toLocaleDateString('de-DE', {
+  const featured =
+    blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+    '/images/blog-default.jpg';
+
+  const date = new Date(blog.date).toLocaleDateString('de-DE', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -171,19 +340,14 @@ export default async function BlogDetailPage({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    '@id': `${SITE_URL}/blogs/${blog.slug}#article`,
-    headline: blog.title,
-    description: blog.metaDescription || blog.title,
-    image: blog.coverImage ? [blog.coverImage] : undefined,
-    datePublished: blog.createdAt,
-    dateModified: blog.updatedAt || blog.createdAt,
+    headline: blog.title.rendered,
+    description:
+      blog.yoast_head_json?.description ||
+      blog.excerpt.rendered.replace(/<[^>]+>/g, ''),
+    image: featured,
+    datePublished: blog.date,
     author: { '@type': 'Organization', name: 'Reifencheck.de' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Reifencheck.de',
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/logo.png` },
-    },
-    mainEntityOfPage: `${SITE_URL}/blogs/${blog.slug}`,
+    mainEntityOfPage: `${SITE_URL}/blogs/${slug}`,
   };
 
   return (
@@ -191,38 +355,35 @@ export default async function BlogDetailPage({
       <section className="blog-details-page">
         <div className="custom-container pt-12">
           <article className="md:max-w-4xl w-full mx-auto">
-            <h1 className="text-3xl font-semibold mb-2 !text-[#16171A]">
-              {blog.title}
-            </h1>
+            <h1
+              className="text-3xl font-semibold mb-2 text-[#16171A]"
+              dangerouslySetInnerHTML={{ __html: blog.title.rendered }}
+            />
+
             <p className="text-gray-600 mb-4">{date}</p>
 
-            {blog.coverImage && (
-              <Image
-                src={blog.coverImage}
-                alt={blog.title}
-                className="w-full rounded mb-6"
-                width={848}
-                height={558}
-                priority
-                sizes="(max-width: 900px) 100vw, 848px"
-              />
-            )}
+            <Image
+              src={featured}
+              alt={blog.title.rendered}
+              width={848}
+              height={558}
+              className="w-full rounded-xl mb-6"
+              priority
+            />
 
-            {blog.contentBlocks?.map((group, gIdx) => (
-              <div key={gIdx} className="mb-6">
-                {group.map((block, idx) => renderBlock(block, idx))}
-              </div>
-            ))}
+            {/* Gutenberg Content (HTML) */}
+            <div
+              className="wp-content"
+              dangerouslySetInnerHTML={{ __html: blog.content.rendered }}
+            />
           </article>
         </div>
       </section>
-      <BlogSidebar />
 
-      <Script
-        id="ld-blog-article"
-        type="application/ld+json"
-        strategy="afterInteractive"
-      >
+      {/* RELATED POSTS */}
+      <BlogRelated blog={blog} />
+
+      <Script id="blog-jsonld" type="application/ld+json">
         {JSON.stringify(jsonLd)}
       </Script>
     </>

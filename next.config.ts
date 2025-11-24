@@ -9,6 +9,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'wp.reifencheck.de',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'cdn-ilddjdl.nitrocdn.com',
         pathname: '/**',
       },

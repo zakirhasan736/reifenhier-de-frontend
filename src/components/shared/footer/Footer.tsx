@@ -55,17 +55,17 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div className="footer-cta-section bg-primary-100 md:py-[60px] py-8 xl:px-[78px] md:px-9 px-6 rounded-[20px]">
               <div className="footer-cta-content flex items-center justify-between max-sm:flex-col max-sm:gap-4">
                 <div className="left-content">
-                  <h2 className="font-medium font-primary text-[24px] lg:text-[30px] md:text-left text-center text-mono-0 leading-[120%]">
+                  <h2 className="font-medium font-primary text-[24px] lg:text-[30px] sm:text-left text-center text-mono-0 leading-[120%]">
                     Abonnieren Sie unseren Newsletter
                   </h2>
-                  <p className="font-normal font-secondary text-[16px] lg:text-[16px] md:text-left text-center text-mono-0 mt-3 leading-[150%]">
+                  <p className="font-normal font-secondary text-[16px] lg:text-[16px] sm:text-left text-center text-mono-0 mt-3 leading-[150%]">
                     Bleiben Sie auf dem Laufenden mit exklusiven Angeboten
                   </p>
                 </div>
-                <div className="right-content max-sm:w-full">
+                <div className="right-content  w-full max-w-[280px] lg:max-w-[390px]">
                   <form
                     onSubmit={handleSubmit}
-                    className="reifencheck-subscription-form w-full flex md:flex-row max-sm:flex-col gap-3 items-center"
+                    className="reifencheck-subscription-form w-full flex lg:flex-row flex-col gap-3 items-center"
                   >
                     <label htmlFor="email" className="sr-only"></label>
                     <input
@@ -79,7 +79,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`bg-mono-0 whitespace-nowrap max-sm:w-full flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 py-2 border border-primary-100 transition ease cursor-pointer leading-[100%] ${
+                      className={`bg-mono-0 whitespace-nowrap w-full lg:w-auto flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 py-2 border border-primary-100 transition ease cursor-pointer leading-[100%] ${
                         loading
                           ? 'opacity-70 cursor-not-allowed'
                           : 'hover:bg-transparent hover:text-mono-0 hover:border-mono-0'
@@ -219,19 +219,32 @@ const handleSubmit = async (e: React.FormEvent) => {
                         />
                       </Link>
                     </li>
-                    {/* <li>
+                    <li>
                       <Link
-                        className="p-2 hover:bg-[#f5b602]/60 hover:border-[#f5b602] trabsition ease-in-out duration-100 !border relative rounded-full !border-secondary-100/40 h-12 w-12 max-md:w-10 max-md:h-10 flex items-center justify-center"
-                        href="https://youtube.com"
+                        className="h-8 w-8"
+                        href="https://www.tiktok.com/@reifencheck"
                       >
                         <Image
-                          src="/images/youtube.png"
+                          src={'/images/tiktok.webp'}
                           alt="reifencheck reifencheck icon"
-                          width={20}
-                          height={20}
+                          width={36}
+                          height={36}
                         />
                       </Link>
-                    </li> */}
+                    </li>
+                    <li>
+                      <Link
+                        className="h-8 w-8"
+                        href="https://www.youtube.com/channel/UCPkFChI-2PUeV32VHdS7XFg"
+                      >
+                        <Image
+                          src={'/images/youtube.webp'}
+                          alt="reifencheck reifencheck icon"
+                          width={36}
+                          height={36}
+                        />
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </div>

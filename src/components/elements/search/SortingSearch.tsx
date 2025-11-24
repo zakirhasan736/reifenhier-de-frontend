@@ -35,7 +35,7 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
       </label>
 
       {/* Wrapper to position the custom arrow */}
-      <div className="relative inline-block">
+      <div className="relative inline-block  overflow-hidden !rounded-[6px]  border !border-primary-100">
         <select
           id="sort-select"
           onChange={handleChange}
@@ -43,12 +43,12 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
           className={[
             // your existing styles
             'select-area-sort-filter',
-            'text-[14px] text-left font-normal font-secondary h-[38px] leading-[100%] text-[#404042]',
-            'px-3 py-1 border !border-primary-100',
+            'text-[14px] text-left font-normal font-secondary h-[38px] leading-[100%] text-[#404042] !rounded-[6px]',
+            'px-3 py-1 !border-none overflow-hidden',
             // hide native arrow & make room for custom one
             'appearance-none pr-9',
             // nice rounding & bg
-            'rounded-md bg-white',
+            '!rounded-md bg-white',
             // focus ring
             'focus:outline-none focus:ring-2 focus:ring-primary-100/40',
           ].join(' ')}
