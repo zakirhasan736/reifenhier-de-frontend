@@ -594,7 +594,7 @@ export default function Header() {
       {/* ============================
           DESKTOP BLOG MEGA MENU
       ============================= */}
-      <div className="hidden lg:block border-b border-gray-200 bg-white relative">
+      <div className="hidden bg-primary-100 lg:block border-b border-primary-100 relative">
         <div className="custom-container">
           {catLoading ? (
             <p className="py-4 text-sm text-gray-400">
@@ -610,7 +610,7 @@ export default function Header() {
                     key={parentSlug}
                     onMouseEnter={() => setOpenMegaDesktop(parentSlug)}
                     onMouseLeave={() => setOpenMegaDesktop(null)}
-                    className="uppercase tracking-[2px] text-[14px] py-4 cursor-pointer hover:text-primary-100"
+                    className="uppercase tracking-[2px] text-[14px] py-4 text-white cursor-pointer hover:text-secondary-100"
                   >
                     {parent.name}
 
