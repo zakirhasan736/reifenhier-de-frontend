@@ -628,7 +628,7 @@ export default function Header() {
                             return (
                               <div key={colIndex}>
                                 <h4 className="font-semibold text-[12px] mb-2 text-gray-700">
-                                  {parent.name} – Bereich {colIndex + 1}
+                                  {parent.name}
                                 </h4>
 
                                 <ul>
