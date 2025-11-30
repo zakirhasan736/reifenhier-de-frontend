@@ -150,7 +150,7 @@ const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
   const hasBlogs = Array.isArray(blogs) && blogs.length > 0;
 
   return (
-    <section className="news-section lg:pb-[70px] pb-14 bg-mono-0">
+    <section className="news-section lg:py-[70px] py-14 bg-mono-0">
       <div className="custom-container">
         <div className="news-content">
           {/* Header */}

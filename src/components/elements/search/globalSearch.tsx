@@ -96,7 +96,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ className = '' }) => {
 
   return (
     <div
-      className={`global-search-bar max-sm:hidden max-w-[500px]  w-full relative ${className}`}
+      className={`global-search-bar max-w-[500px]  w-full relative ${className}`}
     >
       <form
         className="global-search-form global-search w-full"

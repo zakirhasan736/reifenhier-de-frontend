@@ -123,9 +123,9 @@ export default async function BlogDetailPage({
     <>
       <section className="blog-details-page">
         <div className="custom-container pt-12">
-          <article className="md:max-w-4xl w-full mx-auto">
+          <article className="md:max-w-full w-full mx-auto">
             <h1
-              className="text-3xl font-semibold mb-2 text-[#16171A]"
+              className="text-[26px] md:text-3xl font-semibold mb-2 text-[#16171A]"
               dangerouslySetInnerHTML={{ __html: blog.title.rendered }}
             />
 
@@ -136,7 +136,7 @@ export default async function BlogDetailPage({
               alt={blog.title.rendered}
               width={848}
               height={558}
-              className="w-full rounded-xl mb-6"
+              className="md:h-[558px] h-auto rounded-xl mb-6"
               priority
             />
 

@@ -79,7 +79,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`bg-mono-0 whitespace-nowrap w-full lg:w-auto flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 py-2 border border-primary-100 transition ease cursor-pointer leading-[100%] ${
+                      className={`bg-mono-0 whitespace-nowrap w-full lg:w-auto flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 pt-[9px] pb-[8px] border border-primary-100 transition ease cursor-pointer leading-[1] ${
                         loading
                           ? 'opacity-70 cursor-not-allowed'
                           : 'hover:bg-transparent hover:text-mono-0 hover:border-mono-0'

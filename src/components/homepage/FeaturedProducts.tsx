@@ -20,7 +20,7 @@ const category = data?.category || 'Winterreifen';
 const productData = data?.products || [];
 
   return (
-    <section className="featured-product lg:py-[70px] py-14">
+    <section className="featured-product lg:pb-[70px] pb-14">
       <div className="custom-container">
         <div className="featured-product-content flex justify-between items-end mb-8">
           <div className="featured-product-left-content w-full">

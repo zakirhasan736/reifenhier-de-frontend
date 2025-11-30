@@ -13,13 +13,13 @@ const HomePageMain = () => {
     <div className="home-page-main-wrapper">
       <BannerSection />
       {/* <LatestProducts /> */}
+      <NewArticles />
       <FeaturedProducts />
       {/* <ProductCategory /> */}
       <BrandCategory />
       <AboutUs />
       <HowItWorks />
       <FaqSection />
-      <NewArticles />
     </div>
   );
 }
