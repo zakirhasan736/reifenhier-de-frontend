@@ -263,8 +263,8 @@ export default function BlogPage({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const parentSlug = searchParams.get('kategorie');
-  const subSlug = searchParams.get('subkategorie');
+const parentSlug = searchParams?.get('kategorie') ?? null;
+const subSlug = searchParams?.get('subkategorie') ?? null;
 
   const limit = 6;
   const totalPages = Math.ceil(initialTotal / limit);
