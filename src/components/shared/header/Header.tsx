@@ -551,8 +551,8 @@ export default function Header() {
           </div>
 
           {/* RIGHT SIDE — SEARCH + FAVORITES + MOBILE MENU */}
-          <div className="global-search lg:w-full max-w-[380px] flex items-center gap-4">
-            <div className="hidden lg:block">
+          <div className="global-search lg:w-full max-w-[420px] flex items-center gap-4">
+            <div className="hidden lg:block w-full">
               <GlobalSearch />
             </div>
 
