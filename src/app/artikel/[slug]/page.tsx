@@ -155,6 +155,11 @@ export default async function BlogDetailPage({
       <Script id="blog-jsonld" type="application/ld+json">
         {JSON.stringify(jsonLd)}
       </Script>
+      <Script
+        src="/wp-calculator.js"
+        strategy="lazyOnload"
+        id="wp-calculator-script"
+      />
     </>
   );
 }
