@@ -1,71 +1,67 @@
-# LLM Access Policy for Reifencheck.de
-## ------------------------------------------------------------
-## This file defines permissions for AI crawlers (Large Language Models)
-## regarding indexing, summarization, and use of Reifencheck.de content.
-## Based on emerging standards from llmcompliance.org.
-## ------------------------------------------------------------
+LLM Access Policy for Reifencheck.de
+------------------------------------------------------------
+This file defines permissions for AI crawlers (Large Language Models)
+regarding indexing, summarization, and use of Reifencheck.de content.
+Based on emerging standards from llmcompliance.org.
+------------------------------------------------------------
 
-# -----------------------
 # AI CRAWLER PERMISSIONS
-# -----------------------
 
 User-agent: GPTBot
-Disallow: /                      ## Block OpenAI training datasets
-Allow: /                         ## Allow for generative search indexing only
+Disallow: /
+Allow: /
 
 User-agent: ClaudeBot
-Disallow: /                      ## Block Anthropic training datasets
-Allow: /                         ## Allow summarization / retrieval indexing
+Disallow: /
+Allow: /
 
 User-agent: PerplexityBot
-Allow: /                         ## Allow for search, answers, citations
+Allow: /
 
 User-agent: CCBot
-Disallow: /                      ## Block Common Crawl data harvesting
+Disallow: /
 
 User-agent: AmazonBot
-Disallow: /                      ## Block Amazon AI data collection
+Disallow: /
 
 User-agent: YouBot
-Allow: /                         ## Allow You.com Search indexing
+Allow: /
 
 User-agent: Google-Extended
-Allow: /                         ## Allow Gemini / SGE AI indexing (not training)
+Allow: /
 
 User-agent: *
-Allow: /                         ## Standard web crawlers allowed
+Allow: /
 
-# -----------------------
+
 # AI USAGE DIRECTIVES
-# -----------------------
-Training: disallow               ## ❌ Content MAY NOT be used to train AI models
-Crawling: allow                  ## ✅ Indexing allowed for search & discovery
-Commercial: allow                ## ✅ Reuse allowed in commercial AI search tools
-Derivatives: allow               ## ✅ Summaries, answers, transformations allowed
-Attribution: required            ## ✅ Must cite Reifencheck.de when used
-Personal-Data: disallow          ## ❌ No AI may process or store personal data
-Rate-Limit: reasonable           ## ⚠️ Bots must crawl responsibly
 
-Contact: support@reifencheck.de  ## 📧 Contact for data or compliance inquiries
+Training: disallow
+Crawling: allow
+Commercial: allow
+Derivatives: allow
+Attribution: required
+Personal-Data: disallow
+Rate-Limit: reasonable
+
+Contact: support@reifencheck.de
 Last-Modified: 2025-10-13
 
-# -----------------------
-# PURPOSE OF THIS POLICY
-# -----------------------
-## This policy controls how AI systems:
-## - Crawl Reifencheck.de
-## - Index and summarize public content
-## - Use content in answers, citations, and search results
-## - Are restricted from training foundation models on our data
 
-# -----------------------
+# PURPOSE OF THIS POLICY
+This policy controls how AI systems:
+- Crawl Reifencheck.de
+- Index and summarize public content
+- Use content in answers, citations, and search results
+- Are restricted from training foundation models on our data
+
+
 # COVERED AI CRAWLERS
-# -----------------------
-## - GPTBot (OpenAI / ChatGPT / o1 / o3)
-## - ClaudeBot (Anthropic)
-## - Google-Extended (Gemini, SGE)
-## - PerplexityBot
-## - AmazonBot
-## - YouBot (You.com)
-## - CCBot (Common Crawl)
-## - Any future LLMs under "User-agent: *"
+- GPTBot (OpenAI / ChatGPT / o1 / o3 / o4 / o5)
+- ClaudeBot (Anthropic)
+- Google-Extended (Gemini, SGE)
+- PerplexityBot
+- AmazonBot
+- YouBot (You.com)
+- CCBot (Common Crawl)
+- Any future LLMs under “User-agent: *”
