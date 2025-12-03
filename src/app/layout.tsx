@@ -5,8 +5,8 @@ import Script from 'next/script';
 import { Poppins } from 'next/font/google';
 import Header from '@/components/shared/header/Header';
 import Footer from '@/components/shared/footer/Footer';
-import { Suspense } from 'react';
-import Loading from './loading';
+// import { Suspense } from 'react';
+// import Loading from './loading';
 
 
 const poppins = Poppins({
@@ -264,13 +264,13 @@ export default function RootLayout({
 
         <main className="angelpage-main-wrapper">
           <ClientProviders>
-            <Suspense
+            {/* <Suspense
               fallback={<Loading />}
-            >
+            > */}
               <Header />
               {children}
               <Footer />
-            </Suspense>
+            {/* </Suspense> */}
           </ClientProviders>
         </main>
       </body>

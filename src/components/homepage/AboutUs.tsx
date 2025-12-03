@@ -22,7 +22,7 @@ const AboutUs = () => {
                 (EVs)/Hybrid geeignet sind.
               </p>
               <p className="about-sec-desc md:text-[16px] text-[14px] text-left font-normal font-secondary text-[#404042] md:mb-3 mb-2">
-                Bei Reifenhier.de vergleichen wir eine Vielzahl von
+                Bei Reifencheck.de vergleichen wir eine Vielzahl von
                 Reifenmodellen und bieten Ihnen aktuelle Informationen über
                 Preise, Verfügbarkeit und Leistung. Besonders stolz sind wir auf
                 unseren Blog, der sich intensiv mit Reifen für Elektrofahrzeuge

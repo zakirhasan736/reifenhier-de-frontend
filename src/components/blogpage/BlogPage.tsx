@@ -233,7 +233,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
@@ -253,18 +253,18 @@ interface BlogPageProps {
   blogs: Blog[];
   total: number;
   currentPage: number;
+  parentSlug: string | null;
+  subSlug: string | null;
 }
 
 export default function BlogPage({
   blogs: initialBlogs,
   total: initialTotal,
   currentPage,
+  parentSlug,
+  subSlug,
 }: BlogPageProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-const parentSlug = searchParams?.get('kategorie') ?? null;
-const subSlug = searchParams?.get('subkategorie') ?? null;
 
   const limit = 6;
   const totalPages = Math.ceil(initialTotal / limit);
@@ -274,9 +274,9 @@ const subSlug = searchParams?.get('subkategorie') ?? null;
   const [total, setTotal] = useState(initialTotal);
   const [loading, setLoading] = useState(false);
 
-  /* ------------------------------
-      LIVE SEARCH
-  ------------------------------ */
+  /* ------------------------------------
+     LIVE SEARCH
+  ------------------------------------ */
   useEffect(() => {
     const timeout = setTimeout(async () => {
       if (!search.trim()) {
@@ -303,18 +303,23 @@ const subSlug = searchParams?.get('subkategorie') ?? null;
     return () => clearTimeout(timeout);
   }, [search, initialBlogs, initialTotal]);
 
-  /* ------------------------------
-      PAGINATION
-  ------------------------------ */
+  /* ------------------------------------
+     PAGINATION — uses server props
+  ------------------------------------ */
   const handlePageChange = (page: number) => {
-    const query = new URLSearchParams(searchParams?.toString() || '');
+    const query = new URLSearchParams();
+
+    if (parentSlug) query.set('kategorie', parentSlug);
+    if (subSlug) query.set('subkategorie', subSlug);
+
     query.set('page', page.toString());
+
     router.push(`/artikel?${query.toString()}`);
   };
 
-  /* ------------------------------
-      DYNAMIC TITLE
-  ------------------------------ */
+  /* ------------------------------------
+     TITLE
+  ------------------------------------ */
   const dynamicTitle = (() => {
     if (parentSlug && subSlug) return `${parentSlug} – ${subSlug}`;
     if (parentSlug) return parentSlug;

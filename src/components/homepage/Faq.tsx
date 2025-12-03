@@ -13,7 +13,7 @@ async function getFaqs(): Promise<FAQ[]> {
   try {
     const res = await fetch(`${apiUrl}/api/faq/faqs-lists`, {
       // Revalidate once per hour (3600s)
-      next: { revalidate: 3600 },
+      next: { revalidate: 50 },
     });
 
     if (!res.ok) throw new Error('Failed to fetch FAQs');

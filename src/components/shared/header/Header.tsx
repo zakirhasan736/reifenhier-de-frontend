@@ -357,7 +357,7 @@
 // export default Header;
 'use client';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -407,9 +407,9 @@ type BlogCategoryStructure = Record<string, BlogCategoryGroup>;
 export default function Header() {
   const { data = { count: 0 }, isLoading } = useGetWishlistCountQuery();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
-  const activeCategory = searchParams?.get('kategorie');
+  // const activeCategory = searchParams?.get('kategorie');
 
   const isActive = (cat: string) =>
     pathname === '/produkte' && activeCategory === cat;
@@ -498,6 +498,14 @@ export default function Header() {
   /* ------------------------------------------
      RENDER
   -------------------------------------------*/
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setActiveCategory(params.get('kategorie'));
+    }
+  }, [pathname]); // update on route change
 
   return (
     <header className="bg-white relative z-[999]">
