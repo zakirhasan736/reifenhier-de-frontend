@@ -2030,24 +2030,24 @@ flex-direction: column;
 
 .wp-content h1 { font-size: 2rem; }
 .wp-content h2 { font-size: 1.75rem; }
-.wp-content h3 { font-size: 1.5rem; }
-.wp-content h4 { font-size: 1.25rem; }
-.wp-content h5 { font-size: 1.1rem; }
+.wp-content h3 { font-size: 1.25rem; }
+.wp-content h4 { font-size: 1.1rem; }
+.wp-content h5 { font-size: 1rem; }
 .wp-content h6 { font-size: 1rem; }
 
 @media screen and (max-width: 1024px) {
     .wp-content h1 { font-size: 1.8rem; }
-    .wp-content h2 { font-size: 1.575rem; }
-    .wp-content h3 { font-size: 1.35rem; }
-    .wp-content h4 { font-size: 1.125rem; }
+    .wp-content h2 { font-size: 1.5rem; }
+    .wp-content h3 { font-size: 1.2rem; }
+    .wp-content h4 { font-size: 1.11rem; }
     .wp-content h5 { font-size: 0.99rem; }
     .wp-content h6 { font-size: 0.9rem; }
 }
 
 @media screen and (max-width: 767px) {
     .wp-content h1 { font-size: 1.62rem; }
-    .wp-content h2 { font-size: 1.4175rem; }
-    .wp-content h3 { font-size: 1.2rem; }
+    .wp-content h2 { font-size: 1.5rem; }
+    .wp-content h3 { font-size: 1.1rem; }
     .wp-content h4 { font-size: 1rem; }
     .wp-content h5 { font-size: 0.891rem; }
     .wp-content h6 { font-size: 0.81rem; }
@@ -2055,7 +2055,7 @@ flex-direction: column;
 
 @media screen and (max-width: 425px) {
     .wp-content h1 { font-size: 1.46rem; }
-    .wp-content h2 { font-size: 1.2645rem; }
+    .wp-content h2 { font-size: 1.4rem; }
     .wp-content h3 { font-size: 1.05rem; }
     .wp-content h4 { font-size: 0.875rem; }
     .wp-content h5 { font-size: 0.783rem; }
