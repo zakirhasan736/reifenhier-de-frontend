@@ -273,7 +273,11 @@ export default function RootLayout({
             {/* </Suspense> */}
           </ClientProviders>
         </main>
-        <script src="https://www.dwin2.com/pub.2614230.min.js" defer />
+        <script
+          async
+          src="./pub.2614230.min.js"
+          data-awin-advertiser-id="2614230"
+        ></script>
       </body>
     </html>
   );
