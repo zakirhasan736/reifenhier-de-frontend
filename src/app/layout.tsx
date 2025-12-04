@@ -267,12 +267,13 @@ export default function RootLayout({
             {/* <Suspense
               fallback={<Loading />}
             > */}
-              <Header />
-              {children}
-              <Footer />
+            <Header />
+            {children}
+            <Footer />
             {/* </Suspense> */}
           </ClientProviders>
         </main>
+        <script src="https://www.dwin2.com/pub.2614230.min.js" defer />
       </body>
     </html>
   );

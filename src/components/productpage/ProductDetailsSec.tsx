@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { MdAddShoppingCart } from 'react-icons/md';
+import useGeo from '@/hooks/useGeo';
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -78,6 +79,7 @@ interface CheapestVendor {
   payment_icons: string[];
   vendor: string;
   affiliate_product_cloak_url: string;
+  original_affiliate_url: string;
   vendor_id: string;
   vendor_logo: string;
 }
@@ -246,7 +248,7 @@ const handleToggleWishlist = async () => {
     toast.error('Etwas ist schiefgelaufen.');
   }
 };
-
+  const geo = useGeo();
     return (
       <>
         {!product ? (
@@ -870,14 +872,36 @@ const handleToggleWishlist = async () => {
                         <span className="text-[14px] whitespace-nowrap">
                           Bester Preis:
                         </span>{' '}
-                        <a
-                          href={`${apiUrl}/out/${
-                            product.cheapest_vendor?.affiliate_product_cloak_url
-                          }?product=${product._id}&uuid=${
-                            uuidCookie || 'guest'
-                          }&from=product-page`}
+                        <Link
+                          href={product.cheapest_vendor?.original_affiliate_url}
                           target="_blank"
-                          rel="nofollow sponsored noopener noreferrer"
+                          rel="noopener noreferrer"
+                          data-awin-ignore="true"
+                          onClick={() => {
+                            navigator.sendBeacon(
+                              `${apiUrl}/api/analytics/log-click`,
+                              new Blob(
+                                [
+                                  JSON.stringify({
+                                    productId: product._id,
+                                    productName: product.product_name,
+                                    brandName: product.brand_name,
+                                    vendor: product.cheapest_vendor?.vendor,
+                                    vendorId:
+                                      product.cheapest_vendor?.vendor_id,
+                                    uuid: uuidCookie,
+                                    source: 'product-details-page',
+
+                                    // GEO from hook
+                                    country: geo.country,
+                                    city: geo.city,
+                                    ip: geo.ip,
+                                  }),
+                                ],
+                                { type: 'application/json' }
+                              )
+                            );
+                          }}
                           className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
                         >
                           <Image
@@ -894,7 +918,7 @@ const handleToggleWishlist = async () => {
                             alt="vendor image"
                           />{' '}
                           {product.cheapest_vendor?.vendor}
-                        </a>
+                        </Link>
                       </p>
                       <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
@@ -1052,14 +1076,35 @@ const handleToggleWishlist = async () => {
 
                   <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
                     <div className="product-card-btn-states lg:min-w-[173px] w-full">
-                      <a
-                        href={`${apiUrl}/out/${
-                          product.cheapest_vendor?.affiliate_product_cloak_url
-                        }?product=${product._id}&uuid=${
-                          uuidCookie || 'guest'
-                        }&from=product-page`}
+                      <Link
+                        href={product.cheapest_vendor?.original_affiliate_url}
                         target="_blank"
-                        rel="nofollow sponsored noopener noreferrer"
+                        rel="noopener noreferrer"
+                        data-awin-ignore="true"
+                        onClick={() => {
+                          navigator.sendBeacon(
+                            `${apiUrl}/api/analytics/log-click`,
+                            new Blob(
+                              [
+                                JSON.stringify({
+                                  productId: product._id,
+                                  productName: product.product_name,
+                                  brandName: product.brand_name,
+                                  vendor: product.cheapest_vendor?.vendor,
+                                  vendorId: product.cheapest_vendor?.vendor_id,
+                                  uuid: uuidCookie,
+                                  source: 'product-details-page',
+
+                                  // GEO from hook
+                                  country: geo.country,
+                                  city: geo.city,
+                                  ip: geo.ip,
+                                }),
+                              ],
+                              { type: 'application/json' }
+                            )
+                          );
+                        }}
                         className="block w-full"
                       >
                         <button
@@ -1069,7 +1114,7 @@ const handleToggleWishlist = async () => {
                           <MdAddShoppingCart className="text-[22px]" /> Zum
                           Angebot
                         </button>
-                      </a>
+                      </Link>
                     </div>
 
                     <button
@@ -1400,11 +1445,7 @@ const handleToggleWishlist = async () => {
                             const total =
                               price + (hasFreeShipping ? 0 : delivery);
 
-                            const outHref = `${apiUrl}/out/${
-                              offer.affiliate_product_cloak_url
-                            }?product=${product._id}&uuid=${
-                              uuidCookie || 'guest'
-                            }&from=product-page`;
+                            const outHref = offer.original_affiliate_url;
 
                             const showSavings =
                               !!offer.savings_percent &&
@@ -1481,10 +1522,35 @@ const handleToggleWishlist = async () => {
                                     </div>
 
                                     {/* Vendor (mobile) */}
-                                    <a
+                                    <Link
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
+                                      data-awin-ignore="true"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/analytics/log-click`,
+                                          new Blob(
+                                            [
+                                              JSON.stringify({
+                                                productId: product._id,
+                                                productName:
+                                                  product.product_name,
+                                                brandName: product.brand_name,
+                                                vendor: offer.vendor,
+                                                uuid: uuidCookie,
+                                                source: 'product-details-page',
+
+                                                // GEO from hook
+                                                country: geo.country,
+                                                city: geo.city,
+                                                ip: geo.ip,
+                                              }),
+                                            ],
+                                            { type: 'application/json' }
+                                          )
+                                        );
+                                      }}
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1494,15 +1560,40 @@ const handleToggleWishlist = async () => {
                                         loading="lazy"
                                         className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
                                       />
-                                    </a>
+                                    </Link>
                                   </div>
 
                                   {/* Vendor (desktop) */}
                                   <div className="vendor-box lg:block hidden">
-                                    <a
+                                    <Link
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
+                                      data-awin-ignore="true"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/analytics/log-click`,
+                                          new Blob(
+                                            [
+                                              JSON.stringify({
+                                                productId: product._id,
+                                                productName:
+                                                  product.product_name,
+                                                brandName: product.brand_name,
+                                                vendor: offer.vendor,
+                                                uuid: uuidCookie,
+                                                source: 'product-details-page',
+
+                                                // GEO from hook
+                                                country: geo.country,
+                                                city: geo.city,
+                                                ip: geo.ip,
+                                              }),
+                                            ],
+                                            { type: 'application/json' }
+                                          )
+                                        );
+                                      }}
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1512,7 +1603,7 @@ const handleToggleWishlist = async () => {
                                         loading="lazy"
                                         className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
                                       />
-                                    </a>
+                                    </Link>
                                   </div>
 
                                   {/* Payment methods */}
@@ -1624,10 +1715,35 @@ const handleToggleWishlist = async () => {
 
                                   {/* CTAs */}
                                   <div className="offer-product-card-footer max-sm:w-full md:flex-col flex items-center justify-between gap-0">
-                                    <a
+                                    <Link
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
+                                      data-awin-ignore="true"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/analytics/log-click`,
+                                          new Blob(
+                                            [
+                                              JSON.stringify({
+                                                productId: product._id,
+                                                productName:
+                                                  product.product_name,
+                                                brandName: product.brand_name,
+                                                vendor: offer.vendor,
+                                                uuid: uuidCookie,
+                                                source: 'product-details-page',
+
+                                                // GEO from hook
+                                                country: geo.country,
+                                                city: geo.city,
+                                                ip: geo.ip,
+                                              }),
+                                            ],
+                                            { type: 'application/json' }
+                                          )
+                                        );
+                                      }}
                                       className="cta-button-shop"
                                     >
                                       <button
@@ -1637,11 +1753,36 @@ const handleToggleWishlist = async () => {
                                         <MdAddShoppingCart className="text-[22px]" />{' '}
                                         Zum Angebot
                                       </button>
-                                    </a>
-                                    <a
+                                    </Link>
+                                    <Link
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
+                                      data-awin-ignore="true"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/analytics/log-click`,
+                                          new Blob(
+                                            [
+                                              JSON.stringify({
+                                                productId: product._id,
+                                                productName:
+                                                  product.product_name,
+                                                brandName: product.brand_name,
+                                                vendor: offer.vendor,
+                                                uuid: uuidCookie,
+                                                source: 'product-details-page',
+
+                                                // GEO from hook
+                                                country: geo.country,
+                                                city: geo.city,
+                                                ip: geo.ip,
+                                              }),
+                                            ],
+                                            { type: 'application/json' }
+                                          )
+                                        );
+                                      }}
                                     >
                                       <button
                                         type="button"
@@ -1649,7 +1790,7 @@ const handleToggleWishlist = async () => {
                                       >
                                         Shop Informationen
                                       </button>
-                                    </a>
+                                    </Link>
                                   </div>
                                 </div>
                               </div>

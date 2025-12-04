@@ -4,6 +4,8 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import useGeo from '@/hooks/useGeo';
+
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -105,6 +107,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showCompareButton = false,
   isPriority = true,
 }) => {
+  const geo = useGeo();
+
   const dispatch = useDispatch<AppDispatch>();
 
   const { data: wishlistData } = useGetWishlistQuery();
@@ -522,15 +526,45 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         className="competitor-lists-item flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
-                          <a
-                            href={`${apiUrl}/out/${
-                              item.affiliate_product_cloak_url
-                            }?product=${_id}&uuid=${
-                              uuidCookie || 'guest'
-                            }&from=product-page`}
+                          {/* <a
+                            href={item.original_affiliate_url}
                             target="_blank"
-                            rel="nofollow sponsored noopener noreferrer"
+                            // rel="nofollow sponsored noopener noreferrer"
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
+                          >
+                            {item.vendor}
+                          </a> */}
+                          <a
+                            href={item.original_affiliate_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-awin-ignore="true"
+                            onClick={() => {
+                              navigator.sendBeacon(
+                                `${apiUrl}/api/analytics/log-click`,
+                                new Blob(
+                                  [
+                                    JSON.stringify({
+                                      productId: _id,
+                                      productName: product_name,
+                                      brandName: brand_name,
+                                      vendor: item.vendor,
+                                      vendorId: item.vendor_id,
+                                      uuid: uuidCookie,
+                                      source: 'product-section',
+
+                                      // GEO from hook
+                                      country: geo.country,
+                                      city: geo.city,
+                                      ip: geo.ip,
+                                    }),
+                                  ],
+                                  { type: 'application/json' }
+                                )
+                              );
+                            }}
+                            className="font-secondary py-[4px] px-[6px] font-normal text-[14px]
+                                      text-left text-primary-100 underline leading-[140%]"
                           >
                             {item.vendor}
                           </a>
