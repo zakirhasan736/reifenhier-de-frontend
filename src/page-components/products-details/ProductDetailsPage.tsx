@@ -38,6 +38,7 @@ interface CheapestVendor {
   affiliate_product_cloak_url: string;
   vendor_id: string;
   vendor_logo: string;
+  original_affiliate_url: string;
 }
 
 interface Product {
