@@ -522,18 +522,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         className="competitor-lists-item flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
-                          <Link
+                          <a
                             href={`${apiUrl}/out/${
                               item.affiliate_product_cloak_url
                             }?product=${_id}&uuid=${
                               uuidCookie || 'guest'
                             }&from=product-page`}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="nofollow noopener noreferrer"
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
                           >
                             {item.vendor}
-                          </Link>
+                          </a>
                         </div>
                         <span className="font-secondary font-normal text-[14px] text-left text-[#404042] leading-[140%]">
                           <span>{item.price + ' €'}</span>

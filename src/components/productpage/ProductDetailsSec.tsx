@@ -871,14 +871,14 @@ const handleToggleWishlist = async () => {
                         <span className="text-[14px] whitespace-nowrap">
                           Bester Preis:
                         </span>{' '}
-                        <Link
+                        <a
                           href={`${apiUrl}/out/${
                             product.cheapest_vendor?.affiliate_product_cloak_url
                           }?product=${product._id}&uuid=${
                             uuidCookie || 'guest'
                           }&from=product-page`}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="nofollow noopener noreferrer"
                           className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
                         >
                           <Image
@@ -895,7 +895,7 @@ const handleToggleWishlist = async () => {
                             alt="vendor image"
                           />{' '}
                           {product.cheapest_vendor?.vendor}
-                        </Link>
+                        </a>
                       </p>
                       <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
@@ -1053,14 +1053,14 @@ const handleToggleWishlist = async () => {
 
                   <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
                     <div className="product-card-btn-states lg:min-w-[173px] w-full">
-                      <Link
+                      <a
                         href={`${apiUrl}/out/${
                           product.cheapest_vendor?.affiliate_product_cloak_url
                         }?product=${product._id}&uuid=${
                           uuidCookie || 'guest'
                         }&from=product-page`}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="nofollow noopener noreferrer"
                         className="block w-full"
                       >
                         <button
@@ -1070,7 +1070,7 @@ const handleToggleWishlist = async () => {
                           <MdAddShoppingCart className="text-[22px]" /> Zum
                           Angebot
                         </button>
-                      </Link>
+                      </a>
                     </div>
 
                     <button
@@ -1482,10 +1482,10 @@ const handleToggleWishlist = async () => {
                                     </div>
 
                                     {/* Vendor (mobile) */}
-                                    <Link
+                                    <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="noopener noreferrer"
+                                      rel="nofollow noopener noreferrer"
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1495,15 +1495,15 @@ const handleToggleWishlist = async () => {
                                         loading="lazy"
                                         className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
                                       />
-                                    </Link>
+                                    </a>
                                   </div>
 
                                   {/* Vendor (desktop) */}
                                   <div className="vendor-box lg:block hidden">
-                                    <Link
+                                    <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="noopener noreferrer"
+                                      rel="nofollow noopener noreferrer"
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1513,7 +1513,7 @@ const handleToggleWishlist = async () => {
                                         loading="lazy"
                                         className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
                                       />
-                                    </Link>
+                                    </a>
                                   </div>
 
                                   {/* Payment methods */}
@@ -1625,10 +1625,10 @@ const handleToggleWishlist = async () => {
 
                                   {/* CTAs */}
                                   <div className="offer-product-card-footer max-sm:w-full md:flex-col flex items-center justify-between gap-0">
-                                    <Link
+                                    <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="noopener noreferrer"
+                                      rel="nofollow noopener noreferrer"
                                       className="cta-button-shop"
                                     >
                                       <button
@@ -1638,11 +1638,11 @@ const handleToggleWishlist = async () => {
                                         <MdAddShoppingCart className="text-[22px]" />{' '}
                                         Zum Angebot
                                       </button>
-                                    </Link>
-                                    <Link
+                                    </a>
+                                    <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="noopener noreferrer"
+                                      rel="nofollow noopener noreferrer"
                                     >
                                       <button
                                         type="button"
@@ -1650,7 +1650,7 @@ const handleToggleWishlist = async () => {
                                       >
                                         Shop Informationen
                                       </button>
-                                    </Link>
+                                    </a>
                                   </div>
                                 </div>
                               </div>
