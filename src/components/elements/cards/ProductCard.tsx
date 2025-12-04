@@ -529,7 +529,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                               uuidCookie || 'guest'
                             }&from=product-page`}
                             target="_blank"
-                            rel="nofollow noopener noreferrer"
+                            rel="nofollow sponsored noopener noreferrer"
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
                           >
                             {item.vendor}

@@ -1,24 +1,21 @@
-# LLM Access Policy for Reifencheck.de
-# Defines permissions and usage rules for AI crawlers and large language models.
-# Based on LLM Compliance Standard v1.1 (llmcompliance.org)
+LLM Access Policy for Reifencheck.de
+------------------------------------------------------------
+This file defines permissions for AI crawlers (Large Language Models)
+regarding indexing, summarization, and use of Reifencheck.de content.
+Based on emerging standards from llmcompliance.org.
+------------------------------------------------------------
 
-############################################################
 # AI CRAWLER PERMISSIONS
-############################################################
 
 User-agent: GPTBot
+Disallow: /
 Allow: /
 
 User-agent: ClaudeBot
+Disallow: /
 Allow: /
 
 User-agent: PerplexityBot
-Allow: /
-
-User-agent: YouBot
-Allow: /
-
-User-agent: Google-Extended
 Allow: /
 
 User-agent: CCBot
@@ -27,31 +24,41 @@ Disallow: /
 User-agent: AmazonBot
 Disallow: /
 
-# Default rule for all other AI crawlers
+User-agent: YouBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 User-agent: *
 Allow: /
 
-
-############################################################
 # AI USAGE DIRECTIVES
-############################################################
 
 Training: disallow
 Crawling: allow
-Indexing: allow
-Summarization: allow
 Commercial: allow
 Derivatives: allow
 Attribution: required
 Personal-Data: disallow
 Rate-Limit: reasonable
 
-
-############################################################
-# CONTACT & META
-############################################################
-
 Contact: support@reifencheck.de
 Last-Modified: 2025-10-13
-Policy-Version: 1.1
-Policy-URL: https://www.reifencheck.de/ai-usage-policy
+
+# PURPOSE OF THIS POLICY
+This policy controls how AI systems:
+- Crawl Reifencheck.de
+- Index and summarize public content
+- Use content in answers, citations, and search results
+- Are restricted from training foundation models on our data
+
+# COVERED AI CRAWLERS
+- GPTBot (OpenAI / ChatGPT / o1 / o3 / o4 / o5)
+- ClaudeBot (Anthropic)
+- Google-Extended (Gemini / SGE)
+- PerplexityBot
+- AmazonBot
+- YouBot (You.com)
+- CCBot (Common Crawl)
+- Any future LLMs under "User-agent: *"

@@ -610,14 +610,13 @@ const handleToggleWishlist = async () => {
                     type="button"
                     className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
                   >
-             
                     <OptimizedImage
                       src="/images/icons/arrow-left.svg"
                       alt="Back"
                       className="md:h-6 h-4"
                       width={24}
                       height={24}
-                      loading='lazy'
+                      loading="lazy"
                       fallback="/images/fallback-image.png"
                     />
                     Zurück zu den Suchergebnissen
@@ -878,7 +877,7 @@ const handleToggleWishlist = async () => {
                             uuidCookie || 'guest'
                           }&from=product-page`}
                           target="_blank"
-                          rel="nofollow noopener noreferrer"
+                          rel="nofollow sponsored noopener noreferrer"
                           className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
                         >
                           <Image
@@ -1060,7 +1059,7 @@ const handleToggleWishlist = async () => {
                           uuidCookie || 'guest'
                         }&from=product-page`}
                         target="_blank"
-                        rel="nofollow noopener noreferrer"
+                        rel="nofollow sponsored noopener noreferrer"
                         className="block w-full"
                       >
                         <button
@@ -1485,7 +1484,7 @@ const handleToggleWishlist = async () => {
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow noopener noreferrer"
+                                      rel="nofollow sponsored noopener noreferrer"
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1503,7 +1502,7 @@ const handleToggleWishlist = async () => {
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow noopener noreferrer"
+                                      rel="nofollow sponsored noopener noreferrer"
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1628,7 +1627,7 @@ const handleToggleWishlist = async () => {
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow noopener noreferrer"
+                                      rel="nofollow sponsored noopener noreferrer"
                                       className="cta-button-shop"
                                     >
                                       <button
@@ -1642,7 +1641,7 @@ const handleToggleWishlist = async () => {
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow noopener noreferrer"
+                                      rel="nofollow sponsored noopener noreferrer"
                                     >
                                       <button
                                         type="button"

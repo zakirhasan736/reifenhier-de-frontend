@@ -37,46 +37,16 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
 
+      // AI crawlers allowed for indexing BUT not training
+      { userAgent: 'GPTBot', allow: '/', disallow: ['/admin/', '/api/'] },
+      { userAgent: 'ClaudeBot', allow: '/', disallow: ['/admin/', '/api/'] },
+      { userAgent: 'PerplexityBot', allow: '/', disallow: ['/api/'] },
+      { userAgent: 'YouBot', allow: '/', disallow: ['/api/'] },
 
-      // 🤖 GPTBot (ChatGPT)
-      {
-        userAgent: 'GPTBot',
-        allow: '/',
-        disallow: ['/admin/', '/api/', '/private/'],
-      },
-
-      // 🤖 ClaudeBot (Anthropic)
-      {
-        userAgent: 'ClaudeBot',
-        allow: '/',
-        disallow: ['/admin/', '/api/', '/private/'],
-      },
-
-      // 🤖 PerplexityBot
-      {
-        userAgent: 'PerplexityBot',
-        allow: '/',
-        disallow: ['/api/', '/private/'],
-      },
-
-      // ❌ Disallow AI training bots
-      {
-        userAgent: 'Google-Extended', // Bard / Gemini training
-        disallow: '/',
-      },
-      {
-        userAgent: 'CCBot', // Common Crawl
-        disallow: '/',
-      },
-      {
-        userAgent: 'AmazonBot', // Amazon AI
-        disallow: '/',
-      },
-      {
-        userAgent: 'YouBot', // You.com
-        disallow: ['/api/', '/private/'],
-        allow: '/',
-      },
+      // AI training bots fully disallowed
+      { userAgent: 'Google-Extended', disallow: '/' },
+      { userAgent: 'CCBot', disallow: '/' },
+      { userAgent: 'AmazonBot', disallow: '/' },
     ],
 
     // 🗺️ Sitemaps
