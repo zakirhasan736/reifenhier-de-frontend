@@ -33,7 +33,7 @@ Allow: /
 User-agent: *
 Allow: /
 
-# AI USAGE DIRECTIVES
+## AI USAGE DIRECTIVES
 
 Training: disallow
 Crawling: allow
@@ -46,14 +46,14 @@ Rate-Limit: reasonable
 Contact: support@reifencheck.de
 Last-Modified: 2025-10-13
 
-# PURPOSE OF THIS POLICY
+## PURPOSE OF THIS POLICY
 This policy controls how AI systems:
 - Crawl Reifencheck.de
 - Index and summarize public content
 - Use content in answers, citations, and search results
 - Are restricted from training foundation models on our data
 
-# COVERED AI CRAWLERS
+## COVERED AI CRAWLERS
 - GPTBot (OpenAI / ChatGPT / o1 / o3 / o4 / o5)
 - ClaudeBot (Anthropic)
 - Google-Extended (Gemini / SGE)
