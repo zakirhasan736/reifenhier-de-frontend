@@ -1818,6 +1818,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { MdAddShoppingCart } from 'react-icons/md';
+import useGeo from '@/hooks/useGeo';
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -1952,6 +1953,7 @@ const parseMoneyEU = (val: MoneyLike): number => {
 const formatEUR = (n: number) => `€${n.toFixed(2).replace('.', ',')}`;
 
 const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
+  const geo = useGeo();
   const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -2677,6 +2679,21 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
                         }&from=product-page`}
                         target="_blank"
                         rel="nofollow sponsored noopener noreferrer"
+                        onClick={() => {
+                          navigator.sendBeacon(
+                            `${apiUrl}/api/v1/p`,
+                            JSON.stringify({
+                              productId: product._id,
+                              vendor: product.cheapest_vendor?.vendor,
+                              vendorId: product.cheapest_vendor?.vendor_id,
+                              uuid: uuidCookie,
+                              source: 'product-details-page',
+                              country: geo.country,
+                              city: geo.city,
+                              ip: geo.ip,
+                            })
+                          );
+                        }}
                         className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
                       >
                         <Image
@@ -2859,6 +2876,21 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
                       }&from=product-page`}
                       target="_blank"
                       rel="nofollow sponsored noopener noreferrer"
+                      onClick={() => {
+                        navigator.sendBeacon(
+                          `${apiUrl}/api/v1/p`,
+                          JSON.stringify({
+                            productId: product._id,
+                            vendor: product.cheapest_vendor?.vendor,
+                            vendorId: product.cheapest_vendor?.vendor_id,
+                            uuid: uuidCookie,
+                            source: 'product-details-page',
+                            country: geo.country,
+                            city: geo.city,
+                            ip: geo.ip,
+                          })
+                        );
+                      }}
                       className="block w-full"
                     >
                       <button
@@ -3280,6 +3312,20 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
                                     href={outHref}
                                     target="_blank"
                                     rel="nofollow sponsored noopener noreferrer"
+                                    onClick={() => {
+                                      navigator.sendBeacon(
+                                        `${apiUrl}/api/v1/p`,
+                                        JSON.stringify({
+                                          productId: product._id,
+                                          vendor: offer.vendor,
+                                          uuid: uuidCookie,
+                                          source: 'product-offer-card',
+                                          country: geo.country,
+                                          city: geo.city,
+                                          ip: geo.ip,
+                                        })
+                                      );
+                                    }}
                                   >
                                     <Image
                                       src={offer.vendor_logo}
@@ -3298,6 +3344,20 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
                                     href={outHref}
                                     target="_blank"
                                     rel="nofollow sponsored noopener noreferrer"
+                                    onClick={() => {
+                                      navigator.sendBeacon(
+                                        `${apiUrl}/api/v1/p`,
+                                        JSON.stringify({
+                                          productId: product._id,
+                                          vendor: offer.vendor,
+                                          uuid: uuidCookie,
+                                          source: 'product-offer-card',
+                                          country: geo.country,
+                                          city: geo.city,
+                                          ip: geo.ip,
+                                        })
+                                      );
+                                    }}
                                   >
                                     <Image
                                       src={offer.vendor_logo}
@@ -3423,6 +3483,20 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
                                     href={outHref}
                                     target="_blank"
                                     rel="nofollow sponsored noopener noreferrer"
+                                    onClick={() => {
+                                      navigator.sendBeacon(
+                                        `${apiUrl}/api/v1/p`,
+                                        JSON.stringify({
+                                          productId: product._id,
+                                          vendor: offer.vendor,
+                                          uuid: uuidCookie,
+                                          source: 'product-offer-card',
+                                          country: geo.country,
+                                          city: geo.city,
+                                          ip: geo.ip,
+                                        })
+                                      );
+                                    }}
                                     className="cta-button-shop"
                                   >
                                     <button
@@ -3437,6 +3511,20 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
                                     href={outHref}
                                     target="_blank"
                                     rel="nofollow sponsored noopener noreferrer"
+                                    onClick={() => {
+                                      navigator.sendBeacon(
+                                        `${apiUrl}/api/v1/p`,
+                                        JSON.stringify({
+                                          productId: product._id,
+                                          vendor: offer.vendor,
+                                          uuid: uuidCookie,
+                                          source: 'product-offer-card',
+                                          country: geo.country,
+                                          city: geo.city,
+                                          ip: geo.ip,
+                                        })
+                                      );
+                                    }}
                                   >
                                     <button
                                       type="button"

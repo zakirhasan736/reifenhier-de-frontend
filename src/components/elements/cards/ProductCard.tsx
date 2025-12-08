@@ -4,7 +4,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
-// import useGeo from '@/hooks/useGeo';
+import useGeo from '@/hooks/useGeo';
 
 import {
   useAddWishlistMutation,
@@ -107,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showCompareButton = false,
   isPriority = true,
 }) => {
-  // const geo = useGeo();
+  const geo = useGeo();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -539,19 +539,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
                             target="_blank"
                             rel="noopener noreferrer"
                             data-awin-ignore="false"
+                            data-awinignore
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px]
              text-left text-primary-100 underline leading-[140%]"
                           >
                             {item.vendor}
                           </a> */}
                           <a
-                            href={`${apiUrl}/out/${
-                              item.affiliate_product_cloak_url
-                            }?product=${_id}&uuid=${
-                              uuidCookie || 'guest'
-                            }&from=product-page`}
+                            href={`${apiUrl}/out/${item.affiliate_product_cloak_url}?product=${_id}&uuid=${uuidCookie}&from=product-page`}
                             target="_blank"
                             rel="nofollow sponsored noopener noreferrer"
+                            onClick={() => {
+                              navigator.sendBeacon(
+                                `${apiUrl}/api/v1/p`,
+                                JSON.stringify({
+                                  productId: _id,
+                                  vendor: item.vendor,
+                                  vendorId: item.vendor_id,
+                                  uuid: uuidCookie,
+                                  source: 'product-card',
+                                  country: geo.country,
+                                  city: geo.city,
+                                  ip: geo.ip,
+                                })
+                              );
+                            }}
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
                           >
                             {item.vendor}

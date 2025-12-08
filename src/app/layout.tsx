@@ -273,11 +273,7 @@ export default function RootLayout({
             {/* </Suspense> */}
           </ClientProviders>
         </main>
-        <script
-          async
-          src="./pub.2614230.min.js"
-          data-awin-advertiser-id="2614230"
-        ></script>
+      
       </body>
     </html>
   );
