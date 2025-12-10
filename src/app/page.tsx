@@ -52,7 +52,7 @@ export const metadata: Metadata = {
       'Stöbern Sie durch unsere Produktübersicht und finden Sie Top-Angebote für Sommer-, Winter- und Ganzjahresreifen.',
     images: [
       {
-        url: '/images/product-detailspage.png',
+        url: `https://www.reifencheck.de/images/product-detailspage.png`,
         width: 1200,
         height: 630,
         alt: 'Reifenangebote auf Reifencheck.de',
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
     description:
       'Markenreifen im Preisvergleich. Sommerreifen, Winterreifen und Ganzjahresreifen günstig kaufen.',
-    images: ['/images/product-detailspage.png'],
+    images: ['https://www.reifencheck.de/images/product-detailspage.png'],
   },
   robots: { index: true, follow: true },
 };

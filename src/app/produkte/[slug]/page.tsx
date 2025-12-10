@@ -467,7 +467,7 @@ export async function generateMetadata({
   const description = fallbackDescription(product);
   const canonical = `${SITE_URL}/produkte/${product.slug}`;
   const keywords = buildKeywords(product);
-  const ogImage = product.product_image || '/images/product-detailspage.png';
+  const ogImage = product.product_image || `${SITE_URL}/images/product-detailspage.png`;
   const ogAlt =
     `${(product.brand_name ?? '').trim()} ${(
       product.product_name ?? ''

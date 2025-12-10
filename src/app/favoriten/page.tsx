@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import FavoritesClient from '@/page-components/Favorite/FavoritePage';
 
-// const SITE = 'https://www.reifencheck.de';
 
-// Page-level SEO: noindex + canonical (keeps crawlers happy)
+// Page-level SEO:
 export const metadata: Metadata = {
   title: 'Favoriten | Reifencheck.de',
   description:

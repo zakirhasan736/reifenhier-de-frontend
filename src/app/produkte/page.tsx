@@ -59,7 +59,7 @@ export async function generateMetadata({
       description,
       images: [
         {
-          url: '/images/product-detailspage.png',
+          url: `${baseUrl}/images/product-detailspage.png`,
           width: 1200,
           height: 630,
           alt: 'Reifenangebote auf Reifencheck.de',
@@ -70,7 +70,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/product-detailspage.png'],
+      images: [`${baseUrl}/images/product-detailspage.png`],
     },
     robots: { index: true, follow: true },
   };

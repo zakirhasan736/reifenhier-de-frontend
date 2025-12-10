@@ -126,7 +126,7 @@ function getTags(blog: WPBlog): string[] {
 
   const featured =
     blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-    '/images/blog-og-image.jpg';
+    `${process.env.NEXT_PUBLIC_SITE_URL}/images/blog-og-image.jpg`;
 
   return {
     title,
@@ -138,6 +138,7 @@ function getTags(blog: WPBlog): string[] {
       url: `${SITE_URL}/artikel/${slug}`,
       title,
       description: excerpt,
+      ...(featured && {
       images: [
         {
           url: featured,
@@ -146,12 +147,15 @@ function getTags(blog: WPBlog): string[] {
           alt: blog.title.rendered,
         },
       ],
+    })
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description: excerpt,
+      ...(featured && {
       images: [featured],
+      }),
     },
   };
 }
@@ -178,7 +182,7 @@ export default async function BlogDetailPage({
 
   const featured =
     blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-    '/images/blog-default.jpg';
+    `${process.env.NEXT_PUBLIC_SITE_URL}/images/blog-default.jpg`;
 
   const date = new Date(blog.date).toLocaleDateString('de-DE', {
     year: 'numeric',
@@ -236,7 +240,9 @@ export default async function BlogDetailPage({
         blog.yoast_head_json?.description ||
         blog.excerpt.rendered.replace(/<[^>]+>/g, ''),
       keywords: mergedKeywords,
+      ...(featured && {
       image: featured,
+      }),
       datePublished: blog.date,
       author: { '@type': 'Organization', name: 'Reifencheck.de' },
       mainEntityOfPage: `${SITE_URL}/artikel/${slug}`,
@@ -279,16 +285,16 @@ export default async function BlogDetailPage({
             />
 
             <p className="text-gray-600 mb-4">{date}</p>
-
-            <Image
-              src={featured}
-              alt={blog.title.rendered}
-              width={848}
-              height={558}
-              className="md:h-[558px] h-auto rounded-xl mb-6"
-              priority
-            />
-
+            {featured && (
+              <Image
+                src={featured}
+                alt={blog.title.rendered}
+                width={848}
+                height={558}
+                className="md:h-[558px] h-auto rounded-xl mb-6"
+                priority
+              />
+            )}
             {/* Gutenberg Content (HTML) */}
             <div
               className="wp-content"
