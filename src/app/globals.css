@@ -2223,3 +2223,12 @@ flex-direction: column;
 .animate-slideLeft {
   animation: slideLeft 0.3s ease-out forwards;
 }
+.socials-sheare-button-list li button{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px; 
+}
+.socials-sheare-button-list li:not(:last-child){
+    border-bottom: 1px solid #E7E3E8; 
+}
