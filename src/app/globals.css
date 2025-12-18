@@ -2232,3 +2232,6 @@ flex-direction: column;
 .socials-sheare-button-list li:not(:last-child){
     border-bottom: 1px solid #E7E3E8; 
 }
+.filter-active-tabs svg{
+    stroke: #FFFFFF;
+}

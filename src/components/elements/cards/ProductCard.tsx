@@ -15,6 +15,8 @@ import {
 import { addProduct, openModal } from '@/store/compareSlice';
 import type { RootState, AppDispatch } from '@/store/store';
 import OptimizedImage from '../OptimizedImage';
+import { CloudRain, Leaf } from 'lucide-react';
+import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 interface RelatedCheaperItem {
   _id: string;
@@ -85,6 +87,8 @@ interface WishlistProduct {
   in_stock: string;
   favoritedAt?: string;
 }
+
+
 const ProductCard: React.FC<ProductCardProps> = ({
   _id,
   slug,
@@ -114,9 +118,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const { data: wishlistData } = useGetWishlistQuery();
   const [addWishlist] = useAddWishlistMutation();
   const [removeWishlist] = useRemoveWishlistMutation();
-
+const fuelMeta = getFuelEfficiencyMeta(fuel_class);
+const wetMeta = getWetGripMeta(wet_grip);
   // Ensure wishlist is always an array
-
   const wishlist: WishlistProduct[] = useMemo(() => {
     return wishlistData?.wishlist ?? [];
   }, [wishlistData]);
@@ -191,7 +195,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
         return '#404042';
     }
   };
-
+  const gradeFuelBgColor = (grade: string) => {
+    switch ((grade || '').toUpperCase()) {
+      case 'A':
+        return '#2d893445';
+      case 'B':
+        return '#a4c60045';
+      case 'C':
+        return '#FFC30045'; // Deeper yellow, better contrast on white
+      case 'D':
+        return '#f5b60245';
+      case 'E':
+      case 'F':
+      case 'G':
+        return '#e8140145';
+      default:
+        return '#40404245';
+    }
+  };
   const gradeGripColor = (grade: string) => {
     switch ((grade || '').toUpperCase()) {
       case 'A':
@@ -206,7 +227,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
         return '#b7e4f9';
     }
   };
-
+  const gradeGripBgColor = (grade: string) => {
+    switch ((grade || '').toUpperCase()) {
+      case 'A':
+        return '#2c5aa945';
+      case 'B':
+        return '#377ac145';
+      case 'C':
+        return '#5ba7db45';
+      case 'D':
+        return '#87c2ea45';
+      default:
+        return '#b7e4f945';
+    }
+  };
+ 
   const uuidCookie = Cookies.get('uuid') || 'guest';
   return (
     <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex flex-col duration-300">
@@ -227,17 +262,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           <button onClick={handleToggleWishlist} className="cursor-pointer">
             <div className="relative w-5 h-5">
-              {/* <Image
-                src={
-                  isFavorited
-                    ? '/images/icons/heart-filled.svg'
-                    : '/images/icons/heart.svg'
-                }
-                alt="favorite"
-                fill
-                className="object-contain"
-                loading="lazy"
-              /> */}
               <OptimizedImage
                 src={
                   isFavorited
@@ -254,33 +278,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
           <Link href={`/produkte/${slug}`} prefetch passHref>
-            {/* <Image
-              className="w-auto h-[159px] max-md:h-[159px] object-cover"
-              // pick a realistic intrinsic size close to display; Next will downscale via `sizes`
-              width={320}
-              height={159}
-              src={product_image}
-              alt={`${brand_name} ${product_name}`}
-              fetchPriority="high"
-              priority={isPriority}
-              // Next calculates lazy/eager from priority; no need for fetchPriority here
-              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
-              onError={e => {
-                // Optional: fallback if an image 404s
-                (e.currentTarget as HTMLImageElement).src =
-                  '/images/fallback-image.png';
-              }}
-            /> */}
             <OptimizedImage
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
-              // pick a realistic intrinsic size close to display; Next will downscale via `sizes`
               width={320}
               height={159}
               src={product_image}
               alt={`${brand_name} ${product_name}`}
               fetchPriority="high"
               priority={isPriority}
-              // Next calculates lazy/eager from priority; no need for fetchPriority here
               sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
               fallback="/images/fallback-product.png"
             />
@@ -352,12 +357,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     style={{
                       color: gradeFuelColor(fuel_class),
                       fontWeight: 500,
+                      background: gradeFuelBgColor(fuel_class),
+                      padding: '2px 6px',
+                      borderRadius: '4px',
                     }}
                   >
                     {fuel_class}
                   </span>
                 </li>
-                <li className="divider mx-3 w-[2px] h-3 bg-[#F0F0F2]"></li>
+                <li className="divider mx-2 w-[2px] h-3 bg-[#F0F0F2]"></li>
               </>
             )}
             {wet_grip && (
@@ -379,12 +387,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     style={{
                       color: gradeGripColor(wet_grip),
                       fontWeight: 500,
+                      background: gradeGripBgColor(wet_grip),
+                      padding: '2px 6px',
+                      borderRadius: '4px',
                     }}
                   >
                     {wet_grip}
                   </span>
                 </li>
-                <li className="divider mx-3 w-[2px] h-3 bg-[#F0F0F2]"></li>
+                <li className="divider mx-2 w-[2px] h-3 bg-[#F0F0F2]"></li>
               </>
             )}
             {noise_class && (
@@ -405,6 +416,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </li>
             )}
           </ul>
+
           {savings_percent &&
             savings_percent !== '0%' &&
             savings_percent !== '-0%' && (
@@ -439,6 +451,46 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </span>
               </p>
             )}
+        </div>
+        {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
+        <div className="flex gap-2 w-full mt-2 flex-wrap">
+          {/* Feature Badges - DYNAMICALLY STYLED */}
+          <div className="flex w-full gap-2">
+            <div
+              style={{ backgroundColor: fuelMeta.bg }}
+              className="flex-1 rounded-lg px-2 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
+            >
+              <div className="flex items-center gap-1">
+                <Leaf size={12} />
+                <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
+                  EFFICIENCY
+                </span>
+              </div>
+              <span
+                className="text-[10px] font-black whitespace-nowrap"
+                style={{ color: fuelMeta.color }}
+              >
+                {fuelMeta.text}
+              </span>
+            </div>
+            <div
+              style={{ backgroundColor: wetMeta.bg }}
+              className="flex-1 rounded-lg p-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
+            >
+              <div className="flex gap-1 items-center">
+                <CloudRain size={12} />
+                <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
+                  WET GRIP
+                </span>
+              </div>
+              <span
+                className="text-[10px] font-black whitespace-nowrap"
+                style={{ color: wetMeta.color }}
+              >
+                {wetMeta.text}
+              </span>
+            </div>
+          </div>
         </div>
         <p className="product-price text-primary-100 font-normal font-secondary text-[14px] mt-4 flex items-center gap-1">
           <span className="text-[14px] font-normal font-secondary text-[#16171A]">
@@ -526,25 +578,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         className="competitor-lists-item flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
-                          {/* <a
-                            href={item.original_affiliate_url}
-                            target="_blank"
-                            // rel="nofollow sponsored noopener noreferrer"
-                            className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
-                          >
-                            {item.vendor}
-                          </a> */}
-                          {/* <a
-                            href={item.merchant_deep_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-awin-ignore="false"
-                            data-awinignore
-                            className="font-secondary py-[4px] px-[6px] font-normal text-[14px]
-             text-left text-primary-100 underline leading-[140%]"
-                          >
-                            {item.vendor}
-                          </a> */}
                           <a
                             href={`${apiUrl}/out/${item.affiliate_product_cloak_url}?product=${_id}&uuid=${uuidCookie}&from=product-page`}
                             target="_blank"

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 
@@ -14,8 +13,9 @@ import {
 import { RootState } from '@/store/store';
 
 import { ArrowDownIcon } from '@/icons';
-import Checkbox from '../input-fields/checkbox';
 import PriceRangeSlider from '@/components/elements/search/PriceFilter';
+import { Car, Check, CloudRain, Info, Ruler, Search, Snowflake, Sun } from 'lucide-react';
+import MultiSelectDropdown from './MultiSelectDropdown';
 
 interface FilterItem {
   name: string | number;
@@ -67,6 +67,11 @@ console.log('availableProducts.kategorie:', availableProducts);
   const [brandSearch, setBrandSearch] = useState('');
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
+
+    const [activeTab, setActiveTab] = useState<'size' | 'car'>('size');
+    const [carMake, setCarMake] = useState('');
+    const [carYear, setCarYear] = useState('');
+    const [showAllBrands, setShowAllBrands] = useState(false);
 
   // treat price as "selected" if active range differs from full range
   const hasPriceActive =
@@ -180,7 +185,7 @@ console.log('availableProducts.kategorie:', availableProducts);
       case 'B':
         return '#a4c600';
       case 'C':
-        return '#FFC300';
+        return '#FFC300'; // Deeper yellow, better contrast on white
       case 'D':
         return '#f5b602';
       case 'E':
@@ -189,6 +194,24 @@ console.log('availableProducts.kategorie:', availableProducts);
         return '#e81401';
       default:
         return '#404042';
+    }
+  };
+  const gradeFuelBgColor = (grade: string) => {
+    switch ((grade || '').toUpperCase()) {
+      case 'A':
+        return '#2d893445';
+      case 'B':
+        return '#a4c60045';
+      case 'C':
+        return '#FFC30045'; // Deeper yellow, better contrast on white
+      case 'D':
+        return '#f5b60245';
+      case 'E':
+      case 'F':
+      case 'G':
+        return '#e8140145';
+      default:
+        return '#40404245';
     }
   };
   const gradeGripColor = (grade: string) => {
@@ -201,690 +224,636 @@ console.log('availableProducts.kategorie:', availableProducts);
         return '#5ba7db';
       case 'D':
         return '#87c2ea';
-      case 'E':
-      case 'F':
-      case 'G':
-        return '#b7e4f9';
       default:
-        return '#404042';
+        return '#b7e4f9';
+    }
+  };
+  const gradeGripBgColor = (grade: string) => {
+    switch ((grade || '').toUpperCase()) {
+      case 'A':
+        return '#2c5aa945';
+      case 'B':
+        return '#377ac145';
+      case 'C':
+        return '#5ba7db45';
+      case 'D':
+        return '#87c2ea45';
+      default:
+        return '#b7e4f945';
     }
   };
 
   return (
     <div className="filter-sidebar" ref={sidebarRef}>
-      {/* kategorie */}
-      {availableProducts.kategories && (
-        <div className="relative mb-2  border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box flex items-center justify-between pr-6"
-            onClick={() => toggleSection('kategorie')}
-            style={{ cursor: 'pointer' }}
+      {/* Dimension Selectors Box */}
+      <div className="bg-blue-50/40 pb-3 pt-2 px-2 rounded-xl border border-blue-100/90">
+        <h3 className="text-lg mb-2 font-medium"> Reifen Finder</h3>
+        {/* Tabs */}
+        <div className="flex bg-slate-300 p-1 rounded-lg mb-6">
+          <button
+            onClick={() => setActiveTab('size')}
+            className={`flex-1 flex items-center cursor-pointer justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
+              activeTab === 'size'
+          ? 'bg-blue-600 text-white shadow-md filter-active-tabs'
+          : 'text-slate-400 hover:text-white'
+            }`}
           >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Reifentyp{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.kategorie.length > 0
-                  ? `(${selectedFilters.kategorie.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                openSections.kategorie ? 'open' : 'closed'
-              }`}
-            >
-              <ArrowDownIcon />
-            </span>
-          </div>
-          {openSections.kategorie && (
-            <ul className="px-3 pt-0 pb-2 filter-dropdown-area flex  max-sm:pl-1 flex-col gap-2 ">
-              {availableProducts.kategories.map((item, index) => {
-                const label =
-                  typeof item.name === 'string' || typeof item.name === 'number'
-                    ? item.name
-                    : JSON.stringify(item.name);
+            <Ruler className="w-4 h-4" />
+            By Size
+          </button>
+          <button
+            disabled
+            className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all cursor-not-allowed opacity-50 text-slate-400`}
+          >
+            <Car className="w-4 h-4" />
+            By Car
+          </button>
+        </div>
+        {activeTab === 'size' ? (
+          <>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {/* Width */}
+              {availableProducts.widths && (
+                <MultiSelectDropdown
+                  label="Breite"
+                  options={availableProducts.widths.map(item => ({
+                    name: String(item.name),
+                  }))}
+                  selected={selectedFilters.width[0] ?? null}
+                  onChange={v => handleFilterChange('width', v)}
+                />
+              )}
 
-                return (
-                  <li key={`${label}-${index}`}>
-                    <label className="flex items-center gap-[10px] !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                      <Checkbox
-                        checked={selectedFilters.kategorie.includes(
-                          String(label)
-                        )}
-                        onChange={() =>
-                          handleFilterChange('kategorie', String(label))
+              {/* Height */}
+              {availableProducts.heights && (
+                <MultiSelectDropdown
+                  label="Höhe"
+                  options={availableProducts.heights.map(item => ({
+                    name: String(item.name),
+                  }))}
+                  selected={selectedFilters.height[0] ?? null}
+                  onChange={v => handleFilterChange('height', v)}
+                />
+              )}
+
+              {/* Diameter */}
+              {availableProducts.diameters && (
+                <MultiSelectDropdown
+                  label="Zoll"
+                  options={availableProducts.diameters.map(item => ({
+                    name: String(item.name),
+                  }))}
+                  selected={selectedFilters.diameter[0] ?? null}
+                  onChange={v => handleFilterChange('diameter', v)}
+                />
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Load Index */}
+              {availableProducts.lastIndexes && (
+                <MultiSelectDropdown
+                  label="Lastindex"
+                  options={availableProducts.lastIndexes.map(item => ({
+                    name: String(item.name),
+                  }))}
+                  selected={selectedFilters.lastIndex[0] ?? null}
+                  onChange={v => handleFilterChange('lastIndex', v)}
+                />
+              )}
+
+              {/* Speed Index */}
+              {availableProducts.speedIndexes && (
+                <MultiSelectDropdown
+                  label="Speed"
+                  options={availableProducts.speedIndexes.map(item => ({
+                    name: String(item.name),
+                  }))}
+                  selected={selectedFilters.speedIndex[0] ?? null}
+                  onChange={v => handleFilterChange('speedIndex', v)}
+                />
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="space-y-3 mb-6">
+              <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase">
+                Make
+                </label>
+                <select
+                value={carMake}
+                onChange={e => setCarMake(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none transition duration-200 ease-in-out hover:bg-gray-700"
+                >
+                <option value="">Select...</option>
+                <option value="audi">Audi</option>
+                <option value="bmw">BMW</option>
+                <option value="vw">Volkswagen</option>
+                <option value="mb">Mercedes</option>
+                <option value="ford">Ford</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-400 uppercase">
+                Year
+                </label>
+                <select
+                value={carYear}
+                onChange={e => setCarYear(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none transition duration-200 ease-in-out hover:bg-gray-700"
+                >
+                <option value="">Year</option>
+                <option>2024</option>
+                <option>2023</option>
+                <option>2022</option>
+                <option>2021</option>
+                <option>2020</option>
+                <option>2019</option>
+                </select>
+              </div>
+              </div>
+
+              <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-400 uppercase">
+                Model
+              </label>
+              <select
+                disabled={!carMake}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 ease-in-out hover:bg-gray-700"
+              >
+                <option>Select Model...</option>
+                {carMake === 'vw' && <option>Golf VIII</option>}
+                {carMake === 'vw' && <option>Passat Variant</option>}
+                {carMake === 'vw' && <option>Tiguan</option>}
+                {carMake === 'bmw' && <option>3 Series (G20)</option>}
+                {carMake === 'bmw' && <option>5 Series (G30)</option>}
+                {carMake === 'audi' && <option>A4 Avant</option>}
+                {carMake === 'audi' && <option>A6</option>}
+                {!['vw', 'bmw', 'audi'].includes(carMake) && carMake && (
+                <option>Standard Model</option>
+                )}
+              </select>
+              </div>
+
+              <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-400 uppercase">
+                Engine / Version
+              </label>
+              <select
+                disabled={!carMake}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 ease-in-out hover:bg-gray-700"
+              >
+                <option>Select Version...</option>
+                <option>2.0 TDI (150 HP)</option>
+                <option>1.5 TSI (130 HP)</option>
+                <option>2.0 TSI (190 HP)</option>
+                <option>Hybrid / GTE</option>
+              </select>
+              </div>
+            </div>
+            {/* Submit */}
+            <button className="w-full bg-white text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-50 transition-colors">
+              <Search className="w-5 h-5 text-blue-600" />
+              Find Matching Tires
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="bg-blue-50/40  pb-3 pt-1 mt-3 px-0 rounded-xl border border-blue-100/90">
+        {/* kategorie */}
+        {availableProducts.kategories && (
+          <div className="relative mb-2  border-b border-b-[#C6C7CC]">
+            <div
+              className="filter-item-title-box flex items-center justify-between pr-6"
+              onClick={() => toggleSection('kategorie')}
+              style={{ cursor: 'pointer' }}
+            >
+              <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
+                Reifentyp{' '}
+                <span className="text-[#404042] absolute right-2 text-[14px]">
+                  {selectedFilters.kategorie.length > 0
+                    ? `(${selectedFilters.kategorie.length})`
+                    : ''}
+                </span>
+              </h4>
+              <span
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
+                  openSections.kategorie ? 'open' : 'closed'
+                }`}
+              >
+                <ArrowDownIcon />
+              </span>
+            </div>
+
+            {openSections.kategorie && (
+              <div className="px-3 pt-0 pb-4 space-y-2">
+                {/* Helper to check if current label is selected */}
+                {(() => {
+                  const isSelected = (label: string) =>
+                    selectedFilters.kategorie.includes(label);
+
+                  return (
+                    <>
+                      {/* SUMMER CARD */}
+                      <button
+                        onClick={() =>
+                          handleFilterChange('kategorie', 'Sommerreifen')
                         }
-                      />
-                      {label || 'Unbekannt'}
-                      <span className="ml-1 text-[#404042]">
-                        ({item.count ?? 0})
-                      </span>
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      )}
+                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all
+              ${
+                isSelected('Sommerreifen')
+                  ? 'border-blue-600 bg-blue-50/30 ring-1 ring-blue-600'
+                  : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
+              }
+            `}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center
+                ${
+                  isSelected('Sommerreifen')
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-500'
+                }
+              `}
+                        >
+                          <Sun size={16} />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="font-semibold text-gray-900 text-sm">
+                            Sommerreifen
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Optimiert für {'>'} 7°C
+                          </p>
+                        </div>
+                        {isSelected('Sommerreifen') && (
+                          <Check size={14} className="text-blue-600" />
+                        )}
+                      </button>
 
-      {/* Speed Index */}
-      {availableProducts.speedIndexes && (
-        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box overflow-hidden flex items-center w-full justify-between pr-6"
-            onClick={() => toggleSection('speedIndex')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] relative flex items-center  gap-1 justify-start pl-3 pr-5 py-3">
-              Geschwindigkeitsindex{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.speedIndex.length > 0
-                  ? `(${selectedFilters.speedIndex.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
-                openSections.speedIndex ? 'open' : 'closed'
-              }`}
-            >
-              <ArrowDownIcon />
-            </span>
-          </div>
-          {openSections.speedIndex && (
-            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-              {[...availableProducts.speedIndexes]
-                .filter(item => {
-                  const name =
-                    typeof item.name === 'string' ? item.name.trim() : '';
-                  return name && name !== 'unbekannt' && name !== '0';
-                })
-                .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                .map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.speedIndex.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('speedIndex', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
+                      {/* WINTER CARD */}
+                      <button
+                        onClick={() =>
+                          handleFilterChange('kategorie', 'Winterreifen')
+                        }
+                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all
+              ${
+                isSelected('Winterreifen')
+                  ? 'border-blue-600 bg-blue-50/30 ring-1 ring-blue-600'
+                  : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
+              }
+            `}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center
+                ${
+                  isSelected('Winterreifen')
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-500'
+                }
+              `}
+                        >
+                          <Snowflake size={16} />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="font-semibold text-gray-900 text-sm">
+                            Winterreifen
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Sicherheit bei Schnee
+                          </p>
+                        </div>
+                        {isSelected('Winterreifen') && (
+                          <Check size={14} className="text-blue-600" />
+                        )}
+                      </button>
+
+                      {/* ALL-SEASON CARD */}
+                      <button
+                        onClick={() =>
+                          handleFilterChange('kategorie', 'Ganzjahresreifen')
+                        }
+                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all
+              ${
+                isSelected('Ganzjahresreifen')
+                  ? 'border-blue-600 bg-blue-50/30 ring-1 ring-blue-600'
+                  : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
+              }
+            `}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center
+                ${
+                  isSelected('Ganzjahresreifen')
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-500'
+                }
+              `}
+                        >
+                          <CloudRain size={16} />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="font-semibold text-gray-900 text-sm">
+                            Ganzjahresreifen
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Ein Reifen, alle Wetter
+                          </p>
+                        </div>
+                        {isSelected('Ganzjahresreifen') && (
+                          <Check size={14} className="text-blue-600" />
+                        )}
+                      </button>
+                    </>
                   );
-                })}
-            </ul>
-          )}
-        </div>
-      )}
-
-      {/* Last Index */}
-      {availableProducts.lastIndexes && (
-        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box flex items-center  justify-between  pr-6"
-            onClick={() => toggleSection('lastIndex')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Lastindex{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.lastIndex.length > 0
-                  ? `(${selectedFilters.lastIndex.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
-                openSections.lastIndex ? 'open' : 'closed'
-              }`}
-            >
-              <ArrowDownIcon />
-            </span>
+                })()}
+              </div>
+            )}
           </div>
-          {openSections.lastIndex && (
-            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-              {[...availableProducts.lastIndexes]
-                .filter(item => {
-                  const name =
-                    typeof item.name === 'string' ? item.name.trim() : '';
-                  return name && name !== 'unbekannt' && name !== '0';
-                })
-                .sort((a, b) => Number(a.name) - Number(b.name))
-                .map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.lastIndex.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('lastIndex', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
-            </ul>
-          )}
-        </div>
-      )}
+        )}
 
-      {/* Price */}
-      <PriceRangeSlider
-        min={min}
-        max={max}
-        minPrice={filters.minPrice}
-        maxPrice={filters.maxPrice}
-        onChange={handlePriceChange}
-      />
+        {/* Price */}
+        <PriceRangeSlider
+          min={min}
+          max={max}
+          minPrice={filters.minPrice}
+          maxPrice={filters.maxPrice}
+          onChange={handlePriceChange}
+        />
 
-      {/* Brand */}
-      {availableProducts.brands && (
-        <div className="relative mb-2 pb-1  border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box flex items-center justify-between pr-6"
-            onClick={() => toggleSection('brand')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Marke{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.brand.length > 0
-                  ? `(${selectedFilters.brand.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                openSections.brand ? 'open' : 'closed'
-              }`}
+        {/* BRAND FILTER */}
+        {availableProducts.brands && (
+          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
+            <div
+              className="filter-item-title-box flex items-center justify-between pr-6 cursor-pointer"
+              onClick={() => toggleSection('brand')}
             >
-              <ArrowDownIcon />
-            </span>
-          </div>
-          {openSections.brand && (
-            <div className="px-2 pt-1 pb-1 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[190px] max-md:max-h-[180px]">
-              <div className="px-2">
-                <div className="search-brand-box relative">
+              <h4 className="filter-sidebar-title !text-[#16171A] w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center gap-1 justify-start pl-3 py-3">
+                Marke{' '}
+                <span className="text-[#404042] absolute right-2 text-[14px]">
+                  {selectedFilters.brand.length > 0
+                    ? `(${selectedFilters.brand.length})`
+                    : ''}
+                </span>
+              </h4>
+
+              <span
+                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
+                  openSections.brand ? 'open' : 'closed'
+                }`}
+              >
+                <ArrowDownIcon />
+              </span>
+            </div>
+
+            {openSections.brand && (
+              <div className="px-3 pt-2 pb-4 space-y-3">
+                {/* 🔍 Search Box */}
+                <div className="relative">
                   <input
                     type="text"
                     value={brandSearch}
                     onChange={e => setBrandSearch(e.target.value)}
-                    placeholder="Marke suchen …"
-                    className="pr-3 pl-9 py-2 w-full focus:!rounded-full focus-within:rounded-full focus:!outline-0 focus-visible:rounded-full !shadow-none !outline-0 text-[14px] text-left font-secondary font-normal leading-[120%] border border-[#F0F0F2] rounded-full text-[#404042]"
+                    placeholder="Marke suchen…"
+                    className="w-full py-2 pl-9 pr-3 text-sm rounded-lg border border-slate-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   />
-                  <Image
-                    className="absolute top-2 left-3"
-                    src="/images/icons/search-norma2.svg"
-                    width={16}
-                    height={16}
-                    alt="Search"
+                  <Search
+                    className="absolute top-2.5 left-2.5 text-slate-400"
+                    size={16}
                   />
                 </div>
+
+                {/** -------------------------------------------
+         * BRAND LIST LOGIC:
+         * - Search filters ALL brands
+         * - No search → show first 10 only
+         * - Expand button shows all brands
+         ---------------------------------------------- */}
+
+                {(() => {
+                  const allBrands = [...availableProducts.brands]
+                    .filter(item => {
+                      const name =
+                        typeof item.name === 'string' ? item.name.trim() : '';
+                      return name && name !== 'unbekannt' && name !== '0';
+                    })
+                    .sort((a, b) =>
+                      String(a.name).localeCompare(String(b.name))
+                    );
+
+                  // If searching → always show full list
+                  const filteredBrands = brandSearch
+                    ? allBrands.filter(item =>
+                        String(item.name)
+                          .toLowerCase()
+                          .includes(brandSearch.toLowerCase())
+                      )
+                    : allBrands;
+
+                  const visibleBrands =
+                    !brandSearch && !showAllBrands
+                      ? filteredBrands.slice(0, 8)
+                      : filteredBrands;
+
+                  return (
+                    <>
+                      {/* Brand Buttons */}
+                      <div className="grid grid-cols-2 gap-2 max-h-[190px] overflow-y-auto pr-1">
+                        {visibleBrands.map(item => {
+                          const label =
+                            typeof item.name === 'string' ||
+                            typeof item.name === 'number'
+                              ? item.name
+                              : JSON.stringify(item.name);
+
+                          const active = selectedFilters.brand.includes(
+                            String(label)
+                          );
+
+                          return (
+                            <button
+                              key={label}
+                              onClick={() =>
+                                handleFilterChange('brand', String(label))
+                              }
+                              className={`text-xs font-semibold w-full text-left truncate px-3 py-2 rounded-lg border transition-all
+                        ${
+                          active
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                            : 'bg-white text-slate-700 border-slate-200 hover:bg-blue-50 hover:border-blue-300'
+                        }
+                      `}
+                            >
+                              {label}
+                              <span className="text-[10px] text-slate-400 ml-1">
+                                ({item.count})
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Expand Button — only when not searching */}
+                      {!brandSearch && filteredBrands.length > 10 && (
+                        <button
+                          onClick={() => setShowAllBrands(!showAllBrands)}
+                          className="w-full text-center text-blue-600 text-xs font-bold py-1.5 hover:underline"
+                        >
+                          {showAllBrands
+                            ? 'Weniger Marken anzeigen'
+                            : `Alle ${filteredBrands.length} Marken anzeigen`}
+                        </button>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
-
-              <ul className="overflow-y-auto flex-1 gap-2 flex flex-col px-3 pt-0 pb-2">
-                {[...availableProducts.brands]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                    return name && name !== 'unbekannt' && name !== '0';
-                  })
-                  .filter(item =>
-                    String(item.name)
-                      .toLowerCase()
-                      .includes(brandSearch.toLowerCase())
-                  )
-                  .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.brand.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('brand', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="flex-group-box">
-        {/* Width */}
-        {availableProducts.widths && (
-          <div className="relative mb-2 pb-1  border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between pr-6"
-              onClick={() => toggleSection('width')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Breite{' '}
-                <span className="text-[#404042] absolute right-2 text-[14px]">
-                  {selectedFilters.width.length > 0
-                    ? `(${selectedFilters.width.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                  openSections.width ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.width && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.widths]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                    return name && name !== 'unbekannt' && name !== '0';
-                  })
-                  .sort((a, b) => Number(a.name) - Number(b.name))
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.width.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('width', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-        )}
-
-        {/* Height */}
-        {availableProducts.heights && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between pr-6"
-              onClick={() => toggleSection('height')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Höhe{' '}
-                <span className="text-[#404042] absolute right-2 text-[14px]">
-                  {selectedFilters.height.length > 0
-                    ? `(${selectedFilters.height.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                  openSections.height ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.height && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.heights]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                    return name && name !== 'unbekannt' && name !== '0';
-                  })
-                  .sort((a, b) => Number(a.name) - Number(b.name))
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.height.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('height', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
-            )}
-          </div>
-        )}
-
-        {/* Diameter */}
-        {availableProducts.diameters && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center  justify-between pr-6"
-              onClick={() => toggleSection('diameter')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Durchmesser{' '}
-                <span className="text-[#404042] absolute right-2 text-[14px]">
-                  {selectedFilters.diameter.length > 0
-                    ? `(${selectedFilters.diameter.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
-                  openSections.diameter ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-            {openSections.diameter && (
-              <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-                {[...availableProducts.diameters]
-                  .filter(item => {
-                    const name =
-                      typeof item.name === 'string' ? item.name.trim() : '';
-                    return name && name !== 'unbekannt' && name !== '0';
-                  })
-                  .sort((a, b) => Number(a.name) - Number(b.name))
-                  .map((item, index) => {
-                    const label =
-                      typeof item.name === 'string' ||
-                      typeof item.name === 'number'
-                        ? item.name
-                        : JSON.stringify(item.name);
-                    return (
-                      <li key={`${label}-${index}`}>
-                        <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                          <Checkbox
-                            checked={selectedFilters.diameter.includes(
-                              String(label)
-                            )}
-                            onChange={() =>
-                              handleFilterChange('diameter', String(label))
-                            }
-                          />
-                          {label || 'Unbekannt'}
-                          <span className="ml-1 text-gray-400">
-                            ({item.count ?? 0})
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-              </ul>
             )}
           </div>
         )}
       </div>
+      {/* EU LABEL SECTION */}
+      <div className="bg-white rounded-xl shadow-sm border border-blue-100/90 pb-3 pt-1 px-2 mt-3">
+        <div
+          className="flex justify-between items-center cursor-pointer"
+          // onClick={() => toggleSection('label')}
+        >
+          <h4 className="filter-sidebar-title !text-[#16171A] w-full text-[16px] text-left font-secondary font-medium leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-1 py-3">
+            EU Label
+          </h4>
+          {/* {expandedSections['label'] ? (
+            <ChevronUp size={16} />
+          ) : (
+            <ChevronDown size={16} />
+          )} */}
+        </div>
 
-      {/* Fuel Class */}
-      {availableProducts.fuelClasses && (
-        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box flex items-center  justify-between pr-6"
-            onClick={() => toggleSection('fuelClass')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Kraftstoffeffizienz{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.fuelClass.length > 0
-                  ? `(${selectedFilters.fuelClass.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                openSections.fuelClass ? 'open' : 'closed'
-              }`}
-            >
-              <ArrowDownIcon />
-            </span>
-          </div>
-          {openSections.fuelClass && (
-            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-              {[...availableProducts.fuelClasses]
-                .filter(item => {
-                  const name =
-                    typeof item.name === 'string' ? item.name.trim() : '';
-                  return name && name !== 'unbekannt' && name !== '0';
-                })
-                .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                .map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label
-                        style={{
-                          color: gradeFuelColor(String(label)),
-                          fontWeight: 500,
-                        }}
-                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0"
+        {/* {expandedSections['label'] && ( */}
+        <div className="space-y-5">
+          {/* FUEL CLASS */}
+          {availableProducts.fuelClasses && (
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                  Kraftstoffeffizienz
+                </span>
+                <Info size={12} className="text-slate-400" />
+              </div>
+
+              <div className="grid grid-cols-4 gap-2">
+                {[...availableProducts.fuelClasses]
+                  .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+                  .map(item => {
+                    const label = String(item.name);
+                    const active = selectedFilters.fuelClass.includes(label);
+
+                    return (
+                      <button
+                        key={label}
+                        onClick={() => handleFilterChange('fuelClass', label)}
+                        className={`flex flex-col items-center justify-center py-2 rounded-lg border text-sm font-semibold transition-all
+                      ${
+                        active
+                          ? ''
+                          : 'border-slate-200 text-slate-700 bg-white hover:border-blue-400'
+                      }`}
+                        style={{ color: gradeFuelColor(label), backgroundColor: active ?  gradeFuelBgColor(label) : undefined }}
                       >
-                        <Checkbox
-                          checked={selectedFilters.fuelClass.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('fuelClass', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
+                        {label}
+                        <span className="text-[10px] text-slate-400 hidden">
+                          ({item.count})
                         </span>
-                      </label>
-                    </li>
-                  );
-                })}
-            </ul>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
           )}
-        </div>
-      )}
 
-      {/* Wet Grip */}
-      {availableProducts.wetGrips && (
-        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box flex items-center  justify-between pr-6"
-            onClick={() => toggleSection('wetGrip')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Nasshaftung{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.wetGrip.length > 0
-                  ? `(${selectedFilters.wetGrip.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                openSections.wetGrip ? 'open' : 'closed'
-              }`}
-            >
-              <ArrowDownIcon />
-            </span>
-          </div>
-          {openSections.wetGrip && (
-            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-              {[...availableProducts.wetGrips]
-                .filter(item => {
-                  const name =
-                    typeof item.name === 'string'
-                      ? item.name.trim().toLowerCase()
-                      : '';
-                  return name !== '';
-                })
-                .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                .map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label
-                        style={{
-                          color: gradeGripColor(String(label)),
-                          fontWeight: 500,
-                        }}
-                        className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0"
+          {/* WET GRIP */}
+          {availableProducts.wetGrips && (
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                  Nasshaftung
+                </span>
+                <Info size={12} className="text-slate-400" />
+              </div>
+
+              <div className="grid grid-cols-4 gap-2">
+                {[...availableProducts.wetGrips]
+                  .sort((a, b) => String(a.name).localeCompare(String(b.name)))
+                  .map(item => {
+                    const label = String(item.name);
+                    const active = selectedFilters.wetGrip.includes(label);
+
+                    return (
+                      <button
+                        key={label}
+                        onClick={() => handleFilterChange('wetGrip', label)}
+                        className={`flex flex-col items-center justify-center py-2 rounded-lg border text-sm font-semibold transition-all
+                      ${
+                        active
+                          ? '' 
+                          : 'border-slate-200 text-slate-700 bg-white hover:border-blue-400'
+                      }`}
+                        style={{ color: gradeGripColor(label), backgroundColor: active ?  gradeGripBgColor(label) : undefined }}
                       >
-                        <Checkbox
-                          checked={selectedFilters.wetGrip.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('wetGrip', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
+                        {label}
+                        <span className="text-[10px] text-slate-400 hidden">
+                          ({item.count})
                         </span>
-                      </label>
-                    </li>
-                  );
-                })}
-            </ul>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
           )}
-        </div>
-      )}
 
-      {/* Noise */}
-      {availableProducts.noises && (
-        <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-          <div
-            className="filter-item-title-box flex items-center  justify-between pr-6"
-            onClick={() => toggleSection('noise')}
-            style={{ cursor: 'pointer' }}
-          >
-            <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[15px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-              Externes Rollgeräusch in dB{' '}
-              <span className="text-[#404042] absolute right-2 text-[14px]">
-                {selectedFilters.noise.length > 0
-                  ? `(${selectedFilters.noise.length})`
-                  : ''}
-              </span>
-            </h4>
-            <span
-              className={`arrow absolute right-0 top-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                openSections.noise ? 'open' : 'closed'
-              }`}
-            >
-              <ArrowDownIcon />
-            </span>
-          </div>
-          {openSections.noise && (
-            <ul className="px-2 pt-1 overflow-y-auto pb-3 filter-dropdown-area max-sm:pl-1 flex flex-col gap-2 w-full max-h-[137px] max-md:max-h-[150px]">
-              {[...availableProducts.noises]
-                .filter(item => {
-                  const name =
-                    typeof item.name === 'string' ? item.name.trim() : '';
-                  return name && name !== 'unbekannt' && name !== '0';
-                })
-                .sort((a, b) => Number(a.name) - Number(b.name))
-                .map((item, index) => {
-                  const label =
-                    typeof item.name === 'string' ||
-                    typeof item.name === 'number'
-                      ? item.name
-                      : JSON.stringify(item.name);
-                  return (
-                    <li key={`${label}-${index}`}>
-                      <label className="flex items-center gap-2 !capitalize  text-[14px] text-left font-secondary cursor-pointer font-normal leading-[100%] text-[#404042] !py-0">
-                        <Checkbox
-                          checked={selectedFilters.noise.includes(
-                            String(label)
-                          )}
-                          onChange={() =>
-                            handleFilterChange('noise', String(label))
-                          }
-                        />
-                        {label || 'Unbekannt'}
-                        <span className="ml-1 text-gray-400">
-                          ({item.count ?? 0})
+          {/* NOISE */}
+          {availableProducts.noises && (
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                  externes Rollgeräusch (dB)
+                </span>
+                <Info size={12} className="text-slate-400" />
+              </div>
+
+              <div className="grid grid-cols-4 gap-2">
+                {[...availableProducts.noises]
+                  .sort((a, b) => Number(a.name) - Number(b.name))
+                  .map(item => {
+                    const label = String(item.name);
+                    const active = selectedFilters.noise.includes(label);
+
+                    return (
+                      <button
+                        key={label}
+                        onClick={() => handleFilterChange('noise', label)}
+                        className={`py-2 rounded-lg border text-sm font-semibold transition-all
+                      ${
+                        active
+                          ? 'border-blue-600 text-blue-700 bg-blue-50'
+                          : 'border-slate-200 text-slate-700 bg-white hover:border-blue-400'
+                      }`}
+                      >
+                        {label} dB
+                        <span className="text-[10px] text-slate-400 hidden">
+                          ({item.count})
                         </span>
-                      </label>
-                    </li>
-                  );
-                })}
-            </ul>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
           )}
         </div>
-      )}
+        {/* )} */}
+      </div>
     </div>
   );
 };

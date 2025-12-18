@@ -427,10 +427,10 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
           </div>
 
           <div className="products-lists-main-cont flex items-start max-md:flex-col gap-6 max-xl:gap-4">
-            <div className="products-list-main-left-cont bg-[#F5F5F7] rounded-[8px] pt-3 sticky top-9 max-w-[282px] max-xl:max-w-[220px] max-md:max-w-[160px] w-full hidden xl:block">
-              <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
+            <div className="products-list-main-left-cont  rounded-[8px] pt-0 sticky top-9 max-w-[282px] max-xl:max-w-[220px] max-md:max-w-[160px] w-full hidden xl:block">
+              {/* <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
                 Filtern nach
-              </h4>
+              </h4> */}
               <FilterSidebar
                 availableProducts={filterProducts}
                 selectedFilters={mergedFilters}

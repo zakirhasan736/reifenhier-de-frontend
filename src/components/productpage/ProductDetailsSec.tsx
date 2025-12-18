@@ -30,7 +30,8 @@ import { AppDispatch } from '@/store/store';
 import type { Swiper as SwiperClass } from 'swiper';
 import NotFound from '@/app/produkte/not-found';
 import OptimizedImage from '../elements/OptimizedImage';
-
+import { CloudRain, Leaf } from 'lucide-react';
+import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
 interface WishlistProduct {
   _id: string;
   brand_logo: string;
@@ -146,7 +147,8 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
   const geo = useGeo();
   const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-
+  const fuelMeta = getFuelEfficiencyMeta(product.fuel_class);
+  const wetMeta = getWetGripMeta(product.wet_grip);
   const uuidCookie = Cookies.get('uuid') || 'guest';
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -171,47 +173,70 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
   };
   // Get favorite product IDs (filter nulls defensively)
 
-  // You can adjust these colors as you want!
-  const gradeFuelColor = (grade: string) => {
-    switch ((grade || '').toUpperCase()) {
-      case 'A':
-        return '#2d8934';
-      case 'B':
-        return '#a4c600';
-      case 'C':
-        return '#ffd600';
-      case 'D':
-        return '#f5b602';
-      case 'E':
-        return '#e81401';
-      case 'F':
-        return '#e81401';
-      case 'G':
-        return '#e81401';
-      default:
-        return '#404042';
-    }
-  };
-  const gradeGripColor = (grade: string) => {
-    switch ((grade || '').toUpperCase()) {
-      case 'A':
-        return '#2c5aa9';
-      case 'B':
-        return '#377ac1';
-      case 'C':
-        return '#5ba7db';
-      case 'D':
-        return '#87c2ea';
-      case 'E':
-        return '#b7e4f9';
-      case 'F':
-        return '#b7e4f9';
-      case 'G':
-        return '#b7e4f9';
-      default:
-        return '#404042';
-    }
-  };
+    const gradeFuelColor = (grade: string) => {
+      switch ((grade || '').toUpperCase()) {
+        case 'A':
+          return '#2d8934';
+        case 'B':
+          return '#a4c600';
+        case 'C':
+          return '#FFC300'; // Deeper yellow, better contrast on white
+        case 'D':
+          return '#f5b602';
+        case 'E':
+        case 'F':
+        case 'G':
+          return '#e81401';
+        default:
+          return '#404042';
+      }
+    };
+    const gradeFuelBgColor = (grade: string) => {
+      switch ((grade || '').toUpperCase()) {
+        case 'A':
+          return '#2d893445';
+        case 'B':
+          return '#a4c60045';
+        case 'C':
+          return '#FFC30045'; // Deeper yellow, better contrast on white
+        case 'D':
+          return '#f5b60245';
+        case 'E':
+        case 'F':
+        case 'G':
+          return '#e8140145';
+        default:
+          return '#40404245';
+      }
+    };
+    const gradeGripColor = (grade: string) => {
+      switch ((grade || '').toUpperCase()) {
+        case 'A':
+          return '#2c5aa9';
+        case 'B':
+          return '#377ac1';
+        case 'C':
+          return '#5ba7db';
+        case 'D':
+          return '#87c2ea';
+        default:
+          return '#b7e4f9';
+      }
+    };
+    const gradeGripBgColor = (grade: string) => {
+      switch ((grade || '').toUpperCase()) {
+        case 'A':
+          return '#2c5aa945';
+        case 'B':
+          return '#377ac145';
+        case 'C':
+          return '#5ba7db45';
+        case 'D':
+          return '#87c2ea45';
+        default:
+          return '#b7e4f945';
+      }
+    };
   const { data: wishlistData } = useGetWishlistQuery();
   const [addWishlist] = useAddWishlistMutation();
   const [removeWishlist] = useRemoveWishlistMutation();
@@ -1012,6 +1037,9 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             style={{
                               color: gradeFuelColor(product.fuel_class),
                               fontWeight: 500,
+                              background: gradeFuelBgColor(product.fuel_class),
+                              padding: '2px 6px',
+                              borderRadius: '4px',
                             }}
                           >
                             {product.fuel_class}
@@ -1039,6 +1067,9 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             style={{
                               color: gradeGripColor(product.wet_grip),
                               fontWeight: 500,
+                              background: gradeGripBgColor(product.wet_grip),
+                              padding: '2px 6px',
+                              borderRadius: '4px',
                             }}
                           >
                             {product.wet_grip}
@@ -1065,6 +1096,46 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       </li>
                     )}
                   </ul>
+                  {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
+                  <div className="flex gap-2 w-full mt-2 flex-wrap">
+                    {/* Feature Badges - DYNAMICALLY STYLED */}
+                    <div className="flex w-full gap-2">
+                      <div
+                        style={{ backgroundColor: fuelMeta.bg }}
+                        className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
+                      >
+                        <div className="flex items-center gap-1">
+                          <Leaf size={14} />
+                          <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
+                            EFFICIENCY
+                          </span>
+                        </div>
+                        <span
+                          className="text-[12px] font-black whitespace-nowrap"
+                          style={{ color: fuelMeta.color }}
+                        >
+                          {fuelMeta.text}
+                        </span>
+                      </div>
+                      <div
+                        style={{ backgroundColor: wetMeta.bg }}
+                        className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
+                      >
+                        <div className="flex gap-1 items-center">
+                          <CloudRain size={14} />
+                          <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
+                            WET GRIP
+                          </span>
+                        </div>
+                        <span
+                          className="text-[12px] font-black whitespace-nowrap"
+                          style={{ color: wetMeta.color }}
+                        >
+                          {wetMeta.text}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
