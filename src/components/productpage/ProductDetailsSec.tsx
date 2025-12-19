@@ -1114,7 +1114,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           className="text-[12px] font-black whitespace-nowrap"
                           style={{ color: fuelMeta.color }}
                         >
-                          {fuelMeta.text}
+                          {fuelMeta.textDE}
                         </span>
                       </div>
                       <div
@@ -1131,7 +1131,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           className="text-[12px] font-black whitespace-nowrap"
                           style={{ color: wetMeta.color }}
                         >
-                          {wetMeta.text}
+                          {wetMeta.textDE}
                         </span>
                       </div>
                     </div>

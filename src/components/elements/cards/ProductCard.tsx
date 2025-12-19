@@ -470,7 +470,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                 className="text-[10px] font-black whitespace-nowrap"
                 style={{ color: fuelMeta.color }}
               >
-                {fuelMeta.text}
+                {fuelMeta.textDE}
               </span>
             </div>
             <div
@@ -487,7 +487,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                 className="text-[10px] font-black whitespace-nowrap"
                 style={{ color: wetMeta.color }}
               >
-                {wetMeta.text}
+                {wetMeta.textDE}
               </span>
             </div>
           </div>
