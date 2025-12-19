@@ -587,13 +587,12 @@ const wetMeta = getWetGripMeta(wet_grip);
                                 `${apiUrl}/api/v1/p`,
                                 JSON.stringify({
                                   productId: _id,
+                                  productName: product_name,
+                                  brandName: brand_name,
                                   vendor: item.vendor,
                                   vendorId: item.vendor_id,
                                   uuid: uuidCookie,
                                   source: 'product-card',
-                                  country: geo.country,
-                                  city: geo.city,
-                                  ip: geo.ip,
                                 })
                               );
                             }}

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { MdAddShoppingCart } from 'react-icons/md';
 import useGeo from '@/hooks/useGeo';
+import { usePageView } from '@/hooks/usePageView'
 import {
   useAddWishlistMutation,
   useRemoveWishlistMutation,
@@ -264,7 +265,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
   };
 const productUrl = `${SiteUrl}/produkte/${product.slug}`;
 const productTitle = `${product.brand_name} ${product.product_name}`;
-
+usePageView('product-details-page');
   return (
     <>
       {!product ? (

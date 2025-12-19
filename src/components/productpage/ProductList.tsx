@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import ProductCard from '@/components/elements/cards/ProductCard';
 import { Product } from '@/types/product';
 import ProductSkeletonCard from '../elements/cards/productskeletonCard';
-
+import { usePageView } from '@/hooks/usePageView';
 interface ProductListProps {
   products: Product[];
   loading: boolean;
@@ -31,7 +31,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
     const t = setTimeout(() => setUiLoading(false), 120);
     return () => clearTimeout(t);
   }, [loading]);
-
+  usePageView('product-page');
   return (
     <div className="relative min-h-[320px]">
       <OverlaySpinner show={uiLoading} />

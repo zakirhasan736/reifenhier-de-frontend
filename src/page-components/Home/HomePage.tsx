@@ -6,9 +6,11 @@ import FeaturedProducts from '@/components/homepage/FeaturedProducts'
 import HowItWorks from '@/components/homepage/HowItWorks'
 // import LatestProducts from '@/components/homepage/LatestProducts'
 import NewArticles from '@/components/homepage/Blogs'
-import React from 'react'
+
+import {usePageView} from '@/hooks/usePageView';
 
 const HomePageMain = () => {
+  usePageView('homepage');
   return (
     <div className="home-page-main-wrapper">
       <BannerSection />
