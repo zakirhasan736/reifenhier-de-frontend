@@ -300,7 +300,7 @@ console.log('availableProducts.kategorie:', availableProducts);
 
                       <span
                         className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.diameter ? 'rotate-180' : ''
+                          openSections.width ? 'rotate-180' : ''
                         }`}
                       >
                         <ArrowDownIcon />
@@ -391,7 +391,7 @@ console.log('availableProducts.kategorie:', availableProducts);
 
                       <span
                         className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.diameter ? 'rotate-180' : ''
+                          openSections.height ? 'rotate-180' : ''
                         }`}
                       >
                         <ArrowDownIcon />
@@ -575,7 +575,7 @@ console.log('availableProducts.kategorie:', availableProducts);
 
                       <span
                         className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.diameter ? 'rotate-180' : ''
+                          openSections.lastIndex ? 'rotate-180' : ''
                         }`}
                       >
                         <ArrowDownIcon />
