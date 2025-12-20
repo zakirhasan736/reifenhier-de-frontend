@@ -7,11 +7,10 @@ import FeaturedProducts from '@/components/homepage/FeaturedProducts'
 import HowItWorks from '@/components/homepage/HowItWorks'
 // import LatestProducts from '@/components/homepage/LatestProducts'
 import NewArticles from '@/components/homepage/Blogs'
-
-// import {usePageView} from '@/hooks/usePageView';
+import PageViewTracker from '@/page-components/Home/PageViewTracker';
 
 const HomePageMain = () => {
-  // usePageView('homepage');
+  <PageViewTracker />;
   return (
     <div className="home-page-main-wrapper">
       <BannerSection />

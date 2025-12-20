@@ -434,7 +434,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                     className="inline-block"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <title>Sparinformationen</title>
+                    
                     <circle cx="12" cy="12" r="12" fill="#E66605" />
                     <text
                       x="12"

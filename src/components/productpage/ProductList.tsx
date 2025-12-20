@@ -5,6 +5,7 @@ import ProductCard from '@/components/elements/cards/ProductCard';
 import { Product } from '@/types/product';
 import ProductSkeletonCard from '../elements/cards/productskeletonCard';
 import { usePageView } from '@/hooks/usePageView';
+import PageViewTracker from '@/page-components/Home/PageViewTracker';
 interface ProductListProps {
   products: Product[];
   loading: boolean;
@@ -34,6 +35,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
   usePageView('product-page');
   return (
     <div className="relative min-h-[320px]">
+      <PageViewTracker />
       <OverlaySpinner show={uiLoading} />
       {products.length === 0 ? (
         <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-3 product-listing-grid-wrapper gap-4">

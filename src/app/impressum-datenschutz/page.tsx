@@ -18,15 +18,6 @@ export const metadata: Metadata = {
 const PrivacyPolicy: React.FC = () => {
   return (
     <>
-      <Head>
-        <title>Impressum & Datenschutz – Reifencheck.de</title>
-        <meta
-          name="description"
-          content="Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m."
-        />
-        <meta name="robots" content="index,follow" />
-      </Head>
-
       <main className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
         <header className="mb-8 text-left">
           <h1 className="text-3xl font-bold text-secondary-100">Impressum</h1>
