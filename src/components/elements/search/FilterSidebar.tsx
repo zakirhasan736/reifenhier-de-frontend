@@ -265,14 +265,14 @@ console.log('availableProducts.kategorie:', availableProducts);
             }`}
           >
             <Ruler className="w-4 h-4" />
-            By Size
+            Nach Größe
           </button>
           <button
             disabled
             className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all cursor-not-allowed opacity-50 text-slate-400`}
           >
             <Car className="w-4 h-4" />
-            By Car
+            Nach Auto
           </button>
         </div>
         {activeTab === 'size' ? (
@@ -640,7 +640,7 @@ console.log('availableProducts.kategorie:', availableProducts);
               {availableProducts.speedIndexes && (
                 <div className="flex flex-col gap-1.5 mb-0">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    Geschwindigkeits
+                    SpeedIndex
                   </label>
                   <div className="relative">
                     {/* Trigger */}
@@ -953,7 +953,7 @@ console.log('availableProducts.kategorie:', availableProducts);
                             Ganzjahresreifen
                           </p>
                           <p className="text-xs text-gray-500">
-                            Ein Reifen, alle Wetter
+                            Ein Reifen, alle Wetterlagen
                           </p>
                         </div>
                         {isSelected('Ganzjahresreifen') && (
