@@ -30,7 +30,7 @@ const FaqSection = async () => {
   const faqs = await getFaqs();
   
   return (
-    <section className="FAQ-section lg:py-[70px] py-14">
+    <section className="FAQ-section lg:py-[70px] py-14 bg-[#F7F8FA]">
       <div className="custom-container">
         <div className="faq-content-wrapper md:grid md:grid-cols-12 gap-6 flex flex-col  items-start">
           <div className="faq-left-cont col-span-5 flex flex-col justify-center">
@@ -58,7 +58,7 @@ const FaqSection = async () => {
                 faqs.map((faq, index) => (
                   <div
                     key={faq._id}
-                    className="collapse rounded-[12px] bg-[#F5F5F7] collapse-plus mb-2"
+                    className="collapse rounded-[12px] bg-[#FFFFFF] collapse-plus mb-2"
                   >
                     <label htmlFor={faq._id} className="cursor-pointer"></label>
                     <input

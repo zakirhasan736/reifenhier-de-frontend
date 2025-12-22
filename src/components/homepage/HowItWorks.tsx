@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const HowItWorks: React.FC = () => {
     return (
-      <section className="how-it-works-section !bg-transparent !py-0">
+      <section className="how-it-works-section !bg-transparent !pt-0 pb-12 lg:pb-14">
         <div className="custom-container">
           <div className="how-it-works-content">
             <div className="how-it-works-right-content w-full">

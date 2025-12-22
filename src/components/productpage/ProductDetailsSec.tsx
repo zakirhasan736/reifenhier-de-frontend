@@ -404,8 +404,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                         <path
                           d="M9.21746 0.0111889C7.19076 0.397538 5.38767 1.55991 4.18084 3.25806H3.33507C2.45088 3.25914 1.60321 3.61634 0.977988 4.25131C0.352771 4.88628 0.00105912 5.74718 0 6.64516L0 9.35484C0.00105912 10.2528 0.352771 11.1137 0.977988 11.7487C1.60321 12.3837 2.45088 12.7409 3.33507 12.7419H4.18151C5.38798 14.4402 7.1909 15.6026 9.21746 15.9888C9.31364 16.0068 9.41253 16.0031 9.50713 15.9779C9.60174 15.9528 9.68974 15.9068 9.7649 15.8432C9.84006 15.7797 9.90055 15.7002 9.94208 15.6102C9.9836 15.5203 10.0052 15.4222 10.0052 15.3229V0.677093C10.0052 0.577774 9.9836 0.479681 9.94208 0.389761C9.90055 0.299842 9.84006 0.220296 9.7649 0.156759C9.68974 0.093221 9.60174 0.0472458 9.50713 0.0220898C9.41253 -0.00306628 9.31364 -0.00678776 9.21746 0.0111889Z"
                           fill="#3A64F6"
-                        >
-                        </path>
+                        ></path>
                       </svg>{' '}
                       <div className="skeleton h-2 w-12 bg-mono-60"></div>
                     </li>
@@ -620,284 +619,528 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
         </section>
       ) : (
         <>
-        <PageViewTracker />
-        <section className="product-singlepage-section overflow-hidden">
-          <div className="custom-container w-full">
-            <div className="product-breadcrumb-area pt-6 pb-8 max-sm:pb-4 flex items-center justify-start gap-3">
-              <Link href="/produkte" className="">
-                <button
-                  type="button"
-                  className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
-                >
-                  <OptimizedImage
-                    src="/images/icons/arrow-left.svg"
-                    alt="Back"
-                    className="md:h-6 h-4"
-                    width={24}
-                    height={24}
-                    loading="lazy"
-                    fallback="/images/fallback-image.png"
-                  />
-                  Zurück zu den Suchergebnissen
-                </button>
-              </Link>
-              <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden md:gap-2  lg:gap-[10px] mx-auto">
-                <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
-                  <Link
-                    className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                    href="/"
+          <PageViewTracker />
+          <section className="product-singlepage-section overflow-hidden">
+            <div className="custom-container w-full">
+              <div className="product-breadcrumb-area pt-6 pb-8 max-sm:pb-4 flex items-center justify-start gap-3">
+                <Link href="/produkte" className="">
+                  <button
+                    type="button"
+                    className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
                   >
-                    Home
-                  </Link>
-                  <span className="angle">{'>'}</span>
-                </li>
-                <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
-                  <Link
-                    className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                    href={`/produkte?kategorie=${product.merchant_product_third_category}`}
-                  >
-                    {product.merchant_product_third_category || 'produkte'}
-                  </Link>
-                  <span className="angle">{'>'}</span>
-                </li>
-                <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-[#16171A] flex items-center gap-[10px]">
-                  <span className="body-caption text-[12px] lg:text-base text-[#16171A]">
-                    {[product.brand_name, product.product_name]
-                      .filter(Boolean)
-                      .join(' ')
-                      .toUpperCase()}
-                  </span>
-                </li>
-              </ul>
-            </div>
+                    <OptimizedImage
+                      src="/images/icons/arrow-left.svg"
+                      alt="Back"
+                      className="md:h-6 h-4"
+                      width={24}
+                      height={24}
+                      loading="lazy"
+                      fallback="/images/fallback-image.png"
+                    />
+                    Zurück zu den Suchergebnissen
+                  </button>
+                </Link>
+                <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden md:gap-2  lg:gap-[10px] mx-auto">
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
+                    <Link
+                      className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
+                      href="/"
+                    >
+                      Home
+                    </Link>
+                    <span className="angle">{'>'}</span>
+                  </li>
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
+                    <Link
+                      className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
+                      href={`/produkte?kategorie=${product.merchant_product_third_category}`}
+                    >
+                      {product.merchant_product_third_category || 'produkte'}
+                    </Link>
+                    <span className="angle">{'>'}</span>
+                  </li>
+                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-[#16171A] flex items-center gap-[10px]">
+                    <span className="body-caption text-[12px] lg:text-base text-[#16171A]">
+                      {[product.brand_name, product.product_name]
+                        .filter(Boolean)
+                        .join(' ')
+                        .toUpperCase()}
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-            <div className="product-singlepage-cont-wrapper w-full flex items-start justify-between lg:gap-6 md:gap-5 gap-9 max-sm:flex-col">
-              <div className="product-singlepage-left-cont sticky  top-0 w-full">
-                <div className="swiper-product-slider-area relative">
-                  <div className="swiper-slides-view-area border border-border-100 bg-[#F7F7F7] rounded-[10px] md:p-8 p-6">
-                    <div className="product-slide-top-cont flex items-center justify-between">
-                      <div className="brand-logo flex items-start justify-start text-left">
-                        {product.brand_logo && product.brand_logo !== '0' ? (
-                          <Image
-                            src={product.brand_logo}
-                            alt={product.brand_name || ''}
-                            width={110}
-                            height={45}
-                          />
-                        ) : (
-                          <span className="font-bold text-primary-100 text-md">
-                            {product.brand_name}
-                          </span>
-                        )}
+              <div className="product-singlepage-cont-wrapper w-full flex items-start justify-between lg:gap-6 md:gap-5 gap-9 max-sm:flex-col">
+                <div className="product-singlepage-left-cont sticky  top-0 w-full">
+                  <div className="swiper-product-slider-area relative">
+                    <div className="swiper-slides-view-area border border-border-100 bg-[#F7F7F7] rounded-[10px] md:p-8 p-6">
+                      <div className="product-slide-top-cont flex items-center justify-between">
+                        <div className="brand-logo flex items-start justify-start text-left">
+                          {product.brand_logo && product.brand_logo !== '0' ? (
+                            <Image
+                              src={product.brand_logo}
+                              alt={product.brand_name || ''}
+                              width={110}
+                              height={45}
+                            />
+                          ) : (
+                            <span className="font-bold text-primary-100 text-md">
+                              {product.brand_name}
+                            </span>
+                          )}
+                        </div>
+                        <div className="product-favorite-icon">
+                          <button
+                            onClick={handleToggleWishlist}
+                            className="cursor-pointer"
+                          >
+                            <Image
+                              src={
+                                isFavorited
+                                  ? '/images/icons/heart-filled.svg'
+                                  : '/images/icons/heart.svg'
+                              }
+                              alt="favorite"
+                              className="lg:w-6 h-auto w-5"
+                              width={32}
+                              height={32}
+                              loading="lazy"
+                            />
+                          </button>
+                        </div>
                       </div>
-                      <div className="product-favorite-icon">
-                        <button
-                          onClick={handleToggleWishlist}
-                          className="cursor-pointer"
+
+                      <div className="swiper-slider-view w-full relative">
+                        <Swiper
+                          spaceBetween={10}
+                          effect="fade"
+                          loop
+                          thumbs={{ swiper: thumbsSwiper }}
+                          modules={[EffectFade, FreeMode, Navigation, Thumbs]}
+                          breakpoints={{
+                            640: { slidesPerView: 1 },
+                            768: { slidesPerView: 1 },
+                            1024: { slidesPerView: 1 },
+                          }}
+                          className="thumbs w-full rounded-lg"
                         >
-                          <Image
-                            src={
-                              isFavorited
-                                ? '/images/icons/heart-filled.svg'
-                                : '/images/icons/heart.svg'
-                            }
-                            alt="favorite"
-                            className="lg:w-6 h-auto w-5"
-                            width={32}
-                            height={32}
-                            loading="lazy"
-                          />
-                        </button>
+                          {product.product_image ? (
+                            Array.isArray(product.product_image) ? (
+                              product.product_image.map(
+                                (image: string, index: number) => (
+                                  <SwiperSlide key={index}>
+                                    <div className="slide-view-item flex justify-center">
+                                      <OptimizedImage
+                                        src={image}
+                                        alt="product image item"
+                                        className="lg:h-[417px] h-[218px] max-md:w-auto"
+                                        width={343}
+                                        height={417}
+                                        priority
+                                        fetchPriority="high"
+                                        fallback="/images/fallback-image.png"
+                                      />
+                                    </div>
+                                  </SwiperSlide>
+                                )
+                              )
+                            ) : (
+                              <SwiperSlide key={0}>
+                                <div className="slide-view-item flex justify-center">
+                                  <OptimizedImage
+                                    src={product.product_image}
+                                    alt="product image item"
+                                    className="lg:h-[417px] h-[218px] max-md:w-auto object-contain"
+                                    width={343}
+                                    height={417}
+                                    priority
+                                    fetchPriority="high"
+                                    fallback="/images/fallback-image.png"
+                                  />
+                                </div>
+                              </SwiperSlide>
+                            )
+                          ) : null}
+                        </Swiper>
+                        <div className="selected-charity-image"></div>
                       </div>
                     </div>
 
-                    <div className="swiper-slider-view w-full relative">
+                    <div className="swiper-product-slide-tab-item mt-3 flex justify-center items-center">
                       <Swiper
-                        spaceBetween={10}
-                        effect="fade"
-                        loop
-                        thumbs={{ swiper: thumbsSwiper }}
-                        modules={[EffectFade, FreeMode, Navigation, Thumbs]}
+                        onSwiper={setThumbsSwiper}
+                        loop={false}
+                        spaceBetween={12}
+                        slidesPerView={6}
+                        freeMode
+                        navigation={false}
+                        // autoplay={{ delay: 6000, disableOnInteraction: false }}
+                        watchSlidesProgress
+                        modules={[FreeMode, Navigation, Thumbs]}
+                        className="w-full rounded-lg"
                         breakpoints={{
-                          640: { slidesPerView: 1 },
-                          768: { slidesPerView: 1 },
-                          1024: { slidesPerView: 1 },
+                          640: { slidesPerView: 3, spaceBetween: 12 },
+                          738: { slidesPerView: 3, spaceBetween: 12 },
+                          1024: { slidesPerView: 3, spaceBetween: 12 },
                         }}
-                        className="thumbs w-full rounded-lg"
                       >
                         {product.product_image ? (
                           Array.isArray(product.product_image) ? (
                             product.product_image.map(
                               (image: string, index: number) => (
                                 <SwiperSlide key={index}>
-                                  <div className="slide-view-item flex justify-center">
-                                    <OptimizedImage
-                                      src={image}
-                                      alt="product image item"
-                                      className="lg:h-[417px] h-[218px] max-md:w-auto"
-                                      width={343}
-                                      height={417}
-                                      priority
-                                      fetchPriority="high"
-                                      fallback="/images/fallback-image.png"
-                                    />
+                                  <div className="slide-tab-item">
+                                    <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] md:py-3 py-2 px-3 md:px-4 flex justify-center">
+                                      <OptimizedImage
+                                        src={image}
+                                        alt="product image item"
+                                        className="w-[87px] xl:w-auto xl:h-[106px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
+                                        width={106}
+                                        height={106}
+                                        priority
+                                        fetchPriority="high"
+                                        fallback="/images/fallback-image.png"
+                                      />
+                                    </div>
                                   </div>
                                 </SwiperSlide>
                               )
                             )
                           ) : (
                             <SwiperSlide key={0}>
-                              <div className="slide-view-item flex justify-center">
-                                <OptimizedImage
-                                  src={product.product_image}
-                                  alt="product image item"
-                                  className="lg:h-[417px] h-[218px] max-md:w-auto object-contain"
-                                  width={343}
-                                  height={417}
-                                  priority
-                                  fetchPriority="high"
-                                  fallback="/images/fallback-image.png"
-                                />
+                              <div className="slide-tab-item">
+                                <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] py-3 px-4 flex justify-center">
+                                  <OptimizedImage
+                                    src={product.product_image}
+                                    alt="product image item"
+                                    className="w-[87px] xl:w-auto xl:h-[106px] max-sm:h-[78px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
+                                    width={106}
+                                    height={106}
+                                    priority
+                                    fetchPriority="high"
+                                    fallback="/images/fallback-image.png"
+                                  />
+                                </div>
                               </div>
                             </SwiperSlide>
                           )
                         ) : null}
                       </Swiper>
-                      <div className="selected-charity-image"></div>
                     </div>
                   </div>
-
-                  <div className="swiper-product-slide-tab-item mt-3 flex justify-center items-center">
-                    <Swiper
-                      onSwiper={setThumbsSwiper}
-                      loop={false}
-                      spaceBetween={12}
-                      slidesPerView={6}
-                      freeMode
-                      navigation={false}
-                      // autoplay={{ delay: 6000, disableOnInteraction: false }}
-                      watchSlidesProgress
-                      modules={[FreeMode, Navigation, Thumbs]}
-                      className="w-full rounded-lg"
-                      breakpoints={{
-                        640: { slidesPerView: 3, spaceBetween: 12 },
-                        738: { slidesPerView: 3, spaceBetween: 12 },
-                        1024: { slidesPerView: 3, spaceBetween: 12 },
-                      }}
-                    >
-                      {product.product_image ? (
-                        Array.isArray(product.product_image) ? (
-                          product.product_image.map(
-                            (image: string, index: number) => (
-                              <SwiperSlide key={index}>
-                                <div className="slide-tab-item">
-                                  <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] md:py-3 py-2 px-3 md:px-4 flex justify-center">
-                                    <OptimizedImage
-                                      src={image}
-                                      alt="product image item"
-                                      className="w-[87px] xl:w-auto xl:h-[106px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
-                                      width={106}
-                                      height={106}
-                                      priority
-                                      fetchPriority="high"
-                                      fallback="/images/fallback-image.png"
-                                    />
-                                  </div>
-                                </div>
-                              </SwiperSlide>
-                            )
-                          )
-                        ) : (
-                          <SwiperSlide key={0}>
-                            <div className="slide-tab-item">
-                              <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] py-3 px-4 flex justify-center">
-                                <OptimizedImage
-                                  src={product.product_image}
-                                  alt="product image item"
-                                  className="w-[87px] xl:w-auto xl:h-[106px] max-sm:h-[78px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
-                                  width={106}
-                                  height={106}
-                                  priority
-                                  fetchPriority="high"
-                                  fallback="/images/fallback-image.png"
-                                />
-                              </div>
-                            </div>
-                          </SwiperSlide>
-                        )
-                      ) : null}
-                    </Swiper>
-                  </div>
                 </div>
-              </div>
 
-              <div className="product-singlepage-right-cont  w-full">
-                <div className="product-details-top">
-                  <ul className="flex items-center justify-start gap-4  mb-4">
-                    <li className="in-stock-info flex items-center gap-1">
-                      <Image
-                        src="/images/icons/tick-square.svg"
-                        alt="Auf Lager"
-                        width={16}
-                        height={16}
-                        loading="lazy"
-                      />{' '}
-                      <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#16171A]">
-                        {product.in_stock === 'true'
-                          ? 'Auf Lager'
-                          : 'Nicht Verfügbar'}
-                      </p>
-                    </li>
-                    <li className="product-category">
-                      <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
-                        {' '}
-                        {product.merchant_product_third_category || 'N/A'}
-                      </p>
-                    </li>
-                    <li className="socials-sheare-button  ml-auto flex items-center gap-2">
-                      <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
-                        Sheare:
-                      </p>{' '}
-                      <SocialShareButtons
-                        url={productUrl}
-                        title={productTitle}
-                      />
-                    </li>
-                  </ul>
-                  <div className="product-details-title-box mb-4">
-                    <h1 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
-                      {[product.brand_name, product.product_name]
-                        .filter(Boolean)
-                        .join(' ')
-                        .toUpperCase()}
-                    </h1>
-                    <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
-                      <span className="flex items-center gap-2">
+                <div className="product-singlepage-right-cont  w-full">
+                  <div className="product-details-top">
+                    <ul className="flex items-center justify-start gap-4  mb-4">
+                      <li className="in-stock-info flex items-center gap-1">
                         <Image
-                          src={'/images/icons/Vector.svg'}
-                          alt="Star"
+                          src="/images/icons/tick-square.svg"
+                          alt="Auf Lager"
                           width={16}
                           height={16}
                           loading="lazy"
+                        />{' '}
+                        <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#16171A]">
+                          {product.in_stock === 'true'
+                            ? 'Auf Lager'
+                            : 'Nicht Verfügbar'}
+                        </p>
+                      </li>
+                      <li className="product-category">
+                        <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
+                          {' '}
+                          {product.merchant_product_third_category || 'N/A'}
+                        </p>
+                      </li>
+                      <li className="socials-sheare-button  ml-auto flex items-center gap-2">
+                        <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
+                          Teilen:
+                        </p>{' '}
+                        <SocialShareButtons
+                          url={productUrl}
+                          title={productTitle}
                         />
-                        {product.average_rating ? (
-                          <span className="pr-3 text-[#404042]">
-                            {product.average_rating
-                              .toFixed(1)
-                              .replace('.', ',')}
-                          </span>
-                        ) : null}
-                      </span>{' '}
-                      <span className="text-[#404042]">
-                        {product.review_count || 0} Bewertungen
-                      </span>
-                    </p>
+                      </li>
+                    </ul>
+                    <div className="product-details-title-box mb-4">
+                      <h1 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
+                        {[product.brand_name, product.product_name]
+                          .filter(Boolean)
+                          .join(' ')
+                          .toUpperCase()}
+                      </h1>
+                      <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
+                        <span className="flex items-center gap-2">
+                          <Image
+                            src={'/images/icons/Vector.svg'}
+                            alt="Star"
+                            width={16}
+                            height={16}
+                            loading="lazy"
+                          />
+                          {product.average_rating ? (
+                            <span className="pr-3 text-[#404042]">
+                              {product.average_rating
+                                .toFixed(1)
+                                .replace('.', ',')}
+                            </span>
+                          ) : null}
+                        </span>{' '}
+                        <span className="text-[#404042]">
+                          {product.review_count || 0} Bewertungen
+                        </span>
+                      </p>
+                    </div>
+                    <div className="product-details-brand-info">
+                      <p className="text-base font-normal font-secondary text-[#404042] leading-[140%] flex md:flex-row flex-col items-start justify-start md:items-center gap-2">
+                        <span className="text-[14px] whitespace-nowrap">
+                          Bester Preis:
+                        </span>{' '}
+                        <a
+                          href={`${apiUrl}/out/${
+                            product.cheapest_vendor?.affiliate_product_cloak_url
+                          }?product=${product._id}&uuid=${
+                            uuidCookie || 'guest'
+                          }&from=product-page`}
+                          target="_blank"
+                          rel="nofollow sponsored noopener noreferrer"
+                          onClick={() => {
+                            navigator.sendBeacon(
+                              `${apiUrl}/api/v1/p`,
+                              JSON.stringify({
+                                productId: product._id,
+                                vendor: product.cheapest_vendor?.vendor,
+                                vendorId: product.cheapest_vendor?.vendor_id,
+                                uuid: uuidCookie,
+                                source: 'product-details-page',
+                                country: geo.country,
+                                city: geo.city,
+                                ip: geo.ip,
+                              })
+                            );
+                          }}
+                          className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
+                        >
+                          <Image
+                            src={product.cheapest_vendor?.vendor_logo}
+                            width={140}
+                            height={37}
+                            loading="lazy"
+                            className={`lg:h-[37px] h-[27px] object-contain ${
+                              product.cheapest_vendor?.vendor_logo ===
+                              '/images/vendors/reifendirekt-de.png'
+                                ? 'lg:w-[140px] w-[120px]'
+                                : 'lg:w-auto w-auto'
+                            }`}
+                            alt="vendor image"
+                          />{' '}
+                          {product.cheapest_vendor?.vendor}
+                        </a>
+                      </p>
+                      <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
+                        <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
+                          {product.cheapest_vendor?.delivery_cost === '0' ||
+                          product.cheapest_vendor?.delivery_cost === '0.00'
+                            ? 'Versandkostenfrei'
+                            : product.cheapest_vendor?.delivery_cost
+                            ? `Versandkosten: ${parseFloat(
+                                product.cheapest_vendor.delivery_cost
+                                  .toString()
+                                  .replace(/[^\d.]/g, '')
+                              )
+                                .toFixed(2)
+                                .replace('.', ',')} €`
+                            : 'Versandkostenfrei'}
+                        </li>
+                        <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
+                          Verfügbarkeit: {product.delivery_time || 'N/A'}
+                        </li>
+                        <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
+                          Marke: {product.brand_name || 'Marke'}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                  <div className="product-details-brand-info">
-                    <p className="text-base font-normal font-secondary text-[#404042] leading-[140%] flex md:flex-row flex-col items-start justify-start md:items-center gap-2">
-                      <span className="text-[14px] whitespace-nowrap">
-                        Bester Preis:
-                      </span>{' '}
+
+                  <div className="product-price-group flex flex-col gap-2 mt-4 max-w-[306px] sm:max-w-[375px] w-full">
+                    <div className="input-type-text flex items-center gap-6 text-primary-70 font-medium text-[18px] capitalized text-left w-full">
+                      {product.cheapest_offer === product.expensive_offer ? (
+                        <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
+                          {product.search_price} €
+                        </span>
+                      ) : (
+                        <div className="price-box flex items-center gap-2">
+                          <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
+                            {product.cheapest_offer} €
+                          </span>
+                          <span
+                            style={{ textDecoration: 'line-through' }}
+                            className="text-[18px] md:text-[20px] font-secondary font-medium text-[#404042] leading-[140%] text-line-through"
+                          >
+                            {product.expensive_offer} €
+                          </span>
+                        </div>
+                      )}
+                      {product.savings_percent &&
+                        product.savings_percent !== '0%' &&
+                        product.savings_percent !== '-0%' && (
+                          <p className="px-2 py-[3px] border border-[#00BE00] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[75px] rounded-[6px] w-full">
+                            {product.savings_percent}
+                            <span
+                              className="tooltip tooltip-left cursor-pointer flex items-center"
+                              data-tip="Ersparnisse im Vergleich zum teuersten Angebot"
+                            >
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                className="inline-block"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <circle cx="12" cy="12" r="12" fill="#E66605" />
+                                <text
+                                  x="12"
+                                  y="16"
+                                  textAnchor="middle"
+                                  fontSize="14"
+                                  fill="#fff"
+                                  fontFamily="Arial"
+                                  fontWeight="bold"
+                                >
+                                  i
+                                </text>
+                              </svg>
+                            </span>
+                          </p>
+                        )}
+                    </div>
+                    <ul className="attributes flex items-center w-full justify-start mt-2 md:mt-3">
+                      {product.fuel_class && (
+                        <>
+                          <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
+                            <span
+                              className="tooltip tooltip-top"
+                              data-tip="Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch."
+                            >
+                              <Image
+                                src="/images/icons/fuel.svg"
+                                alt="Fuel Class"
+                                width={16}
+                                height={16}
+                                loading="lazy"
+                              />
+                            </span>{' '}
+                            <span
+                              style={{
+                                color: gradeFuelColor(product.fuel_class),
+                                fontWeight: 500,
+                                background: gradeFuelBgColor(
+                                  product.fuel_class
+                                ),
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              {product.fuel_class}
+                            </span>
+                          </li>
+                          <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
+                        </>
+                      )}
+                      {product.wet_grip && (
+                        <>
+                          <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
+                            <span
+                              className="tooltip tooltip-top"
+                              data-tip="Nasshaftung: Wie gut ist der Reifen bei Nässe."
+                            >
+                              <Image
+                                src="/images/icons/heavy-rain.png"
+                                alt="Weight"
+                                width={16}
+                                height={16}
+                                loading="lazy"
+                              />
+                            </span>{' '}
+                            <span
+                              style={{
+                                color: gradeGripColor(product.wet_grip),
+                                fontWeight: 500,
+                                background: gradeGripBgColor(product.wet_grip),
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              {product.wet_grip}
+                            </span>
+                          </li>
+                          <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
+                        </>
+                      )}
+                      {product.noise_class && (
+                        <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
+                          <span
+                            className="tooltip tooltip-top"
+                            data-tip="Rollgeräusch: Wie laut ist der Reifen beim Fahren."
+                          >
+                            <Image
+                              src="/images/icons/noise.svg"
+                              alt="External Rolling Noise"
+                              width={16}
+                              height={16}
+                              loading="lazy"
+                            />
+                          </span>{' '}
+                          {product.noise_class} db
+                        </li>
+                      )}
+                    </ul>
+                    {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
+                    <div className="flex gap-2 w-full mt-2 flex-wrap">
+                      {/* Feature Badges - DYNAMICALLY STYLED */}
+                      <div className="flex w-full gap-2">
+                        <div
+                          style={{ backgroundColor: fuelMeta.bg }}
+                          className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
+                        >
+                          <div className="flex items-center gap-1">
+                            <Leaf size={14} />
+                            <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
+                              EFFICIENCY
+                            </span>
+                          </div>
+                          <span
+                            className="text-[12px] font-black whitespace-nowrap"
+                            style={{ color: fuelMeta.color }}
+                          >
+                            {fuelMeta.textDE}
+                          </span>
+                        </div>
+                        <div
+                          style={{ backgroundColor: wetMeta.bg }}
+                          className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
+                        >
+                          <div className="flex gap-1 items-center">
+                            <CloudRain size={14} />
+                            <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
+                              WET GRIP
+                            </span>
+                          </div>
+                          <span
+                            className="text-[12px] font-black whitespace-nowrap"
+                            style={{ color: wetMeta.color }}
+                          >
+                            {wetMeta.textDE}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
+                    <div className="product-card-btn-states lg:min-w-[173px] w-full">
                       <a
                         href={`${apiUrl}/out/${
                           product.cheapest_vendor?.affiliate_product_cloak_url
@@ -921,901 +1164,663 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             })
                           );
                         }}
-                        className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
+                        className="block w-full"
                       >
-                        <Image
-                          src={product.cheapest_vendor?.vendor_logo}
-                          width={140}
-                          height={37}
-                          loading="lazy"
-                          className={`lg:h-[37px] h-[27px] object-contain ${
-                            product.cheapest_vendor?.vendor_logo ===
-                            '/images/vendors/reifendirekt-de.png'
-                              ? 'lg:w-[140px] w-[120px]'
-                              : 'lg:w-auto w-auto'
-                          }`}
-                          alt="vendor image"
-                        />{' '}
-                        {product.cheapest_vendor?.vendor}
+                        <button
+                          type="button"
+                          className="primary-button-state w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
+                        >
+                          <MdAddShoppingCart className="text-[22px]" /> Zum
+                          Angebot
+                        </button>
                       </a>
-                    </p>
-                    <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
-                      <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                        {product.cheapest_vendor?.delivery_cost === '0' ||
-                        product.cheapest_vendor?.delivery_cost === '0.00'
-                          ? 'Versandkostenfrei'
-                          : product.cheapest_vendor?.delivery_cost
-                          ? `Versandkosten: ${parseFloat(
-                              product.cheapest_vendor.delivery_cost
-                                .toString()
-                                .replace(/[^\d.]/g, '')
-                            )
-                              .toFixed(2)
-                              .replace('.', ',')} €`
-                          : 'Versandkostenfrei'}
-                      </li>
-                      <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                        Verfügbarkeit: {product.delivery_time || 'N/A'}
-                      </li>
-                      <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                        Marke: {product.brand_name || 'Marke'}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+                    </div>
 
-                <div className="product-price-group flex flex-col gap-2 mt-4 max-w-[306px] sm:max-w-[375px] w-full">
-                  <div className="input-type-text flex items-center gap-6 text-primary-70 font-medium text-[18px] capitalized text-left w-full">
-                    {product.cheapest_offer === product.expensive_offer ? (
-                      <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                        {product.search_price} €
-                      </span>
-                    ) : (
-                      <div className="price-box flex items-center gap-2">
-                        <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                          {product.cheapest_offer} €
-                        </span>
-                        <span
-                          style={{ textDecoration: 'line-through' }}
-                          className="text-[18px] md:text-[20px] font-secondary font-medium text-[#404042] leading-[140%] text-line-through"
-                        >
-                          {product.expensive_offer} €
-                        </span>
-                      </div>
-                    )}
-                    {product.savings_percent &&
-                      product.savings_percent !== '0%' &&
-                      product.savings_percent !== '-0%' && (
-                        <p className="px-2 py-[3px] border border-[#00BE00] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[75px] rounded-[6px] w-full">
-                          {product.savings_percent}
-                          <span
-                            className="tooltip tooltip-left cursor-pointer flex items-center"
-                            data-tip="Ersparnisse im Vergleich zum teuersten Angebot"
-                          >
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              className="inline-block"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <circle cx="12" cy="12" r="12" fill="#E66605" />
-                              <text
-                                x="12"
-                                y="16"
-                                textAnchor="middle"
-                                fontSize="14"
-                                fill="#fff"
-                                fontFamily="Arial"
-                                fontWeight="bold"
-                              >
-                                i
-                              </text>
-                            </svg>
-                          </span>
-                        </p>
-                      )}
+                    <button
+                      type="button"
+                      onClick={handleCompareClick}
+                      className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
+                    >
+                      Zum Vergleich hinzufügen
+                    </button>
+                    <button
+                      onClick={handleToggleWishlist}
+                      className="cursor-pointer w-full hidden xl:flex items-center justify-center max-w-12 h-12 !border !border-[#89898b60] rounded-full"
+                    >
+                      <Image
+                        src={
+                          isFavorited
+                            ? '/images/icons/heart-filled.svg'
+                            : '/images/icons/heart.svg'
+                        }
+                        alt="favorite"
+                        className="lg:w-6 h-auto w-5"
+                        width={32}
+                        height={32}
+                        loading="lazy"
+                      />
+                    </button>
                   </div>
-                  <ul className="attributes flex items-center w-full justify-start mt-2 md:mt-3">
-                    {product.fuel_class && (
-                      <>
-                        <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
-                          <span
-                            className="tooltip tooltip-top"
-                            data-tip="Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch."
+                  <ul className="payment-method-list flex flex-wrap items-center gap-2 mt-6">
+                    {product.cheapest_vendor?.payment_icons?.map(
+                      (icon: string, idx: number) => {
+                        // Map known payment icon names to display names
+                        const paymentNameMap: Record<string, string> = {
+                          sofort: 'Sofortüberweisung',
+                          amazonpay: 'Amazon Pay',
+                          paypal: 'PayPal',
+                          banktransfer: 'Banküberweisung',
+                          american_express: 'American Express (AMEX)',
+                          amex: 'American Express (AMEX)',
+                          sepa: 'SEPA',
+                          applepay: 'Apple Pay',
+                          'apple-pay': 'Apple Pay',
+                          payu: 'PayU',
+                        };
+
+                        const match = icon.match(
+                          /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i
+                        );
+                        let paymentName = match
+                          ? match[1]
+                              .replace(/-/g, '')
+                              .replace(/_/g, '')
+                              .toLowerCase()
+                          : '';
+                        paymentName =
+                          paymentNameMap[paymentName] ||
+                          (match
+                            ? match[1].replace(/-/g, ' ').replace(/_/g, ' ')
+                            : `Zahlungsmethode ${idx + 1}`);
+                        return (
+                          <li
+                            className="payment-item cursor-pointer lg:h-9 h-7 lg:w-[56px] w-auto"
+                            key={idx}
                           >
-                            <Image
-                              src="/images/icons/fuel.svg"
-                              alt="Fuel Class"
-                              width={16}
-                              height={16}
-                              loading="lazy"
-                            />
-                          </span>{' '}
-                          <span
-                            style={{
-                              color: gradeFuelColor(product.fuel_class),
-                              fontWeight: 500,
-                              background: gradeFuelBgColor(product.fuel_class),
-                              padding: '2px 6px',
-                              borderRadius: '4px',
-                            }}
-                          >
-                            {product.fuel_class}
-                          </span>
-                        </li>
-                        <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
-                      </>
-                    )}
-                    {product.wet_grip && (
-                      <>
-                        <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
-                          <span
-                            className="tooltip tooltip-top"
-                            data-tip="Nasshaftung: Wie gut ist der Reifen bei Nässe."
-                          >
-                            <Image
-                              src="/images/icons/heavy-rain.png"
-                              alt="Weight"
-                              width={16}
-                              height={16}
-                              loading="lazy"
-                            />
-                          </span>{' '}
-                          <span
-                            style={{
-                              color: gradeGripColor(product.wet_grip),
-                              fontWeight: 500,
-                              background: gradeGripBgColor(product.wet_grip),
-                              padding: '2px 6px',
-                              borderRadius: '4px',
-                            }}
-                          >
-                            {product.wet_grip}
-                          </span>
-                        </li>
-                        <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
-                      </>
-                    )}
-                    {product.noise_class && (
-                      <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
-                        <span
-                          className="tooltip tooltip-top"
-                          data-tip="Rollgeräusch: Wie laut ist der Reifen beim Fahren."
-                        >
-                          <Image
-                            src="/images/icons/noise.svg"
-                            alt="External Rolling Noise"
-                            width={16}
-                            height={16}
-                            loading="lazy"
-                          />
-                        </span>{' '}
-                        {product.noise_class} db
-                      </li>
+                            <span
+                              className="tooltip tooltip-top"
+                              data-tip={paymentName}
+                            >
+                              <Image
+                                src={icon}
+                                width={70}
+                                height={36}
+                                loading="lazy"
+                                alt={paymentName}
+                                className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
+                              />
+                            </span>
+                          </li>
+                        );
+                      }
                     )}
                   </ul>
-                  {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
-                  <div className="flex gap-2 w-full mt-2 flex-wrap">
-                    {/* Feature Badges - DYNAMICALLY STYLED */}
-                    <div className="flex w-full gap-2">
-                      <div
-                        style={{ backgroundColor: fuelMeta.bg }}
-                        className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
-                      >
-                        <div className="flex items-center gap-1">
-                          <Leaf size={14} />
-                          <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                            EFFICIENCY
-                          </span>
-                        </div>
-                        <span
-                          className="text-[12px] font-black whitespace-nowrap"
-                          style={{ color: fuelMeta.color }}
-                        >
-                          {fuelMeta.textDE}
-                        </span>
-                      </div>
-                      <div
-                        style={{ backgroundColor: wetMeta.bg }}
-                        className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
-                      >
-                        <div className="flex gap-1 items-center">
-                          <CloudRain size={14} />
-                          <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                            WET GRIP
-                          </span>
-                        </div>
-                        <span
-                          className="text-[12px] font-black whitespace-nowrap"
-                          style={{ color: wetMeta.color }}
-                        >
-                          {wetMeta.textDE}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
-                  <div className="product-card-btn-states lg:min-w-[173px] w-full">
-                    <a
-                      href={`${apiUrl}/out/${
-                        product.cheapest_vendor?.affiliate_product_cloak_url
-                      }?product=${product._id}&uuid=${
-                        uuidCookie || 'guest'
-                      }&from=product-page`}
-                      target="_blank"
-                      rel="nofollow sponsored noopener noreferrer"
-                      onClick={() => {
-                        navigator.sendBeacon(
-                          `${apiUrl}/api/v1/p`,
-                          JSON.stringify({
-                            productId: product._id,
-                            vendor: product.cheapest_vendor?.vendor,
-                            vendorId: product.cheapest_vendor?.vendor_id,
-                            uuid: uuidCookie,
-                            source: 'product-details-page',
-                            country: geo.country,
-                            city: geo.city,
-                            ip: geo.ip,
-                          })
-                        );
-                      }}
-                      className="block w-full"
-                    >
-                      <button
-                        type="button"
-                        className="primary-button-state w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
-                      >
-                        <MdAddShoppingCart className="text-[22px]" /> Zum
-                        Angebot
-                      </button>
-                    </a>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleCompareClick}
-                    className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
-                  >
-                    Zum Vergleich hinzufügen
-                  </button>
-                  <button
-                    onClick={handleToggleWishlist}
-                    className="cursor-pointer w-full hidden xl:flex items-center justify-center max-w-12 h-12 !border !border-[#89898b60] rounded-full"
-                  >
-                    <Image
-                      src={
-                        isFavorited
-                          ? '/images/icons/heart-filled.svg'
-                          : '/images/icons/heart.svg'
-                      }
-                      alt="favorite"
-                      className="lg:w-6 h-auto w-5"
-                      width={32}
-                      height={32}
-                      loading="lazy"
-                    />
-                  </button>
-                </div>
-                <ul className="payment-method-list flex flex-wrap items-center gap-2 mt-6">
-                  {product.cheapest_vendor?.payment_icons?.map(
-                    (icon: string, idx: number) => {
-                      // Map known payment icon names to display names
-                      const paymentNameMap: Record<string, string> = {
-                        sofort: 'Sofortüberweisung',
-                        amazonpay: 'Amazon Pay',
-                        paypal: 'PayPal',
-                        banktransfer: 'Banküberweisung',
-                        american_express: 'American Express (AMEX)',
-                        amex: 'American Express (AMEX)',
-                        sepa: 'SEPA',
-                        applepay: 'Apple Pay',
-                        'apple-pay': 'Apple Pay',
-                        payu: 'PayU',
-                      };
-
-                      const match = icon.match(
-                        /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i
-                      );
-                      let paymentName = match
-                        ? match[1]
-                            .replace(/-/g, '')
-                            .replace(/_/g, '')
-                            .toLowerCase()
-                        : '';
-                      paymentName =
-                        paymentNameMap[paymentName] ||
-                        (match
-                          ? match[1].replace(/-/g, ' ').replace(/_/g, ' ')
-                          : `Zahlungsmethode ${idx + 1}`);
-                      return (
-                        <li
-                          className="payment-item cursor-pointer lg:h-9 h-7 lg:w-[56px] w-auto"
-                          key={idx}
-                        >
-                          <span
-                            className="tooltip tooltip-top"
-                            data-tip={paymentName}
-                          >
-                            <Image
-                              src={icon}
-                              width={70}
-                              height={36}
-                              loading="lazy"
-                              alt={paymentName}
-                              className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
-                            />
-                          </span>
-                        </li>
-                      );
-                    }
-                  )}
-                </ul>
-                <div className="product-specification-box mt-6">
-                  <div className="FAQ-list">
-                    <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
-                      <input
-                        className="!min-h-[46px] flex items-center !h-[46px]"
-                        type="radio"
-                        name="my-accordion-3"
-                      />
-                      <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                        Beschreibung
-                      </div>
-                      <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%]">
-                        {product.description ? (
-                          <div
-                            className="whitespace-pre-line"
-                            dangerouslySetInnerHTML={{
-                              __html: cleanDescription(
-                                product.description ||
-                                  'Keine Beschreibung verfügbar'
-                              ),
-                            }}
-                          />
-                        ) : (
-                          'Keine Beschreibung verfügbar'
-                        )}
-                      </div>
-                    </div>
-                    <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
-                      <input
-                        type="radio"
-                        name="my-accordion-3"
-                        className="!min-h-[46px] flex items-center !h-[46px]"
-                        // defaultChecked
-                      />
-                      <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                        Zusätzliche Informationen
-                      </div>
-                      <div className="collapse-content caption-regular font-primary border-t border-t-border-100 !px-0 !pb-0 !pt-0">
-                        <ul className="product-specification-table border border-border-100 border-b-transparent">
-                          <li className="details-items bg-[#C6C7CC] flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
-                              Eigenschaften
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
-                              Details
-                            </div>
-                          </li>
-                          <li className="details-items   flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Reifentyp
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.merchant_product_third_category || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Marke
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.brand_name || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items   flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Kraftstoffeffizienz
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.fuel_class || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Nasshaftung
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.wet_grip || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items   flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Größe
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.dimensions}
-                            </div>
-                          </li>
-                          <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Breite
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.width || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items   flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Höhe
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.height || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items  bg-[#F5F5F7] flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Durchmesser
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.diameter || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items   flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Geschwindigkeitsindex
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.speedIndex || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              Lastenindex
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.lastIndex || 'N/A'}
-                            </div>
-                          </li>
-                          <li className="details-items   flex items-center justify-between gap-6">
-                            <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              GTIN / EAN
-                            </div>
-                            <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                              {product.ean}
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="custom-container-full lg:pt-[55px] pt-9">
-            {/* name of each tab group should be unique */}
-            <div className="custom-container relative flex md:flex-row gap-6 md:gap-2 flex-col items-start md:items-center md:justify-between max-sm:mb-6">
-              <div className="best-offer-vendor-sec-title">
-                <h2 className="md:text-[28px] text-[26px] font-medium font-primary text-[#16171A] leading-[120%] mb-1 md:mb-3">
-                  Bestes Angebot
-                </h2>
-                <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#404042]">
-                  Vertrauenswürdige Marken und täglich die niedrigsten Preise!
-                </p>
-              </div>
-              <div className="offer-vendor-navigator  items-baseline-last gap-5">
-                <div className="flex items-center justify-end">
-                  <label htmlFor="sort" className="mr-2 text-sm text-[#16171A]">
-                    Sortierung:
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="sort"
-                      className="appearance-none border border-primary-100 px-3 py-2 text-sm pr-8"
-                      value={`${sortBy}_${sortOrder}`}
-                      onChange={e => {
-                        const [sortKey, sortDir] = e.target.value.split('_');
-                        setSortBy(sortKey as 'price' | 'priceWithDelivery');
-                        setSortOrder(sortDir as 'asc' | 'desc');
-                      }}
-                    >
-                      <option value="price_asc">Preis aufsteigend</option>
-                      <option value="price_desc">Preis absteigend</option>
-                      <option value="priceWithDelivery_asc">
-                        Preis mit Versand aufsteigend
-                      </option>
-                      <option value="priceWithDelivery_desc">
-                        Preis mit Versand absteigend
-                      </option>
-                    </select>
-
-                    {/* Dropdown arrow */}
-                    <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                      <svg
-                        className="w-4 h-4 text-[#404042]"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19 9l-7 7-7-7"
+                  <div className="product-specification-box mt-6">
+                    <div className="FAQ-list">
+                      <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
+                        <input
+                          className="!min-h-[46px] flex items-center !h-[46px]"
+                          type="radio"
+                          name="my-accordion-3"
                         />
-                      </svg>
+                        <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
+                          Beschreibung
+                        </div>
+                        <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%]">
+                          {product.description ? (
+                            <div
+                              className="whitespace-pre-line"
+                              dangerouslySetInnerHTML={{
+                                __html: cleanDescription(
+                                  product.description ||
+                                    'Keine Beschreibung verfügbar'
+                                ),
+                              }}
+                            />
+                          ) : (
+                            'Keine Beschreibung verfügbar'
+                          )}
+                        </div>
+                      </div>
+                      <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
+                        <input
+                          type="radio"
+                          name="my-accordion-3"
+                          className="!min-h-[46px] flex items-center !h-[46px]"
+                          // defaultChecked
+                        />
+                        <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
+                          Zusätzliche Informationen
+                        </div>
+                        <div className="collapse-content caption-regular font-primary border-t border-t-border-100 !px-0 !pb-0 !pt-0">
+                          <ul className="product-specification-table border border-border-100 border-b-transparent">
+                            <li className="details-items bg-[#C6C7CC] flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
+                                Eigenschaften
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
+                                Details
+                              </div>
+                            </li>
+                            <li className="details-items   flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Reifentyp
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.merchant_product_third_category ||
+                                  'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Marke
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.brand_name || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items   flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Kraftstoffeffizienz
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.fuel_class || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Nasshaftung
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.wet_grip || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items   flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Größe
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.dimensions}
+                              </div>
+                            </li>
+                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Breite
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.width || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items   flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Höhe
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.height || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items  bg-[#F5F5F7] flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Durchmesser
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.diameter || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items   flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Geschwindigkeitsindex
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.speedIndex || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                Lastenindex
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.lastIndex || 'N/A'}
+                              </div>
+                            </li>
+                            <li className="details-items   flex items-center justify-between gap-6">
+                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                GTIN / EAN
+                              </div>
+                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                                {product.ean}
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="tabs tabs-box bg-mono-0 pb-10 lg:pb-16 ">
-              <input
-                type="radio"
-                name="my_tabs_6"
-                className="tab !text-[18px] hidden !text-primary-70 !shadow-none focus:!rounded-[4px] !py-0 !rounded-[4px] !bg-transparent !px-6 border-border-100 !border hover:border-primary-100 hover:!bg-primary-100 transition ease-in hover:!text-mono-0 !leading-[150%]"
-                aria-label="Angebote"
-                defaultChecked
-              />
-              <div className="tab-content !text-primary-70 bg-mono-0 body-regular border-base-300 pt-2 md:pt-8 px-0">
-                <div className="offer-list-item-wrapper">
-                  <div className="custom-container">
-                    <div className="offer-list-item-area">
-                      {([...(product.offers || [])] as Offer[])
-                        .sort((a, b) => {
-                          const priceA = parseMoneyEU(a.price);
-                          const deliveryA = parseMoneyEU(a.delivery_cost);
-                          const priceB = parseMoneyEU(b.price);
-                          const deliveryB = parseMoneyEU(b.delivery_cost);
+            <div className="custom-container-full lg:pt-[55px] pt-9">
+              {/* name of each tab group should be unique */}
+              <div className="custom-container relative flex md:flex-row gap-6 md:gap-2 flex-col items-start md:items-center md:justify-between max-sm:mb-6">
+                <div className="best-offer-vendor-sec-title">
+                  <h2 className="md:text-[28px] text-[26px] font-medium font-primary text-[#16171A] leading-[120%] mb-1 md:mb-3">
+                    Bestes Angebot
+                  </h2>
+                  <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#404042]">
+                    Vertrauenswürdige Marken und täglich die niedrigsten Preise!
+                  </p>
+                </div>
+                <div className="offer-vendor-navigator  items-baseline-last gap-5">
+                  <div className="flex items-center justify-end">
+                    <label
+                      htmlFor="sort"
+                      className="mr-2 text-sm text-[#16171A]"
+                    >
+                      Sortierung:
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="sort"
+                        className="appearance-none border border-primary-100 px-3 py-2 text-sm pr-8"
+                        value={`${sortBy}_${sortOrder}`}
+                        onChange={e => {
+                          const [sortKey, sortDir] = e.target.value.split('_');
+                          setSortBy(sortKey as 'price' | 'priceWithDelivery');
+                          setSortOrder(sortDir as 'asc' | 'desc');
+                        }}
+                      >
+                        <option value="price_asc">Preis aufsteigend</option>
+                        <option value="price_desc">Preis absteigend</option>
+                        <option value="priceWithDelivery_asc">
+                          Preis mit Versand aufsteigend
+                        </option>
+                        <option value="priceWithDelivery_desc">
+                          Preis mit Versand absteigend
+                        </option>
+                      </select>
 
-                          const valA =
-                            sortBy === 'priceWithDelivery'
-                              ? priceA + deliveryA
-                              : priceA;
-                          const valB =
-                            sortBy === 'priceWithDelivery'
-                              ? priceB + deliveryB
-                              : priceB;
+                      {/* Dropdown arrow */}
+                      <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                        <svg
+                          className="w-4 h-4 text-[#404042]"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="tabs tabs-box bg-mono-0 pb-10 lg:pb-16 ">
+                <input
+                  type="radio"
+                  name="my_tabs_6"
+                  className="tab !text-[18px] hidden !text-primary-70 !shadow-none focus:!rounded-[4px] !py-0 !rounded-[4px] !bg-transparent !px-6 border-border-100 !border hover:border-primary-100 hover:!bg-primary-100 transition ease-in hover:!text-mono-0 !leading-[150%]"
+                  aria-label="Angebote"
+                  defaultChecked
+                />
+                <div className="tab-content !text-primary-70 bg-mono-0 body-regular border-base-300 pt-2 md:pt-8 px-0">
+                  <div className="offer-list-item-wrapper">
+                    <div className="custom-container">
+                      <div className="offer-list-item-area">
+                        {([...(product.offers || [])] as Offer[])
+                          .sort((a, b) => {
+                            const priceA = parseMoneyEU(a.price);
+                            const deliveryA = parseMoneyEU(a.delivery_cost);
+                            const priceB = parseMoneyEU(b.price);
+                            const deliveryB = parseMoneyEU(b.delivery_cost);
 
-                          return sortOrder === 'asc'
-                            ? valA - valB
-                            : valB - valA;
-                        })
-                        .map((offer, index) => {
-                          const price = parseMoneyEU(offer.price);
-                          const delivery = parseMoneyEU(offer.delivery_cost);
-                          const hasFreeShipping =
-                            offer.delivery_cost === '' ||
-                            offer.delivery_cost === '0' ||
-                            offer.delivery_cost === '0.00' ||
-                            offer.delivery_cost == null ||
-                            delivery === 0;
+                            const valA =
+                              sortBy === 'priceWithDelivery'
+                                ? priceA + deliveryA
+                                : priceA;
+                            const valB =
+                              sortBy === 'priceWithDelivery'
+                                ? priceB + deliveryB
+                                : priceB;
 
-                          const total =
-                            price + (hasFreeShipping ? 0 : delivery);
+                            return sortOrder === 'asc'
+                              ? valA - valB
+                              : valB - valA;
+                          })
+                          .map((offer, index) => {
+                            const price = parseMoneyEU(offer.price);
+                            const delivery = parseMoneyEU(offer.delivery_cost);
+                            const hasFreeShipping =
+                              offer.delivery_cost === '' ||
+                              offer.delivery_cost === '0' ||
+                              offer.delivery_cost === '0.00' ||
+                              offer.delivery_cost == null ||
+                              delivery === 0;
 
-                          const outHref = `${apiUrl}/out/${
-                            offer.affiliate_product_cloak_url
-                          }?product=${product._id}&uuid=${
-                            uuidCookie || 'guest'
-                          }&from=product-page`;
+                            const total =
+                              price + (hasFreeShipping ? 0 : delivery);
 
-                          const showSavings =
-                            !!offer.savings_percent &&
-                            offer.savings_percent !== '0%' &&
-                            offer.savings_percent !== '-0%';
+                            const outHref = `${apiUrl}/out/${
+                              offer.affiliate_product_cloak_url
+                            }?product=${product._id}&uuid=${
+                              uuidCookie || 'guest'
+                            }&from=product-page`;
 
-                          return (
-                            <div
-                              key={`${offer.vendor}-${index}-${price}`}
-                              className="offer-product-card-item not-last:mb-5"
-                            >
-                              <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                                {/* Left: Price + Vendor (mobile) */}
-                                <div className="offer-product-top-cont w-full md:max-w-[170px] mb-3 md:mb-0 flex flex-row md:flex-col lg:flex-row justify-between items-start gap-2 md:gap-3 lg:gap-2">
-                                  <div className="cont-box">
-                                    <div className="title-box flex gap-2 items-center">
-                                      <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
-                                        {formatEUR(price)}
-                                      </h4>
+                            const showSavings =
+                              !!offer.savings_percent &&
+                              offer.savings_percent !== '0%' &&
+                              offer.savings_percent !== '-0%';
 
-                                      {showSavings && (
-                                        <p className="px-1 py-[2px] border border-[#CC0C39] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
-                                          {offer.savings_percent}
-                                          <span
-                                            className="tooltip tooltip-right cursor-pointer flex items-center"
-                                            data-tip="Ersparnis gegenüber dem teuersten Angebot"
-                                          >
-                                            <svg
-                                              width="12"
-                                              height="12"
-                                              viewBox="0 0 24 24"
-                                              fill="none"
-                                              className="inline-block"
-                                              xmlns="http://www.w3.org/2000/svg"
+                            return (
+                              <div
+                                key={`${offer.vendor}-${index}-${price}`}
+                                className="offer-product-card-item not-last:mb-5"
+                              >
+                                <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
+                                  {/* Left: Price + Vendor (mobile) */}
+                                  <div className="offer-product-top-cont w-full md:max-w-[170px] mb-3 md:mb-0 flex flex-row md:flex-col lg:flex-row justify-between items-start gap-2 md:gap-3 lg:gap-2">
+                                    <div className="cont-box">
+                                      <div className="title-box flex gap-2 items-center">
+                                        <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
+                                          {formatEUR(price)}
+                                        </h4>
+
+                                        {showSavings && (
+                                          <p className="px-1 py-[2px] border border-[#CC0C39] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
+                                            {offer.savings_percent}
+                                            <span
+                                              className="tooltip tooltip-right cursor-pointer flex items-center"
+                                              data-tip="Ersparnis gegenüber dem teuersten Angebot"
                                             >
-                                              <circle
-                                                cx="12"
-                                                cy="12"
-                                                r="12"
-                                                fill="#E66605"
-                                              />
-                                              <text
-                                                x="12"
-                                                y="16"
-                                                textAnchor="middle"
-                                                fontSize="14"
-                                                fill="#fff"
-                                                fontFamily="Arial"
-                                                fontWeight="bold"
+                                              <svg
+                                                width="12"
+                                                height="12"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                className="inline-block"
+                                                xmlns="http://www.w3.org/2000/svg"
                                               >
-                                                i
-                                              </text>
-                                            </svg>
-                                          </span>
-                                        </p>
-                                      )}
+                                                <circle
+                                                  cx="12"
+                                                  cy="12"
+                                                  r="12"
+                                                  fill="#E66605"
+                                                />
+                                                <text
+                                                  x="12"
+                                                  y="16"
+                                                  textAnchor="middle"
+                                                  fontSize="14"
+                                                  fill="#fff"
+                                                  fontFamily="Arial"
+                                                  fontWeight="bold"
+                                                >
+                                                  i
+                                                </text>
+                                              </svg>
+                                            </span>
+                                          </p>
+                                        )}
+                                      </div>
+
+                                      <p className="text-[12px] lg:text-[12px] font-normal mt-[4px] font-secondary text-left text-[#404042]">
+                                        {hasFreeShipping ? (
+                                          'Versandkostenfrei'
+                                        ) : (
+                                          <>
+                                            {formatEUR(price)} +{' '}
+                                            {formatEUR(delivery)}={' '}
+                                            {formatEUR(total)}{' '}
+                                            <span className="whitespace-nowrap">
+                                              (inklusive Versandkosten)
+                                            </span>
+                                          </>
+                                        )}
+                                      </p>
                                     </div>
 
-                                    <p className="text-[12px] lg:text-[12px] font-normal mt-[4px] font-secondary text-left text-[#404042]">
-                                      {hasFreeShipping ? (
-                                        'Versandkostenfrei'
-                                      ) : (
-                                        <>
-                                          {formatEUR(price)} +{' '}
-                                          {formatEUR(delivery)}={' '}
-                                          {formatEUR(total)}{' '}
-                                          <span className="whitespace-nowrap">
-                                            (inklusive Versandkosten)
-                                          </span>
-                                        </>
-                                      )}
-                                    </p>
+                                    {/* Vendor (mobile) */}
+                                    <a
+                                      href={outHref}
+                                      target="_blank"
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/v1/p`,
+                                          JSON.stringify({
+                                            productId: product._id,
+                                            vendor: offer.vendor,
+                                            uuid: uuidCookie,
+                                            source: 'product-offer-card',
+                                            country: geo.country,
+                                            city: geo.city,
+                                            ip: geo.ip,
+                                          })
+                                        );
+                                      }}
+                                    >
+                                      <Image
+                                        src={offer.vendor_logo}
+                                        alt={`${offer.vendor} logo`}
+                                        width={140}
+                                        height={37}
+                                        loading="lazy"
+                                        className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                      />
+                                    </a>
                                   </div>
 
-                                  {/* Vendor (mobile) */}
-                                  <a
-                                    href={outHref}
-                                    target="_blank"
-                                    rel="nofollow sponsored noopener noreferrer"
-                                    onClick={() => {
-                                      navigator.sendBeacon(
-                                        `${apiUrl}/api/v1/p`,
-                                        JSON.stringify({
-                                          productId: product._id,
-                                          vendor: offer.vendor,
-                                          uuid: uuidCookie,
-                                          source: 'product-offer-card',
-                                          country: geo.country,
-                                          city: geo.city,
-                                          ip: geo.ip,
-                                        })
-                                      );
-                                    }}
-                                  >
-                                    <Image
-                                      src={offer.vendor_logo}
-                                      alt={`${offer.vendor} logo`}
-                                      width={140}
-                                      height={37}
-                                      loading="lazy"
-                                      className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                    />
-                                  </a>
-                                </div>
+                                  {/* Vendor (desktop) */}
+                                  <div className="vendor-box lg:block hidden">
+                                    <a
+                                      href={outHref}
+                                      target="_blank"
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/v1/p`,
+                                          JSON.stringify({
+                                            productId: product._id,
+                                            vendor: offer.vendor,
+                                            uuid: uuidCookie,
+                                            source: 'product-offer-card',
+                                            country: geo.country,
+                                            city: geo.city,
+                                            ip: geo.ip,
+                                          })
+                                        );
+                                      }}
+                                    >
+                                      <Image
+                                        src={offer.vendor_logo}
+                                        alt={`${offer.vendor} logo`}
+                                        width={140}
+                                        height={37}
+                                        loading="lazy"
+                                        className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
+                                      />
+                                    </a>
+                                  </div>
 
-                                {/* Vendor (desktop) */}
-                                <div className="vendor-box lg:block hidden">
-                                  <a
-                                    href={outHref}
-                                    target="_blank"
-                                    rel="nofollow sponsored noopener noreferrer"
-                                    onClick={() => {
-                                      navigator.sendBeacon(
-                                        `${apiUrl}/api/v1/p`,
-                                        JSON.stringify({
-                                          productId: product._id,
-                                          vendor: offer.vendor,
-                                          uuid: uuidCookie,
-                                          source: 'product-offer-card',
-                                          country: geo.country,
-                                          city: geo.city,
-                                          ip: geo.ip,
-                                        })
-                                      );
-                                    }}
-                                  >
-                                    <Image
-                                      src={offer.vendor_logo}
-                                      alt={`${offer.vendor} logo`}
-                                      width={140}
-                                      height={37}
-                                      loading="lazy"
-                                      className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                    />
-                                  </a>
-                                </div>
+                                  {/* Payment methods */}
+                                  <div className="offer-product-bottom-cont max-sm:mb-3 md:max-w-[180px] xl:max-w-[220px] w-full">
+                                    <div className="offer-info-right-cont">
+                                      <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
+                                        Zahlungsmethoden:
+                                      </h6>
+                                      <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
+                                        {(offer.payment_icons || []).map(
+                                          (icon: string, i: number) => {
+                                            // Pretty tooltip name based on filename
+                                            const m = icon.match(
+                                              /\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i
+                                            );
+                                            const key = m
+                                              ? m[1]
+                                              : `Zahlungsmethode ${i + 1}`;
+                                            const normalized = key
+                                              .replace(/[-_]/g, '')
+                                              .toLowerCase();
+                                            const paymentNameMap: Record<
+                                              string,
+                                              string
+                                            > = {
+                                              sofort: 'Sofortüberweisung',
+                                              amazonpay: 'Amazon Pay',
+                                              paypal: 'PayPal',
+                                              banktransfer: 'Banküberweisung',
+                                              americanexpress:
+                                                'American Express (AMEX)',
+                                              american_express:
+                                                'American Express (AMEX)',
+                                              amex: 'American Express (AMEX)',
+                                              sepa: 'SEPA',
+                                              applepay: 'Apple Pay',
+                                              'apple-pay': 'Apple Pay',
+                                              payu: 'PayU',
+                                            };
+                                            const display =
+                                              paymentNameMap[normalized] ||
+                                              key.replace(/[-_]/g, ' ');
 
-                                {/* Payment methods */}
-                                <div className="offer-product-bottom-cont max-sm:mb-3 md:max-w-[180px] xl:max-w-[220px] w-full">
-                                  <div className="offer-info-right-cont">
-                                    <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
-                                      Zahlungsmethoden:
-                                    </h6>
-                                    <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
-                                      {(offer.payment_icons || []).map(
-                                        (icon: string, i: number) => {
-                                          // Pretty tooltip name based on filename
-                                          const m = icon.match(
-                                            /\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i
-                                          );
-                                          const key = m
-                                            ? m[1]
-                                            : `Zahlungsmethode ${i + 1}`;
-                                          const normalized = key
-                                            .replace(/[-_]/g, '')
-                                            .toLowerCase();
-                                          const paymentNameMap: Record<
-                                            string,
-                                            string
-                                          > = {
-                                            sofort: 'Sofortüberweisung',
-                                            amazonpay: 'Amazon Pay',
-                                            paypal: 'PayPal',
-                                            banktransfer: 'Banküberweisung',
-                                            americanexpress:
-                                              'American Express (AMEX)',
-                                            american_express:
-                                              'American Express (AMEX)',
-                                            amex: 'American Express (AMEX)',
-                                            sepa: 'SEPA',
-                                            applepay: 'Apple Pay',
-                                            'apple-pay': 'Apple Pay',
-                                            payu: 'PayU',
-                                          };
-                                          const display =
-                                            paymentNameMap[normalized] ||
-                                            key.replace(/[-_]/g, ' ');
-
-                                          return (
-                                            <li
-                                              key={`${display}-${i}`}
-                                              className="payment-method-item cursor-pointer h-7 flex items-center gap-2"
-                                            >
-                                              <span
-                                                className="tooltip tooltip-top"
-                                                data-tip={display}
+                                            return (
+                                              <li
+                                                key={`${display}-${i}`}
+                                                className="payment-method-item cursor-pointer h-7 flex items-center gap-2"
                                               >
-                                                <Image
-                                                  src={icon}
-                                                  alt={display}
-                                                  width={45}
-                                                  height={48}
-                                                  loading="lazy"
-                                                  className="h-7 object-contain"
-                                                />
-                                              </span>
-                                            </li>
-                                          );
-                                        }
-                                      )}
-                                    </ul>
+                                                <span
+                                                  className="tooltip tooltip-top"
+                                                  data-tip={display}
+                                                >
+                                                  <Image
+                                                    src={icon}
+                                                    alt={display}
+                                                    width={45}
+                                                    height={48}
+                                                    loading="lazy"
+                                                    className="h-7 object-contain"
+                                                  />
+                                                </span>
+                                              </li>
+                                            );
+                                          }
+                                        )}
+                                      </ul>
+                                    </div>
                                   </div>
-                                </div>
 
-                                {/* Delivery info */}
-                                <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[220px] xl:max-w-[280px] flex flex-col gap-2">
-                                  <li className="flex items-start gap-2">
-                                    <Image
-                                      src="/images/icons/iconoir_delivery-truck.svg"
-                                      alt="truck icons"
-                                      width={20}
-                                      height={20}
-                                      loading="lazy"
-                                      className="h-5 w-5 object-contain rounded-[4px]"
-                                    />
-                                    <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                      Lieferung: {offer.delivery_time || ''}
-                                    </span>
-                                  </li>
-                                  <li className="flex items-start gap-2">
-                                    <Image
-                                      src="/images/icons/check-circle.svg"
-                                      alt="tick icon"
-                                      width={20}
-                                      height={20}
-                                      loading="lazy"
-                                      className="h-5 w-5 object-contain rounded-[4px]"
-                                    />
-                                    <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                      {hasFreeShipping
-                                        ? 'Versandkostenfrei'
-                                        : (() => {
-                                            // "Versandkosten: 4,90 €"
-                                            const formatted =
-                                              formatEUR(delivery); // "€4,90"
-                                            return `Versandkosten: ${formatted.replace(
-                                              '€',
-                                              ''
-                                            )} €`;
-                                          })()}
-                                    </span>
-                                  </li>
-                                </ul>
+                                  {/* Delivery info */}
+                                  <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[220px] xl:max-w-[280px] flex flex-col gap-2">
+                                    <li className="flex items-start gap-2">
+                                      <Image
+                                        src="/images/icons/iconoir_delivery-truck.svg"
+                                        alt="truck icons"
+                                        width={20}
+                                        height={20}
+                                        loading="lazy"
+                                        className="h-5 w-5 object-contain rounded-[4px]"
+                                      />
+                                      <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                        Lieferung: {offer.delivery_time || ''}
+                                      </span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                      <Image
+                                        src="/images/icons/check-circle.svg"
+                                        alt="tick icon"
+                                        width={20}
+                                        height={20}
+                                        loading="lazy"
+                                        className="h-5 w-5 object-contain rounded-[4px]"
+                                      />
+                                      <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
+                                        {hasFreeShipping
+                                          ? 'Versandkostenfrei'
+                                          : (() => {
+                                              // "Versandkosten: 4,90 €"
+                                              const formatted =
+                                                formatEUR(delivery); // "€4,90"
+                                              return `Versandkosten: ${formatted.replace(
+                                                '€',
+                                                ''
+                                              )} €`;
+                                            })()}
+                                      </span>
+                                    </li>
+                                  </ul>
 
-                                {/* CTAs */}
-                                <div className="offer-product-card-footer max-sm:w-full md:flex-col flex items-center justify-between gap-0">
-                                  <a
-                                    href={outHref}
-                                    target="_blank"
-                                    rel="nofollow sponsored noopener noreferrer"
-                                    onClick={() => {
-                                      navigator.sendBeacon(
-                                        `${apiUrl}/api/v1/p`,
-                                        JSON.stringify({
-                                          productId: product._id,
-                                          vendor: offer.vendor,
-                                          uuid: uuidCookie,
-                                          source: 'product-offer-card',
-                                          country: geo.country,
-                                          city: geo.city,
-                                          ip: geo.ip,
-                                        })
-                                      );
-                                    }}
-                                    className="cta-button-shop"
-                                  >
-                                    <button
-                                      type="button"
-                                      className="primary-button-state w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 !text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                  {/* CTAs */}
+                                  <div className="offer-product-card-footer max-sm:w-full md:flex-col flex items-center justify-between gap-0">
+                                    <a
+                                      href={outHref}
+                                      target="_blank"
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/v1/p`,
+                                          JSON.stringify({
+                                            productId: product._id,
+                                            vendor: offer.vendor,
+                                            uuid: uuidCookie,
+                                            source: 'product-offer-card',
+                                            country: geo.country,
+                                            city: geo.city,
+                                            ip: geo.ip,
+                                          })
+                                        );
+                                      }}
+                                      className="cta-button-shop"
                                     >
-                                      <MdAddShoppingCart className="text-[22px]" />{' '}
-                                      Zum Angebot
-                                    </button>
-                                  </a>
-                                  <a
-                                    href={outHref}
-                                    target="_blank"
-                                    rel="nofollow sponsored noopener noreferrer"
-                                    onClick={() => {
-                                      navigator.sendBeacon(
-                                        `${apiUrl}/api/v1/p`,
-                                        JSON.stringify({
-                                          productId: product._id,
-                                          vendor: offer.vendor,
-                                          uuid: uuidCookie,
-                                          source: 'product-offer-card',
-                                          country: geo.country,
-                                          city: geo.city,
-                                          ip: geo.ip,
-                                        })
-                                      );
-                                    }}
-                                  >
-                                    <button
-                                      type="button"
-                                      className="w-full flex items-center shop-info-btn text-[14px] lg:text-base justify-center gap-2 underline bg-transparent text-primary-100 py-[6px] px-2 cursor-pointer"
+                                      <button
+                                        type="button"
+                                        className="primary-button-state w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 !text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
+                                      >
+                                        <MdAddShoppingCart className="text-[22px]" />{' '}
+                                        Zum Angebot
+                                      </button>
+                                    </a>
+                                    <a
+                                      href={outHref}
+                                      target="_blank"
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={() => {
+                                        navigator.sendBeacon(
+                                          `${apiUrl}/api/v1/p`,
+                                          JSON.stringify({
+                                            productId: product._id,
+                                            vendor: offer.vendor,
+                                            uuid: uuidCookie,
+                                            source: 'product-offer-card',
+                                            country: geo.country,
+                                            city: geo.city,
+                                            ip: geo.ip,
+                                          })
+                                        );
+                                      }}
                                     >
-                                      Shop Informationen
-                                    </button>
-                                  </a>
+                                      <button
+                                        type="button"
+                                        className="w-full flex items-center shop-info-btn text-[14px] lg:text-base justify-center gap-2 underline bg-transparent text-primary-100 py-[6px] px-2 cursor-pointer"
+                                      >
+                                        Shop Informationen
+                                      </button>
+                                    </a>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
         </>
       )}
     </>

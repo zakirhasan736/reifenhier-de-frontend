@@ -50,9 +50,9 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <footer className="footer-section bg-[#F7F8FA]">
       <div className="footer-wrapper pt-4">
-        <div className="custom-container">
-          <div className="footer-main-centent">
-            <div className="footer-cta-section bg-primary-100 md:py-[60px] py-8 xl:px-[78px] md:px-9 px-6 rounded-[20px]">
+        <div className="footer-main-centent">
+          <div className="custom-container">
+            <div className="footer-cta-section relative z-3 -mb-30 lg:-mb-20 bg-primary-100 md:py-[60px] py-8 xl:px-[78px] md:px-9 px-6 rounded-[20px]">
               <div className="footer-cta-content flex items-center justify-between max-sm:flex-col max-sm:gap-4">
                 <div className="left-content">
                   <h2 className="font-medium font-primary text-[24px] lg:text-[30px] sm:text-left text-center text-mono-0 leading-[120%]">
@@ -91,94 +91,96 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </div>
               </div>
             </div>
-
-            <div className="footer-top-area flex items-start justify-between pt-8  pb-[19px] max-sm:flex-col lg:gap-0 gap-5">
-              <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
-                <Image
-                  src="/images/logo_footer_no_bg.svg"
-                  className="opacity-100 max-sm:w-[130px] sm:w-[140px] w-[180px] h-auto"
-                  alt="company logo"
-                  width={180}
-                  height={70}
-                  loading="lazy"
-                />
-                <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#404042] md:text-[#404042] leading-[150%] mt-3">
-                  Ihre zuverlässige Quelle für hochwertige Reifen von
-                  Top-Marken. Wir machen es Ihnen leicht, die perfekte Passform
-                  für Ihr Fahrzeug zu finden – mit schnellem Versand und
-                  kompetenter Unterstützung.
-                </p>
-              </div>
-              <div className="footer-quick-link-cont max-w-[690px] w-full flex items-start justify-between max-sm:flex-col max-sm:gap-4">
-                <div className="quick-link-cont">
-                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                    Direktlinks
-                  </h3>
-                  <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                        href="/"
-                      >
-                        Home
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                        href="/produkte"
-                      >
-                        Produkte
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                        href="/artikel"
-                      >
-                        News & Testberichte
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                        href="/favoriten"
-                      >
-                        Favoriten
-                      </Link>
-                    </li>
-                  </ul>
+          </div>
+          <div className="footer-main-box bg-[#ffffff] pt-30 lg:pt-20">
+            <div className="custom-container">
+              <div className="footer-top-area flex items-start justify-between pt-8  pb-[19px] max-sm:flex-col lg:gap-0 gap-5">
+                <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
+                  <Image
+                    src="/images/brand-logo.svg"
+                    className="opacity-100 max-sm:w-[130px] sm:w-[140px] w-[180px] h-auto"
+                    alt="company logo"
+                    width={180}
+                    height={70}
+                    loading="lazy"
+                  />
+                  <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#404042] md:text-[#404042] leading-[150%] mt-3">
+                    Ihre zuverlässige Quelle für hochwertige Reifen von
+                    Top-Marken. Wir machen es Ihnen leicht, die perfekte
+                    Passform für Ihr Fahrzeug zu finden – mit schnellem Versand
+                    und kompetenter Unterstützung.
+                  </p>
                 </div>
-                <div className="quick-link-cont">
-                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                    Direktlinks
-                  </h3>
-                  <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                        href="/produkte?kategorie=Sommerreifen"
-                      >
-                        Sommerreifen
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                        href="/produkte?kategorie=Winterreifen"
-                      >
-                        Winterreifen
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                        href="/produkte?kategorie=Ganzjahresreifen"
-                      >
-                        Ganzjahresreifen
-                      </Link>
-                    </li>
-                    {/* <li>
+                <div className="footer-quick-link-cont max-w-[690px] w-full flex items-start justify-between max-sm:flex-col max-sm:gap-4">
+                  <div className="quick-link-cont">
+                    <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                      Direktlinks
+                    </h3>
+                    <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
+                          href="/"
+                        >
+                          Home
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
+                          href="/produkte"
+                        >
+                          Produkte
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
+                          href="/artikel"
+                        >
+                          News & Testberichte
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
+                          href="/favoriten"
+                        >
+                          Favoriten
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="quick-link-cont">
+                    <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                      Direktlinks
+                    </h3>
+                    <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
+                          href="/produkte?kategorie=Sommerreifen"
+                        >
+                          Sommerreifen
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
+                          href="/produkte?kategorie=Winterreifen"
+                        >
+                          Winterreifen
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
+                          href="/produkte?kategorie=Ganzjahresreifen"
+                        >
+                          Ganzjahresreifen
+                        </Link>
+                      </li>
+                      {/* <li>
                       <Link
                         className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
                         href="./#byBrand"
@@ -186,94 +188,95 @@ const handleSubmit = async (e: React.FormEvent) => {
                         Nach Marke
                       </Link>
                     </li> */}
-                  </ul>
-                </div>
-                <div className="quick-link-cont">
-                  <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                    Soziale Medien
-                  </h3>
-                  <ul className="quick-link-list flex gap-3 md:gap-5 pl-0">
-                    <li>
-                      <Link
-                        className="h-8 w-8"
-                        href="https://facebook.com/reifencheck.de"
-                      >
-                        <Image
-                          src={'/images/facebook-icon.png'}
-                          alt="reifencheck reifencheck icon"
-                          width={36}
-                          height={36}
-                        />
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="h-8 w-8"
-                        href="https://www.instagram.com/reifencheck.de"
-                      >
-                        <Image
-                          src={'/images/instagram-icon.png'}
-                          alt="reifencheck reifencheck icon"
-                          width={36}
-                          height={36}
-                        />
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="h-8 w-8"
-                        href="https://www.tiktok.com/@reifencheck"
-                      >
-                        <Image
-                          src={'/images/tiktok.webp'}
-                          alt="reifencheck reifencheck icon"
-                          width={36}
-                          height={36}
-                        />
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="h-8 w-8"
-                        href="https://www.youtube.com/channel/UCPkFChI-2PUeV32VHdS7XFg"
-                      >
-                        <Image
-                          src={'/images/youtube.webp'}
-                          alt="reifencheck reifencheck icon"
-                          width={36}
-                          height={36}
-                        />
-                      </Link>
-                    </li>
-                  </ul>
+                    </ul>
+                  </div>
+                  <div className="quick-link-cont">
+                    <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
+                      Soziale Medien
+                    </h3>
+                    <ul className="quick-link-list flex gap-3 md:gap-5 pl-0">
+                      <li>
+                        <Link
+                          className="h-8 w-8"
+                          href="https://facebook.com/reifencheck.de"
+                        >
+                          <Image
+                            src={'/images/facebook-icon.png'}
+                            alt="reifencheck reifencheck icon"
+                            width={36}
+                            height={36}
+                          />
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="h-8 w-8"
+                          href="https://www.instagram.com/reifencheck.de"
+                        >
+                          <Image
+                            src={'/images/instagram-icon.png'}
+                            alt="reifencheck reifencheck icon"
+                            width={36}
+                            height={36}
+                          />
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="h-8 w-8"
+                          href="https://www.tiktok.com/@reifencheck"
+                        >
+                          <Image
+                            src={'/images/tiktok.webp'}
+                            alt="reifencheck reifencheck icon"
+                            width={36}
+                            height={36}
+                          />
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="h-8 w-8"
+                          href="https://www.youtube.com/channel/UCPkFChI-2PUeV32VHdS7XFg"
+                        >
+                          <Image
+                            src={'/images/youtube.webp'}
+                            alt="reifencheck reifencheck icon"
+                            width={36}
+                            height={36}
+                          />
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="footer-bottom-area w-full pt-[13px] pb-[20px] border-t border-t-border-100 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
-              <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
-                <div className="foot-left-content">
-                  <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#404042] leading-[150%]">
-                    © 2025 reifencheck.de Alle Rechte vorbehalten.
-                  </p>
+              <div className="footer-bottom-area w-full pt-[13px] pb-[20px] border-t border-t-border-100 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
+                <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
+                  <div className="foot-left-content">
+                    <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#404042] leading-[150%]">
+                      © 2025 reifencheck.de Alle Rechte vorbehalten.
+                    </p>
+                  </div>
+                  <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">
+                    <li className="foot-middle-item">
+                      <Link
+                        className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
+                        href="/impressum-datenschutz"
+                      >
+                        Impressum & Datenschutz
+                      </Link>
+                    </li>
+                    <li className="foot-middle-item">
+                      <Link
+                        className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
+                        href="/AGB"
+                      >
+                        AGB
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
-                <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">
-                  <li className="foot-middle-item">
-                    <Link
-                      className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                      href="/impressum-datenschutz"
-                    >
-                      Impressum & Datenschutz
-                    </Link>
-                  </li>
-                  <li className="foot-middle-item">
-                    <Link
-                      className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                      href="/AGB"
-                    >
-                      AGB
-                    </Link>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
