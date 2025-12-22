@@ -373,7 +373,7 @@ console.log('availableProducts.kategorie:', availableProducts);
               {availableProducts.heights && (
                 <div className="flex flex-col gap-1.5 mb-0">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    Zoll
+                    HÖHE
                   </label>
                   <div className="relative mb-3 w-full">
                     {/* Trigger */}
@@ -1026,7 +1026,7 @@ console.log('availableProducts.kategorie:', availableProducts);
                     size={16}
                   />
                 </div>
-                      {/** -------------------------------------------
+                {/** -------------------------------------------
                * BRAND LIST LOGIC:
                * - Search filters ALL brands
                * - No search → show first 10 only
