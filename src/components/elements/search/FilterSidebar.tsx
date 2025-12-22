@@ -299,9 +299,7 @@ console.log('availableProducts.kategorie:', availableProducts);
                       </span>
 
                       <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.width ? 'rotate-180' : ''
-                        }`}
+                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform`}
                       >
                         <ArrowDownIcon />
                       </span>
@@ -390,9 +388,7 @@ console.log('availableProducts.kategorie:', availableProducts);
                       </span>
 
                       <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.height ? 'rotate-180' : ''
-                        }`}
+                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform `}
                       >
                         <ArrowDownIcon />
                       </span>
@@ -481,9 +477,7 @@ console.log('availableProducts.kategorie:', availableProducts);
                       </span>
 
                       <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.diameter ? 'rotate-180' : ''
-                        }`}
+                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform`}
                       >
                         <ArrowDownIcon />
                       </span>
@@ -574,9 +568,7 @@ console.log('availableProducts.kategorie:', availableProducts);
                       </span>
 
                       <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform ${
-                          openSections.lastIndex ? 'rotate-180' : ''
-                        }`}
+                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform  `}
                       >
                         <ArrowDownIcon />
                       </span>
@@ -648,7 +640,7 @@ console.log('availableProducts.kategorie:', availableProducts);
               {availableProducts.speedIndexes && (
                 <div className="flex flex-col gap-1.5 mb-0">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    Speed
+                    Geschwindigkeits
                   </label>
                   <div className="relative">
                     {/* Trigger */}
