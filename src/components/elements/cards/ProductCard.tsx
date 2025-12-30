@@ -4,7 +4,6 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
-import useGeo from '@/hooks/useGeo';
 
 import {
   useAddWishlistMutation,
@@ -111,7 +110,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showCompareButton = false,
   isPriority = true,
 }) => {
-  const geo = useGeo();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -434,7 +432,6 @@ const wetMeta = getWetGripMeta(wet_grip);
                     className="inline-block"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    
                     <circle cx="12" cy="12" r="12" fill="#E66605" />
                     <text
                       x="12"
@@ -463,7 +460,7 @@ const wetMeta = getWetGripMeta(wet_grip);
               <div className="flex items-center gap-1">
                 <Leaf size={12} />
                 <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                  EFFICIENCY
+                  Kraftstoffeffizienz
                 </span>
               </div>
               <span
@@ -480,7 +477,7 @@ const wetMeta = getWetGripMeta(wet_grip);
               <div className="flex gap-1 items-center">
                 <CloudRain size={12} />
                 <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                  WET GRIP
+                  Nasshaftung
                 </span>
               </div>
               <span

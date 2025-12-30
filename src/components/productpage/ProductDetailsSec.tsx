@@ -1108,7 +1108,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           <div className="flex items-center gap-1">
                             <Leaf size={14} />
                             <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                              EFFICIENCY
+                              Kraftstoffeffizienz
                             </span>
                           </div>
                           <span
@@ -1125,7 +1125,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           <div className="flex gap-1 items-center">
                             <CloudRain size={14} />
                             <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                              WET GRIP
+                              Nasshaftung
                             </span>
                           </div>
                           <span
