@@ -275,6 +275,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                         AGB
                       </Link>
                     </li>
+                    <li className="foot-middle-item">
+                      <Link
+                        className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
+                        href="http://convertalinktest.awin.com"
+                      >
+                        AWIN Affiliate
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </div>
