@@ -904,7 +904,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             uuidCookie || 'guest'
                           }&from=product-page`}
                           target="_blank"
-                          rel="nofollow sponsored noopener noreferrer"
+                          // rel="nofollow sponsored noopener noreferrer"
+                          rel="noopener noreferrer"
                           onClick={() => {
                             navigator.sendBeacon(
                               `${apiUrl}/api/v1/p`,
@@ -1148,7 +1149,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           uuidCookie || 'guest'
                         }&from=product-page`}
                         target="_blank"
-                        rel="nofollow sponsored noopener noreferrer"
+                        // rel="nofollow sponsored noopener noreferrer"
+                        rel="noopener noreferrer"
                         onClick={() => {
                           navigator.sendBeacon(
                             `${apiUrl}/api/v1/p`,
@@ -1587,7 +1589,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      // rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
                                       onClick={() => {
                                         navigator.sendBeacon(
                                           `${apiUrl}/api/v1/p`,
@@ -1619,7 +1622,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      // rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
                                       onClick={() => {
                                         navigator.sendBeacon(
                                           `${apiUrl}/api/v1/p`,
@@ -1758,7 +1762,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      // rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
                                       onClick={() => {
                                         navigator.sendBeacon(
                                           `${apiUrl}/api/v1/p`,
@@ -1786,7 +1791,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      // rel="nofollow sponsored noopener noreferrer"
+                                      rel="noopener noreferrer"
                                       onClick={() => {
                                         navigator.sendBeacon(
                                           `${apiUrl}/api/v1/p`,
