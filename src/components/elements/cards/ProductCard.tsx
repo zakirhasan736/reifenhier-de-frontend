@@ -601,6 +601,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                               );
                             }}
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
+                            data-awinignore
                           >
                             {item.vendor}
                           </a>
