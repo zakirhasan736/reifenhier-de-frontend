@@ -252,7 +252,6 @@ export default function RootLayout({
       </head>
 
       <body className="angelpage-body-wrapper-area">
-        <Script src="https://www.dwin2.com/pub.2614230.min.js" strategy="afterInteractive" />
         {/* GTM noscript fallback */}
         <noscript>
           <iframe
@@ -274,7 +273,7 @@ export default function RootLayout({
             {/* </Suspense> */}
           </ClientProviders>
         </main>
-      
+        <script src="https://www.dwin2.com/pub.2614230.min.js"></script>
       </body>
     </html>
   );
