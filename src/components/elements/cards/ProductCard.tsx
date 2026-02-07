@@ -576,9 +576,16 @@ const wetMeta = getWetGripMeta(wet_grip);
                       >
                         <div className="flex items-center gap-2">
                           <a
-                            href={`${apiUrl}/out/${item.affiliate_product_cloak_url}?product=${_id}&uuid=${uuidCookie}&from=product-page`}
+                            // href={`${apiUrl}/out/${item.affiliate_product_cloak_url}?product=${_id}&uuid=${uuidCookie}&from=product-page`}
+                            // target="_blank"
+                            // rel="nofollow sponsored noopener noreferrer"
+                            href={`${apiUrl}/out/${
+                              item.affiliate_product_cloak_url
+                            }?product=${_id}&uuid=${
+                              uuidCookie || 'guest'
+                            }&from=product-page`}
                             target="_blank"
-                            rel="nofollow sponsored noopener noreferrer"
+                            rel="noopener noreferrer"
                             onClick={() => {
                               navigator.sendBeacon(
                                 `${apiUrl}/api/v1/p`,
@@ -590,7 +597,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                                   vendorId: item.vendor_id,
                                   uuid: uuidCookie,
                                   source: 'product-card',
-                                })
+                                }),
                               );
                             }}
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
