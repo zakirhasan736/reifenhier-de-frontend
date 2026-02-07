@@ -472,7 +472,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                     type="button"
                     onClick={() => {
                       const modal = document.getElementById(
-                        'my_modal_3'
+                        'my_modal_3',
                       ) as HTMLDialogElement;
                       modal?.showModal();
                     }}
@@ -742,7 +742,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                       />
                                     </div>
                                   </SwiperSlide>
-                                )
+                                ),
                               )
                             ) : (
                               <SwiperSlide key={0}>
@@ -804,7 +804,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     </div>
                                   </div>
                                 </SwiperSlide>
-                              )
+                              ),
                             )
                           ) : (
                             <SwiperSlide key={0}>
@@ -918,10 +918,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 country: geo.country,
                                 city: geo.city,
                                 ip: geo.ip,
-                              })
+                              }),
                             );
                           }}
                           className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
+                          data-awinignore
                         >
                           <Image
                             src={product.cheapest_vendor?.vendor_logo}
@@ -945,14 +946,14 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           product.cheapest_vendor?.delivery_cost === '0.00'
                             ? 'Versandkostenfrei'
                             : product.cheapest_vendor?.delivery_cost
-                            ? `Versandkosten: ${parseFloat(
-                                product.cheapest_vendor.delivery_cost
-                                  .toString()
-                                  .replace(/[^\d.]/g, '')
-                              )
-                                .toFixed(2)
-                                .replace('.', ',')} €`
-                            : 'Versandkostenfrei'}
+                              ? `Versandkosten: ${parseFloat(
+                                  product.cheapest_vendor.delivery_cost
+                                    .toString()
+                                    .replace(/[^\d.]/g, ''),
+                                )
+                                  .toFixed(2)
+                                  .replace('.', ',')} €`
+                              : 'Versandkostenfrei'}
                         </li>
                         <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
                           Verfügbarkeit: {product.delivery_time || 'N/A'}
@@ -1038,7 +1039,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 color: gradeFuelColor(product.fuel_class),
                                 fontWeight: 500,
                                 background: gradeFuelBgColor(
-                                  product.fuel_class
+                                  product.fuel_class,
                                 ),
                                 padding: '2px 6px',
                                 borderRadius: '4px',
@@ -1163,10 +1164,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               country: geo.country,
                               city: geo.city,
                               ip: geo.ip,
-                            })
+                            }),
                           );
                         }}
                         className="block w-full"
+                        data-awinignore
                       >
                         <button
                           type="button"
@@ -1221,7 +1223,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                         };
 
                         const match = icon.match(
-                          /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i
+                          /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i,
                         );
                         let paymentName = match
                           ? match[1]
@@ -1254,7 +1256,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             </span>
                           </li>
                         );
-                      }
+                      },
                     )}
                   </ul>
                   <div className="product-specification-box mt-6">
@@ -1275,7 +1277,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               dangerouslySetInnerHTML={{
                                 __html: cleanDescription(
                                   product.description ||
-                                    'Keine Beschreibung verfügbar'
+                                    'Keine Beschreibung verfügbar',
                                 ),
                               }}
                             />
@@ -1602,9 +1604,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                             country: geo.country,
                                             city: geo.city,
                                             ip: geo.ip,
-                                          })
+                                          }),
                                         );
                                       }}
+                                      data-awinignore
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1635,9 +1638,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                             country: geo.country,
                                             city: geo.city,
                                             ip: geo.ip,
-                                          })
+                                          }),
                                         );
                                       }}
+                                      data-awinignore
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1661,7 +1665,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                           (icon: string, i: number) => {
                                             // Pretty tooltip name based on filename
                                             const m = icon.match(
-                                              /\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i
+                                              /\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i,
                                             );
                                             const key = m
                                               ? m[1]
@@ -1711,7 +1715,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                                 </span>
                                               </li>
                                             );
-                                          }
+                                          },
                                         )}
                                       </ul>
                                     </div>
@@ -1750,7 +1754,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                                 formatEUR(delivery); // "€4,90"
                                               return `Versandkosten: ${formatted.replace(
                                                 '€',
-                                                ''
+                                                '',
                                               )} €`;
                                             })()}
                                       </span>
@@ -1775,10 +1779,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                             country: geo.country,
                                             city: geo.city,
                                             ip: geo.ip,
-                                          })
+                                          }),
                                         );
                                       }}
                                       className="cta-button-shop"
+                                      data-awinignore
                                     >
                                       <button
                                         type="button"
@@ -1804,9 +1809,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                             country: geo.country,
                                             city: geo.city,
                                             ip: geo.ip,
-                                          })
+                                          }),
                                         );
                                       }}
+                                      data-awinignore
                                     >
                                       <button
                                         type="button"
