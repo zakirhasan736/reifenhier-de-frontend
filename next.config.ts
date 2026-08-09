@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'wp.reifencheck.de',
+        hostname: 'wp.reifexa.de',
         pathname: '/**',
       },
       {
@@ -34,17 +34,17 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.reifencheck.de',
+        hostname: 'www.reifexa.de',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'www.reifencheck.de',
+        hostname: 'www.reifexa.de',
         pathname: '/images/**',
       },
       {
         protocol: 'https',
-        hostname: 'www.reifencheck.de',
+        hostname: 'www.reifexa.de',
         pathname: '/images/blogs/**',
       },
     ],

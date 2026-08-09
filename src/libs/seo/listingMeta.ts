@@ -34,7 +34,7 @@ export function buildListingDescription({
   brand?: string;
 }) {
   const bits: string[] = [];
-  bits.push('Finden Sie günstige Reifenangebote auf Reifencheck.de.');
+  bits.push('Finden Sie günstige Reifenangebote auf Reifexa.de.');
   const specifics: string[] = [];
   if (category) specifics.push(titleCase(category));
   if (brand) specifics.push(brand);
@@ -68,6 +68,11 @@ export function buildListingKeywords({
     'günstige reifen',
     'reifen online kaufen',
     'reifen sparen im vergleich',
+    'reifexa',
+    'reifexa.de',
+    'Reifen check',
+    'Reifen check 24',
+    'Reifen 24 check',
   ];
   if (category) {
     base.push(
@@ -101,7 +106,7 @@ export function buildListingKeywords({
 export function buildListingCanonical(
   sp: Record<string, string | string[] | undefined>
 ) {
-  const u = new URL('https://reifencheck.de/produkte');
+  const u = new URL('https://www.reifexa.de/produkte');
   (
     [
       ['category', norm(sp.category)],
@@ -130,13 +135,13 @@ export function buildListingMetadata(
   const description =
     category || size || brand
       ? buildListingDescription({ category, size, brand })
-      : 'Finden Sie günstige Reifenangebote auf Reifencheck.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.';
+      : 'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.';
 
   const keywords = buildListingKeywords({ category, size, brand });
   const canonical = buildListingCanonical(sp);
 
   return {
-    metadataBase: new URL('https://reifencheck.de'),
+    metadataBase: new URL('https://www.reifexa.de'),
     title,
     description,
     alternates: { canonical },
@@ -145,7 +150,7 @@ export function buildListingMetadata(
       type: 'website',
       locale: 'de_DE',
       url: canonical,
-      siteName: 'Reifencheck.de',
+      siteName: 'Reifexa.de',
       title,
       description,
       images: [
@@ -153,7 +158,7 @@ export function buildListingMetadata(
           url: '/images/product-detailspage.png',
           width: 1200,
           height: 630,
-          alt: 'Reifenangebote auf Reifencheck.de',
+          alt: 'Reifenangebote auf Reifexa.de',
         },
       ],
     },

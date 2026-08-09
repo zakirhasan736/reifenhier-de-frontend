@@ -9,7 +9,7 @@ const BannerSection = () => {
       <Image
         className="banner-image-fill object-cover"
         src="/images/banner-image.webp" // Prefer a ~150–250 KB file
-        alt="Bannerbild Reifencheck.de"
+        alt="Bannerbild Reifexa.de"
         // Use fill for full-bleed hero
         fill
         //  Make the chosen intrinsic size match the viewport width

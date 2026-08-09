@@ -8,9 +8,9 @@ import CompareFloatingButton from '@/components/productpage/CompareFloatingButto
 import CompareModal from '@/components/productpage/CompareModal';
 
 // ---- Config ----
-const SITE_URL = 'https://www.reifencheck.de';
+const SITE_URL = 'https://www.reifexa.de';
 const API = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de'
+  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de'
 ).replace(/\/$/, '');
 
 // ---- Types we need for SEO only ----
@@ -149,7 +149,7 @@ async function fetchProductData(slug: string): Promise<ProductDetailsResponse> {
 }
 // ---- Helpers ----
 function fallbackTitle(p?: SeoProduct): string {
-  if (!p) return 'Reifencheck.de | Reifen günstig online vergleichen';
+  if (!p) return 'Reifexa.de | Reifen günstig online vergleichen';
 
   const brand = p.brand_name?.trim() ?? '';
   const dimension = p.dimensions?.trim() ?? '';
@@ -168,16 +168,16 @@ function fallbackTitle(p?: SeoProduct): string {
 
   // 🔹 If data is complete
   if (baseTitle) {
-    return `${baseTitle} | Reifencheck.de`;
+    return `${baseTitle} | Reifexa.de`;
   }
 
   // 🔹 If data missing (avoid duplicate)
-  return `Reifenprodukt ${fallbackId} | Reifencheck.de`;
+  return `Reifenprodukt ${fallbackId} | Reifexa.de`;
 }
 
 function fallbackDescription(p?: SeoProduct): string {
   if (!p)
-    return 'Finden und vergleichen Sie günstige Reifen auf Reifencheck.de.';
+    return 'Finden und vergleichen Sie günstige Reifen auf Reifexa.de.';
 
   const brand = p.brand_name?.trim() ?? '';
   const dimension = p.dimensions?.trim() ?? '';
@@ -197,11 +197,11 @@ function fallbackDescription(p?: SeoProduct): string {
       ean ? ` (EAN: ${ean})` : ''
     } – Top ${
       brand || 'Reifen'
-    } ${category} in Größe ${dimension} günstig online bei Reifencheck.de kaufen.`;
+    } ${category} in Größe ${dimension} günstig online bei Reifexa.de kaufen.`;
   }
 
   // 🔹 If data missing — include fallback unique identifier
-  return `Preisvergleich und Details für Reifenprodukt ${fallbackId} auf Reifencheck.de – jetzt Angebote prüfen und sparen.`;
+  return `Preisvergleich und Details für Reifenprodukt ${fallbackId} auf Reifexa.de – jetzt Angebote prüfen und sparen.`;
 }
 
 
@@ -209,7 +209,8 @@ function fallbackDescription(p?: SeoProduct): string {
 function buildKeywords(p?: SeoProduct): string[] {
   if (!p) {
     return [
-      'reifencheck',
+      'reifexa',
+      'reifexa.de',
       'reifen',
       'reifen preisvergleich',
       'günstige reifen',
@@ -225,6 +226,9 @@ function buildKeywords(p?: SeoProduct): string[] {
       'Reifen Angebote',
       'Reifen kaufen',
       'reifentiefpreis',
+      'Reifen check',
+      'Reifen check 24',
+      'Reifen 24 check',
     ];
   }
 
@@ -242,12 +246,16 @@ function buildKeywords(p?: SeoProduct): string[] {
     'reifen online kaufen',
     'reifen angebote',
     'günstige reifen',
-    'reifencheck',
+    'reifexa',
+    'reifexa.de',
     'reifen test',
     'reifen marken',
     'reifen modelle',
     'reifen kaufen',
     'reifentiefpreis',
+    'Reifen check',
+    'Reifen check 24',
+    'Reifen 24 check',
   ];
 
   if (brand) {
@@ -337,7 +345,7 @@ function buildJsonLd(p: SeoProduct | null) {
     description:
       p.descriptions ||
       p.description ||
-      `Jetzt ${brand} ${dimension} ${category} Reifen vergleichen – Top Angebote bei Reifencheck.de.`,
+      `Jetzt ${brand} ${dimension} ${category} Reifen vergleichen – Top Angebote bei Reifexa.de.`,
     sku: p.ean || undefined,
     brand: brand ? { '@type': 'Brand', name: brand } : undefined,
     category: category || undefined,
@@ -371,7 +379,7 @@ function buildJsonLd(p: SeoProduct | null) {
           ratingValue: p.average_rating?.toFixed(1) || '4.5',
           bestRating: '5',
         },
-        author: { '@type': 'Organization', name: 'Reifencheck.de' },
+        author: { '@type': 'Organization', name: 'Reifexa.de' },
       },
     ];
   }
@@ -445,10 +453,10 @@ export async function generateMetadata({
     }`;
     const shortDesc = `Preisvergleich und Details für ${readableSlug}${
       productId ? ` (ID: ${productId})` : ''
-    } auf Reifencheck.de.`;
+    } auf Reifexa.de.`;
     return {
       metadataBase: new URL(SITE_URL),
-      title: `${shortTitle} | Produkt – Reifencheck.de`,
+      title: `${shortTitle} | Produkt – Reifexa.de`,
       description: shortDesc,
       alternates: { canonical: `${SITE_URL}/produkte/${slug}` },
       robots: { index: false, follow: true },
@@ -459,6 +467,11 @@ export async function generateMetadata({
         'reifen test',
         'Reifen Preis berechnen',
         'reifentiefpreis',
+        'reifexa',
+        'reifexa.de',
+        'Reifen check',
+        'Reifen check 24',
+        'Reifen 24 check',
       ],
     };
   }
@@ -483,7 +496,7 @@ export async function generateMetadata({
       type: 'website',
       locale: 'de_DE',
       url: canonical,
-      siteName: 'Reifencheck.de',
+      siteName: 'Reifexa.de',
       title,
       description,
       images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
@@ -537,13 +550,13 @@ console.log(product);
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebPage',
-          name: 'Produktdetails – Reifencheck.de',
+          name: 'Produktdetails – Reifexa.de',
           url: `${SITE_URL}/produkte/${product.slug}`,
           description:
-            'Vergleichen Sie Reifenpreise, Angebote und Bewertungen auf Reifencheck.de – Ihr unabhängiger Preisvergleich für Reifen.',
+            'Vergleichen Sie Reifenpreise, Angebote und Bewertungen auf Reifexa.de – Ihr unabhängiger Preisvergleich für Reifen.',
           publisher: {
             '@type': 'Organization',
-            name: 'Reifencheck.de',
+            name: 'Reifexa.de',
             logo: {
               '@type': 'ImageObject',
               url: `${SITE_URL}/images/logo.png`,

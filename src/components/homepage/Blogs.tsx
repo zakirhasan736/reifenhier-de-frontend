@@ -12,7 +12,7 @@ interface Blog {
 }
 
 
-const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
+const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 export default async function BlogsPage() {
   let blogs: Blog[] = [];

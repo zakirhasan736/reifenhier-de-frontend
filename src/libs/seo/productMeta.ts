@@ -80,6 +80,11 @@ export function buildProductKeywords(p: Product): string[] {
     p.noise_class ? `Reifengeräusch ${p.noise_class}` : undefined,
     'Reifen online kaufen',
     'Reifenpreisvergleich',
+    'reifexa',
+    'reifexa.de',
+    'Reifen check',
+    'Reifen check 24',
+    'Reifen 24 check',
   ].filter(Boolean) as string[];
 
   if (Number.isFinite(p.cheapest_offer)) {
@@ -131,10 +136,10 @@ export function buildProductMetadata(p: Product): Metadata {
   const description = buildProductDescription(p);
   const keywords = buildProductKeywords(p);
   const image = p.product_image || '/images/product-detailspage.png';
-  const url = `https://reifencheck.de/produkte/${p.slug}`;
+  const url = `https://www.reifexa.de/produkte/${p.slug}`;
 
   return {
-    metadataBase: new URL('https://reifencheck.de'),
+    metadataBase: new URL('https://www.reifexa.de'),
     title,
     description,
     alternates: { canonical: url },
@@ -143,7 +148,7 @@ export function buildProductMetadata(p: Product): Metadata {
       type: 'website',
       locale: 'de_DE',
       url,
-      siteName: 'Reifencheck.de',
+      siteName: 'Reifexa.de',
       title,
       description,
       images: [
@@ -179,7 +184,7 @@ export function buildProductJsonLd(p: Product) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    '@id': `https://reifencheck.de/produkte/${p.slug}#product`,
+    '@id': `https://www.reifexa.de/produkte/${p.slug}#product`,
     name: `${p.brand_name} ${p.product_name}`,
     image: [p.product_image].filter(Boolean),
     description: buildProductDescription(p),
@@ -230,7 +235,7 @@ export function buildProductJsonLd(p: Product) {
         : undefined,
     offers: {
       '@type': 'AggregateOffer',
-      url: `https://reifencheck.de/produkte/${p.slug}`,
+      url: `https://www.reifexa.de/produkte/${p.slug}`,
       priceCurrency: 'EUR',
       lowPrice: Number.isFinite(p.cheapest_offer)
         ? Number(p.cheapest_offer.toFixed(2))

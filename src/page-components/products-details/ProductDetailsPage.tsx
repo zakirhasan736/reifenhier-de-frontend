@@ -10,7 +10,7 @@ import HowItWorks from '@/components/homepage/HowItWorks';
 import Loading from '@/app/loading';
 
 const API = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de'
+  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de'
 ).replace(/\/$/, '');
 
 interface Offer {

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de';
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de';
 
 interface RelatedProduct {
   _id: string;
@@ -38,11 +38,11 @@ interface RelatedProduct {
   showCompareButton?: boolean;
 }
 export const metadata: Metadata = {
-  title: 'Produkt nicht gefunden | Reifencheck.de',
+  title: 'Produkt nicht gefunden | Reifexa.de',
   description:
-    'Dieses Produkt ist nicht mehr verfügbar. Entdecken Sie ähnliche Reifen zum besten Preis auf Reifencheck.de.',
+    'Dieses Produkt ist nicht mehr verfügbar. Entdecken Sie ähnliche Reifen zum besten Preis auf Reifexa.de.',
   robots: { index: false, follow: true },
-  alternates: { canonical: 'https://www.reifencheck.de/404' },
+  alternates: { canonical: 'https://www.reifexa.de/404' },
 };
 
 // ---- Helper to fetch related items ----

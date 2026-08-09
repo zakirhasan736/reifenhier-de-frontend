@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifencheck.de'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de'
 ).replace(/\/$/, '');
 
 export function canonical(path: string): string {
@@ -17,7 +17,7 @@ export function buildPageMetadata(opts: {
   index?: boolean;
 }): Metadata {
   const {
-    title = 'Reifencheck.de',
+    title = 'Reifexa.de',
     description = 'Reifen günstig vergleichen.',
     pathname,
     images = ['/images/banner-og-image.png'],
@@ -38,7 +38,7 @@ export function buildPageMetadata(opts: {
       url: canon,
       title,
       description,
-      siteName: 'Reifencheck.de',
+      siteName: 'Reifexa.de',
       type: 'website',
       images: images.map(img =>
         img.startsWith('http') ? img : `${SITE_URL}${img}`

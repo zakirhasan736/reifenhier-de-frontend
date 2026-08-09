@@ -3,14 +3,14 @@ import Head from 'next/head';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
-  title: 'Impressum & Datenschutz – Reifencheck.de',
+  title: 'Impressum & Datenschutz – Reifexa.de',
   description:
-    'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
-  alternates: { canonical: 'https://www.reifencheck.de/impressum-datenschutz' },
+    'Datenschutzerklärung von Reifexa.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
+  alternates: { canonical: 'https://www.reifexa.de/impressum-datenschutz' },
   openGraph: {
-    title: 'Datenschutzerklärung – Reifencheck.de',
+    title: 'Datenschutzerklärung – Reifexa.de',
     description:
-      'Datenschutzerklärung von Reifencheck.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
+      'Datenschutzerklärung von Reifexa.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
     type: 'article',
   },
   robots: { index: true, follow: true },
@@ -28,7 +28,7 @@ const PrivacyPolicy: React.FC = () => {
         <section>
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">Verantwortlicher</h2>
           <p className="mt-2">
-            Reifencheck.de
+            Reifexa.de
             <br />
             Jens Kippels (Einzelunternehmen)
             <br />
@@ -36,8 +36,8 @@ const PrivacyPolicy: React.FC = () => {
             51766 Engelskirchen
             <br />
             E-Mail:{' '}
-            <a className="underline" href="mailto:info@Reifencheck.de">
-              info@Reifencheck.de
+            <a className="underline" href="mailto:info@Reifexa.de">
+              info@Reifexa.de
             </a>
           </p>
         </section>

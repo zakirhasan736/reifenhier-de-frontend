@@ -45,8 +45,8 @@ export interface WPBlog {
   };
 }
 
-const SITE_URL = 'https://www.reifencheck.de';
-const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
+const SITE_URL = 'https://www.reifexa.de';
+const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 
 // -------------------------------
@@ -79,7 +79,7 @@ export async function generateMetadata({
 
   if (!blog) {
     return {
-      title: 'Artikel nicht gefunden | Reifencheck.de',
+      title: 'Artikel nicht gefunden | Reifexa.de',
       description: 'Dieser Artikel ist nicht verfügbar.',
     };
   }
@@ -106,7 +106,8 @@ function getTags(blog: WPBlog): string[] {
     'Reifen Preisvergleich',
     'Reifen Montage',
     'Auto Reifen Ratgeber',
-    'Reifencheck',
+    'Reifexa',
+    'Reifexa.de',
     'PKW Reifen',
     'Felgen & Reifen Wissen',
   ];
@@ -117,7 +118,7 @@ function getTags(blog: WPBlog): string[] {
   const mergedKeywords = Array.from(new Set([...wpTags, ...fallbackKeywords]));
 
   const title =
-    blog.acf?.meta_title || blog.title.rendered || 'Reifencheck Artikel';
+    blog.acf?.meta_title || blog.title.rendered || 'Reifexa Artikel';
 
   const excerpt =
     blog.acf?.meta_description ||
@@ -221,7 +222,8 @@ export default async function BlogDetailPage({
     'Reifen Preisvergleich',
     'Reifen Montage',
     'Auto Reifen Ratgeber',
-    'Reifencheck',
+    'Reifexa',
+    'Reifexa.de',
     'PKW Reifen',
     'Felgen & Reifen Wissen',
   ];
@@ -244,7 +246,7 @@ export default async function BlogDetailPage({
       image: featured,
       }),
       datePublished: blog.date,
-      author: { '@type': 'Organization', name: 'Reifencheck.de' },
+      author: { '@type': 'Organization', name: 'Reifexa.de' },
       mainEntityOfPage: `${SITE_URL}/artikel/${slug}`,
     };
   return (

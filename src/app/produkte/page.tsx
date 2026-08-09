@@ -11,27 +11,27 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   const resolvedParams = await searchParams; // ✅ wait for params
   const category = resolvedParams.category || '';
-  const baseUrl = 'https://www.reifencheck.de';
+  const baseUrl = 'https://www.reifexa.de';
 
   const titles: Record<string, string> = {
-    Sommerreifen: 'Sommerreifen Angebote | Reifencheck.de',
-    Winterreifen: 'Winterreifen Angebote | Reifencheck.de',
-    Ganzjahresreifen: 'Ganzjahresreifen Angebote | Reifencheck.de',
+    Sommerreifen: 'Sommerreifen Angebote | Reifexa.de',
+    Winterreifen: 'Winterreifen Angebote | Reifexa.de',
+    Ganzjahresreifen: 'Ganzjahresreifen Angebote | Reifexa.de',
   };
 
   const descriptions: Record<string, string> = {
     Sommerreifen:
-      'Finden Sie günstige Sommerreifen-Angebote auf Reifencheck.de.',
+      'Finden Sie günstige Sommerreifen-Angebote auf Reifexa.de.',
     Winterreifen:
-      'Finden Sie günstige Winterreifen-Angebote auf Reifencheck.de.',
+      'Finden Sie günstige Winterreifen-Angebote auf Reifexa.de.',
     Ganzjahresreifen:
-      'Finden Sie günstige Ganzjahresreifen-Angebote auf Reifencheck.de.',
+      'Finden Sie günstige Ganzjahresreifen-Angebote auf Reifexa.de.',
   };
 
-  const title = titles[category] || 'Reifenangebote | Reifencheck.de';
+  const title = titles[category] || 'Reifenangebote | Reifexa.de';
   const description =
     descriptions[category] ||
-    'Finden Sie günstige Reifenangebote auf Reifencheck.de. Vergleichen Sie Sommer-, Winter- und Ganzjahresreifen nach Marke und Preis.';
+    'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommer-, Winter- und Ganzjahresreifen nach Marke und Preis.';
 
   return {
     title,
@@ -49,12 +49,17 @@ export async function generateMetadata({
       'sommerreifen',
       'winterreifen',
       'ganzjahresreifen',
+      'reifexa',
+      'reifexa.de',
+      'Reifen check',
+      'Reifen check 24',
+      'Reifen 24 check',
     ],
     openGraph: {
       type: 'website',
       locale: 'de_DE',
       url: `${baseUrl}/produkte${category ? `?kategorie=${category}` : ''}`,
-      siteName: 'Reifencheck.de',
+      siteName: 'Reifexa.de',
       title,
       description,
       images: [
@@ -62,7 +67,7 @@ export async function generateMetadata({
           url: `${baseUrl}/images/product-detailspage.png`,
           width: 1200,
           height: 630,
-          alt: 'Reifenangebote auf Reifencheck.de',
+          alt: 'Reifenangebote auf Reifexa.de',
         },
       ],
     },
@@ -120,8 +125,8 @@ export default async function ProductsPage({ searchParams }: Props) {
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
-          '@id': 'https://www.reifencheck.de/produkte#collection',
-          url: 'https://www.reifencheck.de/produkte',
+          '@id': 'https://www.reifexa.de/produkte#collection',
+          url: 'https://www.reifexa.de/produkte',
           name: 'Reifenangebote',
           inLanguage: 'de-DE',
         })}

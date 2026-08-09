@@ -54,7 +54,7 @@
 //       'Sommerreifen Test',
 //       'Winterreifen Test',
 //       'Ganzjahresreifen Test',
-//       'Premium Reifen Check',
+//       'Premium Reifexa',
 //       'Budget Reifen Analyse',
 //       'Elektroauto Reifen Test',
 //       'All Terrain Test',
@@ -63,7 +63,7 @@
 //       'Sommerreifen Test',
 //       'Winterreifen Test',
 //       'Ganzjahresreifen Test',
-//       'Premium Reifen Check',
+//       'Premium Reifexa',
 //       'Budget Reifen Analyse',
 //       'Elektroauto Reifen Test',
 //       'All Terrain Test',
@@ -371,7 +371,7 @@ import { FiPlus } from 'react-icons/fi';
 import { AiOutlineMinus } from 'react-icons/ai';
 import GlobalSearch from '@/components/elements/search/globalSearch';
 
-const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
+const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 /* ------------------------------------------
    TYPES

@@ -1,7 +1,7 @@
-LLM Access Policy for Reifencheck.de
+LLM Access Policy for Reifexa.de
 ------------------------------------------------------------
 This file defines permissions for AI crawlers (Large Language Models)
-regarding indexing, summarization, and use of Reifencheck.de content.
+regarding indexing, summarization, and use of Reifexa.de content.
 Based on emerging standards from llmcompliance.org.
 ------------------------------------------------------------
 
@@ -43,12 +43,12 @@ Attribution: required
 Personal-Data: disallow
 Rate-Limit: reasonable
 
-Contact: support@reifencheck.de
+Contact: support@reifexa.de
 Last-Modified: 2025-10-13
 
 ## PURPOSE OF THIS POLICY
 This policy controls how AI systems:
-- Crawl Reifencheck.de
+- Crawl Reifexa.de
 - Index and summarize public content
 - Use content in answers, citations, and search results
 - Are restricted from training foundation models on our data

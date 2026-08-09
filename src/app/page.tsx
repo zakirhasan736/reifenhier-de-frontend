@@ -2,11 +2,11 @@ import HomePageMain from "@/page-components/Home/HomePage";
 import { Metadata } from "next";
 import Script from "next/script";
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.reifencheck.de'),
-  title: 'Reifen günstig vergleichen & kaufen | Reifencheck',
+  metadataBase: new URL('https://www.reifexa.de'),
+  title: 'Reifen günstig vergleichen & kaufen | Reifexa',
   description:
-    'Finden Sie günstige Reifenangebote auf Reifencheck.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
-  alternates: { canonical: 'https://www.reifencheck.de/' },
+    'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
+  alternates: { canonical: 'https://www.reifexa.de/' },
   keywords: [
     // Core
     'reifenpreisvergleich',
@@ -19,6 +19,11 @@ export const metadata: Metadata = {
     'reifen test',
     'reifen größen',
     'reifengrößen',
+    'reifexa',
+    'reifexa.de',
+    'Reifen check',
+    'Reifen check 24',
+    'Reifen 24 check',
 
     // Top 20 targeted ideas
     'Winterreifen 205/55 R16',
@@ -45,17 +50,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifencheck.de/',
-    siteName: 'Reifencheck.de',
+    url: 'https://www.reifexa.de/',
+    siteName: 'Reifexa.de',
     title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
     description:
       'Stöbern Sie durch unsere Produktübersicht und finden Sie Top-Angebote für Sommer-, Winter- und Ganzjahresreifen.',
     images: [
       {
-        url: `https://www.reifencheck.de/images/product-detailspage.png`,
+        url: `https://www.reifexa.de/images/product-detailspage.png`,
         width: 1200,
         height: 630,
-        alt: 'Reifenangebote auf Reifencheck.de',
+        alt: 'Reifenangebote auf Reifexa.de',
       },
     ],
   },
@@ -64,7 +69,7 @@ export const metadata: Metadata = {
     title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
     description:
       'Markenreifen im Preisvergleich. Sommerreifen, Winterreifen und Ganzjahresreifen günstig kaufen.',
-    images: ['https://www.reifencheck.de/images/product-detailspage.png'],
+    images: ['https://www.reifexa.de/images/product-detailspage.png'],
   },
   robots: { index: true, follow: true },
 };
@@ -83,10 +88,10 @@ export default function Home() {
           '@graph': [
             {
               '@type': 'Organization',
-              '@id': 'https://www.reifencheck.de/#org',
-              name: 'Reifencheck.de',
-              url: 'https://www.reifencheck.de/',
-              logo: 'https://www.reifencheck.de/images/logo.png',
+              '@id': 'https://www.reifexa.de/#org',
+              name: 'Reifexa.de',
+              url: 'https://www.reifexa.de/',
+              logo: 'https://www.reifexa.de/images/logo.png',
               sameAs: [
                 'https://www.facebook.com/REPLACE',
                 'https://www.instagram.com/REPLACE',
@@ -94,10 +99,10 @@ export default function Home() {
             },
             {
               '@type': 'WebSite',
-              '@id': 'https://www.reifencheck.de/#website',
-              url: 'https://www.reifencheck.de/',
-              name: 'Reifencheck.de',
-              publisher: { '@id': 'https://www.reifencheck.de/#org' },
+              '@id': 'https://www.reifexa.de/#website',
+              url: 'https://www.reifexa.de/',
+              name: 'Reifexa.de',
+              publisher: { '@id': 'https://www.reifexa.de/#org' },
               inLanguage: 'de-DE',
             },
           ],
@@ -113,10 +118,10 @@ export default function Home() {
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebPage',
-          '@id': 'https://www.reifencheck.de/#webpage',
-          url: 'https://www.reifencheck.de/',
-          name: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
-          isPartOf: { '@id': 'https://www.reifencheck.de/#website' },
+          '@id': 'https://www.reifexa.de/#webpage',
+          url: 'https://www.reifexa.de/',
+          name: 'Reifenpreisvergleich & günstige Reifen | Reifexa.de',
+          isPartOf: { '@id': 'https://www.reifexa.de/#website' },
           inLanguage: 'de-DE',
           about: {
             '@type': 'Thing',
@@ -139,7 +144,7 @@ export default function Home() {
               '@type': 'ListItem',
               position: 1,
               name: 'Startseite',
-              item: 'https://www.reifencheck.de/',
+              item: 'https://www.reifexa.de/',
             },
           ],
         })}

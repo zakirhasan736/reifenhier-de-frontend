@@ -65,7 +65,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div className="right-content  w-full max-w-[280px] lg:max-w-[390px]">
                   <form
                     onSubmit={handleSubmit}
-                    className="reifencheck-subscription-form w-full flex lg:flex-row flex-col gap-3 items-center"
+                    className="reifexa-subscription-form w-full flex lg:flex-row flex-col gap-3 items-center"
                   >
                     <label htmlFor="email" className="sr-only"></label>
                     <input
@@ -198,11 +198,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="h-8 w-8"
-                          href="https://facebook.com/reifencheck.de"
+                          href="https://facebook.com/reifexa.de"
                         >
                           <Image
                             src={'/images/facebook-icon.png'}
-                            alt="reifencheck reifencheck icon"
+                            alt="reifexa icon"
                             width={36}
                             height={36}
                           />
@@ -211,11 +211,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="h-8 w-8"
-                          href="https://www.instagram.com/reifencheck.de"
+                          href="https://www.instagram.com/reifexa.de"
                         >
                           <Image
                             src={'/images/instagram-icon.png'}
-                            alt="reifencheck reifencheck icon"
+                            alt="reifexa icon"
                             width={36}
                             height={36}
                           />
@@ -224,11 +224,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="h-8 w-8"
-                          href="https://www.tiktok.com/@reifencheck"
+                          href="https://www.tiktok.com/@reifexa"
                         >
                           <Image
                             src={'/images/tiktok.webp'}
-                            alt="reifencheck reifencheck icon"
+                            alt="reifexa icon"
                             width={36}
                             height={36}
                           />
@@ -241,7 +241,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                         >
                           <Image
                             src={'/images/youtube.webp'}
-                            alt="reifencheck reifencheck icon"
+                            alt="reifexa icon"
                             width={36}
                             height={36}
                           />
@@ -255,7 +255,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
                   <div className="foot-left-content">
                     <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#404042] leading-[150%]">
-                      © 2025 reifencheck.de Alle Rechte vorbehalten.
+                      © 2025 reifexa.de Alle Rechte vorbehalten.
                     </p>
                   </div>
                   <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">

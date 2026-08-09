@@ -14,7 +14,7 @@ interface WPBlog {
     'wp:featuredmedia'?: { source_url?: string }[];
   };
 }
-const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
+const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 export default function BlogRelated({ blog }: { blog: WPBlog }) {
   const [related, setRelated] = useState<WPBlog[]>([]);

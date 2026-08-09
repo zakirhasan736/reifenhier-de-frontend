@@ -17,12 +17,12 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.reifencheck.de'),
-  title: 'Reifencheck.de – Reifenpreisvergleich & günstige Reifen',
+  metadataBase: new URL('https://www.reifexa.de'),
+  title: 'Reifexa.de – Reifenpreisvergleich & günstige Reifen',
   description:
     'Vergleichen Sie Reifenpreise in Sekunden. Sommer-, Winter- & Ganzjahresreifen günstig finden und direkt beim Händler kaufen.',
   icons: { icon: '/images/favicon.png', apple: '/images/favicon.png' },
-  alternates: { canonical: 'https://www.reifencheck.de/' },
+  alternates: { canonical: 'https://www.reifexa.de/' },
   keywords: [
     // Core
     'reifenpreisvergleich',
@@ -35,9 +35,12 @@ export const metadata: Metadata = {
     'reifen test',
     'reifen größen',
     'reifengrößen',
-    'reifencheck',
+    'reifexa',
+    'reifexa.de',
     'reifen',
-    'check',
+    'Reifen check',
+    'Reifen check 24',
+    'Reifen 24 check',
     'best reifen',
     'top reifen',
     'best selling reifen',
@@ -64,9 +67,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifencheck.de/',
-    siteName: 'Reifencheck.de',
-    title: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
+    url: 'https://www.reifexa.de/',
+    siteName: 'Reifexa.de',
+    title: 'Reifenpreisvergleich & günstige Reifen | Reifexa.de',
     description:
       'Markenreifen vergleichen, Angebote finden und beim besten Händler kaufen.',
     images: [
@@ -74,13 +77,13 @@ export const metadata: Metadata = {
         url: '/images/banner-og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Reifenpreisvergleich bei Reifencheck.de',
+        alt: 'Reifenpreisvergleich bei Reifexa.de',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Reifenpreisvergleich & günstige Reifen | Reifencheck.de',
+    title: 'Reifenpreisvergleich & günstige Reifen | Reifexa.de',
     description:
       'Sommer-, Winter- & Ganzjahresreifen im Preisvergleich. Jetzt sparen.',
     images: ['/images/banner-og-image.png'],
@@ -134,9 +137,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              name: 'Reifencheck.de',
-              url: 'https://www.reifencheck.de/',
-              logo: 'https://www.reifencheck.de/images/logo.png',
+              name: 'Reifexa.de',
+              url: 'https://www.reifexa.de/',
+              logo: 'https://www.reifexa.de/images/logo.png',
             }),
           }}
         />

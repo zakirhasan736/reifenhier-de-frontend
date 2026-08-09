@@ -1,11 +1,11 @@
 import type { MetadataRoute } from 'next';
 
 const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifencheck.de'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de'
 ).replace(/\/$/, '');
 
 const apiUrl = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifencheck.de/api'
+  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de/api'
 ).replace(/\/$/, '');
 
 type Product = {

@@ -1,6 +1,6 @@
-# reifencheck-de-frontend
+# reifexa-de-frontend
 
-Frontend for [reifencheck.de](https://reifencheck.de) – an online platform for [describe your business, e.g., tire sales, car services, etc.].
+Frontend for [reifexa.de](https://reifexa.de) – an online platform for [describe your business, e.g., tire sales, car services, etc.].
 
 ---
 
@@ -22,7 +22,7 @@ Frontend for [reifencheck.de](https://reifencheck.de) – an online platform for
 
 ## Project Overview
 
-**reifencheck-de-frontend** is the frontend application for reifencheck.de, providing users with a modern, responsive interface to browse, search, and purchase [products/services]. The frontend communicates with our backend API to display real-time data, handle user authentication, and manage orders.
+**reifexa-de-frontend** is the frontend application for reifexa.de, providing users with a modern, responsive interface to browse, search, and purchase [products/services]. The frontend communicates with our backend API to display real-time data, handle user authentication, and manage orders.
 
 ---
 
@@ -82,8 +82,8 @@ State management is handled via [Context API/Redux/Zustand/etc.] and API calls a
 ### Installation
 
 ```bash
-git clone https://github.com/zakirhasan736/reifencheck-de-frontend.git
-cd reifencheck-de-frontend
+git clone https://github.com/zakirhasan736/reifexa-de-frontend.git
+cd reifexa-de-frontend
 npm install
 # or
 yarn install
@@ -152,7 +152,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 - **GitHub:** [zakirhasan736](https://github.com/zakirhasan736)
 - **Email:** [your-email@example.com]
-- **Issues:** [Open an issue](https://github.com/zakirhasan736/reifencheck-de-frontend/issues)
+- **Issues:** [Open an issue](https://github.com/zakirhasan736/reifexa-de-frontend/issues)
 
 ---
 

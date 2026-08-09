@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
-const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
+const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 interface Blog {
   id: number;

@@ -4,7 +4,7 @@ import FavoritesClient from '@/page-components/Favorite/FavoritePage';
 
 // Page-level SEO:
 export const metadata: Metadata = {
-  title: 'Favoriten | Reifencheck.de',
+  title: 'Favoriten | Reifexa.de',
   description:
     'Ihre gespeicherten Reifenangebote im Überblick. Melden Sie sich an, um Ihre Favoriten zu sehen.',
 };

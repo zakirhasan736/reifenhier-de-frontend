@@ -3,17 +3,22 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import BlogPage from '@/components/blogpage/BlogPage';
 
-const WP_API = 'https://wp.reifencheck.de/wp-json/wp/v2';
+const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 export const metadata: Metadata = {
-  title: 'Reifencheck Artikel | Reifencheck.de',
+  title: 'Reifexa Artikel | Reifexa.de',
   description:
-    'Entdecken Sie aktuelle Artikel rund um Reifen, Autos und Tipps für Ihren Reifencheck auf Reifencheck.de.',
-  alternates: { canonical: 'https://www.reifencheck.de/artikel' },
+    'Entdecken Sie aktuelle Artikel rund um Reifen, Autos und Tipps für Ihren Reifenkauf auf Reifexa.de.',
+  alternates: { canonical: 'https://www.reifexa.de/artikel' },
   keywords: [
     'Reifen Artikel',
     'Reifen Blogs',
-    'Reifencheck Tipps',
+    'Reifexa Tipps',
+    'reifexa',
+    'reifexa.de',
+    'Reifen check',
+    'Reifen check 24',
+    'Reifen 24 check',
     'Autoreifen Ratgeber',
     'Winterreifen Sommerreifen Artikel',
     'Winterreifen Sommerreifen Blogs',
@@ -22,17 +27,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifencheck.de/artikel',
-    siteName: 'Reifencheck.de',
-    title: 'Reifencheck Artikel | Reifencheck.de',
+    url: 'https://www.reifexa.de/artikel',
+    siteName: 'Reifexa.de',
+    title: 'Reifexa Artikel | Reifexa.de',
     description:
-      'Lesen Sie spannende Beiträge und erhalten Sie wertvolle Informationen zum Thema Reifencheck.',
+      'Lesen Sie spannende Beiträge und erhalten Sie wertvolle Informationen rund um Reifen auf Reifexa.de.',
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/blog-og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: 'Reifencheck Artikel image',
+        alt: 'Reifexa Artikel image',
       },
     ],
   },
@@ -96,11 +101,11 @@ async function ServerContent({
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'Artikel',
-      '@id': 'https://www.reifencheck.de/artikel#artikel',
-      url: 'https://www.reifencheck.de/artikel',
-      name: 'Reifencheck Artikel',
+      '@id': 'https://www.reifexa.de/artikel#artikel',
+      url: 'https://www.reifexa.de/artikel',
+      name: 'Reifexa Artikel',
       description:
-        'Reifencheck.de Artikel – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
+        'Reifexa.de Artikel – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
       inLanguage: 'de-DE',
     };
   return (

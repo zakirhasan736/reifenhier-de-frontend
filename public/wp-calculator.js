@@ -249,7 +249,7 @@
         const link = document.getElementById("priceLink");
         if (!link) return;
 
-        const url = new URL("https://www.reifencheck.de/produkte");
+        const url = new URL("https://www.reifexa.de/produkte");
         url.searchParams.append("kategorie", "Winterreifen");
         url.searchParams.append("kategorie", "Sommerreifen");
         url.searchParams.append("kategorie", "Ganzjahresreifen");
