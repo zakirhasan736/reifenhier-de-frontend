@@ -5,7 +5,7 @@ import BrandCategory from '@/components/homepage/BrandCategory'
 import FaqSection from '@/components/homepage/Faq'
 import FeaturedProducts from '@/components/homepage/FeaturedProducts'
 import HowItWorks from '@/components/homepage/HowItWorks'
-// import LatestProducts from '@/components/homepage/LatestProducts'
+import LatestProducts from '@/components/homepage/LatestProducts'
 import NewArticles from '@/components/homepage/Blogs'
 import PageViewTracker from '@/page-components/Home/PageViewTracker';
 
@@ -14,7 +14,7 @@ const HomePageMain = () => {
   return (
     <div className="home-page-main-wrapper">
       <BannerSection />
-      {/* <LatestProducts /> */}
+      <LatestProducts />
       <NewArticles />
       <FeaturedProducts />
       {/* <ProductCategory /> */}
