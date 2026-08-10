@@ -45,7 +45,7 @@ const AboutUs = () => {
             <div className="about-sec-modal-img lg:relative md:sticky  max-sm:relative lg:h-auto md:h-[385px] lg:border-r-4 lg:rounded-[10px] lg:border-r-primary-100 max-sm:h-full top-0 flex justify-end max-md:col-span-full col-span-6 lg:pl-[54px] pl-10 max-sm:pl-0 laptop-m:pl-0 max-md:order-1 order-2">
               <Image
                 alt="Über Reifexa.de"
-                src="/images/car-mechanic-changing-wheels-car.png"
+                src="/images/car-mechanic-changing-wheels-car-1.png"
                 width={474}
                 height={541}
                 loading="lazy"

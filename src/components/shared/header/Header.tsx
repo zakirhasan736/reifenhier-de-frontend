@@ -166,7 +166,7 @@ export default function Header() {
                 width="156"
                 height="51"
                 className="max-sm:hidden"
-                src="/images/reifexa_de_logo_new.png"
+                src="/images/reifexa_de_logo.png"
                 alt="reifexa de brand logo"
               />
               <Image
@@ -174,7 +174,7 @@ export default function Header() {
                 width="156"
                 height="36"
                 className="sm:hidden"
-                src="/images/reifexa_de_logo_new.png"
+                src="/images/reifexa_de_logo.png"
                 alt="reifexa de brand logo mobile"
               />
             </Link>

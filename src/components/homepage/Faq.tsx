@@ -34,9 +34,9 @@ const FaqSection = async () => {
       <div className="custom-container">
         <div className="faq-content-wrapper md:grid md:grid-cols-12 gap-6 flex flex-col  items-start">
           <div className="faq-left-cont col-span-5 flex flex-col justify-center">
-            <div className="faq-model-image w-full">
+            <div className="faq-model-image w-full rounded-[12px]">
               <Image
-                src="/images/realistic-complete-set-car-wheels 1.png"
+                src="/images/realistic-complete-set-car-wheels-1.png"
                 alt="FAQ-Modell"
                 width={419}
                 height={397}
