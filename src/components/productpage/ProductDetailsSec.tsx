@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { MdAddShoppingCart } from 'react-icons/md';
-import useGeo from '@/hooks/useGeo';
 
 import {
   useAddWishlistMutation,
@@ -14,8 +13,6 @@ import {
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
 import SocialShareButtons from '@/components/elements/SocialShareButtons';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
-const SiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, FreeMode, Navigation, Thumbs } from 'swiper/modules';
 
@@ -34,6 +31,15 @@ import OptimizedImage from '../elements/OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
 import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
 import PageViewTracker from '@/page-components/Home/PageViewTracker';
+import {
+  buildVendorExitUrl,
+  onVendorExitClick,
+} from '@/libs/analytics/vendorExit';
+import { trackProductInterest } from '@/libs/push/priceAlerts';
+import PriceAlertToggle from '@/components/productpage/PriceAlertToggle';
+
+const SiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 interface WishlistProduct {
   _id: string;
   brand_logo: string;
@@ -146,7 +152,6 @@ const parseMoneyEU = (val: MoneyLike): number => {
 const formatEUR = (n: number) => `€${n.toFixed(2).replace('.', ',')}`;
 
 const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
-  const geo = useGeo();
   const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const fuelMeta = getFuelEfficiencyMeta(product.fuel_class);
@@ -154,6 +159,15 @@ const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
   const uuidCookie = Cookies.get('uuid') || 'guest';
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (!product?._id) return;
+    trackProductInterest({
+      productId: product._id,
+      source: 'view',
+      notifyEnabled: true,
+    });
+  }, [product?._id]);
   const handleCompareClick = () => {
     dispatch(
       addProduct({
@@ -898,31 +912,32 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           Bester Preis:
                         </span>{' '}
                         <a
-                          href={`${apiUrl}/out/${
-                            product.cheapest_vendor?.affiliate_product_cloak_url
-                          }?product=${product._id}&uuid=${
-                            uuidCookie || 'guest'
-                          }&from=product-page`}
+                          href={buildVendorExitUrl({
+                            token:
+                              product.cheapest_vendor
+                                ?.affiliate_product_cloak_url || '',
+                            productId: product._id,
+                            uuid: uuidCookie || 'guest',
+                            from: 'product-details-page',
+                            vendor: product.cheapest_vendor?.vendor,
+                            vendorId: product.cheapest_vendor?.vendor_id,
+                            brand: product.brand_name,
+                            instruction: 'Bester Preis',
+                          })}
                           target="_blank"
-                          // rel="nofollow sponsored noopener noreferrer"
-                          rel="noopener noreferrer"
+                          rel="nofollow sponsored noopener noreferrer"
                           onClick={() => {
-                            navigator.sendBeacon(
-                              `${apiUrl}/api/v1/p`,
-                              JSON.stringify({
-                                productId: product._id,
-                                vendor: product.cheapest_vendor?.vendor,
-                                vendorId: product.cheapest_vendor?.vendor_id,
-                                uuid: uuidCookie,
-                                source: 'product-details-page',
-                                country: geo.country,
-                                city: geo.city,
-                                ip: geo.ip,
-                              }),
-                            );
+                            onVendorExitClick({
+                              productId: product._id,
+                              productName: product.product_name,
+                              brandName: product.brand_name,
+                              vendor: product.cheapest_vendor?.vendor,
+                              vendorId: product.cheapest_vendor?.vendor_id,
+                              source: 'product-details-page',
+                              instruction: 'Bester Preis',
+                            });
                           }}
                           className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
-                          data-awinignore
                         >
                           <Image
                             src={product.cheapest_vendor?.vendor_logo}
@@ -1144,31 +1159,32 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                   <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
                     <div className="product-card-btn-states lg:min-w-[173px] w-full">
                       <a
-                        href={`${apiUrl}/out/${
-                          product.cheapest_vendor?.affiliate_product_cloak_url
-                        }?product=${product._id}&uuid=${
-                          uuidCookie || 'guest'
-                        }&from=product-page`}
+                        href={buildVendorExitUrl({
+                          token:
+                            product.cheapest_vendor
+                              ?.affiliate_product_cloak_url || '',
+                          productId: product._id,
+                          uuid: uuidCookie || 'guest',
+                          from: 'product-details-page',
+                          vendor: product.cheapest_vendor?.vendor,
+                          vendorId: product.cheapest_vendor?.vendor_id,
+                          brand: product.brand_name,
+                          instruction: 'Zum Angebot',
+                        })}
                         target="_blank"
-                        // rel="nofollow sponsored noopener noreferrer"
-                        rel="noopener noreferrer"
+                        rel="nofollow sponsored noopener noreferrer"
                         onClick={() => {
-                          navigator.sendBeacon(
-                            `${apiUrl}/api/v1/p`,
-                            JSON.stringify({
-                              productId: product._id,
-                              vendor: product.cheapest_vendor?.vendor,
-                              vendorId: product.cheapest_vendor?.vendor_id,
-                              uuid: uuidCookie,
-                              source: 'product-details-page',
-                              country: geo.country,
-                              city: geo.city,
-                              ip: geo.ip,
-                            }),
-                          );
+                          onVendorExitClick({
+                            productId: product._id,
+                            productName: product.product_name,
+                            brandName: product.brand_name,
+                            vendor: product.cheapest_vendor?.vendor,
+                            vendorId: product.cheapest_vendor?.vendor_id,
+                            source: 'product-details-page',
+                            instruction: 'Zum Angebot',
+                          });
                         }}
                         className="block w-full"
-                        data-awinignore
                       >
                         <button
                           type="button"
@@ -1187,6 +1203,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                     >
                       Zum Vergleich hinzufügen
                     </button>
+                    <PriceAlertToggle
+                      productId={product._id}
+                      className="w-full h-[42px] lg:h-[47px]"
+                    />
                     <button
                       onClick={handleToggleWishlist}
                       className="cursor-pointer w-full hidden xl:flex items-center justify-center max-w-12 h-12 !border !border-[#89898b60] rounded-full"
@@ -1508,11 +1528,25 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             const total =
                               price + (hasFreeShipping ? 0 : delivery);
 
-                            const outHref = `${apiUrl}/out/${
-                              offer.affiliate_product_cloak_url
-                            }?product=${product._id}&uuid=${
-                              uuidCookie || 'guest'
-                            }&from=product-page`;
+                            const outHref = buildVendorExitUrl({
+                              token: offer.affiliate_product_cloak_url,
+                              productId: product._id,
+                              uuid: uuidCookie || 'guest',
+                              from: 'product-offer-card',
+                              vendor: offer.vendor,
+                              brand: product.brand_name,
+                              instruction: 'Zum Angebot',
+                            });
+
+                            const onOfferExit = () =>
+                              onVendorExitClick({
+                                productId: product._id,
+                                productName: product.product_name,
+                                brandName: product.brand_name,
+                                vendor: offer.vendor,
+                                source: 'product-offer-card',
+                                instruction: 'Zum Angebot',
+                              });
 
                             const showSavings =
                               !!offer.savings_percent &&
@@ -1591,23 +1625,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      // rel="nofollow sponsored noopener noreferrer"
-                                      rel="noopener noreferrer"
-                                      onClick={() => {
-                                        navigator.sendBeacon(
-                                          `${apiUrl}/api/v1/p`,
-                                          JSON.stringify({
-                                            productId: product._id,
-                                            vendor: offer.vendor,
-                                            uuid: uuidCookie,
-                                            source: 'product-offer-card',
-                                            country: geo.country,
-                                            city: geo.city,
-                                            ip: geo.ip,
-                                          }),
-                                        );
-                                      }}
-                                      data-awinignore
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={onOfferExit}
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1625,23 +1644,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      // rel="nofollow sponsored noopener noreferrer"
-                                      rel="noopener noreferrer"
-                                      onClick={() => {
-                                        navigator.sendBeacon(
-                                          `${apiUrl}/api/v1/p`,
-                                          JSON.stringify({
-                                            productId: product._id,
-                                            vendor: offer.vendor,
-                                            uuid: uuidCookie,
-                                            source: 'product-offer-card',
-                                            country: geo.country,
-                                            city: geo.city,
-                                            ip: geo.ip,
-                                          }),
-                                        );
-                                      }}
-                                      data-awinignore
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={onOfferExit}
                                     >
                                       <Image
                                         src={offer.vendor_logo}
@@ -1766,24 +1770,9 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      // rel="nofollow sponsored noopener noreferrer"
-                                      rel="noopener noreferrer"
-                                      onClick={() => {
-                                        navigator.sendBeacon(
-                                          `${apiUrl}/api/v1/p`,
-                                          JSON.stringify({
-                                            productId: product._id,
-                                            vendor: offer.vendor,
-                                            uuid: uuidCookie,
-                                            source: 'product-offer-card',
-                                            country: geo.country,
-                                            city: geo.city,
-                                            ip: geo.ip,
-                                          }),
-                                        );
-                                      }}
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={onOfferExit}
                                       className="cta-button-shop"
-                                      data-awinignore
                                     >
                                       <button
                                         type="button"
@@ -1796,23 +1785,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      // rel="nofollow sponsored noopener noreferrer"
-                                      rel="noopener noreferrer"
-                                      onClick={() => {
-                                        navigator.sendBeacon(
-                                          `${apiUrl}/api/v1/p`,
-                                          JSON.stringify({
-                                            productId: product._id,
-                                            vendor: offer.vendor,
-                                            uuid: uuidCookie,
-                                            source: 'product-offer-card',
-                                            country: geo.country,
-                                            city: geo.city,
-                                            ip: geo.ip,
-                                          }),
-                                        );
-                                      }}
-                                      data-awinignore
+                                      rel="nofollow sponsored noopener noreferrer"
+                                      onClick={onOfferExit}
                                     >
                                       <button
                                         type="button"

@@ -10,9 +10,9 @@ import NewArticles from '@/components/homepage/Blogs'
 import PageViewTracker from '@/page-components/Home/PageViewTracker';
 
 const HomePageMain = () => {
-  <PageViewTracker />;
   return (
     <div className="home-page-main-wrapper">
+      <PageViewTracker />
       <BannerSection />
       <LatestProducts /> {/* LatestProducts we will hide leter replace with cars */}
       <NewArticles />

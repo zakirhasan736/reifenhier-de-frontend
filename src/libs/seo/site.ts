@@ -155,3 +155,69 @@ export function breadcrumbJsonLd(
     })),
   }
 }
+
+/** Default OG/schema image — always on our domain (no vendor redirects). */
+export const DEFAULT_SEO_IMAGE = `${SITE_URL}/images/product-detailspage.png`
+
+/**
+ * Hosts allowed in SEO metadata / JSON-LD images.
+ * Vendor CDNs (productserve, reifen.com, …) often redirect or 404 and
+ * create Google Search Console image indexing errors — keep them out of SEO.
+ */
+const SEO_IMAGE_HOSTS = new Set([
+  'www.reifexa.de',
+  'reifexa.de',
+  'wp.reifexa.de',
+  'res.cloudinary.com',
+])
+
+const AFFILIATE_URL_HINT =
+  /awin|affiliate|affil|productserve|zanox|tradedoubler|admitad|impact\.com|cj\.com|click\.|\/out\/|deep.?link|cloak|redirect|go\.redirect|tracking/i
+
+/** True when URL looks like an affiliate / clickout / tracking link (never for SEO). */
+export function isAffiliateOrTrackingUrl(raw?: string | null): boolean {
+  if (!raw || typeof raw !== 'string') return false
+  const value = raw.trim()
+  if (!value) return false
+  return AFFILIATE_URL_HINT.test(value)
+}
+
+/**
+ * Image URL safe for Open Graph, Twitter, and Product JSON-LD.
+ * Falls back to our own asset when the vendor image would harm indexing.
+ * UI can still render the original product_image.
+ */
+export function safeSeoImageUrl(raw?: string | null): string {
+  if (!raw || typeof raw !== 'string') return DEFAULT_SEO_IMAGE
+  const trimmed = raw.trim()
+  if (!trimmed) return DEFAULT_SEO_IMAGE
+
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) {
+    return `${SITE_URL}${trimmed}`
+  }
+
+  if (isAffiliateOrTrackingUrl(trimmed)) return DEFAULT_SEO_IMAGE
+
+  try {
+    const url = new URL(trimmed)
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+      return DEFAULT_SEO_IMAGE
+    }
+    const host = url.hostname.toLowerCase()
+    if (!SEO_IMAGE_HOSTS.has(host)) return DEFAULT_SEO_IMAGE
+    if (AFFILIATE_URL_HINT.test(`${url.pathname}${url.search}`)) {
+      return DEFAULT_SEO_IMAGE
+    }
+    return url.toString()
+  } catch {
+    return DEFAULT_SEO_IMAGE
+  }
+}
+
+/** Always our product page URL — never vendor / affiliate /out links in schema. */
+export function productCanonicalUrl(slug: string): string {
+  const clean = String(slug || '')
+    .trim()
+    .replace(/^\/+|\/+$/g, '')
+  return `${SITE_URL}/produkte/${clean}`
+}

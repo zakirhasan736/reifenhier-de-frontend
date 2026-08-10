@@ -18,6 +18,8 @@ const privatePaths = [
   '/account/',
   '/login/',
   '/register/',
+  '/to',
+  '/to/',
 ]
 
 const filterQueryBlocks = [
@@ -36,7 +38,7 @@ const filterQueryBlocks = [
 ]
 
 /** Full crawl permission for Google, Bing, and AI search/answer engines. */
-export default async function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
   const { total, pages } = await fetchProductSitemapMeta()
   const productChunks = Math.max(
     1,

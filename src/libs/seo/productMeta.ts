@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { safeSeoImageUrl, SITE_URL, productCanonicalUrl } from '@/libs/seo/site';
 
 export interface Product {
   _id: string;
@@ -135,11 +136,11 @@ export function buildProductMetadata(p: Product): Metadata {
   const title = buildProductTitle(p);
   const description = buildProductDescription(p);
   const keywords = buildProductKeywords(p);
-  const image = p.product_image || '/images/product-detailspage.png';
-  const url = `https://www.reifexa.de/produkte/${p.slug}`;
+  const image = safeSeoImageUrl(p.product_image);
+  const url = productCanonicalUrl(p.slug);
 
   return {
-    metadataBase: new URL('https://www.reifexa.de'),
+    metadataBase: new URL(SITE_URL),
     title,
     description,
     alternates: { canonical: url },
@@ -180,13 +181,15 @@ export function buildProductJsonLd(p: Product) {
   const availability =
     availabilityMap[(p.in_stock || '').toLowerCase()] ||
     'https://schema.org/InStock';
+  const pageUrl = productCanonicalUrl(p.slug);
+  const seoImage = safeSeoImageUrl(p.product_image);
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    '@id': `https://www.reifexa.de/produkte/${p.slug}#product`,
+    '@id': `${pageUrl}#product`,
     name: `${p.brand_name} ${p.product_name}`,
-    image: [p.product_image].filter(Boolean),
+    image: [seoImage],
     description: buildProductDescription(p),
     sku: p.ean || undefined,
     brand: { '@type': 'Brand', name: p.brand_name },
@@ -235,7 +238,7 @@ export function buildProductJsonLd(p: Product) {
         : undefined,
     offers: {
       '@type': 'AggregateOffer',
-      url: `https://www.reifexa.de/produkte/${p.slug}`,
+      url: pageUrl,
       priceCurrency: 'EUR',
       lowPrice: Number.isFinite(p.cheapest_offer)
         ? Number(p.cheapest_offer.toFixed(2))

@@ -220,20 +220,10 @@ export default function RootLayout({
           defer
         />
 
-        {/* Safe Silktide Init + Conditional Clarity */}
+        {/* Safe Silktide Init */}
         <Script id="silktide-init" strategy="afterInteractive">
           {`
             (function initSilktide() {
-              function loadClarity() {
-                if (window.__clarityLoaded) return; // prevent duplicate loads
-                window.__clarityLoaded = true;
-                (function(c,l,a,r,i,t,y){
-                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                })(window, document, "clarity", "script", "synxux4l9y");
-              }
-
               function setupSilktide() {
                 if (typeof window.silktideCookieBannerManager === 'undefined') {
                   return false;
@@ -259,7 +249,6 @@ export default function RootLayout({
                           gtag('consent', 'update', { analytics_storage: 'granted' });
                           dataLayer.push({ event: 'consent_accepted_analytics' });
                         }
-                        loadClarity(); // load Clarity when analytics is accepted
                       },
                       onReject: function() {
                         if (typeof gtag === 'function') {
@@ -280,7 +269,6 @@ export default function RootLayout({
                           });
                           dataLayer.push({ event: 'consent_accepted_advertising' });
                         }
-                        loadClarity(); // also load Clarity when advertising is accepted
                       },
                       onReject: function() {
                         if (typeof gtag === 'function') {

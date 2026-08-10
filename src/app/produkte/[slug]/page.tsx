@@ -6,9 +6,13 @@ import HowItWorks from '@/components/homepage/HowItWorks';
 import RelatedProducts from '@/components/productpage/RelatedProducts';
 import CompareFloatingButton from '@/components/productpage/CompareFloatingButton';
 import CompareModal from '@/components/productpage/CompareModal';
+import {
+  productCanonicalUrl,
+  safeSeoImageUrl,
+  SITE_URL,
+} from '@/libs/seo/site';
 
 // ---- Config ----
-const SITE_URL = 'https://www.reifexa.de';
 const API = (
   process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de'
 ).replace(/\/$/, '');
@@ -303,6 +307,8 @@ function buildKeywords(p?: SeoProduct): string[] {
 
 
 // ---- JSON-LD Builder ----
+// Affiliate / vendor clickout URLs and unstable vendor CDN images must NEVER
+// appear in schema — they cause Google/Bing indexing & image crawl errors.
 function buildJsonLd(p: SeoProduct | null) {
   if (!p) return null;
 
@@ -318,30 +324,31 @@ function buildJsonLd(p: SeoProduct | null) {
     .filter(Boolean)
     .join(' ')
     .trim();
-  //  Ensure numeric types (no .toFixed)
-  //  Ensure numeric type, no string conversion
   const lowPrice = p.cheapest_offer;
-
   const highPrice = p.expensive_offer;
+  const pageUrl = productCanonicalUrl(p.slug);
+  const seoImage = safeSeoImageUrl(p.product_image);
 
-  //  Build individual offers if data exists
+  // Nested offers: prices + sellers only. URL always points to OUR product page
+  // (never affiliate_product_cloak_url / aw_deep_link / original_affiliate_url).
   const individualOffers =
     p.offers && p.offers.length > 0
       ? p.offers.map(o => ({
           '@type': 'Offer',
           priceCurrency: 'EUR',
           price: o.price,
-          url: o.affiliate_product_cloak_url || o.aw_deep_link,
-          availability: availability,
+          url: pageUrl,
+          availability,
           seller: { '@type': 'Organization', name: o.vendor },
         }))
       : undefined;
+
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    '@id': `${SITE_URL}/produkte/${p.slug}#produkt`,
+    '@id': `${pageUrl}#produkt`,
     name: name || p.product_name || 'Reifen Produkt',
-    image: p.product_image ? [p.product_image] : undefined,
+    image: [seoImage],
     description:
       p.descriptions ||
       p.description ||
@@ -349,16 +356,16 @@ function buildJsonLd(p: SeoProduct | null) {
     sku: p.ean || undefined,
     brand: brand ? { '@type': 'Brand', name: brand } : undefined,
     category: category || undefined,
-    url: `${SITE_URL}/produkte/${p.slug}`,
+    url: pageUrl,
     offers: {
       '@type': 'AggregateOffer',
-      url: `${SITE_URL}/produkte/${p.slug}`,
+      url: pageUrl,
       priceCurrency: 'EUR',
       lowPrice: lowPrice ?? 0,
       highPrice: highPrice ?? lowPrice ?? 0,
       offerCount: p.offers?.length || 1,
       availability,
-      offers: individualOffers,
+      ...(individualOffers ? { offers: individualOffers } : {}),
     },
   };
 
@@ -383,6 +390,7 @@ function buildJsonLd(p: SeoProduct | null) {
 function buildBreadcrumbJsonLd(p: SeoProduct) {
   const category =
     p.merchant_product_third_category?.trim() || p.category_name?.trim() || '';
+  const pageUrl = productCanonicalUrl(p.slug);
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -418,7 +426,7 @@ function buildBreadcrumbJsonLd(p: SeoProduct) {
           [p.brand_name, p.dimensions, p.product_name]
             .filter(Boolean)
             .join(' ') || 'Produkt',
-        item: `${SITE_URL}/produkte/${p.slug}`,
+        item: pageUrl,
       },
     ],
   };
@@ -476,9 +484,10 @@ export async function generateMetadata({
 
   const title = fallbackTitle(product);
   const description = fallbackDescription(product);
-  const canonical = `${SITE_URL}/produkte/${product.slug}`;
+  const canonical = productCanonicalUrl(product.slug);
   const keywords = buildKeywords(product);
-  const ogImage = product.product_image || `${SITE_URL}/images/product-detailspage.png`;
+  // Never put vendor CDN / redirecting image URLs into OG/Twitter (indexing errors)
+  const ogImage = safeSeoImageUrl(product.product_image);
   const ogAlt =
     `${(product.brand_name ?? '').trim()} ${(
       product.product_name ?? ''
@@ -525,15 +534,14 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const { product, relatedProducts } = await fetchProductData(slug);
-console.log('product details', product);
   if (!product) {
-    console.warn('Missing product slug:', await fetchProductData(slug));
     notFound();
   }
 
-    const jsonLd = buildJsonLd(product);
-    const breadcrumbLd = buildBreadcrumbJsonLd(product);
-console.log(product);
+  const jsonLd = buildJsonLd(product);
+  const breadcrumbLd = buildBreadcrumbJsonLd(product);
+  const pageUrl = productCanonicalUrl(product.slug);
+
   return (
     <>
       <div className="product-details-cont-wrapper">
@@ -555,13 +563,13 @@ console.log(product);
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebPage',
-          '@id': `${SITE_URL}/produkte/${product.slug}#webpage`,
-          url: `${SITE_URL}/produkte/${product.slug}`,
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
           name: fallbackTitle(product),
           description: fallbackDescription(product),
           inLanguage: 'de-DE',
           isPartOf: { '@id': `${SITE_URL}/#website` },
-          about: { '@id': `${SITE_URL}/produkte/${product.slug}#produkt` },
+          about: { '@id': `${pageUrl}#produkt` },
           publisher: {
             '@type': 'Organization',
             name: 'Reifexa.de',

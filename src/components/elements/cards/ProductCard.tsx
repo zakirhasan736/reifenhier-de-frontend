@@ -16,7 +16,11 @@ import type { RootState, AppDispatch } from '@/store/store';
 import OptimizedImage from '../OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
 import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+import {
+  buildVendorExitUrl,
+  onVendorExitClick,
+} from '@/libs/analytics/vendorExit';
+
 interface RelatedCheaperItem {
   _id: string;
   brand_name: string;
@@ -576,32 +580,30 @@ const wetMeta = getWetGripMeta(wet_grip);
                       >
                         <div className="flex items-center gap-2">
                           <a
-                            // href={`${apiUrl}/out/${item.affiliate_product_cloak_url}?product=${_id}&uuid=${uuidCookie}&from=product-page`}
-                            // target="_blank"
-                            // rel="nofollow sponsored noopener noreferrer"
-                            href={`${apiUrl}/out/${
-                              item.affiliate_product_cloak_url
-                            }?product=${_id}&uuid=${
-                              uuidCookie || 'guest'
-                            }&from=product-page`}
+                            href={buildVendorExitUrl({
+                              token: item.affiliate_product_cloak_url,
+                              productId: _id,
+                              uuid: uuidCookie || 'guest',
+                              from: 'product-card',
+                              vendor: item.vendor,
+                              vendorId: item.vendor_id,
+                              brand: brand_name,
+                              instruction: 'Direkt zum Angebot',
+                            })}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="nofollow sponsored noopener noreferrer"
                             onClick={() => {
-                              navigator.sendBeacon(
-                                `${apiUrl}/api/v1/p`,
-                                JSON.stringify({
-                                  productId: _id,
-                                  productName: product_name,
-                                  brandName: brand_name,
-                                  vendor: item.vendor,
-                                  vendorId: item.vendor_id,
-                                  uuid: uuidCookie,
-                                  source: 'product-card',
-                                }),
-                              );
+                              onVendorExitClick({
+                                productId: _id,
+                                productName: product_name,
+                                brandName: brand_name,
+                                vendor: item.vendor,
+                                vendorId: item.vendor_id,
+                                source: 'product-card',
+                                instruction: 'Direkt zum Angebot',
+                              });
                             }}
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
-                            data-awinignore
                           >
                             {item.vendor}
                           </a>

@@ -1,9 +1,8 @@
 // lib/seo.ts
 import type { Metadata } from 'next';
+import { safeSeoImageUrl, SITE_URL as SHARED_SITE_URL } from '@/libs/seo/site';
 
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de'
-).replace(/\/$/, '');
+export const SITE_URL = SHARED_SITE_URL;
 
 export function canonical(path: string): string {
   return `${SITE_URL}${path.startsWith('/') ? path : '/' + path}`;
@@ -25,6 +24,7 @@ export function buildPageMetadata(opts: {
   } = opts;
 
   const canon = canonical(pathname);
+  const safeImages = images.map(img => safeSeoImageUrl(img));
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -40,17 +40,13 @@ export function buildPageMetadata(opts: {
       description,
       siteName: 'Reifexa.de',
       type: 'website',
-      images: images.map(img =>
-        img.startsWith('http') ? img : `${SITE_URL}${img}`
-      ),
+      images: safeImages,
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: images.map(img =>
-        img.startsWith('http') ? img : `${SITE_URL}${img}`
-      ),
+      images: safeImages,
     },
   };
 }
