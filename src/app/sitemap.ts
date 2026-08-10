@@ -1,45 +1,26 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next'
+import { SITE_URL } from '@/libs/seo/site'
 
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de'
-).replace(/\/$/, '');
-
+/** Root sitemap: public static pages only (no API URLs, no nested sitemap XML). */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const now = new Date()
 
-  // Static/parent pages
-  const staticPaths: string[] = [
-    '/',
-    '/produkte',
-    '/artikel',
-    '/impressum-datenschutz',
-    '/AGB',
-  ];
+  const pages: Array<{
+    path: string
+    changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
+    priority: number
+  }> = [
+    { path: '/', changeFrequency: 'daily', priority: 1 },
+    { path: '/produkte', changeFrequency: 'daily', priority: 0.9 },
+    { path: '/artikel', changeFrequency: 'daily', priority: 0.8 },
+    { path: '/impressum-datenschutz', changeFrequency: 'monthly', priority: 0.3 },
+    { path: '/AGB', changeFrequency: 'monthly', priority: 0.3 },
+  ]
 
-  // Create entries for each static route
-  const staticEntries: MetadataRoute.Sitemap = staticPaths.map(path => ({
-    url: `${siteUrl}${path}`,
+  return pages.map(({ path, changeFrequency, priority }) => ({
+    url: `${SITE_URL}${path}`,
     lastModified: now,
-    changeFrequency: path === '/' ? 'daily' : 'weekly',
-    priority: path === '/' ? 1 : 0.7,
-  }));
-
-  // Add sitemap index entries
-  const indexEntries: MetadataRoute.Sitemap = [
-    {
-      url: `${siteUrl}/sitemap-produkte/sitemap.xml`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/sitemap-blogs/sitemap.xml`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-  ];
-
-  // Merge and return
-  return [...indexEntries, ...staticEntries];
+    changeFrequency,
+    priority,
+  }))
 }

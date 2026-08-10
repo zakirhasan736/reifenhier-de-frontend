@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: 'Favoriten | Reifexa.de',
   description:
     'Ihre gespeicherten Reifenangebote im Überblick. Melden Sie sich an, um Ihre Favoriten zu sehen.',
+  robots: { index: false, follow: false },
 };
 
 // This file stays a Server Component — no hooks here.

@@ -2,44 +2,59 @@ import { use } from 'react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import BlogPage from '@/components/blogpage/BlogPage';
+import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 
 const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 export const metadata: Metadata = {
-  title: 'Reifexa Artikel | Reifexa.de',
+  metadataBase: new URL(SITE_URL),
+  title: 'Reifen Ratgeber & Artikel | Reifexa.de',
   description:
-    'Entdecken Sie aktuelle Artikel rund um Reifen, Autos und Tipps für Ihren Reifenkauf auf Reifexa.de.',
-  alternates: { canonical: 'https://www.reifexa.de/artikel' },
+    'Aktuelle Ratgeber, Tests und Tipps zu Sommerreifen, Winterreifen, Ganzjahresreifen und Reifenkauf auf Reifexa.de.',
+  alternates: { canonical: `${SITE_URL}/artikel` },
   keywords: [
+    ...CORE_KEYWORDS,
     'Reifen Artikel',
     'Reifen Blogs',
-    'Reifexa Tipps',
-    'reifexa',
-    'reifexa.de',
-    'Reifen check',
-    'Reifen check 24',
-    'Reifen 24 check',
-    'Autoreifen Ratgeber',
+    'Reifen Ratgeber',
+    'Autoreifen Tipps',
     'Winterreifen Sommerreifen Artikel',
-    'Winterreifen Sommerreifen Blogs',
     'Reifenpflege und Sicherheit',
+    'EU Reifenlabel erklärt',
   ],
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifexa.de/artikel',
+    url: `${SITE_URL}/artikel`,
     siteName: 'Reifexa.de',
-    title: 'Reifexa Artikel | Reifexa.de',
+    title: 'Reifen Ratgeber & Artikel | Reifexa.de',
     description:
-      'Lesen Sie spannende Beiträge und erhalten Sie wertvolle Informationen rund um Reifen auf Reifexa.de.',
+      'Lesen Sie Ratgeber und News rund um Reifenkauf, Größen und EU-Label auf Reifexa.de.',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/blog-og-image.jpg`,
+        url: `${SITE_URL}/images/blog-og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: 'Reifexa Artikel image',
+        alt: 'Reifexa Artikel',
       },
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Reifen Ratgeber & Artikel | Reifexa.de',
+    description:
+      'Ratgeber und News zu Sommer-, Winter- und Ganzjahresreifen.',
+    images: [`${SITE_URL}/images/blog-og-image.jpg`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
@@ -100,13 +115,15 @@ async function ServerContent({
   const { blogs, total } = await getBlogs(page, parentSlug, subSlug);
     const jsonLd = {
       '@context': 'https://schema.org',
-      '@type': 'Artikel',
-      '@id': 'https://www.reifexa.de/artikel#artikel',
+      '@type': 'CollectionPage',
+      '@id': 'https://www.reifexa.de/artikel#collection',
       url: 'https://www.reifexa.de/artikel',
       name: 'Reifexa Artikel',
       description:
         'Reifexa.de Artikel – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
       inLanguage: 'de-DE',
+      isPartOf: { '@id': 'https://www.reifexa.de/#website' },
+      publisher: { '@id': 'https://www.reifexa.de/#org' },
     };
   return (
     <>

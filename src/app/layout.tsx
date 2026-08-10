@@ -5,9 +5,7 @@ import Script from 'next/script';
 import { Poppins } from 'next/font/google';
 import Header from '@/components/shared/header/Header';
 import Footer from '@/components/shared/footer/Footer';
-// import { Suspense } from 'react';
-// import Loading from './loading';
-
+import { SITE_KEYWORDS, SITE_URL, SOCIAL_PROFILES } from '@/libs/seo/site';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -17,67 +15,54 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.reifexa.de'),
-  title: 'Reifexa.de – Reifenpreisvergleich & günstige Reifen',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Reifexa.de – Reifenpreisvergleich & günstige Reifen',
+    template: '%s | Reifexa.de',
+  },
   description:
-    'Vergleichen Sie Reifenpreise in Sekunden. Sommer-, Winter- & Ganzjahresreifen günstig finden und direkt beim Händler kaufen.',
-  icons: { icon: '/images/favicon.png', apple: '/images/favicon.png' },
-  alternates: { canonical: 'https://www.reifexa.de/' },
-  keywords: [
-    // Core
-    'reifenpreisvergleich',
-    'günstige reifen',
-    'reifen online kaufen',
-    'sommerreifen',
-    'winterreifen',
-    'ganzjahresreifen',
-    'reifenangebote',
-    'reifen test',
-    'reifen größen',
-    'reifengrößen',
-    'reifexa',
-    'reifexa.de',
-    'reifen',
-    'Reifen check',
-    'Reifen check 24',
-    'Reifen 24 check',
-    'best reifen',
-    'top reifen',
-    'best selling reifen',
-
-    'Winterreifen 205/55 R16',
-    'Sommerreifen 225/45 R17 günstig',
-    'Ganzjahresreifen Test 2025',
-    'EU Reifenlabel Nasshaftung erklärt',
-    'Markenreifen online kaufen',
-    'Reifen Angebote Deutschland',
-    'Billige Winterreifen ab 50 Euro',
-    'Reifen passend fürs Auto Modell',
-    'Reifenprofil gesetzlich vorgeschrieben Deutschland',
-    'Reifenpflege Tipps',
-    'Geräusch Werte Reifen Vergleich',
-    'Winterreifenpflicht Deutschland',
-    'Sommerreifen Ratgeber',
-    'Reifen Versandkosten vergleichen',
-    'Reifen Bewertungen',
-    'Reifen für SUV Modelle',
-    'Ganzjahresreifen Vorteil Nachteil',
-    'Leise Reifen Geräuschwert',
-  ],
+    'Vergleichen Sie Reifenpreise in Sekunden. Sommer-, Winter- & Ganzjahresreifen günstig finden und direkt beim Händler kaufen. Unabhängiger Reifenpreisvergleich für Deutschland.',
+  applicationName: 'Reifexa.de',
+  authors: [{ name: 'Reifexa.de', url: SITE_URL }],
+  creator: 'Reifexa.de',
+  publisher: 'Reifexa.de',
+  category: 'shopping',
+  classification: 'Reifenpreisvergleich, Automotive, E-Commerce Affiliate',
+  keywords: [...SITE_KEYWORDS],
+  icons: {
+    icon: '/images/favicon.png',
+    apple: '/images/favicon.png',
+    shortcut: '/images/favicon.png',
+  },
+  manifest: '/site.webmanifest',
+  alternates: {
+    canonical: `${SITE_URL}/`,
+    types: {
+      'application/xml': [
+        { url: '/sitemaps.xml', title: 'Sitemap Index' },
+        { url: '/sitemap.xml', title: 'Main Sitemap' },
+      ],
+      'text/plain': [
+        { url: '/llms.txt', title: 'LLMs' },
+        { url: '/ai.txt', title: 'AI Policy' },
+      ],
+    },
+  },
   openGraph: {
     type: 'website',
     locale: 'de_DE',
-    url: 'https://www.reifexa.de/',
+    url: `${SITE_URL}/`,
     siteName: 'Reifexa.de',
     title: 'Reifenpreisvergleich & günstige Reifen | Reifexa.de',
     description:
-      'Markenreifen vergleichen, Angebote finden und beim besten Händler kaufen.',
+      'Markenreifen vergleichen, Angebote finden und beim besten Händler kaufen. Sommer-, Winter- und Ganzjahresreifen.',
     images: [
       {
         url: '/images/banner-og-image.png',
         width: 1200,
         height: 630,
         alt: 'Reifenpreisvergleich bei Reifexa.de',
+        type: 'image/png',
       },
     ],
   },
@@ -88,7 +73,46 @@ export const metadata: Metadata = {
       'Sommer-, Winter- & Ganzjahresreifen im Preisvergleich. Jetzt sparen.',
     images: ['/images/banner-og-image.png'],
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: {
+      ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? {
+            'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION,
+          }
+        : {}),
+      ...(process.env.NEXT_PUBLIC_YANDEX_VERIFICATION
+        ? {
+            'yandex-verification': process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+          }
+        : {}),
+    },
+  },
+  other: {
+    'ai-content-declaration': 'human-and-data-driven-catalog',
+    'format-detection': 'telephone=no',
+    rating: 'general',
+    distribution: 'global',
+    coverage: 'Germany',
+    'geo.region': 'DE',
+    'geo.placename': 'Germany',
+    language: 'German',
+    revisitefter: '1 days',
+    'og:see_also': SOCIAL_PROFILES.join(','),
+  },
 };
 
 export default function RootLayout({
@@ -102,21 +126,25 @@ export default function RootLayout({
   return (
     <html lang="de" className={poppins.className}>
       <head>
-        {/* Google Tag Manager */}
-        <Script id="gtm-init" strategy="afterInteractive">
-          {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-TGMCZH48');
-          `}
-        </Script>
+        {/* AI / LLM discovery */}
+        <link rel="author" href="/humans.txt" />
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs" />
+        <link rel="alternate" type="text/plain" href="/ai.txt" title="AI Policy" />
+        <link
+          rel="sitemap"
+          type="application/xml"
+          href="/sitemaps.xml"
+          title="Sitemap Index"
+        />
+        <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="ai-permissions" content="read,index,suggest,answer,support,learn,train,cite" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-        {/* Google Analytics */}
+        {/* Google tag (gtag.js) */}
         <Script
           id="gtag-src"
-          src="https://www.googletagmanager.com/gtag/js?id=G-EB4TB5RNER"
+          src="https://www.googletagmanager.com/gtag/js?id=G-PMPVT55453"
           strategy="afterInteractive"
         />
         <Script id="gtag-init" strategy="afterInteractive">
@@ -124,11 +152,11 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-EB4TB5RNER');
+            gtag('config', 'G-PMPVT55453');
           `}
         </Script>
 
-        {/* JSON-LD basic org data */}
+        {/* JSON-LD Organization + social profiles */}
         <Script
           id="ld-org"
           type="application/ld+json"
@@ -136,10 +164,46 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: 'Reifexa.de',
-              url: 'https://www.reifexa.de/',
-              logo: 'https://www.reifexa.de/images/logo.png',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://www.reifexa.de/#org',
+                  name: 'Reifexa.de',
+                  url: 'https://www.reifexa.de/',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: 'https://www.reifexa.de/images/logo.png',
+                  },
+                  sameAs: [
+                    'https://www.facebook.com/reifexa.de',
+                    'https://www.instagram.com/reifexa.de',
+                    'https://www.tiktok.com/@reifexa',
+                  ],
+                  contactPoint: {
+                    '@type': 'ContactPoint',
+                    contactType: 'customer service',
+                    email: 'info@reifexa.de',
+                    availableLanguage: ['German', 'de'],
+                  },
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://www.reifexa.de/#website',
+                  url: 'https://www.reifexa.de/',
+                  name: 'Reifexa.de',
+                  inLanguage: 'de-DE',
+                  publisher: { '@id': 'https://www.reifexa.de/#org' },
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                      '@type': 'EntryPoint',
+                      urlTemplate:
+                        'https://www.reifexa.de/produkte?q={search_term_string}',
+                    },
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+              ],
             }),
           }}
         />
@@ -255,16 +319,6 @@ export default function RootLayout({
       </head>
 
       <body className="angelpage-body-wrapper-area">
-        {/* GTM noscript fallback */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-TGMCZH48"
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
-
         <main className="angelpage-main-wrapper">
           <ClientProviders>
             {/* <Suspense

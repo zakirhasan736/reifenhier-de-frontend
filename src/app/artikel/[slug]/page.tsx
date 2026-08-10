@@ -31,6 +31,7 @@ export interface WPBlog {
   id: number;
   slug: string;
   date: string;
+  modified?: string;
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
@@ -81,6 +82,8 @@ export async function generateMetadata({
     return {
       title: 'Artikel nicht gefunden | Reifexa.de',
       description: 'Dieser Artikel ist nicht verfügbar.',
+      robots: { index: false, follow: true },
+      alternates: { canonical: `${SITE_URL}/artikel/${slug}` },
     };
   }
   /* --------------------------------------------
@@ -88,11 +91,22 @@ export async function generateMetadata({
   --------------------------------------------- */
 function getTags(blog: WPBlog): string[] {
   const tagGroup = blog._embedded?.['wp:term']?.[1] || [];
-  return tagGroup.map((t: WPTag) => t.name.trim());
+  return tagGroup.map((t: WPTag) => t.name.trim()).filter(Boolean);
 }
 
+function getCategories(blog: WPBlog): string[] {
+  const cats = blog._embedded?.['wp:term']?.[0] || [];
+  return cats.map((c: WPCategory) => c.name.trim()).filter(Boolean);
+}
 
   const wpTags = getTags(blog);
+  const wpCats = getCategories(blog);
+  const titleWords = String(blog.title.rendered || '')
+    .replace(/<[^>]+>/g, '')
+    .split(/\s+/)
+    .map(w => w.trim())
+    .filter(w => w.length > 3)
+    .slice(0, 8);
 
   /* --------------------------------------------
       2️⃣ Fallback Keywords (used when missing)
@@ -115,10 +129,13 @@ function getTags(blog: WPBlog): string[] {
   /* --------------------------------------------
       3️⃣ Merge + Deduplicate Keywords
   --------------------------------------------- */
-  const mergedKeywords = Array.from(new Set([...wpTags, ...fallbackKeywords]));
+  const mergedKeywords = Array.from(
+    new Set([...wpTags, ...wpCats, ...titleWords, ...fallbackKeywords])
+  );
 
   const title =
-    blog.acf?.meta_title || blog.title.rendered || 'Reifexa Artikel';
+    blog.acf?.meta_title ||
+    `${blog.title.rendered.replace(/<[^>]+>/g, '')} | Reifexa.de`;
 
   const excerpt =
     blog.acf?.meta_description ||
@@ -127,36 +144,40 @@ function getTags(blog: WPBlog): string[] {
 
   const featured =
     blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-    `${process.env.NEXT_PUBLIC_SITE_URL}/images/blog-og-image.jpg`;
+    `${SITE_URL}/images/blog-og-image.jpg`;
+
+  const canonical = `${SITE_URL}/artikel/${slug}`;
 
   return {
+    metadataBase: new URL(SITE_URL),
     title,
     description: excerpt,
-    alternates: { canonical: `${SITE_URL}/artikel/${slug}` },
+    alternates: { canonical },
     keywords: mergedKeywords,
+    robots: { index: true, follow: true },
     openGraph: {
       type: 'article',
-      url: `${SITE_URL}/artikel/${slug}`,
+      locale: 'de_DE',
+      url: canonical,
+      siteName: 'Reifexa.de',
       title,
       description: excerpt,
-      ...(featured && {
+      publishedTime: blog.date,
+      modifiedTime: blog.modified || blog.date,
       images: [
         {
           url: featured,
           width: 1200,
           height: 630,
-          alt: blog.title.rendered,
+          alt: blog.title.rendered.replace(/<[^>]+>/g, ''),
         },
       ],
-    })
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description: excerpt,
-      ...(featured && {
       images: [featured],
-      }),
     },
   };
 }
@@ -234,30 +255,79 @@ export default async function BlogDetailPage({
   const mergedKeywords = Array.from(new Set([...wpTags, ...fallbackKeywords]));
 
   const parentCategory = getPrimaryCategory(blog);
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: blog.title.rendered,
-      description:
-        blog.yoast_head_json?.description ||
-        blog.excerpt.rendered.replace(/<[^>]+>/g, ''),
-      keywords: mergedKeywords,
-      ...(featured && {
+  const plainTitle = blog.title.rendered.replace(/<[^>]+>/g, '');
+  const breadcrumbItems = [
+    { name: 'Startseite', url: `${SITE_URL}/` },
+    { name: 'Artikel', url: `${SITE_URL}/artikel` },
+    ...(parentCategory
+      ? [
+          {
+            name: parentCategory.name,
+            url: `${SITE_URL}/artikel?kategorie=${parentCategory.slug}`,
+          },
+        ]
+      : []),
+    {
+      name: plainTitle,
+      url: `${SITE_URL}/artikel/${slug}`,
+    },
+  ];
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: plainTitle,
+    description:
+      blog.yoast_head_json?.description ||
+      blog.excerpt.rendered.replace(/<[^>]+>/g, ''),
+    keywords: mergedKeywords,
+    ...(featured && {
       image: featured,
-      }),
-      datePublished: blog.date,
-      author: { '@type': 'Organization', name: 'Reifexa.de' },
-      mainEntityOfPage: `${SITE_URL}/artikel/${slug}`,
-    };
+    }),
+    datePublished: blog.date,
+    dateModified: blog.modified || blog.date,
+    author: {
+      '@type': 'Organization',
+      name: 'Reifexa.de',
+      url: SITE_URL,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Reifexa.de',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${SITE_URL}/images/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/artikel/${slug}`,
+    },
+    inLanguage: 'de-DE',
+  };
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
   return (
     <>
       <section className="blog-details-page">
         <div className="custom-container pt-12">
           {/* here need a bradcrump */}
           {/* ---------------- BREADCRUMB ---------------- */}
-          <nav className="text-sm mb-5 text-gray-500 flex gap-2 flex-wrap">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-sm mb-5 text-gray-500 flex gap-2 flex-wrap"
+          >
             <Link href="/" className="hover:text-primary-100 underline">
-              Home
+              Startseite
             </Link>
             <span>/</span>
 
@@ -278,7 +348,7 @@ export default async function BlogDetailPage({
             )}
 
             <span>/</span>
-            <span className="text-gray-700">{blog.title.rendered}</span>
+            <span className="text-gray-700">{plainTitle}</span>
           </nav>
           <article className="md:max-w-full w-full mx-auto">
             <h1
@@ -311,6 +381,9 @@ export default async function BlogDetailPage({
 
       <Script id="blog-jsonld" type="application/ld+json">
         {JSON.stringify(jsonLd)}
+      </Script>
+      <Script id="blog-breadcrumb-jsonld" type="application/ld+json">
+        {JSON.stringify(breadcrumbLd)}
       </Script>
       <Script
         src="/wp-calculator.js"

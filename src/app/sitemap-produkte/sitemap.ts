@@ -1,72 +1,64 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next'
+import {
+  SITE_URL,
+  getApiBase,
+  PRODUCT_SITEMAP_CHUNK_SIZE,
+  fetchProductSitemapMeta,
+} from '@/libs/seo/site'
 
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de'
-).replace(/\/$/, '');
+type SitemapSlug = { slug?: string; updatedAt?: string | null }
 
-const apiUrl = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de/api'
-).replace(/\/$/, '');
+type SitemapSlugsResponse = {
+  products?: SitemapSlug[]
+  total?: number
+  pages?: number
+}
 
-type Product = {
-  slug?: string;
-  product_name?: string;
-};
+/**
+ * Multiple product sitemaps for 50–60k+ products.
+ * Served at: /sitemap-produkte/sitemap/0.xml, /1.xml, ...
+ */
+export async function generateSitemaps() {
+  const { pages } = await fetchProductSitemapMeta()
+  const count = Math.max(1, pages)
+  return Array.from({ length: count }, (_, i) => ({ id: i }))
+}
 
-// Safely fetch JSON with revalidation
-async function safeFetchJSON<T>(url: string): Promise<T | null> {
+export default async function sitemap(props: {
+  id: Promise<string>
+}): Promise<MetadataRoute.Sitemap> {
+  const id = Number(await props.id) || 0
+  const page = id + 1
+  const apiBase = getApiBase()
+  const url = `${apiBase}/api/products/sitemap-slugs?page=${page}&limit=${PRODUCT_SITEMAP_CHUNK_SIZE}`
+
   try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
+    const res = await fetch(url, { next: { revalidate: 3600 } })
     if (!res.ok) {
-      console.error(`❌ Sitemap fetch failed: ${res.status} ${url}`);
-      return null;
+      console.error(`Product sitemap chunk ${id} failed: ${res.status}`)
+      return id === 0
+        ? [
+            {
+              url: `${SITE_URL}/produkte`,
+              lastModified: new Date(),
+              changeFrequency: 'daily',
+              priority: 0.8,
+            },
+          ]
+        : []
     }
-    return (await res.json()) as T;
+
+    const data = (await res.json()) as SitemapSlugsResponse
+    const products = (data.products || []).filter(p => p.slug)
+
+    return products.map(p => ({
+      url: `${SITE_URL}/produkte/${encodeURIComponent(p.slug!)}`,
+      lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
   } catch (err) {
-    console.error('❌ Sitemap fetch error:', err);
-    return null;
+    console.error(`Product sitemap chunk ${id} error:`, err)
+    return []
   }
-}
-
-// Handle different API shapes
-function extractProducts<T extends Product>(data: unknown): T[] {
-    if (!data || typeof data !== 'object') return [];
-    const d = data as Record<string, unknown>;
-
- if (Array.isArray(data)) return data as T[];
-  if (Array.isArray(d.results)) return d.results as T[];
-  if (Array.isArray(d.items)) return d.items as T[];
-  if (Array.isArray(d.products)) return d.products as T[];
-  if (Array.isArray(d.data)) return d.data as T[];
-  return [];
-}
-const limit = 50000; // Max URLs per sitemap
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-  const url = `${apiUrl}/api/products/product-lists?page=1&limit=${limit}`;
-
-  const json = await safeFetchJSON<Product[]>(url);
-  const products = extractProducts<Product>(json);
-  const valid = products.filter(p => p.slug);
-
-  console.log('✅ Sitemap products count:', valid.length);
-
-  // Fallback if no slugs are found
-  if (valid.length === 0) {
-    return [
-      {
-        url: `${siteUrl}/api/products/product-details/`,
-        lastModified: now,
-        changeFrequency: 'weekly',
-        priority: 0.5,
-      },
-    ];
-  }
-
-  return valid.map(p => ({
-    url: `${siteUrl}/produkte/${encodeURIComponent(p.slug!)}`,
-    lastModified: now,
-    changeFrequency: 'weekly',
-    priority: 0.6,
-  }));
 }

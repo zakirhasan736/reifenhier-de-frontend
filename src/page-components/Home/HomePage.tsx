@@ -14,7 +14,7 @@ const HomePageMain = () => {
   return (
     <div className="home-page-main-wrapper">
       <BannerSection />
-      <LatestProducts />
+      <LatestProducts /> {/* LatestProducts we will hide leter replace with cars */}
       <NewArticles />
       <FeaturedProducts />
       {/* <ProductCategory /> */}

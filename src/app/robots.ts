@@ -1,62 +1,114 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next'
+import {
+  SITE_URL,
+  PRODUCT_SITEMAP_CHUNK_SIZE,
+  fetchProductSitemapMeta,
+} from '@/libs/seo/site'
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de';
+const privatePaths = [
+  '/api/',
+  '/admin/',
+  '/favoriten',
+  '/unsubscribe',
+  '/server/',
+  '/private/',
+  '/checkout/',
+  '/cart/',
+  '/compare/',
+  '/account/',
+  '/login/',
+  '/register/',
+]
 
-export default function robots(): MetadataRoute.Robots {
-  const site = baseUrl.replace(/\/$/, '');
+const filterQueryBlocks = [
+  '/*?sort=',
+  '/*?page=',
+  '/*?brand=',
+  '/*?width=',
+  '/*?height=',
+  '/*?diameter=',
+  '/*?speedIndex=',
+  '/*?lastIndex=',
+  '/*?noise=',
+  '/*?fuelClass=',
+  '/*?wetGrip=',
+  '/*?q=',
+]
+
+/** Full crawl permission for Google, Bing, and AI search/answer engines. */
+export default async function robots(): MetadataRoute.Robots {
+  const { total, pages } = await fetchProductSitemapMeta()
+  const productChunks = Math.max(
+    1,
+    Math.ceil(total / PRODUCT_SITEMAP_CHUNK_SIZE) || pages || 1
+  )
+
+  const productSitemaps = Array.from(
+    { length: productChunks },
+    (_, i) => `${SITE_URL}/sitemap-produkte/sitemap/${i}.xml`
+  )
+
+  const publicAllow = {
+    allow: '/' as const,
+    disallow: [...privatePaths, ...filterQueryBlocks],
+  }
 
   return {
     rules: [
-      // 🌍 Default rule for all normal crawlers
-      {
-        userAgent: '*',
-        allow: '/',
-        disallow: [
-          '/admin/',
-          '/api/',
-          '/server/',
-          '/private/',
-          '/checkout/',
-          '/cart/',
-          '/compare/',
-          '/account/',
-          '/login/',
-          '/register/',
-          '/*?sort=',
-          '/*?page=',
-          '/*?brand=',
-          '/*?width=',
-          '/*?height=',
-          '/*?diameter=',
-          '/*?speedIndex=',
-          '/*?lastIndex=',
-          '/*?noise=',
-          '/*?fuelClass=',
-          '/*?wetGrip=',
-        ],
-      },
+      // Default: all search engines
+      { userAgent: '*', ...publicAllow },
 
-      // AI crawlers allowed for indexing BUT not training
-      { userAgent: 'GPTBot', allow: '/', disallow: ['/admin/', '/api/'] },
-      { userAgent: 'ClaudeBot', allow: '/', disallow: ['/admin/', '/api/'] },
-      { userAgent: 'PerplexityBot', allow: '/', disallow: ['/api/'] },
-      { userAgent: 'YouBot', allow: '/', disallow: ['/api/'] },
+      // Google
+      { userAgent: 'Googlebot', ...publicAllow },
+      { userAgent: 'Googlebot-Image', allow: '/' },
+      { userAgent: 'Googlebot-News', ...publicAllow },
+      { userAgent: 'Google-Extended', ...publicAllow }, // Gemini / AI Overviews
+      { userAgent: 'GoogleOther', ...publicAllow },
+      { userAgent: 'Storebot-Google', ...publicAllow },
 
-      // AI training bots fully disallowed
-      { userAgent: 'Google-Extended', disallow: '/' },
-      { userAgent: 'CCBot', disallow: '/' },
-      { userAgent: 'AmazonBot', disallow: '/' },
+      // Bing / Microsoft / Copilot
+      { userAgent: 'Bingbot', ...publicAllow },
+      { userAgent: 'msnbot', ...publicAllow },
+      { userAgent: 'BingPreview', ...publicAllow },
+      { userAgent: 'adidxbot', ...publicAllow },
+
+      // Other search engines
+      { userAgent: 'DuckDuckBot', ...publicAllow },
+      { userAgent: 'Slurp', ...publicAllow }, // Yahoo
+      { userAgent: 'Yandex', ...publicAllow },
+      { userAgent: 'Baiduspider', ...publicAllow },
+      { userAgent: 'Applebot', ...publicAllow },
+      { userAgent: 'Applebot-Extended', ...publicAllow },
+      { userAgent: 'SeznamBot', ...publicAllow },
+      { userAgent: 'ecosia', ...publicAllow },
+
+      // AI assistants / answer engines — full allow for reading, citing, suggesting, learning
+      { userAgent: 'GPTBot', ...publicAllow },
+      { userAgent: 'ChatGPT-User', ...publicAllow },
+      { userAgent: 'OAI-SearchBot', ...publicAllow },
+      { userAgent: 'ClaudeBot', ...publicAllow },
+      { userAgent: 'Claude-Web', ...publicAllow },
+      { userAgent: 'anthropic-ai', ...publicAllow },
+      { userAgent: 'PerplexityBot', ...publicAllow },
+      { userAgent: 'YouBot', ...publicAllow },
+      { userAgent: 'Amazonbot', ...publicAllow },
+      { userAgent: 'CCBot', ...publicAllow },
+      { userAgent: 'meta-externalagent', ...publicAllow },
+      { userAgent: 'FacebookBot', ...publicAllow },
+      { userAgent: 'Bytespider', ...publicAllow },
+      { userAgent: 'Diffbot', ...publicAllow },
+      { userAgent: 'cohere-ai', ...publicAllow },
+      { userAgent: 'AI2Bot', ...publicAllow },
+      { userAgent: 'omgili', ...publicAllow },
+      { userAgent: 'omgilibot', ...publicAllow },
     ],
-
-    // 🗺️ Sitemaps
     sitemap: [
-      `${site}/sitemap.xml`,
-      `${site}/sitemap-produkte/sitemap.xml`,
-      `${site}/sitemap-blogs/sitemap.xml`,
+      `${SITE_URL}/sitemaps.xml`,
+      `${SITE_URL}/sitemap.xml`,
+      ...productSitemaps,
+      `${SITE_URL}/sitemap-blogs/sitemap/0.xml`,
+      `${SITE_URL}/llms.txt`,
     ],
-
-    // 🏠 Host reference
-    host: site,
-  };
+    host: SITE_URL,
+  }
 }

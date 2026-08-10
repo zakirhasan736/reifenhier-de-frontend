@@ -1,0 +1,38 @@
+{
+  "name": "Reifexa.de",
+  "short_name": "Reifexa",
+  "description": "Reifenpreisvergleich für Sommer-, Winter- und Ganzjahresreifen in Deutschland.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#202057",
+  "lang": "de-DE",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["shopping", "automotive"],
+  "shortcuts": [
+    {
+      "name": "Produkte",
+      "url": "/produkte",
+      "description": "Reifenangebote vergleichen"
+    },
+    {
+      "name": "Artikel",
+      "url": "/artikel",
+      "description": "Reifen-Ratgeber und News"
+    }
+  ]
+}

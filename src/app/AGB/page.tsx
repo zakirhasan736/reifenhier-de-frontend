@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 
 export const metadata: Metadata = {
@@ -205,6 +206,20 @@ export default function TermsPage() {
           </p>
         </div>
       </div>
+      <Script id="ld-agb" type="application/ld+json" strategy="afterInteractive">
+        {JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          '@id': 'https://www.reifexa.de/AGB#webpage',
+          url: 'https://www.reifexa.de/AGB',
+          name: 'Allgemeine Geschäftsbedingungen (AGB) – Reifexa.de',
+          description:
+            'AGB für Reifexa.de (Preisvergleich & Informationen zu Reifenangeboten).',
+          inLanguage: 'de-DE',
+          isPartOf: { '@id': 'https://www.reifexa.de/#website' },
+          about: { '@id': 'https://www.reifexa.de/#org' },
+        })}
+      </Script>
       <NewArticlesWrapper />
     </>
   );

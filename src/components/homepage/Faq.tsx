@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Script from 'next/script';
 
 interface FAQ {
   _id: string;
@@ -12,7 +13,6 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 async function getFaqs(): Promise<FAQ[]> {
   try {
     const res = await fetch(`${apiUrl}/api/faq/faqs-lists`, {
-      // Revalidate once per hour (3600s)
       next: { revalidate: 50 },
     });
 
@@ -25,10 +25,25 @@ async function getFaqs(): Promise<FAQ[]> {
   }
 }
 
-
 const FaqSection = async () => {
   const faqs = await getFaqs();
-  
+
+  const faqJsonLd =
+    faqs.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map(faq => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: faq.answer.replace(/<[^>]+>/g, ''),
+            },
+          })),
+        }
+      : null;
+
   return (
     <section className="FAQ-section lg:py-[70px] py-14 bg-[#F7F8FA]">
       <div className="custom-container">
@@ -81,9 +96,17 @@ const FaqSection = async () => {
           </div>
         </div>
       </div>
+      {faqJsonLd && (
+        <Script
+          id="ld-faq"
+          type="application/ld+json"
+          strategy="afterInteractive"
+        >
+          {JSON.stringify(faqJsonLd)}
+        </Script>
+      )}
     </section>
   );
 };
 
 export default FaqSection;
-

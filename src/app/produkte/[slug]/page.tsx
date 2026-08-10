@@ -362,26 +362,18 @@ function buildJsonLd(p: SeoProduct | null) {
     },
   };
 
-  if (typeof p.average_rating === 'number') {
+  if (
+    typeof p.average_rating === 'number' &&
+    p.review_count &&
+    p.review_count > 0
+  ) {
     jsonLd.aggregateRating = {
       '@type': 'AggregateRating',
-      ratingValue: p.average_rating.toFixed(1),
-      reviewCount: p.review_count || 0,
+      ratingValue: Number(p.average_rating.toFixed(1)),
+      reviewCount: p.review_count,
+      bestRating: 5,
+      worstRating: 1,
     };
-  }
-
-  if (p.review_count && p.review_count > 0) {
-    jsonLd.review = [
-      {
-        '@type': 'Review',
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: p.average_rating?.toFixed(1) || '4.5',
-          bestRating: '5',
-        },
-        author: { '@type': 'Organization', name: 'Reifexa.de' },
-      },
-    ];
   }
 
   return jsonLd;
@@ -398,14 +390,20 @@ function buildBreadcrumbJsonLd(p: SeoProduct) {
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Home',
-        item: SITE_URL,
+        name: 'Startseite',
+        item: `${SITE_URL}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Produkte',
+        item: `${SITE_URL}/produkte`,
       },
       ...(category
         ? [
             {
               '@type': 'ListItem',
-              position: 2,
+              position: 3,
               name: category,
               item: `${SITE_URL}/produkte?kategorie=${encodeURIComponent(
                 category
@@ -415,7 +413,7 @@ function buildBreadcrumbJsonLd(p: SeoProduct) {
         : []),
       {
         '@type': 'ListItem',
-        position: category ? 3 : 2,
+        position: category ? 4 : 3,
         name:
           [p.brand_name, p.dimensions, p.product_name]
             .filter(Boolean)
@@ -508,6 +506,13 @@ export async function generateMetadata({
       images: [ogImage],
     },
     robots: { index: true, follow: true },
+    other: {
+      'product:brand': product.brand_name || '',
+      'product:availability':
+        (product.in_stock || '').toLowerCase() === 'true'
+          ? 'in stock'
+          : 'out of stock',
+    },
   };
 }
 
@@ -550,10 +555,13 @@ console.log(product);
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebPage',
-          name: 'Produktdetails – Reifexa.de',
+          '@id': `${SITE_URL}/produkte/${product.slug}#webpage`,
           url: `${SITE_URL}/produkte/${product.slug}`,
-          description:
-            'Vergleichen Sie Reifenpreise, Angebote und Bewertungen auf Reifexa.de – Ihr unabhängiger Preisvergleich für Reifen.',
+          name: fallbackTitle(product),
+          description: fallbackDescription(product),
+          inLanguage: 'de-DE',
+          isPartOf: { '@id': `${SITE_URL}/#website` },
+          about: { '@id': `${SITE_URL}/produkte/${product.slug}#produkt` },
           publisher: {
             '@type': 'Organization',
             name: 'Reifexa.de',

@@ -1,0 +1,21 @@
+/* TEAM */
+Site: Reifexa.de
+URL: https://www.reifexa.de/
+Contact: info@reifexa.de
+From: Engelskirchen, Germany
+
+/* SITE */
+Standards: HTML5, Schema.org JSON-LD, Open Graph, Twitter Cards
+Components: Next.js, Google Tag Manager, Google Analytics
+Sitemaps: https://www.reifexa.de/sitemaps.xml
+AI: https://www.reifexa.de/llms.txt , https://www.reifexa.de/ai.txt
+Language: de-DE
+Doctype: HTML5
+
+/* SOCIAL */
+Facebook: https://www.facebook.com/reifexa.de
+Instagram: https://www.instagram.com/reifexa.de
+TikTok: https://www.tiktok.com/@reifexa
+
+/* THANKS */
+Built for transparent tire price comparison in Germany.

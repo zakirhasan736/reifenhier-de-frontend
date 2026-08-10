@@ -1,61 +1,72 @@
-// app/sitemap-blogs/sitemap.ts
-import type { MetadataRoute } from 'next';
-
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.reifexa.de'
-).replace(/\/$/, '');
+import type { MetadataRoute } from 'next'
+import { SITE_URL } from '@/libs/seo/site'
 
 const wpUrl = (
   process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://wp.reifexa.de'
-).replace(/\/$/, '');
+).replace(/\/$/, '')
 
 type WPPost = {
-  slug: string;
-  modified: string;
-  date: string;
-};
+  slug: string
+  modified: string
+  date: string
+}
 
-// Safe fetch helper
-async function safeFetchJSON<T>(url: string): Promise<T | null> {
+const PER_PAGE = 100
+
+async function fetchWpPosts(page: number): Promise<WPPost[]> {
+  const url = `${wpUrl}/wp-json/wp/v2/posts?per_page=${PER_PAGE}&page=${page}&_fields=slug,date,modified`
   try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) {
-      console.error(`❌ Sitemap fetch failed: ${res.status} ${url}`);
-      return null;
-    }
-    return (await res.json()) as T;
-  } catch (err) {
-    console.error('❌ Sitemap fetch error:', err);
-    return null;
+    const res = await fetch(url, { next: { revalidate: 3600 } })
+    if (!res.ok) return []
+    return (await res.json()) as WPPost[]
+  } catch {
+    return []
   }
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
+async function getBlogSitemapCount(): Promise<number> {
+  try {
+    const res = await fetch(
+      `${wpUrl}/wp-json/wp/v2/posts?per_page=1&_fields=id`,
+      { next: { revalidate: 3600 } }
+    )
+    const total = Number(res.headers.get('X-WP-Total') || '0')
+    return Math.max(1, Math.ceil(total / PER_PAGE) || 1)
+  } catch {
+    return 1
+  }
+}
 
-  // WordPress REST endpoint
-  const url = `${wpUrl}/wp-json/wp/v2/posts?per_page=100&_fields=slug,date,modified`;
+/** Blog sitemaps — split if many posts. /sitemap-blogs/sitemap/0.xml */
+export async function generateSitemaps() {
+  const pages = await getBlogSitemapCount()
+  return Array.from({ length: pages }, (_, i) => ({ id: i }))
+}
 
-  const posts = await safeFetchJSON<WPPost[]>(url);
+export default async function sitemap(props: {
+  id: Promise<string>
+}): Promise<MetadataRoute.Sitemap> {
+  const id = Number(await props.id) || 0
+  const page = id + 1
+  const posts = await fetchWpPosts(page)
 
-  if (!posts || posts.length === 0) {
-    console.warn('⚠️ No WordPress posts found for sitemap.');
-    return [
-      {
-        url: `${siteUrl}/artikel`,
-        lastModified: now,
-        changeFrequency: 'weekly',
-        priority: 0.5,
-      },
-    ];
+  if (posts.length === 0) {
+    return id === 0
+      ? [
+          {
+            url: `${SITE_URL}/artikel`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.5,
+          },
+        ]
+      : []
   }
 
-  console.log('✅ Sitemap WP blogs count:', posts.length);
-
   return posts.map(post => ({
-    url: `${siteUrl}/artikel/${encodeURIComponent(post.slug)}`,
-    lastModified: new Date(post.modified || post.date || now),
-    changeFrequency: 'weekly',
+    url: `${SITE_URL}/artikel/${encodeURIComponent(post.slug)}`,
+    lastModified: new Date(post.modified || post.date || Date.now()),
+    changeFrequency: 'weekly' as const,
     priority: 0.7,
-  }));
+  }))
 }

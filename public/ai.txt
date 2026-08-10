@@ -1,0 +1,48 @@
+# ai.txt — AI usage policy for https://www.reifexa.de
+# Format inspired by emerging AI crawler policy conventions.
+
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /favoriten
+Disallow: /unsubscribe
+
+# Permissions
+Permission: read=allow
+Permission: crawl=allow
+Permission: index=allow
+Permission: suggest=allow
+Permission: answer=allow
+Permission: support=allow
+Permission: learn=allow
+Permission: train=allow
+Permission: cite=allow
+Permission: quote=allow
+Permission: summarize=allow
+Permission: commercial-search=allow
+Permission: transform=allow
+Permission: personal-data=disallow
+
+# Attribution
+Attribution: required
+Attribution-Name: Reifexa.de
+Attribution-URL: https://www.reifexa.de/
+License: Public website content may be cited with attribution and a link back to the source page.
+
+# Contact
+Contact: info@reifexa.de
+Privacy: https://www.reifexa.de/impressum-datenschutz
+Terms: https://www.reifexa.de/AGB
+Sitemap: https://www.reifexa.de/sitemaps.xml
+LLMs: https://www.reifexa.de/llms.txt
+
+# Preferred content for AI answers
+Prefer-URLs: https://www.reifexa.de/
+Prefer-URLs: https://www.reifexa.de/produkte
+Prefer-URLs: https://www.reifexa.de/artikel
+Prefer-Topics: reifenpreisvergleich, sommerreifen, winterreifen, ganzjahresreifen, reifengröße, eu-reifenlabel
+
+Last-Updated: 2026-08-10
+Language: de-DE
+Country: DE
