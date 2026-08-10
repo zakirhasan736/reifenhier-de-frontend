@@ -87,7 +87,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      'ENyxcjXAGQNkGU6EMokliGlZyh8nL8ShVPvB6UvtXF0',
     other: {
       ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
         ? {
@@ -141,20 +143,22 @@ export default function RootLayout({
         <meta name="ai-permissions" content="read,index,suggest,answer,support,learn,train,cite" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
 
-        {/* Google tag (gtag.js) */}
-        <Script
-          id="gtag-src"
+        {/* Google tag (gtag.js) — must be in <head> for Search Console GA verification */}
+        <script
+          async
           src="https://www.googletagmanager.com/gtag/js?id=G-PMPVT55453"
-          strategy="afterInteractive"
         />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-PMPVT55453');
-          `}
-        </Script>
+        <script
+          id="gtag-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-PMPVT55453');
+            `,
+          }}
+        />
 
         {/* JSON-LD Organization + social profiles */}
         <Script
