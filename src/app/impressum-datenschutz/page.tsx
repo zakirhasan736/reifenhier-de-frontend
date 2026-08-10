@@ -30,14 +30,18 @@ const PrivacyPolicy: React.FC = () => {
           <p className="mt-2">
             Reifexa.de
             <br />
-            Jens Kippels (Einzelunternehmen)
+            Sebastian Shahvandi
             <br />
-            Hammerwiese 2<br />
-            51766 Engelskirchen
+            4709
+            Lookout Mountain Cv. <br />
+            Austin
+            Texas <br />
+            78731 <br />
+            United States of America
             <br />
             E-Mail:{' '}
-            <a className="underline" href="mailto:info@Reifexa.de">
-              info@Reifexa.de
+            <a className="underline" href="mailto:info@nextcreave.com">
+              info@nextcreave.com
             </a>
           </p>
         </section>
