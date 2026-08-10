@@ -8,7 +8,7 @@ const BannerSection = () => {
     <section className="banner-section relative font-primary max-sm:h-auto">
       <Image
         className="banner-image-fill object-cover"
-        src="/images/banner-image.jpg" // Prefer a ~150–250 KB file
+        src="/images/banner-image-2.png" // Prefer a ~150–250 KB file
         alt="Bannerbild Reifexa.de"
         // Use fill for full-bleed hero
         fill
