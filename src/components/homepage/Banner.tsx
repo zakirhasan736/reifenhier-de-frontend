@@ -8,7 +8,7 @@ const BannerSection = () => {
     <section className="banner-section relative font-primary max-sm:h-auto">
       <Image
         className="banner-image-fill object-cover"
-        src="/images/banner-image.jpg" // Prefer a ~150–250 KB file
+        src="/images/banner-image.png" // Prefer a ~150–250 KB file
         alt="Bannerbild Reifexa.de"
         // Use fill for full-bleed hero
         fill
@@ -24,7 +24,7 @@ const BannerSection = () => {
         // but improves perceived UX.
         placeholder="empty"
       />
-      <div className="custom-container h-full">
+      <div className="custom-container relative z-999 h-full">
         <div className="banner-content w-full lg:pt-[56px] md:pt-[42px]  lg:pb-[55px] md:pb-[36px] pt-10 pb-6 h-full">
           <div className="tyres-search-area w-full h-full flex items-end justify-center">
             <div className="tyres-search-content w-full relative">
