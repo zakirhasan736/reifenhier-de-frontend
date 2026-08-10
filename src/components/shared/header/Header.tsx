@@ -163,7 +163,7 @@ export default function Header() {
             <Link href="/" className="text-2xl font-bold text-mono-100">
               <Image
                 loading="lazy"
-                width="131"
+                width="156"
                 height="51"
                 className="max-sm:hidden"
                 src="/images/reifexa_de_logo_new.png"
@@ -171,7 +171,7 @@ export default function Header() {
               />
               <Image
                 loading="lazy"
-                width="110"
+                width="156"
                 height="36"
                 className="sm:hidden"
                 src="/images/reifexa_de_logo_new.png"

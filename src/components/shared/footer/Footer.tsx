@@ -98,7 +98,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
                   <Image
                     src="/images/reifexa_de_logo_new.png"
-                    className="opacity-100 max-sm:w-[130px] sm:w-[140px] w-[180px] h-auto"
+                    className="opacity-100 max-sm:w-[130px] sm:w-[140px] md:w-[180px] w-[150px] h-auto"
                     alt="company logo"
                     width={180}
                     height={70}
