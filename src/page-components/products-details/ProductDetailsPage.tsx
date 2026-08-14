@@ -112,6 +112,16 @@ interface RelatedProduct {
 export default function ProductDetailsPage({ slug }: { slug: string }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
+  const [indexVariants, setIndexVariants] = useState<
+    Array<{
+      slug: string;
+      lastIndex?: string;
+      speedIndex?: string;
+      label?: string;
+      cheapest_offer?: string | number;
+      product_name?: string;
+    }>
+  >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -131,12 +141,16 @@ export default function ProductDetailsPage({ slug }: { slug: string }) {
         setRelatedProducts(
           Array.isArray(data.relatedProducts) ? data.relatedProducts : []
         );
+        setIndexVariants(
+          Array.isArray(data.indexVariants) ? data.indexVariants : []
+        );
         setError(null);
       } catch {
         if (!mounted) return;
         setError('Failed to load product details.');
         setProduct(null);
         setRelatedProducts([]);
+        setIndexVariants([]);
       } finally {
         if (mounted) setLoading(false);
       }
@@ -153,7 +167,11 @@ export default function ProductDetailsPage({ slug }: { slug: string }) {
   return (
     <div className="product-details-cont-wrapper">
       {product ? (
-        <ProductSinglepage product={product} loading={loading} />
+        <ProductSinglepage
+          product={product}
+          loading={loading}
+          indexVariants={indexVariants}
+        />
       ) : (
         <Loading />
       )}

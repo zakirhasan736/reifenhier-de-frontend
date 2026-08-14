@@ -135,7 +135,14 @@ interface RelatedProduct {
 interface ProductDetailsResponse {
   product?: Product;
   relatedProducts?: RelatedProduct[];
-  // loading?: Boolean;
+  indexVariants?: Array<{
+    slug: string;
+    lastIndex?: string;
+    speedIndex?: string;
+    label?: string;
+    cheapest_offer?: string | number;
+    product_name?: string;
+  }>;
 }
 
 // ---- Fetch a single product for metadata/LD ----
@@ -145,10 +152,10 @@ async function fetchProductData(slug: string): Promise<ProductDetailsResponse> {
       `${API}/api/products/product-details/${encodeURIComponent(slug)}`,
       { next: { revalidate: 1800 } }
     );
-    if (!res.ok) return { product: undefined, relatedProducts: [] };
+    if (!res.ok) return { product: undefined, relatedProducts: [], indexVariants: [] };
     return res.json();
   } catch {
-    return { product: undefined, relatedProducts: [] };
+    return { product: undefined, relatedProducts: [], indexVariants: [] };
   }
 }
 // ---- Helpers ----
@@ -533,7 +540,7 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { product, relatedProducts } = await fetchProductData(slug);
+  const { product, relatedProducts, indexVariants } = await fetchProductData(slug);
   if (!product) {
     notFound();
   }
@@ -545,7 +552,11 @@ export default async function ProductPage({
   return (
     <>
       <div className="product-details-cont-wrapper">
-        <ProductSinglepage product={product} loading={false} />
+        <ProductSinglepage
+          product={product}
+          loading={false}
+          indexVariants={indexVariants ?? []}
+        />
         <HowItWorks />
         <RelatedProducts
           relatedProductData={relatedProducts ?? []}

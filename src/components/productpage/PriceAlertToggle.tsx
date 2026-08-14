@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Bell, Check } from 'lucide-react'
 import toast from 'react-hot-toast'
 import {
   disablePriceAlerts,
@@ -74,17 +75,19 @@ export default function PriceAlertToggle({ productId, className = '' }: Props) {
       type="button"
       onClick={onToggle}
       disabled={busy}
-      className={`inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+      className={`inline-flex h-[28px] items-center justify-center gap-1 rounded-full border px-2.5 text-[12px] font-medium leading-none whitespace-nowrap transition ${
         enabled
-          ? 'border-primary-100 bg-primary-100 text-white'
-          : 'border-primary-100 bg-white text-primary-100 hover:bg-[#F5F7FF]'
+          ? 'border-primary-100 bg-primary-100 text-white hover:bg-primary-100'
+          : 'border-[#D6D9E0] bg-white text-[#1F2937] hover:bg-[#F5F7FF]'
       } ${className}`}
       aria-pressed={enabled}
     >
-      <span aria-hidden className="text-base leading-none">
-        {enabled ? '●' : '○'}
-      </span>
-      {enabled ? 'Preisalarm an' : 'Preisalarm aktivieren'}
+      {enabled ? (
+        <Check size={14} strokeWidth={2.5} className="text-white" />
+      ) : (
+        <Bell size={14} />
+      )}
+      <span>Price alert</span>
     </button>
   )
 }

@@ -121,9 +121,19 @@ interface Product {
   speedIndex?: string;
   offers?: Offer[];
 }
+interface IndexVariant {
+  slug: string;
+  lastIndex?: string;
+  speedIndex?: string;
+  label?: string;
+  cheapest_offer?: string | number;
+  product_name?: string;
+}
+
 interface ProductProps {
   product: Product;
   loading: boolean;
+  indexVariants?: IndexVariant[];
 }
 
 type MoneyLike = string | number | null | undefined;
@@ -151,7 +161,120 @@ const parseMoneyEU = (val: MoneyLike): number => {
 
 const formatEUR = (n: number) => `€${n.toFixed(2).replace('.', ',')}`;
 
-const ProductSinglepage: React.FC<ProductProps> = ({ product, loading }) => {
+const buildProductFilterUrl = (filters: Record<string, string | undefined>) => {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    const v = String(value || '').trim();
+    if (v) params.set(key, v);
+  });
+  const qs = params.toString();
+  return qs ? `/produkte?${qs}` : '/produkte';
+};
+
+function formatIndexPrice(price?: string | number) {
+  if (price === undefined || price === null || price === '') return '';
+  if (typeof price === 'string' && /€/.test(price)) return price.trim();
+  const n =
+    typeof price === 'number'
+      ? price
+      : Number(String(price).replace(',', '.').replace(/[^\d.]/g, ''));
+  if (!Number.isFinite(n) || n <= 0) return '';
+  return `${n.toFixed(2).replace('.', ',')} €`;
+}
+
+const PAYMENT_FALLBACKS: Record<string, string[]> = {
+  'reifen de': [
+    '/images/icons/payments/Visa.png',
+    '/images/icons/payments/Mastercard.png',
+    '/images/icons/payments/paypal.svg',
+    '/images/icons/payments/Klarna.svg',
+    '/images/icons/payments/sepa.png',
+    '/images/icons/payments/amazon-pay.svg',
+  ],
+  'reifen.com': [
+    '/images/icons/payments/paypal.svg',
+    '/images/icons/payments/amazon-pay.svg',
+    '/images/icons/payments/Klarna.svg',
+  ],
+  'reifen24 de': [
+    '/images/icons/payments/Visa.png',
+    '/images/icons/payments/Mastercard.png',
+    '/images/icons/payments/paypal.svg',
+    '/images/icons/payments/Vorkasse.png',
+    '/images/icons/payments/sepa.png',
+    '/images/icons/payments/Rechnung.png',
+    '/images/icons/payments/apple-pay.png',
+  ],
+  'reifendirekt.de': [
+    '/images/icons/payments/Visa.png',
+    '/images/icons/payments/Mastercard.png',
+    '/images/icons/payments/paypal.svg',
+    '/images/icons/payments/bank-transfer.png',
+    '/images/icons/payments/American_Express.png',
+    '/images/icons/payments/amazon-pay.svg',
+    '/images/icons/payments/sepa.png',
+  ],
+  'giga tyres eu': [
+    '/images/icons/payments/Visa.png',
+    '/images/icons/payments/Mastercard.png',
+    '/images/icons/payments/American_Express.png',
+    '/images/icons/payments/amazon-pay.svg',
+    '/images/icons/payments/paypal.svg',
+  ],
+};
+
+function resolveOfferPaymentIcons(vendor?: string, paymentIcons?: string[] | null) {
+  if (Array.isArray(paymentIcons) && paymentIcons.length > 0) {
+    return paymentIcons.filter(Boolean);
+  }
+
+  const key = String(vendor || '').trim().toLowerCase();
+  return PAYMENT_FALLBACKS[key] || [];
+}
+
+function OfferVendorLogo({
+  vendor,
+  vendorLogo,
+  className,
+}: {
+  vendor?: string;
+  vendorLogo?: string;
+  className?: string;
+}) {
+  const [imageFailed, setImageFailed] = React.useState(false);
+  const safeLogo = String(vendorLogo || '').trim();
+
+  if (!safeLogo || safeLogo === '0' || imageFailed) {
+    return (
+      <span
+        className={
+          className ||
+          'inline-flex h-[37px] min-w-[120px] items-center justify-center rounded-lg border border-[#E4E5EA] bg-white px-3 text-[14px] font-medium text-[#16171A]'
+        }
+      >
+        {vendor || 'Anbieter'}
+      </span>
+    );
+  }
+
+  return (
+    <Image
+      src={safeLogo}
+      alt={vendor || 'Vendor logo'}
+      width={140}
+      height={37}
+      loading="lazy"
+      className={className || 'h-[37px] w-auto max-w-[140px] object-contain'}
+      onError={() => setImageFailed(true)}
+    />
+  );
+}
+
+const ProductSinglepage: React.FC<ProductProps> = ({
+  product,
+  loading,
+  indexVariants = [],
+}) => {
   const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const fuelMeta = getFuelEfficiencyMeta(product.fuel_class);
@@ -846,7 +969,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
 
                 <div className="product-singlepage-right-cont  w-full">
                   <div className="product-details-top">
-                    <ul className="flex items-center justify-start gap-4  mb-4">
+                    <ul className="flex flex-wrap items-center justify-start gap-3 mb-4">
                       <li className="in-stock-info flex items-center gap-1">
                         <Image
                           src="/images/icons/tick-square.svg"
@@ -863,11 +986,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       </li>
                       <li className="product-category">
                         <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
-                          {' '}
                           {product.merchant_product_third_category || 'N/A'}
                         </p>
                       </li>
-                      <li className="socials-sheare-button  ml-auto flex items-center gap-2">
+                      <li className="socials-sheare-button ml-auto flex items-center gap-2">
                         <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
                           Teilen:
                         </p>{' '}
@@ -884,6 +1006,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           .join(' ')
                           .toUpperCase()}
                       </h1>
+
                       <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
                         <span className="flex items-center gap-2">
                           <Image
@@ -906,11 +1029,125 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                         </span>
                       </p>
                     </div>
-                    <div className="product-details-brand-info">
-                      <p className="text-base font-normal font-secondary text-[#404042] leading-[140%] flex md:flex-row flex-col items-start justify-start md:items-center gap-2">
-                        <span className="text-[14px] whitespace-nowrap">
-                          Bester Preis:
-                        </span>{' '}
+
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] md:text-[13px] font-medium text-[#404042]">
+                      <span className="rounded-full border border-[#D9DDE5] bg-[#F5F7FF] px-2.5 py-1 text-[#1F2937]">
+                        {product.cheapest_vendor?.delivery_cost === '0' ||
+                        product.cheapest_vendor?.delivery_cost === '0.00'
+                          ? 'Versandkostenfrei'
+                          : product.cheapest_vendor?.delivery_cost
+                            ? `Versand: ${parseFloat(
+                                product.cheapest_vendor.delivery_cost
+                                  .toString()
+                                  .replace(/[^\d.]/g, ''),
+                              )
+                                .toFixed(2)
+                                .replace('.', ',')} €`
+                            : 'Versandkostenfrei'}
+                      </span>
+                      <span className="rounded-full border border-[#D9DDE5] bg-[#F5F7FF] px-2.5 py-1 text-[#1F2937]">
+                        Verfügbarkeit: {product.delivery_time || '2–5 Werktage'}
+                      </span>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] md:text-[13px] font-medium text-[#404042]">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9AA0A8]">
+                        Mehr
+                      </span>
+                      {(product.width || product.dimensions) && (
+                        <Link
+                          href={buildProductFilterUrl({
+                            kategorie: product.merchant_product_third_category,
+                            width: product.width,
+                            height: product.height,
+                            diameter: product.diameter,
+                          })}
+                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
+                        >
+                          Größe {product.dimensions || `${product.width}/${product.height} R${product.diameter}`}
+                        </Link>
+                      )}
+                      {product.brand_name && (
+                        <Link
+                          href={buildProductFilterUrl({
+                            brand: product.brand_name,
+                          })}
+                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
+                        >
+                          Marke {product.brand_name}
+                        </Link>
+                      )}
+                    </div>
+
+                    {indexVariants.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-[12px] md:text-[13px] font-medium text-[#5A5B61]">
+                          Andere Last-/Geschwindigkeitsindex
+                        </p>
+                        <div className="mt-1.5 flex flex-wrap gap-1.5">
+                          {indexVariants.map(v => {
+                            const label =
+                              v.label ||
+                              `${v.lastIndex || ''}${v.speedIndex || ''}`.trim();
+                            const price = formatIndexPrice(v.cheapest_offer);
+                            return (
+                              <Link
+                                key={v.slug}
+                                href={`/produkte/${v.slug}`}
+                                title={v.product_name}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-[#E4E5EA] bg-white px-2.5 py-1 text-[12px] md:text-[13px] underline underline-offset-2 decoration-primary-100 hover:border-primary-100"
+                              >
+                                <span className="font-semibold text-[#16171A]">
+                                  {label || '—'}
+                                </span>
+                                {price ? (
+                                  <span className="font-medium text-primary-100">
+                                    {price}
+                                  </span>
+                                ) : null}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="product-price-group mt-4 w-full">
+                    <div className="input-type-text flex w-full flex-nowrap items-center gap-2 text-left font-medium text-primary-70">
+                      {product.cheapest_offer === product.expensive_offer ? (
+                        <span className="whitespace-nowrap text-[20px] leading-none font-medium font-secondary text-[#404042] md:text-[24px]">
+                          {product.search_price} €
+                        </span>
+                      ) : (
+                        <div className="price-box flex items-center gap-2 whitespace-nowrap">
+                          <span className="text-[20px] leading-none font-medium font-secondary text-[#404042] md:text-[24px]">
+                            {product.cheapest_offer} €
+                          </span>
+                          <span className="text-[16px] leading-none font-medium font-secondary text-[#9AA0A8] line-through md:text-[18px]">
+                            {product.expensive_offer} €
+                          </span>
+                        </div>
+                      )}
+                      {product.savings_percent &&
+                        product.savings_percent !== '0%' &&
+                        product.savings_percent !== '-0%' && (
+                          <span
+                            title="Ersparnisse im Vergleich zum teuersten Angebot"
+                            className="inline-flex h-[28px] items-center rounded-[6px] border border-[#00BE00] px-2 text-[13px] font-medium leading-none text-[#E66605]"
+                          >
+                            {product.savings_percent}
+                          </span>
+                        )}
+                      <PriceAlertToggle productId={product._id} />
+                    </div>
+
+                    {/* Best Price Vendor */}
+                    <div className="best-price-vendor mt-3 flex w-full flex-wrap items-center gap-2">
+                      <span className="text-[12px] md:text-[13px] font-medium text-[#5A5B61]">
+                        Bester Preis:
+                      </span>
+                      {product.cheapest_vendor?.affiliate_product_cloak_url ? (
                         <a
                           href={buildVendorExitUrl({
                             token:
@@ -918,11 +1155,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 ?.affiliate_product_cloak_url || '',
                             productId: product._id,
                             uuid: uuidCookie || 'guest',
-                            from: 'product-details-page',
+                            from: 'product-details-vendor-logo',
                             vendor: product.cheapest_vendor?.vendor,
                             vendorId: product.cheapest_vendor?.vendor_id,
                             brand: product.brand_name,
-                            instruction: 'Bester Preis',
+                            instruction: 'Zum Angebot',
                           })}
                           target="_blank"
                           rel="nofollow sponsored noopener noreferrer"
@@ -933,106 +1170,36 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               brandName: product.brand_name,
                               vendor: product.cheapest_vendor?.vendor,
                               vendorId: product.cheapest_vendor?.vendor_id,
-                              source: 'product-details-page',
-                              instruction: 'Bester Preis',
+                              source: 'product-details-vendor-logo',
+                              instruction: 'Zum Angebot',
                             });
                           }}
-                          className="flex md:flex-row flex-col items-start justify-start md:items-center gap-2"
+                          className="inline-flex max-w-[160px] items-center rounded-md border border-[#E4E5EA] bg-white px-2 py-1 underline underline-offset-2 decoration-primary-100 hover:border-primary-100"
+                          title={`Zum Angebot bei ${product.cheapest_vendor?.vendor || 'Anbieter'}`}
                         >
-                          <Image
-                            src={product.cheapest_vendor?.vendor_logo}
-                            width={140}
-                            height={37}
-                            loading="lazy"
-                            className={`lg:h-[37px] h-[27px] object-contain ${
-                              product.cheapest_vendor?.vendor_logo ===
-                              '/images/vendors/reifendirekt-de.png'
-                                ? 'lg:w-[140px] w-[120px]'
-                                : 'lg:w-auto w-auto'
-                            }`}
-                            alt="vendor image"
-                          />{' '}
-                          {product.cheapest_vendor?.vendor}
+                          <OfferVendorLogo
+                            vendor={product.cheapest_vendor?.vendor}
+                            vendorLogo={product.cheapest_vendor?.vendor_logo}
+                            className="h-[28px] w-auto max-w-[120px] object-contain"
+                          />
                         </a>
-                      </p>
-                      <ul className="product-info-lists mt-3 flex flex-wrap gap-2 p-3 rounded-[12px]  bg-[#F5F7FF]">
-                        <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                          {product.cheapest_vendor?.delivery_cost === '0' ||
-                          product.cheapest_vendor?.delivery_cost === '0.00'
-                            ? 'Versandkostenfrei'
-                            : product.cheapest_vendor?.delivery_cost
-                              ? `Versandkosten: ${parseFloat(
-                                  product.cheapest_vendor.delivery_cost
-                                    .toString()
-                                    .replace(/[^\d.]/g, ''),
-                                )
-                                  .toFixed(2)
-                                  .replace('.', ',')} €`
-                              : 'Versandkostenfrei'}
-                        </li>
-                        <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                          Verfügbarkeit: {product.delivery_time || 'N/A'}
-                        </li>
-                        <li className="info-item text-[12px] caption py-2 px-4 rounded-[90px] text-[#404042] text-center inline-flex justify-center items-center bg-transparent font-normal font-secondary border border-[#3A64F629]">
-                          Marke: {product.brand_name || 'Marke'}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="product-price-group flex flex-col gap-2 mt-4 max-w-[306px] sm:max-w-[375px] w-full">
-                    <div className="input-type-text flex items-center gap-6 text-primary-70 font-medium text-[18px] capitalized text-left w-full">
-                      {product.cheapest_offer === product.expensive_offer ? (
-                        <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                          {product.search_price} €
-                        </span>
                       ) : (
-                        <div className="price-box flex items-center gap-2">
-                          <span className="text-[20px] md:text-[24px] leading-[140%] font-medium font-secondary text-[#404042]">
-                            {product.cheapest_offer} €
-                          </span>
-                          <span
-                            style={{ textDecoration: 'line-through' }}
-                            className="text-[18px] md:text-[20px] font-secondary font-medium text-[#404042] leading-[140%] text-line-through"
-                          >
-                            {product.expensive_offer} €
-                          </span>
-                        </div>
+                        <OfferVendorLogo
+                          vendor={product.cheapest_vendor?.vendor}
+                          vendorLogo={product.cheapest_vendor?.vendor_logo}
+                          className="h-[28px] w-auto max-w-[120px] object-contain"
+                        />
                       )}
-                      {product.savings_percent &&
-                        product.savings_percent !== '0%' &&
-                        product.savings_percent !== '-0%' && (
-                          <p className="px-2 py-[3px] border border-[#00BE00] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[75px] rounded-[6px] w-full">
-                            {product.savings_percent}
-                            <span
-                              className="tooltip tooltip-left cursor-pointer flex items-center"
-                              data-tip="Ersparnisse im Vergleich zum teuersten Angebot"
-                            >
-                              <svg
-                                width="12"
-                                height="12"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                className="inline-block"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <circle cx="12" cy="12" r="12" fill="#E66605" />
-                                <text
-                                  x="12"
-                                  y="16"
-                                  textAnchor="middle"
-                                  fontSize="14"
-                                  fill="#fff"
-                                  fontFamily="Arial"
-                                  fontWeight="bold"
-                                >
-                                  i
-                                </text>
-                              </svg>
-                            </span>
-                          </p>
-                        )}
+                      {(product.offers?.length || 0) > 1 && (
+                        <a
+                          href="#angebote"
+                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
+                        >
+                          Mehr ({product.offers?.length})
+                        </a>
+                      )}
                     </div>
+
                     <ul className="attributes flex items-center w-full justify-start mt-2 md:mt-3">
                       {product.fuel_class && (
                         <>
@@ -1203,10 +1370,6 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                     >
                       Zum Vergleich hinzufügen
                     </button>
-                    <PriceAlertToggle
-                      productId={product._id}
-                      className="w-full h-[42px] lg:h-[47px]"
-                    />
                     <button
                       onClick={handleToggleWishlist}
                       className="cursor-pointer w-full hidden xl:flex items-center justify-center max-w-12 h-12 !border !border-[#89898b60] rounded-full"
@@ -1306,116 +1469,91 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           )}
                         </div>
                       </div>
-                      <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
+                      <div className="collapse collapse-plus bg-mono-0 border border-[#E9EAEE] rounded-[12px] overflow-hidden mb-3">
                         <input
                           type="radio"
                           name="my-accordion-3"
                           className="!min-h-[46px] flex items-center !h-[46px]"
-                          // defaultChecked
+                          defaultChecked
                         />
                         <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                          Zusätzliche Informationen
+                          Produktinformation
                         </div>
-                        <div className="collapse-content caption-regular font-primary border-t border-t-border-100 !px-0 !pb-0 !pt-0">
-                          <ul className="product-specification-table border border-border-100 border-b-transparent">
-                            <li className="details-items bg-[#C6C7CC] flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
-                                Eigenschaften
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#16171A]">
-                                Details
-                              </div>
-                            </li>
-                            <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                        <div className="collapse-content !px-0 !pb-0 !pt-0">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-[#E9EAEE] bg-[#F5F5F7]">
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
                                 Reifentyp
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.merchant_product_third_category ||
-                                  'N/A'}
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.merchant_product_third_category || 'N/A'}
                               </div>
-                            </li>
-                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
                                 Marke
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
                                 {product.brand_name || 'N/A'}
                               </div>
-                            </li>
-                            <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Kraftstoffeffizienz
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.fuel_class || 'N/A'}
-                              </div>
-                            </li>
-                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Nasshaftung
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.wet_grip || 'N/A'}
-                              </div>
-                            </li>
-                            <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
                                 Größe
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.dimensions}
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.dimensions || 'N/A'}
                               </div>
-                            </li>
-                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Breite
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
+                                Lastindex
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.width || 'N/A'}
-                              </div>
-                            </li>
-                            <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Höhe
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.height || 'N/A'}
-                              </div>
-                            </li>
-                            <li className="details-items  bg-[#F5F5F7] flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Durchmesser
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.diameter || 'N/A'}
-                              </div>
-                            </li>
-                            <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Geschwindigkeitsindex
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.speedIndex || 'N/A'}
-                              </div>
-                            </li>
-                            <li className="details-items bg-[#F5F5F7]  flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                Lastenindex
-                              </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
                                 {product.lastIndex || 'N/A'}
                               </div>
-                            </li>
-                            <li className="details-items   flex items-center justify-between gap-6">
-                              <div className="left-cont w-1/2 px-5 py-3 capitalize font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                GTIN / EAN
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
+                                Geschwindigkeitsindex
                               </div>
-                              <div className="right-cont w-1/2 px-5 font-primary font-medium text-[14px] md:text-[16px] text-left text-[#404042]">
-                                {product.ean}
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.speedIndex || 'N/A'}
                               </div>
-                            </li>
-                          </ul>
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
+                                Kraftstoff
+                              </div>
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.fuel_class || 'N/A'}
+                              </div>
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
+                                Nasshaftung
+                              </div>
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.wet_grip || 'N/A'}
+                              </div>
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
+                                Geräusch
+                              </div>
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.noise_class || 'N/A'}
+                              </div>
+                            </div>
+                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
+                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
+                                EAN
+                              </div>
+                              <div className="text-[16px] font-medium text-[#1B1D22]">
+                                {product.ean || 'N/A'}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1423,7 +1561,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                 </div>
               </div>
             </div>
-            <div className="custom-container-full lg:pt-[55px] pt-9">
+            <div id="angebote" className="custom-container-full lg:pt-[55px] pt-9 scroll-mt-24">
               {/* name of each tab group should be unique */}
               <div className="custom-container relative flex md:flex-row gap-6 md:gap-2 flex-col items-start md:items-center md:justify-between max-sm:mb-6">
                 <div className="best-offer-vendor-sec-title">
@@ -1627,13 +1765,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                       target="_blank"
                                       rel="nofollow sponsored noopener noreferrer"
                                       onClick={onOfferExit}
+                                      className="lg:hidden block"
                                     >
-                                      <Image
-                                        src={offer.vendor_logo}
-                                        alt={`${offer.vendor} logo`}
-                                        width={140}
-                                        height={37}
-                                        loading="lazy"
+                                      <OfferVendorLogo
+                                        vendor={offer.vendor}
+                                        vendorLogo={offer.vendor_logo}
                                         className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
                                       />
                                     </a>
@@ -1647,12 +1783,9 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                       rel="nofollow sponsored noopener noreferrer"
                                       onClick={onOfferExit}
                                     >
-                                      <Image
-                                        src={offer.vendor_logo}
-                                        alt={`${offer.vendor} logo`}
-                                        width={140}
-                                        height={37}
-                                        loading="lazy"
+                                      <OfferVendorLogo
+                                        vendor={offer.vendor}
+                                        vendorLogo={offer.vendor_logo}
                                         className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
                                       />
                                     </a>
@@ -1665,8 +1798,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                         Zahlungsmethoden:
                                       </h6>
                                       <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
-                                        {(offer.payment_icons || []).map(
-                                          (icon: string, i: number) => {
+                                        {resolveOfferPaymentIcons(
+                                          offer.vendor,
+                                          offer.payment_icons,
+                                        ).map((icon: string, i: number) => {
                                             // Pretty tooltip name based on filename
                                             const m = icon.match(
                                               /\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i,
