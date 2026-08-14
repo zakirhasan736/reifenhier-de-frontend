@@ -35,6 +35,7 @@ const CustomSelect: React.FC<Props> = ({
   }, [open]);
 
   const selected = options.find(o => o.name === value);
+  const displayValue = selected?.name || (value ? value : placeholder);
 
   return (
 
@@ -51,7 +52,7 @@ const CustomSelect: React.FC<Props> = ({
         disabled={disabled}
       >
         <span>
-            {selected ? selected.name : placeholder}
+            {displayValue}
         </span>
         <span
           className={`arrow absolute right-0 w-7 flex justify-center items-center border-l-2 border-border-100 h-full bg-mono-0 top-0 ${

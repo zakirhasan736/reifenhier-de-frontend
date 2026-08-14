@@ -15,7 +15,8 @@ import { FiPlus } from 'react-icons/fi';
 import { AiOutlineMinus } from 'react-icons/ai';
 import GlobalSearch from '@/components/elements/search/globalSearch';
 
-const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
+const WP_API =
+  process.env.NEXT_PUBLIC_WP_API_URL || 'https://wp.reifexa.de/wp-json/wp/v2';
 
 /* ------------------------------------------
    TYPES

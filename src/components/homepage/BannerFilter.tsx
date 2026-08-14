@@ -22,10 +22,16 @@ interface FilterResponse {
   noises: FilterOption[];
 }
 
+const DEFAULT_KATEGORIES: FilterOption[] = [
+  { name: 'Sommerreifen' },
+  { name: 'Winterreifen' },
+  { name: 'Ganzjahresreifen' },
+];
+
 const FilterForm = () => {
   const router = useRouter();
 
-  const [kategorie, setKategories] = useState('Winterreifen');
+  const [kategorie, setKategories] = useState('Sommerreifen');
   const [width, setWidth] = useState('205');
   const [height, setHeight] = useState('55');
   const [diameter, setDiameter] = useState('16');
@@ -83,6 +89,10 @@ const FilterForm = () => {
           sensitivity: 'base',
         })
       );
+
+  const kategorieOptions = sortAlphaAsc(
+    data.kategories?.length ? data.kategories : DEFAULT_KATEGORIES
+  );
 
   const handleSearch = () => {
     if (
@@ -222,7 +232,7 @@ const FilterForm = () => {
                   value={kategorie}
                   onChange={setKategories} // ⬅️ no cascading resets
                   className="categories-select"
-                  options={sortAlphaAsc(data.kategories || [])}
+                  options={kategorieOptions}
                   placeholder="Auswählen..."
                 />
 
