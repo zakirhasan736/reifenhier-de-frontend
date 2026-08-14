@@ -12,7 +12,8 @@ interface Blog {
 }
 
 
-const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
+const WP_API =
+  process.env.NEXT_PUBLIC_WP_API_URL || 'https://wp.reifexa.de/wp-json/wp/v2';
 
 export default async function BlogsPage() {
   let blogs: Blog[] = [];
@@ -47,7 +48,9 @@ export default async function BlogsPage() {
         '/images/default-blog.jpg',
     }));
   } catch (error) {
-    console.error('❌ WP Blog Fetch Error:', error);
+    // SSL / DNS issues on wp.reifexa.de must not fail the production build.
+    const msg = error instanceof Error ? error.message : String(error);
+    console.warn('[WP] Blog fetch skipped:', msg);
   }
 
   return <NewArticles blogs={blogs} />;

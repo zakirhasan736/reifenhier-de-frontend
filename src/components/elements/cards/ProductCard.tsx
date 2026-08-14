@@ -20,6 +20,7 @@ import {
   buildVendorExitUrl,
   onVendorExitClick,
 } from '@/libs/analytics/vendorExit';
+import { formatEuro, toMoneyNumber } from '@/libs/money';
 
 interface RelatedCheaperItem {
   _id: string;
@@ -257,8 +258,10 @@ const wetMeta = getWetGripMeta(wet_grip);
               height={16}
               loading="lazy"
             />
-            {average_rating > 0 && (
-              <span>{average_rating.toFixed(1).replace('.', ',')}</span>
+            {Number(average_rating) > 0 && (
+              <span>
+                {Number(average_rating).toFixed(1).replace('.', ',')}
+              </span>
             )}
           </p>
 
@@ -497,10 +500,10 @@ const wetMeta = getWetGripMeta(wet_grip);
           <span className="text-[14px] font-normal font-secondary text-[#16171A]">
             Ab:
           </span>{' '}
-          {cheapest_offer === expensive_offer ? (
+          {toMoneyNumber(cheapest_offer) === toMoneyNumber(expensive_offer) ? (
             <>
               <span className="text-[18px] font-medium font-secondary text-[#404042]">
-                {search_price}
+                {formatEuro(search_price, { suffix: false })}
               </span>
               <span className="text-[20px] font-normal font-secondary text-[#404042]">
                 €
@@ -509,14 +512,14 @@ const wetMeta = getWetGripMeta(wet_grip);
           ) : (
             <>
               <span className="text-[18px] font-medium font-secondary text-[#404042]">
-                {cheapest_offer} €
+                {formatEuro(cheapest_offer)}
               </span>
               <span className="ml-3 text-[#C6C7CC]"></span>
               <span
                 style={{ textDecoration: 'line-through' }}
                 className="text-[16px] font-secondary font-normal text-[#404042] leading-[140%] text-line-through"
               >
-                {expensive_offer} €
+                {formatEuro(expensive_offer)}
               </span>{' '}
             </>
           )}
@@ -570,7 +573,11 @@ const wetMeta = getWetGripMeta(wet_grip);
               </h4>
               <ul className="competitor-product-lists flex flex-col">
                 {[...offers]
-                  .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+                  .sort(
+                    (a, b) =>
+                      (toMoneyNumber(a.price) ?? 0) -
+                      (toMoneyNumber(b.price) ?? 0)
+                  )
                   .slice(0, 3)
                   .map(item => {
                     return (
@@ -609,7 +616,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                           </a>
                         </div>
                         <span className="font-secondary font-normal text-[14px] text-left text-[#404042] leading-[140%]">
-                          <span>{item.price + ' €'}</span>
+                          <span>{formatEuro(item.price)}</span>
                         </span>
                       </li>
                     );

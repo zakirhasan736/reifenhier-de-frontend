@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import { formatEuro } from '@/libs/money';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de';
 
@@ -11,7 +12,7 @@ interface RelatedProduct {
   brand_name: string;
   product_image: string;
   dimensions: string;
-  search_price: number;
+  search_price: number | string;
   fuel_class: string;
   wet_grip: string;
   noise_class: string;
@@ -19,8 +20,8 @@ interface RelatedProduct {
   delivery_time: string;
   average_rating: number;
   rating_count: number;
-  cheapest_offer: number;
-  expensive_offer: number;
+  cheapest_offer: number | string;
+  expensive_offer: number | string;
   ean: string;
   product_url: string;
   brand_logo: string;
@@ -116,9 +117,9 @@ export default async function NotFound({
                 <div className="text-gray-600 text-xs line-clamp-2 mb-2">
                   {p.product_name}
                 </div>
-                {p.search_price && (
+                {formatEuro(p.search_price || p.cheapest_offer) && (
                   <div className="text-blue-600 font-bold text-sm">
-                    ab {p.search_price.toFixed(2)} €
+                    ab {formatEuro(p.search_price || p.cheapest_offer)}
                   </div>
                 )}
               </Link>

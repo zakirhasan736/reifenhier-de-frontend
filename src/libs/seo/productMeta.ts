@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { safeSeoImageUrl, SITE_URL, productCanonicalUrl } from '@/libs/seo/site';
+import { toMoneyNumber } from '@/libs/money';
 
 export interface Product {
   _id: string;
@@ -7,12 +8,12 @@ export interface Product {
   brand_logo: string;
   product_image: string;
   merchant_product_third_category: string; // Sommerreifen | Winterreifen | Ganzjahresreifen
-  search_price: number;
-  main_price?: number;
+  search_price: number | string;
+  main_price?: number | string;
   average_rating: number;
   rating_count: number;
-  cheapest_offer: number;
-  expensive_offer: number;
+  cheapest_offer: number | string;
+  expensive_offer: number | string;
   savings_percent: string;
   savings_amount?: number;
   related_cheaper?: unknown[];
@@ -51,8 +52,8 @@ export function isThinProduct(p: Product): boolean {
   const hasName = Boolean(p.brand_name && p.product_name);
   const hasMediaOrOffers =
     Boolean(p.product_image) ||
-    Number.isFinite(p.search_price) ||
-    Number.isFinite(p.cheapest_offer);
+    toMoneyNumber(p.search_price) != null ||
+    toMoneyNumber(p.cheapest_offer) != null;
 
   return !hasName || !hasMediaOrOffers;
 }
@@ -88,8 +89,9 @@ export function buildProductKeywords(p: Product): string[] {
     'Reifen 24 check',
   ].filter(Boolean) as string[];
 
-  if (Number.isFinite(p.cheapest_offer)) {
-    base.push(`ab ${p.cheapest_offer.toFixed(2)} €`);
+  const cheap = toMoneyNumber(p.cheapest_offer);
+  if (cheap != null) {
+    base.push(`ab ${cheap.toFixed(2)} €`);
   }
   if (size) base.push(`${size} günstig kaufen`);
 
@@ -120,12 +122,14 @@ export function buildProductDescription(p: Product): string {
   if (p.noise_class) eu.push(`Geräusch ${p.noise_class}`);
   if (eu.length) parts.push(eu.join(', ') + '.');
 
-  if (Number.isFinite(p.cheapest_offer) && Number.isFinite(p.expensive_offer)) {
-    parts.push(
-      `Preise ${p.cheapest_offer.toFixed(2)}–${p.expensive_offer.toFixed(2)} €.`
-    );
-  } else if (Number.isFinite(p.search_price)) {
-    parts.push(`ab ${p.search_price.toFixed(2)} €.`);
+  const cheap = toMoneyNumber(p.cheapest_offer);
+  const expensive = toMoneyNumber(p.expensive_offer);
+  const search = toMoneyNumber(p.search_price);
+
+  if (cheap != null && expensive != null) {
+    parts.push(`Preise ${cheap.toFixed(2)}–${expensive.toFixed(2)} €.`);
+  } else if (search != null) {
+    parts.push(`ab ${search.toFixed(2)} €.`);
   }
 
   return parts.join(' ').trim();
@@ -183,6 +187,9 @@ export function buildProductJsonLd(p: Product) {
     'https://schema.org/InStock';
   const pageUrl = productCanonicalUrl(p.slug);
   const seoImage = safeSeoImageUrl(p.product_image);
+  const cheap = toMoneyNumber(p.cheapest_offer);
+  const expensive = toMoneyNumber(p.expensive_offer);
+  const search = toMoneyNumber(p.search_price);
 
   return {
     '@context': 'https://schema.org',
@@ -240,14 +247,14 @@ export function buildProductJsonLd(p: Product) {
       '@type': 'AggregateOffer',
       url: pageUrl,
       priceCurrency: 'EUR',
-      lowPrice: Number.isFinite(p.cheapest_offer)
-        ? Number(p.cheapest_offer.toFixed(2))
-        : Number.isFinite(p.search_price)
-        ? Number(p.search_price.toFixed(2))
-        : undefined,
-      highPrice: Number.isFinite(p.expensive_offer)
-        ? Number(p.expensive_offer.toFixed(2))
-        : undefined,
+      lowPrice:
+        cheap != null
+          ? Number(cheap.toFixed(2))
+          : search != null
+            ? Number(search.toFixed(2))
+            : undefined,
+      highPrice:
+        expensive != null ? Number(expensive.toFixed(2)) : undefined,
       availability,
     },
   };
