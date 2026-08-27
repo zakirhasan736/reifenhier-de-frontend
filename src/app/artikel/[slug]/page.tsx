@@ -266,6 +266,7 @@ export default async function BlogDetailPage({
   }
 
   const wpTags = getTags(blog);
+  const parentCategory = getPrimaryCategory(blog);
   const plainTitle = blog.title.rendered.replace(/<[^>]+>/g, '');
   const mergedKeywords = buildArticleKeywords({
     title: plainTitle,
