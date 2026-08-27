@@ -344,7 +344,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {/* </Suspense> */}
           </ClientProviders>
         </main>
-        <script src="https://www.dwin2.com/pub.2614230.min.js"></script>
+        <Script id="awin-consent" strategy="beforeInteractive">
+          {`
+            window.AWIN = window.AWIN || {};
+            window.AWIN.Tracking = window.AWIN.Tracking || {};
+            window.AWIN.Tracking.AdvertiserConsent = true;
+          `}
+        </Script>
+        <Script
+          id="awin-mastertag"
+          src={`https://www.dwin2.com/pub.${process.env.NEXT_PUBLIC_AWIN_PUBLISHER_ID || '2985775'}.min.js`}
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
