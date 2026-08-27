@@ -25,6 +25,7 @@ import {
   onVendorExitClick,
 } from '@/libs/analytics/vendorExit';
 import { trackProductInterest } from '@/libs/push/priceAlerts';
+import { toMoneyNumber } from '@/libs/money';
 import PriceAlertToggle from '@/components/productpage/PriceAlertToggle';
 import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
 import ProductImageGallery from '@/components/productpage/ProductImageGallery';
@@ -316,9 +317,9 @@ const ProductSinglepage: React.FC<ProductProps> = ({
           : product.product_image,
         awin_image_url: product.awin_image_url,
         dimensions: product.dimensions,
-        search_price: product.search_price,
-        cheapest_offer: product.cheapest_offer,
-        expensive_offer: product.expensive_offer,
+        search_price: toMoneyNumber(product.search_price) ?? 0,
+        cheapest_offer: toMoneyNumber(product.cheapest_offer) ?? undefined,
+        expensive_offer: toMoneyNumber(product.expensive_offer) ?? undefined,
         savings_percent: product.savings_percent,
         wet_grip: product.wet_grip,
         speedIndex: product.speedIndex,

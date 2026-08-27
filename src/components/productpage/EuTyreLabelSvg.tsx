@@ -209,10 +209,10 @@ export default function EuTyreLabelSvg({
 
       <line x1="10" y1="106" x2="230" y2="106" stroke="#d0d0d0" />
 
-      <FuelPumpIcon x="18" y="118" />
+      <FuelPumpIcon x={18} y={118} />
       <ScaleArrows
-        x="14"
-        y="158"
+        x={14}
+        y={158}
         colors={FUEL_COLORS}
         selected={data.fuel}
         pointerSide="left"
@@ -220,10 +220,10 @@ export default function EuTyreLabelSvg({
 
       <line x1="120" y1="118" x2="120" y2="288" stroke="#d0d0d0" />
 
-      <WetCloudIcon x="138" y="118" />
+      <WetCloudIcon x={138} y={118} />
       <ScaleArrows
-        x="128"
-        y="158"
+        x={128}
+        y={158}
         colors={WET_COLORS}
         selected={data.wet}
         pointerSide="right"
@@ -231,7 +231,7 @@ export default function EuTyreLabelSvg({
 
       <line x1="10" y1="298" x2="230" y2="298" stroke="#d0d0d0" />
 
-      <NoiseIcon x="16" y="312" />
+      <NoiseIcon x={16} y={312} />
       <rect x="78" y="328" width="72" height="28" rx="2" fill="#fff" stroke="#111" />
       <text
         x="114"
