@@ -1,328 +1,396 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Product } from '@/types/product';
-
-import {
-  removeProduct,
-  clearProducts,
-  closeModal,
-  addProduct,
-} from '@/store/compareSlice';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import toast from 'react-hot-toast';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { AppDispatch, RootState } from '@/store/store';
+import OptimizedImage from '@/components/elements/OptimizedImage';
+import { productImageSrc } from '@/libs/productImage';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+import {
+  addProduct,
+  closeModal,
+  clearProducts,
+  removeProduct,
+  type CompareProduct,
+} from '@/store/compareSlice';
+import type { AppDispatch, RootState } from '@/store/store';
+import { formatEuro } from '@/libs/money';
+import {
+  comparePrice,
+  listingUrlForSize,
+  parseTyreSize,
+  pickWinners,
+  sameSize,
+  speedRank,
+  loadRank,
+} from '@/libs/compare';
+import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
 
-const downloadCSV = (products: Product[]) => {
-  const csvContent = [
-    [
-      'Name',
-      // 'Marke',
-      'Abmessungen',
-      'Preis',
-      'Nasshaftung',
-      'Kraftstoffeffizienz',
-      'Rollgeräusch in dB	',
-      'Geschwindigkeitsindex',
-      'Lastindex',
-    ],
-    ...products.map(p => [
-      p.product_name,
-      // p.brand_name,
-      p.dimensions,
-      p.search_price,
-      p.wet_grip,
-      p.fuel_class,
-      p.noise_class,
-      p.speedIndex,
-      p.lastIndex,
-    ]),
-  ]
-    .map(e => e.join(','))
-    .join('\n');
+function displayName(p: CompareProduct) {
+  return [p.brand_name, p.product_name].filter(Boolean).join(' ');
+}
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'comparison.csv';
-  link.click();
-};
-
-const CompareModal = ({ relatedProducts }: { relatedProducts: Product[] }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const products = useSelector(
-    (state: RootState) => state.compare.products as Product[]
+function Badge({ children, tone = 'blue' }: { children: ReactNode; tone?: 'blue' | 'green' | 'amber' }) {
+  const tones = {
+    blue: 'bg-[#EEF4FF] text-primary-100 border-primary-100/20',
+    green: 'bg-[#EEFAE5] text-[#2d8934] border-[#2d8934]/20',
+    amber: 'bg-[#FFF6E8] text-[#E66605] border-[#E66605]/20',
+  };
+  return (
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${tones[tone]}`}>
+      {children}
+    </span>
   );
+}
+
+export default function CompareModal() {
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: RootState) => state.compare.products);
+  const suggestions = useSelector((state: RootState) => state.compare.suggestions);
   const isOpen = useSelector((state: RootState) => state.compare.isOpen);
-  const [showRelated, setShowRelated] = useState(false);
-  const modalRef = useRef(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const winners = useMemo(() => pickWinners(products), [products]);
+  const base = products[0];
+  const mixedSizes = products.length > 1 && products.some(p => base && !sameSize(base, p));
+
+  const compatibleSuggestions = useMemo(() => {
+    if (!base) return [];
+    return suggestions
+      .filter(s => !products.some(p => p._id === s._id))
+      .filter(s => sameSize(base, s))
+      .slice(0, 6);
+  }, [suggestions, products, base]);
 
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !(modalRef.current as HTMLElement).contains(e.target as Node)
-      ) {
-        dispatch(closeModal());
-      }
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') dispatch(closeModal());
     };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
-    }
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
   }, [isOpen, dispatch]);
 
   if (!isOpen || products.length === 0) return null;
-  console.log(products);
-  const handleRemove = (id: string) => {
-    dispatch(removeProduct(id));
-    toast.success('Product removed');
+
+  const handleAdd = (prod: CompareProduct) => {
+    if (products.length >= 4) {
+      toast.error('Maximal 4 Reifen im Vergleich');
+      return;
+    }
+    dispatch(addProduct(prod));
+    toast.success('Zum Vergleich hinzugefügt');
   };
 
+  const cols = `minmax(140px,180px) repeat(${products.length}, minmax(180px,1fr))`;
+
   return (
-    <motion.div
-      className="fixed product-compared-table-box inset-0 bg-[#D9D9D933] bg-blur-2xl z-[99999] flex md:items-center md:justify-center items-end justify-center p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
+      className="fixed inset-0 z-[90] flex items-end justify-center bg-[#16171A]/45 p-0 md:items-center md:p-6"
+      onClick={() => dispatch(closeModal())}
     >
-      <motion.div
-        ref={modalRef}
-        className="bg-white main-popup-wrapper relative p-4 rounded-t-2xl md:rounded-lg w-full md:max-w-7xl md:max-h-[90vh] overflow-auto"
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 100, opacity: 0 }}
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="compare-title"
+        onClick={e => e.stopPropagation()}
+        className="flex max-h-[94vh] w-full max-w-6xl flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl md:rounded-3xl"
       >
-        <button
-          onClick={() => dispatch(closeModal())}
-          className="absolute top-3 right-4 text-[14px] !text-mono-100 cursor-pointer"
-        >
-          ✖
-        </button>
-
-        <h2 className="text-[22px] font-semibold mb-6 font-secondary text-secondary-100">
-          Produktvergleich
-        </h2>
-
-        <div className="overflow-x-auto">
-          <table className="table-auto min-w-full border-collapse text-sm">
-            <thead className="bg-gray-100 sticky top-0 z-10">
-              <tr>
-                {[
-                  'Bild',
-                  'Name',
-                  // 'Marke',
-                  'Abmessungen',
-                  'Preis',
-                  'Geschwindigkeitsindex',
-                  'Lastenindex',
-                  'Kraftstoffeffizienz',
-                  'Nasshaftung',
-                  'Rollgeräusch in dB',
-                  'Entfernen',
-                ].map((title, i) => (
-                  <th
-                    key={i}
-                    className="py-4 px-3 text-[13px] font-secondary text-left whitespace-nowrap  text-secondary-100"
-                  >
-                    {title}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {products.map(p => (
-                <tr
-                  key={p._id}
-                  className="text-left border-t  text-secondary-100"
-                >
-                  <td className="px-3 py-2 text-center min-w-[60px]  text-secondary-100">
-                    <Image
-                      src={p.product_image}
-                      alt={p.product_name}
-                      width={60}
-                      height={60}
-                    />
-                  </td>
-                  <td className="px-3 py-2 text-left text-[13px] whitespace-break-spaces min-w-[177px] xl:max-w-[130px] w-full  text-secondary-100">
-                    <Link href={`/produkte/${p.slug}`}>
-                      {[p.brand_name, p.product_name]
-                        .filter(Boolean)
-                        .join(' ')
-                        .toUpperCase()}
-                    </Link>
-                  </td>
-                  {/* <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap">
-                    {p.brand_name}
-                  </td> */}
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.dimensions}
-                  </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.search_price} €
-                  </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.speedIndex}
-                  </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.lastIndex}
-                  </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.fuel_class}
-                  </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.wet_grip}
-                  </td>
-                  <td className="px-3 py-2 text-center text-[13px] whitespace-nowrap  text-secondary-100">
-                    {p.noise_class}
-                  </td>
-
-                  <td className="px-3 py-2 text-[13px] whitespace-nowrap">
-                    <button
-                      onClick={() => handleRemove(p._id)}
-                      className="text-red-500 text-sm hover:underline cursor-pointer"
-                    >
-                      Entfernen
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="mt-4 flex flex-wrap justify-between items-center gap-2">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => downloadCSV(products)}
-              className="text-sm bg-gray-200 px-4 py-2 rounded-full cursor-pointer  text-secondary-100"
-            >
-              CSV herunterladen
-            </button>
-            <button
-              onClick={() => {
-                dispatch(clearProducts());
-                toast.success('Comparison cleared');
-              }}
-              className="text-sm text-gray-500 underline cursor-pointer"
-            >
-              Alle löschen
-            </button>
+        <div className="flex items-start justify-between gap-4 border-b border-[#F0F0F2] px-5 py-4 md:px-7">
+          <div>
+            <h2 id="compare-title" className="text-[22px] font-semibold text-[#16171A]">
+              Reifenvergleich
+            </h2>
+            <p className="mt-1 text-[14px] text-[#5A5B61]">
+              Preis, EU-Label und Größe nebeneinander — so finden Sie den passenden Reifen.
+            </p>
           </div>
           <button
+            type="button"
             onClick={() => dispatch(closeModal())}
-            className="bg-primary-100 text-white px-4 py-2 rounded-full max-w-[120px] w-full cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E4E5EA] text-[#16171A]"
+            aria-label="Schließen"
           >
-            Schließen
+            ×
           </button>
         </div>
 
-        {/* Related Products */}
-        <div className="mt-6 border-t pt-4">
-          <div className="mt-6 border-t pt-4">
-            <button
-              onClick={() => setShowRelated(!showRelated)}
-              className="text-sm text-primary-100 underline cursor-pointer font-medium"
-            >
-              {showRelated
-                ? 'Verwandte Produkte ausblenden'
-                : '➕ Weitere Produkte hinzufügen'}
-            </button>
+        <div className="overflow-auto px-5 py-4 md:px-7">
+          {mixedSizes ? (
+            <div className="mb-4 rounded-xl border border-[#F5D9B8] bg-[#FFF8F0] px-4 py-3 text-[13px] text-[#8A4B12]">
+              Unterschiedliche Größen im Vergleich. Für Ihr Auto sollten Breite, Höhe und Zoll übereinstimmen.
+            </div>
+          ) : base ? (
+            <div className="mb-4 rounded-xl border border-[#DCEBFF] bg-[#F5F9FF] px-4 py-3 text-[13px] text-[#1B4F8A]">
+              Vergleich für Größe <strong>{parseTyreSize(base).label}</strong>
+              {base.merchant_product_third_category
+                ? ` · ${base.merchant_product_third_category}`
+                : ''}
+              . Last- und Geschwindigkeitsindex dürfen gleich oder höher sein.
+            </div>
+          ) : null}
+
+          <div className="overflow-x-auto">
+            <div className="min-w-[640px]" style={{ display: 'grid', gridTemplateColumns: cols }}>
+              <div className="sticky left-0 z-10 bg-white p-3 text-[12px] font-semibold uppercase tracking-wide text-[#9AA0A8]">
+                Modell
+              </div>
+              {products.map(p => {
+                const recommended = winners.recommendedId === p._id;
+                const cheapest = winners.cheapestId === p._id;
+                const img = productImageSrc(p.product_image, p.awin_image_url);
+                return (
+                  <div key={p._id} className="border-l border-[#F0F0F2] p-3 text-center">
+                    <div className="relative mx-auto mb-3 flex h-28 items-center justify-center rounded-2xl bg-[#F7F7F7]">
+                      <OptimizedImage
+                        src={img.src}
+                        fallbacks={img.fallbacks}
+                        alt={displayName(p)}
+                        width={110}
+                        height={110}
+                        className="h-24 w-24 object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => dispatch(removeProduct(p._id))}
+                        className="absolute right-2 top-2 text-[12px] text-[#9AA0A8] hover:text-[#16171A]"
+                      >
+                        Entfernen
+                      </button>
+                    </div>
+                    <div className="mb-2 flex flex-wrap justify-center gap-1">
+                      {recommended ? <Badge>Empfehlung</Badge> : null}
+                      {cheapest ? <Badge tone="green">Bester Preis</Badge> : null}
+                    </div>
+                    <Link
+                      href={`/produkte/${p.slug}`}
+                      className="block text-[14px] font-semibold leading-snug text-[#16171A] hover:text-primary-100"
+                    >
+                      {displayName(p)}
+                    </Link>
+                  </div>
+                );
+              })}
+
+              <RowLabel>Preis</RowLabel>
+              {products.map(p => (
+                <Cell key={p._id} win={winners.cheapestId === p._id}>
+                  <span className="text-[20px] font-semibold text-[#16171A]">
+                    {formatEuro(comparePrice(p))}
+                  </span>
+                  {p.savings_percent &&
+                  p.savings_percent !== '0%' &&
+                  p.savings_percent !== '-0%' ? (
+                    <span className="mt-1 block text-[12px] font-medium text-[#E66605]">
+                      {p.savings_percent}
+                    </span>
+                  ) : null}
+                </Cell>
+              ))}
+
+              <RowLabel>Größe / Passform</RowLabel>
+              {products.map(p => {
+                const size = parseTyreSize(p);
+                const fits = base ? sameSize(base, p) : true;
+                return (
+                  <Cell key={p._id} win={fits}>
+                    <div className="font-medium text-[#16171A]">{size.label}</div>
+                    {fits ? (
+                      <Badge tone="green">Passend zur Auswahl</Badge>
+                    ) : (
+                      <Badge tone="amber">Andere Größe</Badge>
+                    )}
+                  </Cell>
+                );
+              })}
+
+              <RowLabel>Last- / Speedindex</RowLabel>
+              {products.map(p => {
+                const loadOk =
+                  !base ||
+                  loadRank(p.lastIndex) < 0 ||
+                  loadRank(p.lastIndex) >= loadRank(base.lastIndex);
+                const speedOk =
+                  !base ||
+                  speedRank(p.speedIndex) < 0 ||
+                  speedRank(p.speedIndex) >= speedRank(base.speedIndex);
+                return (
+                  <Cell key={p._id} win={loadOk && speedOk}>
+                    <div className="font-medium text-[#16171A]">
+                      {p.lastIndex || '—'}
+                      {p.speedIndex || ''}
+                    </div>
+                    {loadOk && speedOk ? (
+                      <span className="text-[12px] text-[#2d8934]">Für die gewählte Größe geeignet</span>
+                    ) : (
+                      <span className="text-[12px] text-[#E66605]">Index prüfen — ggf. zu niedrig</span>
+                    )}
+                  </Cell>
+                );
+              })}
+
+              <RowLabel>Kraftstoffeffizienz</RowLabel>
+              {products.map(p => {
+                const meta = getFuelEfficiencyMeta(p.fuel_class);
+                return (
+                  <Cell key={p._id} win={winners.bestFuelId === p._id}>
+                    <span className="text-[18px] font-bold" style={{ color: meta.color }}>
+                      {p.fuel_class || '—'}
+                    </span>
+                    <div className="text-[12px] text-[#5A5B61]">{meta.textDE}</div>
+                  </Cell>
+                );
+              })}
+
+              <RowLabel>Nasshaftung</RowLabel>
+              {products.map(p => {
+                const meta = getWetGripMeta(p.wet_grip);
+                return (
+                  <Cell key={p._id} win={winners.bestWetId === p._id}>
+                    <span className="text-[18px] font-bold" style={{ color: meta.color }}>
+                      {p.wet_grip || '—'}
+                    </span>
+                    <div className="text-[12px] text-[#5A5B61]">{meta.textDE}</div>
+                  </Cell>
+                );
+              })}
+
+              <RowLabel>Rollgeräusch</RowLabel>
+              {products.map(p => (
+                <Cell key={p._id} win={winners.quietestId === p._id}>
+                  <span className="font-medium text-[#16171A]">
+                    {p.noise_class || '—'}
+                    {String(p.noise_class || '').toLowerCase().includes('db') ? '' : ' dB'}
+                  </span>
+                </Cell>
+              ))}
+
+              <RowLabel></RowLabel>
+              {products.map(p => (
+                <div key={p._id} className="border-l border-[#F0F0F2] p-3 text-center">
+                  <Link
+                    href={`/produkte/${p.slug}`}
+                    className="inline-flex h-10 w-full items-center justify-center rounded-full bg-primary-100 text-[13px] font-semibold text-white"
+                    onClick={() => dispatch(closeModal())}
+                  >
+                    Angebote ansehen
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {showRelated && (
-            <div className="mt-4">
-              <div className="featured-product-list-area product-slides-area pr-[16px] pl-[10px] max-sm:pr-8 max-sm:pl-0 overflow-hidden">
-                {relatedProducts?.length > 0 ? (
-                  <Swiper
-                    spaceBetween={20}
-                    slidesPerView={1}
-                    navigation
-                    modules={[Navigation, Autoplay]}
-                    autoplay={{ delay: 3900, disableOnInteraction: false }}
-                    breakpoints={{
-                      640: { slidesPerView: 1, spaceBetween: 10 },
-                      768: { slidesPerView: 2, spaceBetween: 15 },
-                      1024: { slidesPerView: 3, spaceBetween: 20 },
-                    }}
+          {base ? (
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#F7F7F7] px-4 py-4">
+              <p className="text-[14px] text-[#404042]">
+                Weitere Reifen in <strong>{parseTyreSize(base).label}</strong> für Ihr Fahrzeug finden.
+              </p>
+              <Link
+                href={listingUrlForSize(base)}
+                className="inline-flex h-10 items-center rounded-full border border-primary-100 px-4 text-[13px] font-semibold text-primary-100"
+                onClick={() => dispatch(closeModal())}
+              >
+                Gleiche Größe suchen
+              </Link>
+            </div>
+          ) : null}
+
+          {compatibleSuggestions.length > 0 ? (
+            <div className="mt-6">
+              <h3 className="mb-3 text-[16px] font-semibold text-[#16171A]">
+                Passende Alternativen derselben Größe
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {compatibleSuggestions.map(prod => {
+                  const img = productImageSrc(prod.product_image, prod.awin_image_url);
+                  return (
+                  <div
+                    key={prod._id}
+                    className="flex items-center gap-3 rounded-2xl border border-[#E4E5EA] p-3"
                   >
-                    {relatedProducts.map(prod => {
-                      const isAlready = products.some(p => p._id === prod._id);
-
-                      const handleAdd = () => {
-                        if (products.length >= 4) {
-                          toast.error('Maximum of 4 products allowed');
-                          return;
-                        }
-                        if (isAlready) {
-                          toast.error('Already added');
-                          return;
-                        }
-                        dispatch(addProduct(prod));
-                        toast.success('Added to comparison');
-                      };
-
-                      return (
-                        <SwiperSlide key={prod._id}>
-                          <div className="p-3 border rounded flex items-center gap-4 bg-white shadow-sm min-h-[122px]">
-                            <Image
-                              src={prod.product_image}
-                              alt={prod.product_name}
-                              width={50}
-                              height={50}
-                            />
-                            <div className="flex-1">
-                              <p className="text-[13px] font-medium">
-                                {[
-                                  prod.brand_name,
-                                  prod.product_name.replace(
-                                    /^\d{3}\/\d{2} R\d{2}\s*/,
-                                    ''
-                                  ),
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')
-                                  .toUpperCase()}
-                              </p>
-                              <p className="text-[12px] text-gray-500">
-                                {prod.brand_name}
-                              </p>
-                            </div>
-                            <button
-                              onClick={handleAdd}
-                              disabled={isAlready}
-                              className={`px-3 py-1 text-sm rounded-full cursor-pointer ${
-                                isAlready
-                                  ? 'bg-green-100 text-green-700 cursor-not-allowed'
-                                  : 'bg-primary-100 text-white hover:bg-primary-200'
-                              }`}
-                            >
-                              {isAlready ? 'Hinzugefügt' : 'Hinzufügen'}
-                            </button>
-                          </div>
-                        </SwiperSlide>
-                      );
-                    })}
-                  </Swiper>
-                ) : (
-                  <p className="text-sm text-gray-400 mt-4">
-                    Keine verwandten Produkte verfügbar.
-                  </p>
-                )}
+                    <OptimizedImage
+                      src={img.src}
+                      fallbacks={img.fallbacks}
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 object-contain"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[13px] font-medium text-[#16171A]">
+                        {displayName(prod)}
+                      </p>
+                      <p className="text-[13px] text-primary-100">
+                        {formatEuro(comparePrice(prod))}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleAdd(prod)}
+                      className="rounded-full bg-primary-100 px-3 py-1.5 text-[12px] font-semibold text-white"
+                    >
+                      Hinzufügen
+                    </button>
+                  </div>
+                  );
+                })}
               </div>
             </div>
-          )}
+          ) : null}
         </div>
-      </motion.div>
-    </motion.div>
-  );
-};
 
-export default CompareModal;
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#F0F0F2] px-5 py-4 md:px-7">
+          <button
+            type="button"
+            onClick={() => {
+              dispatch(clearProducts());
+              toast.success('Vergleich geleert');
+            }}
+            className="text-[13px] text-[#5A5B61] underline underline-offset-2"
+          >
+            Alle entfernen
+          </button>
+          <button
+            type="button"
+            onClick={() => dispatch(closeModal())}
+            className="inline-flex h-10 items-center rounded-full bg-primary-100 px-5 text-[14px] font-semibold text-white"
+          >
+            Fertig
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RowLabel({ children }: { children?: ReactNode }) {
+  return (
+    <div className="sticky left-0 z-10 flex items-center border-t border-[#F0F0F2] bg-white p-3 text-[13px] font-medium text-[#5A5B61]">
+      {children}
+    </div>
+  );
+}
+
+function Cell({
+  children,
+  win,
+}: {
+  children: ReactNode;
+  win?: boolean;
+}) {
+  return (
+    <div
+      className={`border-l border-t border-[#F0F0F2] p-3 text-center ${
+        win ? 'bg-[#F4FBF0]' : 'bg-white'
+      }`}
+    >
+      {children}
+    </div>
+  );
+}

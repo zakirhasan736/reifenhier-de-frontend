@@ -75,19 +75,23 @@ export default function PriceAlertToggle({ productId, className = '' }: Props) {
       type="button"
       onClick={onToggle}
       disabled={busy}
-      className={`inline-flex h-[28px] items-center justify-center gap-1 rounded-full border px-2.5 text-[12px] font-medium leading-none whitespace-nowrap transition ${
+      className={`inline-flex h-[30px] items-center justify-center gap-1.5 rounded-full border px-3 text-[12px] font-semibold leading-none whitespace-nowrap transition ${
         enabled
-          ? 'border-primary-100 bg-primary-100 text-white hover:bg-primary-100'
+          ? 'border-primary-100 bg-primary-100 !text-white hover:opacity-90'
           : 'border-[#D6D9E0] bg-white text-[#1F2937] hover:bg-[#F5F7FF]'
       } ${className}`}
+      style={enabled ? { color: '#ffffff' } : undefined}
       aria-pressed={enabled}
+      aria-label={enabled ? 'Preisalarm aktiv' : 'Preisalarm aktivieren'}
     >
       {enabled ? (
-        <Check size={14} strokeWidth={2.5} className="text-white" />
+        <Check size={14} strokeWidth={2.5} color="#ffffff" />
       ) : (
         <Bell size={14} />
       )}
-      <span>Price alert</span>
+      <span className={enabled ? 'text-white' : undefined}>
+        {enabled ? 'Preisalarm aktiv' : 'Preisalarm'}
+      </span>
     </button>
   )
 }

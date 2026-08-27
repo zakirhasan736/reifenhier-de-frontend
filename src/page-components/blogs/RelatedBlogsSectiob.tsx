@@ -26,7 +26,7 @@ export default function BlogRelated({ blog }: { blog: WPBlog }) {
         if (!categoryId) return;
 
         const res = await fetch(
-          `${WP_API}/posts?categories=${categoryId}&exclude=${blog.id}&per_page=3&_embed`
+          `${WP_API}/posts?categories=${categoryId}&exclude=${blog.id}&per_page=8&_embed`
         );
         const data = await res.json();
         setRelated(data);
@@ -45,7 +45,7 @@ export default function BlogRelated({ blog }: { blog: WPBlog }) {
       <div className="custom-container">
         <h2 className="text-2xl font-semibold mb-8">Ähnliche Artikel</h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 min-[1100px]:grid-cols-4">
           {related.map((post: WPBlog) => {
             const media =
               post._embedded?.['wp:featuredmedia']?.[0]?.source_url ||

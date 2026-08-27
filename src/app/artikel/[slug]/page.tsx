@@ -2,7 +2,15 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import Image from 'next/image';
 import BlogRelated from '@/page-components/blogs/RelatedBlogsSectiob';
+import LatestBlogs from '@/components/homepage/Blogs';
 import Link from 'next/link';
+import MongoBlogArticle from '@/components/blogpage/MongoBlogArticle';
+import {
+  blogCoverSrc,
+  fetchMongoBlogBySlug,
+  fetchMongoBlogs,
+} from '@/libs/blogs/mongo';
+import { buildArticleKeywords } from '@/libs/seo/blogKeywords';
 
 /* ------------------------------------------
    WORDPRESS API TYPES
@@ -76,6 +84,53 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const mongoBlog = await fetchMongoBlogBySlug(slug);
+
+  if (mongoBlog) {
+    const title = `${mongoBlog.title} | Reifexa.de`;
+    const description = (mongoBlog.metaDescription || mongoBlog.title).slice(
+      0,
+      155
+    );
+    const featured = mongoBlog.coverImage
+      ? blogCoverSrc(mongoBlog.coverImage).startsWith('http')
+        ? blogCoverSrc(mongoBlog.coverImage)
+        : `${SITE_URL}${blogCoverSrc(mongoBlog.coverImage)}`
+      : `${SITE_URL}/images/blog-og-image.jpg`;
+    const canonical = `${SITE_URL}/artikel/${slug}`;
+    const keywords = buildArticleKeywords({
+      title: mongoBlog.title,
+      tags: mongoBlog.tags,
+      extra: ['Reifen Ratgeber 2026', 'Reifen Kaufberatung'],
+    });
+
+    return {
+      metadataBase: new URL(SITE_URL),
+      title,
+      description,
+      alternates: { canonical },
+      keywords,
+      robots: { index: true, follow: true },
+      openGraph: {
+        type: 'article',
+        locale: 'de_DE',
+        url: canonical,
+        siteName: 'Reifexa.de',
+        title,
+        description,
+        publishedTime: mongoBlog.createdAt,
+        modifiedTime: mongoBlog.updatedAt || mongoBlog.createdAt,
+        images: [{ url: featured, width: 1200, height: 630, alt: mongoBlog.title }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [featured],
+      },
+    };
+  }
+
   const blog = await fetchBlog(slug);
 
   if (!blog) {
@@ -101,37 +156,10 @@ function getCategories(blog: WPBlog): string[] {
 
   const wpTags = getTags(blog);
   const wpCats = getCategories(blog);
-  const titleWords = String(blog.title.rendered || '')
-    .replace(/<[^>]+>/g, '')
-    .split(/\s+/)
-    .map(w => w.trim())
-    .filter(w => w.length > 3)
-    .slice(0, 8);
-
-  /* --------------------------------------------
-      2️⃣ Fallback Keywords (used when missing)
-  --------------------------------------------- */
-  const fallbackKeywords = [
-    'Reifen',
-    'Reifen test',
-    'Reifen check',
-    'Reifen check 24',
-    'Reifen 24 check',
-    'Reifen Preisvergleich',
-    'Reifen Montage',
-    'Auto Reifen Ratgeber',
-    'Reifexa',
-    'Reifexa.de',
-    'PKW Reifen',
-    'Felgen & Reifen Wissen',
-  ];
-
-  /* --------------------------------------------
-      3️⃣ Merge + Deduplicate Keywords
-  --------------------------------------------- */
-  const mergedKeywords = Array.from(
-    new Set([...wpTags, ...wpCats, ...titleWords, ...fallbackKeywords])
-  );
+  const mergedKeywords = buildArticleKeywords({
+    title: String(blog.title.rendered || '').replace(/<[^>]+>/g, ''),
+    tags: [...wpTags, ...wpCats],
+  });
 
   const title =
     blog.acf?.meta_title ||
@@ -191,6 +219,14 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const mongoBlog = await fetchMongoBlogBySlug(slug);
+
+  if (mongoBlog) {
+    const { blogs: relatedAll } = await fetchMongoBlogs({ page: 1, limit: 12 });
+    const related = relatedAll.filter(b => b.slug !== slug).slice(0, 8);
+    return <MongoBlogArticle blog={mongoBlog} related={related} />;
+  }
+
   const blog = await fetchBlog(slug);
 
   if (!blog) {
@@ -230,35 +266,14 @@ export default async function BlogDetailPage({
   }
 
   const wpTags = getTags(blog);
-
-  /* --------------------------------------------
-      2️⃣ Fallback Keywords (used when missing)
-  --------------------------------------------- */
-  const fallbackKeywords = [
-    'Reifen',
-    'Reifen test',
-    'Reifen check',
-    'Reifen check 24',
-    'Reifen 24 check',
-    'Reifen Preisvergleich',
-    'Reifen Montage',
-    'Auto Reifen Ratgeber',
-    'Reifexa',
-    'Reifexa.de',
-    'PKW Reifen',
-    'Felgen & Reifen Wissen',
-  ];
-
-  /* --------------------------------------------
-      3️⃣ Merge + Deduplicate Keywords
-  --------------------------------------------- */
-  const mergedKeywords = Array.from(new Set([...wpTags, ...fallbackKeywords]));
-
-  const parentCategory = getPrimaryCategory(blog);
   const plainTitle = blog.title.rendered.replace(/<[^>]+>/g, '');
+  const mergedKeywords = buildArticleKeywords({
+    title: plainTitle,
+    tags: wpTags,
+  });
   const breadcrumbItems = [
     { name: 'Startseite', url: `${SITE_URL}/` },
-    { name: 'Artikel', url: `${SITE_URL}/artikel` },
+    { name: 'News & Testberichte', url: `${SITE_URL}/artikel` },
     ...(parentCategory
       ? [
           {
@@ -332,7 +347,7 @@ export default async function BlogDetailPage({
             <span>/</span>
 
             <Link href="/artikel" className="hover:text-primary-100 underline">
-              Artikel
+              News & Testberichte
             </Link>
 
             {parentCategory && (
@@ -378,6 +393,7 @@ export default async function BlogDetailPage({
 
       {/* RELATED POSTS */}
       <BlogRelated blog={blog} />
+      <LatestBlogs limit={8} />
 
       <Script id="blog-jsonld" type="application/ld+json">
         {JSON.stringify(jsonLd)}

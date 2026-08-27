@@ -1,26 +1,19 @@
-'use client';
-import React from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/elements/cards/ProductCard';
-import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { useGetFeaturedProductsQuery } from '@/store/api/featuredProductApi';
+import SsrCarousel from '@/components/elements/SsrCarousel';
+import type { Product } from '@/types/product';
 
-const FeaturedProducts: React.FC = () => {
-const { data, isLoading } = useGetFeaturedProductsQuery(undefined, {
-  refetchOnMountOrArgChange: false,
-});
-
-const title = data?.title || 'Our recommendation';
-const category = data?.category || 'Winterreifen';
-const productData = data?.products || [];
-
+const FeaturedProducts: React.FC<{
+  products?: Product[];
+  title?: string;
+  category?: string;
+}> = ({
+  products = [],
+  title = 'Our recommendation',
+  category = 'Winterreifen',
+}) => {
   return (
-    <section className="featured-product lg:pb-[70px] pb-14">
+    <section className="featured-product lg:py-[70px] py-14">
       <div className="custom-container">
         <div className="featured-product-content flex justify-between items-end mb-8">
           <div className="featured-product-left-content w-full">
@@ -33,48 +26,14 @@ const productData = data?.products || [];
             </p>
           </div>
         </div>
-      </div>
 
-      <div className="custom-container max-sm:pr-0">
-        <div className="featured-product-list-area product-slides-area md:pr-[16px] md:pl-[10px] pr-10 pl-0 overflow-hidden">
-          <Swiper
-            spaceBetween={20}
-            slidesPerView={1}
-            navigation
-            modules={[Navigation, Autoplay, Pagination]}
-            autoplay={{
-              delay: 3900,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            pagination={{
-              el: '.custom-swiper-pagination',
-              clickable: true,
-              renderBullet: (index, className) => {
-                return `<span class="${className}"></span>`;
-              },
-            }}
-            breakpoints={{
-              640: { slidesPerView: 1, spaceBetween: 10 },
-              768: { slidesPerView: 2, spaceBetween: 15 },
-              1024: { slidesPerView: 3, spaceBetween: 19 },
-              1100: { slidesPerView: 4, spaceBetween: 19 },
-            }}
-          >
-            {isLoading
-              ? Array.from({ length: 5 }).map((_, index) => (
-                  <SwiperSlide key={`skeleton-${index}`}>
-                    <ProductSkeletonCard />
-                  </SwiperSlide>
-                ))
-              : productData.map((product, index) => (
-                  <SwiperSlide key={index}>
-                    <ProductCard {...product} />
-                  </SwiperSlide>
-                ))}
-          </Swiper>
+        <div className="featured-product-list-area product-slides-area">
+          <SsrCarousel variant="products" autoplayMs={3900} ariaLabel={title}>
+            {(products ?? []).map((product, index) => (
+              <ProductCard key={product._id || index} {...product} />
+            ))}
+          </SsrCarousel>
         </div>
-        <div className="custom-swiper-pagination  md:hidden flex justify-center mt-6"></div>
         <div className="featured-product-right-content max-md:flex justify-center mt-5 mx-auto w-full">
           <Link
             href={{

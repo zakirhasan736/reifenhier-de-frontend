@@ -77,7 +77,11 @@ async function bounce(req: NextRequest, method: 'GET' | 'POST') {
 
     const location = res.headers.get('location')
     if (location) {
-      return NextResponse.redirect(location, 302)
+      const redirect = NextResponse.redirect(location, 302)
+      redirect.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
+      redirect.headers.set('X-Robots-Tag', 'noindex, nofollow')
+      redirect.headers.set('Referrer-Policy', 'no-referrer')
+      return redirect
     }
 
     // Fallback: send browser directly to backend /r (still better than /out)

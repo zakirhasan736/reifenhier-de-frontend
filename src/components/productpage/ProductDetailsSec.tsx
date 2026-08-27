@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
+import { useVisitorUuid } from '@/utils/uuidContext';
 import { MdAddShoppingCart } from 'react-icons/md';
 
 import {
@@ -13,30 +13,22 @@ import {
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
 import SocialShareButtons from '@/components/elements/SocialShareButtons';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectFade, FreeMode, Navigation, Thumbs } from 'swiper/modules';
-
-import 'swiper/css';
-import 'swiper/css/effect-fade';
-import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
-import 'swiper/swiper-bundle.css';
-import { useDispatch } from 'react-redux';
-import { addProduct, openModal } from '@/store/compareSlice';
-import { AppDispatch } from '@/store/store';
-import type { Swiper as SwiperClass } from 'swiper';
+import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
+import { AppDispatch, RootState } from '@/store/store';
+import { useDispatch, useSelector } from 'react-redux';
 import NotFound from '@/app/produkte/not-found';
 import OptimizedImage from '../elements/OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
 import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
-import PageViewTracker from '@/page-components/Home/PageViewTracker';
 import {
   buildVendorExitUrl,
   onVendorExitClick,
 } from '@/libs/analytics/vendorExit';
 import { trackProductInterest } from '@/libs/push/priceAlerts';
 import PriceAlertToggle from '@/components/productpage/PriceAlertToggle';
+import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
+import ProductImageGallery from '@/components/productpage/ProductImageGallery';
+import type { TyreLabelInfo } from '@/utils/euTyreLabel';
 
 const SiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -65,6 +57,7 @@ interface Offer {
   brand: string;
   vendor_logo: string;
   vendor: string;
+  vendor_id?: string;
   brand_name: string;
   product_category: string;
   product_name: string;
@@ -86,6 +79,7 @@ interface CheapestVendor {
   affiliate_product_cloak_url: string;
   vendor_id: string;
   vendor_logo: string;
+  price?: number;
 }
 
 interface Product {
@@ -93,9 +87,10 @@ interface Product {
   slug: string;
   product_name: string;
   brand_name: string;
-  product_image: string;
+  product_image: string | string[];
+  awin_image_url?: string;
   dimensions: string;
-  search_price: number;
+  search_price: number | string;
   fuel_class: string;
   wet_grip: string;
   noise_class: string;
@@ -103,8 +98,8 @@ interface Product {
   delivery_time: string;
   review_count: number;
   average_rating: number;
-  cheapest_offer: number;
-  expensive_offer: number;
+  cheapest_offer: number | string;
+  expensive_offer: number | string;
   savings_percent: string;
   related_cheaper: Product[];
   cheapest_vendor: CheapestVendor;
@@ -120,6 +115,7 @@ interface Product {
   lastIndex?: string;
   speedIndex?: string;
   offers?: Offer[];
+  tyre_label_info?: TyreLabelInfo | null;
 }
 interface IndexVariant {
   slug: string;
@@ -159,7 +155,10 @@ const parseMoneyEU = (val: MoneyLike): number => {
   return Number.isFinite(n) ? n : 0;
 };
 
-const formatEUR = (n: number) => `€${n.toFixed(2).replace('.', ',')}`;
+const formatEUR = (n: number) => {
+  if (!Number.isFinite(n)) return '';
+  return `€${n.toFixed(2).replace('.', ',')}`;
+};
 
 const buildProductFilterUrl = (filters: Record<string, string | undefined>) => {
   const params = new URLSearchParams();
@@ -279,9 +278,12 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const fuelMeta = getFuelEfficiencyMeta(product.fuel_class);
   const wetMeta = getWetGripMeta(product.wet_grip);
-  const uuidCookie = Cookies.get('uuid') || 'guest';
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
+  const uuidCookie = useVisitorUuid();
   const dispatch = useDispatch<AppDispatch>();
+  const compareProducts = useSelector(
+    (state: RootState) => state.compare.products
+  );
+  const isCompared = compareProducts.some(p => p._id === product._id);
 
   useEffect(() => {
     if (!product?._id) return;
@@ -292,23 +294,52 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     });
   }, [product?._id]);
   const handleCompareClick = () => {
+    const already = compareProducts.some(p => p._id === product._id);
+    if (already) {
+      dispatch(removeProduct(product._id));
+      toast.success('Aus dem Vergleich entfernt');
+      return;
+    }
+    if (compareProducts.length >= 4) {
+      toast.error('Maximal 4 Reifen im Vergleich');
+      dispatch(openModal());
+      return;
+    }
     dispatch(
       addProduct({
         _id: product._id,
         slug: product.slug,
         product_name: product.product_name,
         brand_name: product.brand_name,
-        product_image: product.product_image,
+        product_image: Array.isArray(product.product_image)
+          ? product.product_image[0]
+          : product.product_image,
+        awin_image_url: product.awin_image_url,
         dimensions: product.dimensions,
         search_price: product.search_price,
+        cheapest_offer: product.cheapest_offer,
+        expensive_offer: product.expensive_offer,
+        savings_percent: product.savings_percent,
         wet_grip: product.wet_grip,
         speedIndex: product.speedIndex,
         lastIndex: product.lastIndex,
         fuel_class: product.fuel_class,
         noise_class: product.noise_class,
+        width: product.width,
+        height: product.height,
+        diameter: product.diameter,
+        merchant_product_third_category:
+          product.merchant_product_third_category,
+        average_rating: product.average_rating,
+        in_stock: product.in_stock,
       })
     );
-    dispatch(openModal());
+    toast.success(
+      compareProducts.length === 0
+        ? 'Erster Reifen im Vergleich — wählen Sie einen zweiten'
+        : 'Zum Vergleich hinzugefügt'
+    );
+    if (compareProducts.length >= 1) dispatch(openModal());
   };
   // Get favorite product IDs (filter nulls defensively)
 
@@ -387,6 +418,15 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   const isFavorited = useMemo(() => {
     return wishlist.some(item => item._id === product._id);
   }, [wishlist, product._id]);
+
+  const cheapPrice = parseMoneyEU(
+    product.cheapest_vendor?.price ??
+      product.cheapest_offer ??
+      product.search_price,
+  );
+  const expensivePrice = parseMoneyEU(product.expensive_offer);
+  const showStrikePrice = expensivePrice > cheapPrice && cheapPrice > 0;
+  const offerCount = Array.isArray(product.offers) ? product.offers.length : 0;
 
   const handleToggleWishlist = async () => {
     try {
@@ -756,7 +796,6 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
         </section>
       ) : (
         <>
-          <PageViewTracker />
           <section className="product-singlepage-section overflow-hidden">
             <div className="custom-container w-full">
               <div className="product-breadcrumb-area pt-6 pb-8 max-sm:pb-4 flex items-center justify-start gap-3">
@@ -810,160 +849,50 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
               <div className="product-singlepage-cont-wrapper w-full flex items-start justify-between lg:gap-6 md:gap-5 gap-9 max-sm:flex-col">
                 <div className="product-singlepage-left-cont sticky  top-0 w-full">
                   <div className="swiper-product-slider-area relative">
-                    <div className="swiper-slides-view-area border border-border-100 bg-[#F7F7F7] rounded-[10px] md:p-8 p-6">
-                      <div className="product-slide-top-cont flex items-center justify-between">
-                        <div className="brand-logo flex items-start justify-start text-left">
-                          {product.brand_logo && product.brand_logo !== '0' ? (
-                            <Image
-                              src={product.brand_logo}
-                              alt={product.brand_name || ''}
-                              width={110}
-                              height={45}
-                            />
-                          ) : (
-                            <span className="font-bold text-primary-100 text-md">
-                              {product.brand_name}
-                            </span>
-                          )}
-                        </div>
-                        <div className="product-favorite-icon">
-                          <button
-                            onClick={handleToggleWishlist}
-                            className="cursor-pointer"
-                          >
-                            <Image
-                              src={
-                                isFavorited
-                                  ? '/images/icons/heart-filled.svg'
-                                  : '/images/icons/heart.svg'
-                              }
-                              alt="favorite"
-                              className="lg:w-6 h-auto w-5"
-                              width={32}
-                              height={32}
-                              loading="lazy"
-                            />
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="swiper-slider-view w-full relative">
-                        <Swiper
-                          spaceBetween={10}
-                          effect="fade"
-                          loop
-                          thumbs={{ swiper: thumbsSwiper }}
-                          modules={[EffectFade, FreeMode, Navigation, Thumbs]}
-                          breakpoints={{
-                            640: { slidesPerView: 1 },
-                            768: { slidesPerView: 1 },
-                            1024: { slidesPerView: 1 },
-                          }}
-                          className="thumbs w-full rounded-lg"
-                        >
-                          {product.product_image ? (
-                            Array.isArray(product.product_image) ? (
-                              product.product_image.map(
-                                (image: string, index: number) => (
-                                  <SwiperSlide key={index}>
-                                    <div className="slide-view-item flex justify-center">
-                                      <OptimizedImage
-                                        src={image}
-                                        alt="product image item"
-                                        className="lg:h-[417px] h-[218px] max-md:w-auto"
-                                        width={343}
-                                        height={417}
-                                        priority
-                                        fetchPriority="high"
-                                        fallback="/images/fallback-image.png"
-                                      />
-                                    </div>
-                                  </SwiperSlide>
-                                ),
-                              )
+                    <ProductImageGallery
+                      images={product.product_image}
+                      awinImageUrl={product.awin_image_url}
+                      alt={[product.brand_name, product.product_name]
+                        .filter(Boolean)
+                        .join(' ')}
+                      header={
+                        <div className="product-slide-top-cont flex items-center justify-between">
+                          <div className="brand-logo flex items-start justify-start text-left">
+                            {product.brand_logo && product.brand_logo !== '0' ? (
+                              <Image
+                                src={product.brand_logo}
+                                alt={product.brand_name || ''}
+                                width={110}
+                                height={45}
+                              />
                             ) : (
-                              <SwiperSlide key={0}>
-                                <div className="slide-view-item flex justify-center">
-                                  <OptimizedImage
-                                    src={product.product_image}
-                                    alt="product image item"
-                                    className="lg:h-[417px] h-[218px] max-md:w-auto object-contain"
-                                    width={343}
-                                    height={417}
-                                    priority
-                                    fetchPriority="high"
-                                    fallback="/images/fallback-image.png"
-                                  />
-                                </div>
-                              </SwiperSlide>
-                            )
-                          ) : null}
-                        </Swiper>
-                        <div className="selected-charity-image"></div>
-                      </div>
-                    </div>
-
-                    <div className="swiper-product-slide-tab-item mt-3 flex justify-center items-center">
-                      <Swiper
-                        onSwiper={setThumbsSwiper}
-                        loop={false}
-                        spaceBetween={12}
-                        slidesPerView={6}
-                        freeMode
-                        navigation={false}
-                        // autoplay={{ delay: 6000, disableOnInteraction: false }}
-                        watchSlidesProgress
-                        modules={[FreeMode, Navigation, Thumbs]}
-                        className="w-full rounded-lg"
-                        breakpoints={{
-                          640: { slidesPerView: 3, spaceBetween: 12 },
-                          738: { slidesPerView: 3, spaceBetween: 12 },
-                          1024: { slidesPerView: 3, spaceBetween: 12 },
-                        }}
-                      >
-                        {product.product_image ? (
-                          Array.isArray(product.product_image) ? (
-                            product.product_image.map(
-                              (image: string, index: number) => (
-                                <SwiperSlide key={index}>
-                                  <div className="slide-tab-item">
-                                    <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] md:py-3 py-2 px-3 md:px-4 flex justify-center">
-                                      <OptimizedImage
-                                        src={image}
-                                        alt="product image item"
-                                        className="w-[87px] xl:w-auto xl:h-[106px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
-                                        width={106}
-                                        height={106}
-                                        priority
-                                        fetchPriority="high"
-                                        fallback="/images/fallback-image.png"
-                                      />
-                                    </div>
-                                  </div>
-                                </SwiperSlide>
-                              ),
-                            )
-                          ) : (
-                            <SwiperSlide key={0}>
-                              <div className="slide-tab-item">
-                                <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] py-3 px-4 flex justify-center">
-                                  <OptimizedImage
-                                    src={product.product_image}
-                                    alt="product image item"
-                                    className="w-[87px] xl:w-auto xl:h-[106px] max-sm:h-[78px] h-[70px] object-cover md:object-contain xl:object-cover cursor-pointer"
-                                    width={106}
-                                    height={106}
-                                    priority
-                                    fetchPriority="high"
-                                    fallback="/images/fallback-image.png"
-                                  />
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          )
-                        ) : null}
-                      </Swiper>
-                    </div>
+                              <span className="font-bold text-primary-100 text-md">
+                                {product.brand_name}
+                              </span>
+                            )}
+                          </div>
+                          <div className="product-favorite-icon">
+                            <button
+                              onClick={handleToggleWishlist}
+                              className="cursor-pointer"
+                            >
+                              <Image
+                                src={
+                                  isFavorited
+                                    ? '/images/icons/heart-filled.svg'
+                                    : '/images/icons/heart.svg'
+                                }
+                                alt="favorite"
+                                className="lg:w-6 h-auto w-5"
+                                width={32}
+                                height={32}
+                                loading="lazy"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      }
+                    />
                   </div>
                 </div>
 
@@ -1114,20 +1043,20 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                   </div>
 
                   <div className="product-price-group mt-4 w-full">
-                    <div className="input-type-text flex w-full flex-nowrap items-center gap-2 text-left font-medium text-primary-70">
-                      {product.cheapest_offer === product.expensive_offer ? (
-                        <span className="whitespace-nowrap text-[20px] leading-none font-medium font-secondary text-[#404042] md:text-[24px]">
-                          {product.search_price} €
-                        </span>
-                      ) : (
+                    <div className="input-type-text flex w-full flex-wrap items-center gap-2 text-left font-medium text-primary-70">
+                      {showStrikePrice ? (
                         <div className="price-box flex items-center gap-2 whitespace-nowrap">
-                          <span className="text-[20px] leading-none font-medium font-secondary text-[#404042] md:text-[24px]">
-                            {product.cheapest_offer} €
+                          <span className="text-[20px] leading-none font-semibold font-secondary text-[#404042] md:text-[24px]">
+                            {formatEUR(cheapPrice)}
                           </span>
-                          <span className="text-[16px] leading-none font-medium font-secondary text-[#9AA0A8] line-through md:text-[18px]">
-                            {product.expensive_offer} €
+                          <span className="text-[16px] leading-none font-medium font-secondary text-[#9AA0A8] line-through md:text-[20px]">
+                            {formatEUR(expensivePrice)}
                           </span>
                         </div>
+                      ) : (
+                        <span className="whitespace-nowrap text-[20px] leading-none font-semibold font-secondary text-[#404042] md:text-[24px]">
+                          {formatEUR(cheapPrice)}
+                        </span>
                       )}
                       {product.savings_percent &&
                         product.savings_percent !== '0%' &&
@@ -1139,6 +1068,14 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             {product.savings_percent}
                           </span>
                         )}
+                      {offerCount > 1 && (
+                        <a
+                          href="#angebote"
+                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
+                        >
+                          Weitere Angebote anzeigen
+                        </a>
+                      )}
                       <PriceAlertToggle productId={product._id} />
                     </div>
 
@@ -1172,6 +1109,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               vendorId: product.cheapest_vendor?.vendor_id,
                               source: 'product-details-vendor-logo',
                               instruction: 'Zum Angebot',
+                              vendorPrice: product.cheapest_vendor?.price,
                             });
                           }}
                           className="inline-flex max-w-[160px] items-center rounded-md border border-[#E4E5EA] bg-white px-2 py-1 underline underline-offset-2 decoration-primary-100 hover:border-primary-100"
@@ -1190,12 +1128,12 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           className="h-[28px] w-auto max-w-[120px] object-contain"
                         />
                       )}
-                      {(product.offers?.length || 0) > 1 && (
+                      {offerCount > 1 && (
                         <a
                           href="#angebote"
                           className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
                         >
-                          Mehr ({product.offers?.length})
+                          Weitere Angebote ({offerCount})
                         </a>
                       )}
                     </div>
@@ -1204,6 +1142,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       {product.fuel_class && (
                         <>
                           <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
+                            <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                             <span
                               className="tooltip tooltip-top"
                               data-tip="Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch."
@@ -1229,6 +1168,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             >
                               {product.fuel_class}
                             </span>
+                            </a>
                           </li>
                           <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
                         </>
@@ -1236,6 +1176,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       {product.wet_grip && (
                         <>
                           <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
+                            <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                             <span
                               className="tooltip tooltip-top"
                               data-tip="Nasshaftung: Wie gut ist der Reifen bei Nässe."
@@ -1259,12 +1200,14 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             >
                               {product.wet_grip}
                             </span>
+                            </a>
                           </li>
                           <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
                         </>
                       )}
                       {product.noise_class && (
                         <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
+                          <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                           <span
                             className="tooltip tooltip-top"
                             data-tip="Rollgeräusch: Wie laut ist der Reifen beim Fahren."
@@ -1278,13 +1221,17 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             />
                           </span>{' '}
                           {product.noise_class} db
+                          </a>
                         </li>
                       )}
                     </ul>
                     {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
                     <div className="flex gap-2 w-full mt-2 flex-wrap">
                       {/* Feature Badges - DYNAMICALLY STYLED */}
-                      <div className="flex w-full gap-2">
+                      <a
+                        href="#eu-reifenlabel"
+                        className="flex w-full gap-2 hover:opacity-90"
+                      >
                         <div
                           style={{ backgroundColor: fuelMeta.bg }}
                           className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
@@ -1319,8 +1266,14 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             {wetMeta.textDE}
                           </span>
                         </div>
-                      </div>
+                      </a>
                     </div>
+                    <a
+                      href="#eu-reifenlabel"
+                      className="mt-3 inline-flex items-center rounded-full border border-primary-100 px-3 py-1.5 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
+                    >
+                      EU-Reifenlabel ansehen
+                    </a>
                   </div>
 
                   <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
@@ -1368,7 +1321,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       onClick={handleCompareClick}
                       className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
                     >
-                      Zum Vergleich hinzufügen
+                      {isCompared ? 'Im Vergleich' : 'Reifen vergleichen'}
                     </button>
                     <button
                       onClick={handleToggleWishlist}
@@ -1561,6 +1514,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                 </div>
               </div>
             </div>
+
             <div id="angebote" className="custom-container-full lg:pt-[55px] pt-9 scroll-mt-24">
               {/* name of each tab group should be unique */}
               <div className="custom-container relative flex md:flex-row gap-6 md:gap-2 flex-col items-start md:items-center md:justify-between max-sm:mb-6">
@@ -1573,7 +1527,13 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                   </p>
                 </div>
                 <div className="offer-vendor-navigator  items-baseline-last gap-5">
-                  <div className="flex items-center justify-end">
+                  <div className="flex flex-wrap items-center justify-end gap-3">
+                    <a
+                      href="#eu-reifenlabel"
+                      className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
+                    >
+                      EU-Reifenlabel ansehen
+                    </a>
                     <label
                       htmlFor="sort"
                       className="mr-2 text-sm text-[#16171A]"
@@ -1672,6 +1632,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               uuid: uuidCookie || 'guest',
                               from: 'product-offer-card',
                               vendor: offer.vendor,
+                              vendorId: offer.vendor_id,
                               brand: product.brand_name,
                               instruction: 'Zum Angebot',
                             });
@@ -1682,8 +1643,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 productName: product.product_name,
                                 brandName: product.brand_name,
                                 vendor: offer.vendor,
+                                vendorId: offer.vendor_id,
                                 source: 'product-offer-card',
                                 instruction: 'Zum Angebot',
+                                vendorPrice: price,
                               });
 
                             const showSavings =
@@ -1941,6 +1904,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                 </div>
               </div>
             </div>
+
+            <EuTyreLabelSection
+              product={product}
+              pageUrl={`${SiteUrl}/produkte/${product.slug}`}
+            />
           </section>
         </>
       )}

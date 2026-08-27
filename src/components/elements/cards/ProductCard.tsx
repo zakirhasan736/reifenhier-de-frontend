@@ -1,9 +1,11 @@
+'use client';
+
 import React, { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
-import Cookies from 'js-cookie';
+import { useVisitorUuid } from '@/utils/uuidContext';
 
 import {
   useAddWishlistMutation,
@@ -11,7 +13,7 @@ import {
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
 
-import { addProduct, openModal } from '@/store/compareSlice';
+import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
 import type { RootState, AppDispatch } from '@/store/store';
 import OptimizedImage from '../OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
@@ -21,6 +23,7 @@ import {
   onVendorExitClick,
 } from '@/libs/analytics/vendorExit';
 import { formatEuro, toMoneyNumber } from '@/libs/money';
+import { productImageSrc } from '@/libs/productImage';
 
 interface RelatedCheaperItem {
   _id: string;
@@ -32,7 +35,8 @@ interface ProductCardProps {
   _id: string;
   slug: string;
   brand_logo: string;
-  product_image: string;
+  product_image: string | string[];
+  awin_image_url?: string;
   merchant_product_third_category: string;
   brand_name: string;
   search_price: number;
@@ -52,6 +56,11 @@ interface ProductCardProps {
   showCompareButton?: boolean;
   offers?: Offer[];
   isPriority?: boolean;
+  width?: string;
+  height?: string;
+  diameter?: string;
+  lastIndex?: string;
+  speedIndex?: string;
 }
 interface Offer {
   brand: string;
@@ -98,6 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   slug,
   brand_logo,
   product_image,
+  awin_image_url,
   merchant_product_third_category,
   brand_name,
   search_price,
@@ -112,11 +122,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
   wet_grip,
   noise_class,
   in_stock,
-  showCompareButton = false,
+  showCompareButton = true,
   isPriority = true,
+  width,
+  height,
+  diameter,
+  lastIndex,
+  speedIndex,
 }) => {
 
   const dispatch = useDispatch<AppDispatch>();
+  const uuid = useVisitorUuid();
+  const { src: mainImage, fallbacks: imageFallbacks } = productImageSrc(
+    product_image,
+    awin_image_url
+  );
 
   const { data: wishlistData } = useGetWishlistQuery();
   const [addWishlist] = useAddWishlistMutation();
@@ -151,14 +171,18 @@ const wetMeta = getWetGripMeta(wet_grip);
   );
 
   const isAlreadyCompared = compareProducts.find(p => p._id === _id);
-  const handleCompare = () => {
+  const handleCompare = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (isAlreadyCompared) {
-      toast.error('Produkt bereits hinzugefügt');
+      dispatch(removeProduct(_id));
+      toast.success('Aus dem Vergleich entfernt');
       return;
     }
 
     if (compareProducts.length >= 4) {
-      toast.error('Maximal 4 Produkte im Vergleich zulässig');
+      toast.error('Maximal 4 Reifen im Vergleich');
+      dispatch(openModal());
       return;
     }
 
@@ -168,16 +192,32 @@ const wetMeta = getWetGripMeta(wet_grip);
         slug,
         product_name,
         brand_name,
-        product_image,
+        product_image: mainImage,
+        awin_image_url,
         dimensions,
         search_price,
+        cheapest_offer,
+        expensive_offer,
+        savings_percent,
         fuel_class,
         wet_grip,
         noise_class,
+        lastIndex,
+        speedIndex,
+        width,
+        height,
+        diameter,
+        merchant_product_third_category,
+        average_rating,
+        in_stock,
       })
     );
-    dispatch(openModal());
-    toast.success('Produkt zum Vergleich hinzugefügt');
+    toast.success(
+      compareProducts.length === 0
+        ? 'Erster Reifen im Vergleich — wählen Sie einen zweiten'
+        : 'Zum Vergleich hinzugefügt'
+    );
+    if (compareProducts.length >= 1) dispatch(openModal());
   };
 
   const gradeFuelColor = (grade: string) => {
@@ -245,9 +285,8 @@ const wetMeta = getWetGripMeta(wet_grip);
     }
   };
  
-  const uuidCookie = Cookies.get('uuid') || 'guest';
   return (
-    <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex flex-col duration-300">
+    <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex h-full w-full flex-col duration-300">
       <div className="p-card-header py-3 px-4 relative">
         <div className="status-area absolute top-0 z-50 left-0 w-full py-3 px-4 flex items-center justify-between">
           <p className="review-rating text-[14px] font-normal font-secondary leading-[150%] text-[#404042] flex items-center gap-[3px]">
@@ -287,12 +326,13 @@ const wetMeta = getWetGripMeta(wet_grip);
               className="w-auto h-[159px] max-md:h-[159px] object-cover"
               width={320}
               height={159}
-              src={product_image}
+              src={mainImage}
               alt={`${brand_name} ${product_name}`}
               fetchPriority="high"
               priority={isPriority}
               sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
-              fallback="/images/fallback-product.png"
+              fallbacks={imageFallbacks}
+              fallback="/images/realistic-complete-set-car-wheels-2.png"
             />
           </Link>
         </div>
@@ -541,22 +581,23 @@ const wetMeta = getWetGripMeta(wet_grip);
             <button
               type="button"
               onClick={handleCompare}
-              className="flex items-center gap-2 mt-3 text-[14px] font-normal font-secondary text-primary-100 justify-center w-full cursor-pointer"
+              className={`flex items-center gap-2 mt-3 text-[14px] font-medium font-secondary justify-center w-full cursor-pointer ${
+                isAlreadyCompared ? 'text-[#2d8934]' : 'text-primary-100'
+              }`}
             >
               {isAlreadyCompared ? (
                 <>
-                  <span className="text-green-600">✔</span> Zum Vergleich
-                  hinzugefügt
+                  <span aria-hidden>✔</span> Im Vergleich
                 </>
               ) : (
                 <>
                   <Image
                     src="/images/icons/tabler_plus.svg"
-                    alt="Add to comparison"
+                    alt=""
                     width={20}
                     height={20}
                   />{' '}
-                  Zum Vergleich hinzufügen
+                  Vergleichen
                 </>
               )}
             </button>
@@ -590,7 +631,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                             href={buildVendorExitUrl({
                               token: item.affiliate_product_cloak_url,
                               productId: _id,
-                              uuid: uuidCookie || 'guest',
+                              uuid,
                               from: 'product-card',
                               vendor: item.vendor,
                               vendorId: item.vendor_id,

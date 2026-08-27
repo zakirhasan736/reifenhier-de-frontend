@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
+import { getOrCreateUuid } from '@/utils/uuid';
 
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
 
@@ -11,7 +11,8 @@ export function usePageView(source = 'web') {
 
   useEffect(() => {
     if (!API || !pathname) return;
-    const uuid = Cookies.get('uuid') || 'guest';
+    const uuid = getOrCreateUuid();
+    if (!uuid || uuid === 'guest') return;
     const body = JSON.stringify({
       uuid,
       page: pathname,

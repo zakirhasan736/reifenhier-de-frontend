@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie'
+import { getOrCreateUuid } from '@/utils/uuid'
 import { trackProductInterest } from '@/libs/push/priceAlerts'
 
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
@@ -24,7 +24,7 @@ export function buildVendorExitUrl(params: VendorExitParams): string {
   const q = new URLSearchParams()
   q.set('t', token)
   if (params.productId) q.set('product', params.productId)
-  q.set('uuid', params.uuid || Cookies.get('uuid') || 'guest')
+  q.set('uuid', params.uuid || getOrCreateUuid())
   if (params.from) q.set('from', params.from)
   if (params.vendor) q.set('vendor', params.vendor)
   if (params.vendorId) q.set('vendorId', params.vendorId)
@@ -39,7 +39,7 @@ export function buildVendorExitUrl(params: VendorExitParams): string {
 export function trackBehavior(payload: Record<string, unknown>) {
   try {
     const body = JSON.stringify({
-      uuid: Cookies.get('uuid') || 'guest',
+      uuid: getOrCreateUuid(),
       ...payload,
     })
     if (typeof navigator !== 'undefined' && navigator.sendBeacon && API) {

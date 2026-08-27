@@ -27,18 +27,25 @@ export interface Product {
   fuel_class?: string;
   wet_grip?: string;
   noise_class?: string;
+  width?: string;
+  height?: string;
+  diameter?: string;
+  lastIndex?: string;
+  speedIndex?: string;
 }
 
 export type FullProduct = Product;
 
 // --- small utilities ---
-function extractSize(p: Product): string | undefined {
+export function extractSize(p: { product_name?: string; dimensions?: string }): string | undefined {
   const source = `${p.product_name} ${p.dimensions || ''}`;
   const m = source.match(/\b\d{3}\/\d{2}\s?R?\s?\d{2}\b/i);
   return m ? m[0].replace(/\s+/g, ' ').toUpperCase() : undefined;
 }
 
-function normalizeSeason(p: Product): string | undefined {
+export function normalizeSeason(p: {
+  merchant_product_third_category?: string
+}): string | undefined {
   const s = (p.merchant_product_third_category || '').toLowerCase();
   if (s.includes('sommer')) return 'Sommerreifen';
   if (s.includes('winter')) return 'Winterreifen';
@@ -59,62 +66,86 @@ export function isThinProduct(p: Product): boolean {
 }
 
 // --- Keyword builder ---
-export function buildProductKeywords(p: Product): string[] {
-  const season = normalizeSeason(p);
-  const size = extractSize(p);
-  const brand = (p.brand_name || '').trim();
+export function buildProductKeywords(p: Partial<Product> & { brand_name?: string; product_name?: string }): string[] {
+  const season = normalizeSeason(p)
+  const size = extractSize(p)
+  const brand = (p.brand_name || '').trim()
+  const name = (p.product_name || '').trim()
   const modelGuess = brand
-    ? p.product_name.replace(new RegExp(`^${brand}\\s*`, 'i'), '').trim()
-    : p.product_name;
+    ? name.replace(new RegExp(`^${brand}\\s*`, 'i'), '').trim()
+    : name
+  const width = p.width?.trim()
+  const height = p.height?.trim()
+  const diameter = p.diameter?.trim()
+  const lastIndex = p.lastIndex?.trim()
+  const speedIndex = p.speedIndex?.trim()
+  const ean = (p.ean || '').trim()
+  const year = '2026'
 
-  const base = [
-    `${brand} ${modelGuess}`.trim(),
-    size ? `${brand} ${modelGuess} ${size}`.trim() : undefined,
-    season ? `${brand} ${modelGuess} ${season}` : undefined,
-    size ? `${season || 'Reifen'} ${size} Preisvergleich` : undefined,
-    `${brand} Reifen günstig`,
-    `${brand} ${modelGuess} Test`,
-    `${brand} ${modelGuess} Erfahrungen`,
-    `${brand} ${modelGuess} Bewertung`,
-    `EU Reifenlabel ${brand} ${modelGuess}`,
-    p.fuel_class ? `Rollwiderstand ${p.fuel_class}` : undefined,
-    p.wet_grip ? `Nasshaftung ${p.wet_grip}` : undefined,
-    p.noise_class ? `Reifengeräusch ${p.noise_class}` : undefined,
-    'Reifen online kaufen',
-    'Reifenpreisvergleich',
+  const unique: string[] = [
+    [brand, modelGuess].filter(Boolean).join(' '),
+    [brand, modelGuess, size].filter(Boolean).join(' '),
+    [brand, modelGuess, season].filter(Boolean).join(' '),
+    size ? `${size} Preisvergleich` : '',
+    size ? `${size} günstig kaufen` : '',
+    size ? `${size} Reifen Test ${year}` : '',
+    size && season ? `${season} ${size} Preisvergleich` : '',
+    size && brand ? `${brand} ${size} Vergleich` : '',
+    size && brand ? `${brand} ${size} günstig` : '',
+    brand ? `${brand} Reifen günstig` : '',
+    brand ? `${brand} ${modelGuess} Test` : '',
+    brand ? `${brand} ${modelGuess} Erfahrungen` : '',
+    brand ? `${brand} ${modelGuess} Bewertung` : '',
+    brand ? `${brand} ${modelGuess} kaufen` : '',
+    brand ? `EU Reifenlabel ${brand} ${modelGuess}` : '',
+    season ? `${season} Test ${year}` : '',
+    season ? `${season} Angebote ${year}` : '',
+    season ? `${season} Preisvergleich` : '',
+    lastIndex && speedIndex ? `${lastIndex}${speedIndex}` : '',
+    lastIndex && speedIndex && size
+      ? `${size} ${lastIndex}${speedIndex}`
+      : '',
+    width && height && diameter ? `${width}/${height} R${diameter}` : '',
+    p.fuel_class ? `Rollwiderstand ${p.fuel_class}` : '',
+    p.wet_grip ? `Nasshaftung ${p.wet_grip}` : '',
+    p.noise_class ? `Reifengeräusch ${p.noise_class}` : '',
+    ean ? `EAN ${ean}` : '',
+    'Reifen Preisvergleich',
+    'Reifen online vergleichen',
+    'Reifen Händler vergleichen',
+    'günstigste Reifen Angebote',
+    'Reifen kaufen Deutschland',
     'reifexa',
-    'reifexa.de',
-    'Reifen check',
-    'Reifen check 24',
-    'Reifen 24 check',
-  ].filter(Boolean) as string[];
+    'reifenhier',
+    'reifencheck',
+  ].filter(Boolean)
 
-  const cheap = toMoneyNumber(p.cheapest_offer);
-  if (cheap != null) {
-    base.push(`ab ${cheap.toFixed(2)} €`);
-  }
-  if (size) base.push(`${size} günstig kaufen`);
+  const cheap = toMoneyNumber(p.cheapest_offer)
+  if (cheap != null) unique.push(`ab ${cheap.toFixed(2)} €`)
 
-  return Array.from(new Set(base));
+  return Array.from(
+    new Set(unique.map(k => k.replace(/\s+/g, ' ').trim()).filter(Boolean))
+  )
 }
 
 // --- Title / Description ---
-export function buildProductTitle(p: Product): string {
-  const size = extractSize(p);
-  const main = [p.brand_name, p.product_name].filter(Boolean).join(' ').trim();
-  const suffix = '– Preisvergleich';
-  const includeSize = size && !main.toUpperCase().includes(size);
-  return `${main}${includeSize ? ` ${size}` : ''} ${suffix}`.trim();
+export function buildProductTitle(p: Partial<Product> & { brand_name?: string; product_name?: string }): string {
+  const size = extractSize(p)
+  const season = normalizeSeason(p)
+  const main = [p.brand_name, p.product_name].filter(Boolean).join(' ').trim()
+  const includeSize = size && !main.toUpperCase().includes(size)
+  const bits = [main, includeSize ? size : '', season].filter(Boolean)
+  return `${bits.join(' ')} im Preisvergleich | Reifexa.de`.replace(/\s+/g, ' ').trim()
 }
 
-export function buildProductDescription(p: Product): string {
+export function buildProductDescription(p: Partial<Product> & { brand_name?: string; product_name?: string }): string {
   const season = normalizeSeason(p);
   const size = extractSize(p);
   const parts: string[] = [];
 
   parts.push(`${p.brand_name} ${p.product_name}${size ? ' ' + size : ''}`);
   if (season) parts.push(season);
-  parts.push('im Test & Preisvergleich.');
+  parts.push('im Händler-Preisvergleich auf Reifexa.de.')
 
   const eu: string[] = [];
   if (p.wet_grip) eu.push(`Nasshaftung ${p.wet_grip}`);

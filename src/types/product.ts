@@ -5,6 +5,7 @@ export interface Product {
   product_name: string;
   brand_name: string;
   product_image: string;
+  awin_image_url?: string;
   dimensions: string;
   search_price: number;
   fuel_class: string;
@@ -27,6 +28,16 @@ export interface Product {
   diameter?: string;
   lastIndex?: string;
   speedIndex?: string;
+  tyre_label_info?: {
+    supplier?: string | null;
+    identifier?: string | null;
+    size?: string | null;
+    efficiency_class?: string | null;
+    wet_grip_class?: string | null;
+    noise_level_db?: string | number | null;
+    noise_class?: string | null;
+    snow_icon?: boolean | null;
+  } | null;
   savings_percent: string;
   savings_amount: number;
   related_cheaper: [];

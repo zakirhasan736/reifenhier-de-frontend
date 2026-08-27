@@ -4,13 +4,16 @@ import Script from 'next/script';
 import ProductSinglepage from '@/components/productpage/ProductDetailsSec';
 import HowItWorks from '@/components/homepage/HowItWorks';
 import RelatedProducts from '@/components/productpage/RelatedProducts';
-import CompareFloatingButton from '@/components/productpage/CompareFloatingButton';
-import CompareModal from '@/components/productpage/CompareModal';
 import {
   productCanonicalUrl,
   safeSeoImageUrl,
   SITE_URL,
 } from '@/libs/seo/site';
+import {
+  buildProductDescription,
+  buildProductKeywords,
+  buildProductTitle,
+} from '@/libs/seo/productMeta';
 
 // ---- Config ----
 const API = (
@@ -97,6 +100,16 @@ interface Product {
   lastIndex?: string;
   speedIndex?: string;
   offers?: Offer[];
+  tyre_label_info?: {
+    supplier?: string | null;
+    identifier?: string | null;
+    size?: string | null;
+    efficiency_class?: string | null;
+    wet_grip_class?: string | null;
+    noise_level_db?: string | number | null;
+    noise_class?: string | null;
+    snow_icon?: boolean | null;
+  } | null;
 }
 
 interface RelatedProduct {
@@ -222,6 +235,10 @@ function buildKeywords(p?: SeoProduct): string[] {
     return [
       'reifexa',
       'reifexa.de',
+      'reifenhier',
+      'reifenhier.de',
+      'reifencheck',
+      'reifencheck.de',
       'reifen',
       'reifen preisvergleich',
       'günstige reifen',
@@ -259,6 +276,10 @@ function buildKeywords(p?: SeoProduct): string[] {
     'günstige reifen',
     'reifexa',
     'reifexa.de',
+    'reifenhier',
+    'reifenhier.de',
+    'reifencheck',
+    'reifencheck.de',
     'reifen test',
     'reifen marken',
     'reifen modelle',
@@ -489,10 +510,10 @@ export async function generateMetadata({
     };
   }
 
-  const title = fallbackTitle(product);
-  const description = fallbackDescription(product);
+  const title = buildProductTitle(product);
+  const description = buildProductDescription(product);
   const canonical = productCanonicalUrl(product.slug);
-  const keywords = buildKeywords(product);
+  const keywords = buildProductKeywords(product);
   // Never put vendor CDN / redirecting image URLs into OG/Twitter (indexing errors)
   const ogImage = safeSeoImageUrl(product.product_image);
   const ogAlt =
@@ -562,8 +583,6 @@ export default async function ProductPage({
           relatedProductData={relatedProducts ?? []}
           loading={false}
         />
-        <CompareFloatingButton />
-        <CompareModal relatedProducts={relatedProducts ?? []} />
       </div>
       {/* WebPage Schema */}
       <Script

@@ -220,7 +220,7 @@ export default function TermsPage() {
           about: { '@id': 'https://www.reifexa.de/#org' },
         })}
       </Script>
-      <NewArticlesWrapper />
+      <NewArticlesWrapper limit={8} />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/libs/seo/site'
+import { fetchMongoBlogs } from '@/libs/blogs/mongo'
 
 const wpUrl = (
   process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://wp.reifexa.de'
@@ -49,8 +50,31 @@ export default async function sitemap(props: {
   const id = Number(await props.id) || 0
   const page = id + 1
   const posts = await fetchWpPosts(page)
+  const mongo =
+    id === 0 ? await fetchMongoBlogs({ page: 1, limit: 100 }) : { blogs: [] }
 
-  if (posts.length === 0) {
+  const wpEntries = posts.map(post => ({
+    url: `${SITE_URL}/artikel/${encodeURIComponent(post.slug)}`,
+    lastModified: new Date(post.modified || post.date || Date.now()),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  const mongoEntries = mongo.blogs.map(blog => ({
+    url: `${SITE_URL}/artikel/${encodeURIComponent(blog.slug)}`,
+    lastModified: new Date(blog.updatedAt || blog.createdAt || Date.now()),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  const seen = new Set<string>()
+  const merged = [...mongoEntries, ...wpEntries].filter(entry => {
+    if (seen.has(entry.url)) return false
+    seen.add(entry.url)
+    return true
+  })
+
+  if (merged.length === 0) {
     return id === 0
       ? [
           {
@@ -63,10 +87,6 @@ export default async function sitemap(props: {
       : []
   }
 
-  return posts.map(post => ({
-    url: `${SITE_URL}/artikel/${encodeURIComponent(post.slug)}`,
-    lastModified: new Date(post.modified || post.date || Date.now()),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }))
+  return merged
 }
+

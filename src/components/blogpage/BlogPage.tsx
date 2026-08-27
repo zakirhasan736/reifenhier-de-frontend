@@ -5,27 +5,28 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { blogCoverSrc, BLOGS_PER_PAGE } from '@/libs/blogs/mongo';
+import BlogCoverImage from '@/components/blogpage/BlogCoverImage';
 
-const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
-
-interface Blog {
-  id: number;
+export interface BlogCard {
+  id: string;
   slug: string;
+  title: string;
   date: string;
-  title: { rendered: string };
-  excerpt?: { rendered: string };
-  _embedded?: {
-    'wp:featuredmedia'?: Array<{ source_url?: string }>;
-  };
+  coverImage: string;
 }
 
 interface BlogPageProps {
-  blogs: Blog[];
+  blogs: BlogCard[];
   total: number;
   currentPage: number;
   parentSlug: string | null;
   subSlug: string | null;
 }
+
+const apiUrl =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
+  'http://localhost:8001';
 
 export default function BlogPage({
   blogs: initialBlogs,
@@ -36,17 +37,19 @@ export default function BlogPage({
 }: BlogPageProps) {
   const router = useRouter();
 
-  const limit = 6;
-  const totalPages = Math.ceil(initialTotal / limit);
+  const limit = BLOGS_PER_PAGE;
+  const totalPages = Math.max(1, Math.ceil(initialTotal / limit));
 
   const [search, setSearch] = useState('');
   const [blogs, setBlogs] = useState(initialBlogs);
   const [total, setTotal] = useState(initialTotal);
   const [loading, setLoading] = useState(false);
 
-  /* ------------------------------------
-     LIVE SEARCH
-  ------------------------------------ */
+  useEffect(() => {
+    setBlogs(initialBlogs);
+    setTotal(initialTotal);
+  }, [initialBlogs, initialTotal]);
+
   useEffect(() => {
     const timeout = setTimeout(async () => {
       if (!search.trim()) {
@@ -58,11 +61,28 @@ export default function BlogPage({
       setLoading(true);
 
       try {
-        const res = await axios.get(
-          `${WP_API}/posts?search=${encodeURIComponent(search)}&_embed`
+        const res = await axios.get(`${apiUrl}/api/blogs/list`, {
+          params: { search: search.trim(), page: 1, limit: 20 },
+        });
+        const found = Array.isArray(res.data?.blogs) ? res.data.blogs : [];
+        setBlogs(
+          found.map(
+            (blog: {
+              _id: string;
+              slug: string;
+              title: string;
+              createdAt: string;
+              coverImage?: string;
+            }) => ({
+              id: blog._id,
+              slug: blog.slug,
+              title: blog.title,
+              date: blog.createdAt,
+              coverImage: blogCoverSrc(blog.coverImage),
+            })
+          )
         );
-        setBlogs(res.data);
-        setTotal(res.data.length);
+        setTotal(Number(res.data?.total) || found.length);
       } catch (err) {
         console.error('Search Error:', err);
       }
@@ -73,9 +93,6 @@ export default function BlogPage({
     return () => clearTimeout(timeout);
   }, [search, initialBlogs, initialTotal]);
 
-  /* ------------------------------------
-     PAGINATION — uses server props
-  ------------------------------------ */
   const handlePageChange = (page: number) => {
     const query = new URLSearchParams();
 
@@ -87,84 +104,55 @@ export default function BlogPage({
     router.push(`/artikel?${query.toString()}`);
   };
 
-  /* ------------------------------------
-     TITLE
-  ------------------------------------ */
   const dynamicTitle = (() => {
     if (parentSlug && subSlug) return `${parentSlug} – ${subSlug}`;
     if (parentSlug) return parentSlug;
     return 'News & Testberichte';
   })();
 
-  /* ------------------------------
-      BREADCRUMB BUILDER
-  ------------------------------ */
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Artikel', href: '/artikel' },
-  ];
-
-  if (parentSlug) {
-    breadcrumbItems.push({
-      label: parentSlug,
-      href: `/artikel?kategorie=${parentSlug}`,
-    });
-  }
-
-  if (subSlug) {
-    breadcrumbItems.push({
-      label: subSlug,
-      href: `/artikel?kategorie=${parentSlug}&subkategorie=${subSlug}`,
-    });
-  }
-
   return (
     <section className="blogs-page">
       <div className="blog-page-wrapper bg-mono-0 py-9">
         <div className="custom-container mx-auto p-6">
-          {/* ---------------- BREADCRUMB ---------------- */}
-          <nav className="text-sm mb-5 text-gray-500 flex gap-2 flex-wrap">
-            {/* Home (link) */}
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-5 flex flex-wrap gap-2 text-sm text-gray-500"
+          >
             <Link href="/" className="hover:text-primary-100">
-              Home
+              Startseite
             </Link>
             <span>/</span>
 
-            {/* Artikel (link) */}
             <Link href="/artikel" className="hover:text-primary-100">
-              Artikel
+              News & Testberichte
             </Link>
 
-            {/* Parent category (not link) */}
             {parentSlug && (
               <>
                 <span>/</span>
-                <span className="text-gray-700 capitalize">{parentSlug}</span>
+                <span className="capitalize text-gray-700">{parentSlug}</span>
               </>
             )}
 
-            {/* Sub category (not link) */}
             {subSlug && (
               <>
                 <span>/</span>
-                <span className="text-gray-700 capitalize">{subSlug}</span>
+                <span className="capitalize text-gray-700">{subSlug}</span>
               </>
             )}
           </nav>
 
-          {/* ---------------- DYNAMIC TITLE ---------------- */}
-          <h1 className="text-2xl font-bold mb-5 capitalize text-secondary-100">
+          <h1 className="mb-5 text-2xl font-bold capitalize text-secondary-100">
             {dynamicTitle}
           </h1>
 
-          {/* ---------------- SEARCH BAR ---------------- */}
-          <div className="blog-search-box relative mb-9 border border-secondary-100/40 rounded-full max-w-[380px] w-full overflow-hidden">
+          <div className="blog-search-box relative mb-9 max-w-[380px] w-full overflow-hidden rounded-full border border-secondary-100/40">
             <input
               type="text"
               placeholder="Artikel suchen ..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="max-w-[380px] text-secondary-100 rounded-full w-full pl-11 py-[9px] lg:py-[11.5px] bg-mono-0 focus:outline-none"
+              className="w-full max-w-[380px] rounded-full bg-mono-0 py-[9px] pl-11 text-secondary-100 focus:outline-none lg:py-[11.5px]"
             />
 
             <Image
@@ -172,71 +160,68 @@ export default function BlogPage({
               alt="Search"
               width={16}
               height={16}
-              className="absolute top-[13px] lg:top-[16px] left-4"
+              className="absolute top-[13px] left-4 lg:top-[16px]"
             />
           </div>
 
-          {/* ---------------- BLOG GRID ---------------- */}
           <div
-            className={`grid ${
+            className={`grid gap-6 ${
               blogs.length === 1
                 ? 'grid-cols-1 justify-center'
-                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-[1100px]:grid-cols-4'
             }`}
           >
             {loading ? (
-              Array.from({ length: 3 }).map((_, idx) => (
+              Array.from({ length: 8 }).map((_, idx) => (
                 <div key={idx} className="news-item animate-pulse">
-                  <div className="w-full h-[200px] bg-gray-300 rounded-lg" />
+                  <div className="h-[200px] w-full rounded-lg bg-gray-300" />
                   <div className="pt-5">
-                    <div className="h-5 bg-gray-300 rounded w-3/4 mb-2" />
-                    <div className="h-4 bg-gray-300 rounded w-1/2 mb-4" />
-                    <div className="h-4 bg-gray-300 rounded w-1/4" />
+                    <div className="mb-2 h-5 w-3/4 rounded bg-gray-300" />
+                    <div className="mb-4 h-4 w-1/2 rounded bg-gray-300" />
+                    <div className="h-4 w-1/4 rounded bg-gray-300" />
                   </div>
                 </div>
               ))
             ) : blogs.length === 0 ? (
-              <p className="text-gray-500 text-center col-span-3">
+              <p className="col-span-full text-center text-gray-500">
                 Keine Blogartikel gefunden.
               </p>
             ) : (
-              blogs.map((blog: Blog) => {
-                const image =
-                  blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-                  '/images/blog-default.jpg';
-
+              blogs.map(blog => {
                 return (
                   <Link
                     key={blog.id}
                     href={`/artikel/${blog.slug}`}
-                    className="max-w-[384px] w-full"
+                    className="group w-full"
                   >
-                    <div className="news-item bg-mono-0 rounded-[4px] cursor-pointer">
-                      <Image
-                        src={image}
-                        alt={blog.title.rendered}
+                    <div className="news-item h-full overflow-hidden rounded-2xl border border-[#F0F0F2] bg-mono-0 transition hover:border-primary-100/30 hover:shadow-[0_8px_24px_rgba(13,1,19,0.08)]">
+                      <BlogCoverImage
+                        src={blog.coverImage}
+                        alt={blog.title}
                         width={1024}
                         height={200}
-                        className="w-full h-[200px] object-cover rounded-[10px]"
+                        className="h-[200px] w-full object-cover"
                       />
 
-                      <div className="pt-5">
+                      <div className="p-4 pt-5">
                         <h2
-                          className="text-[#404042] font-medium h6"
+                          className="h6 font-medium text-[#404042] group-hover:text-primary-100"
                           dangerouslySetInnerHTML={{
-                            __html: blog.title.rendered,
+                            __html: blog.title,
                           }}
                         />
 
-                        <p className="text-[#89898B] text-[12px] mt-2">
-                          {new Date(blog.date).toLocaleDateString('de-DE', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
+                        <p className="mt-2 text-[12px] text-[#89898B]">
+                          {blog.date
+                            ? new Date(blog.date).toLocaleDateString('de-DE', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })
+                            : ''}
                         </p>
 
-                        <span className="text-primary-100 underline mt-3 block">
+                        <span className="mt-3 block text-primary-100 underline">
                           Mehr lesen
                         </span>
                       </div>
@@ -247,13 +232,12 @@ export default function BlogPage({
             )}
           </div>
 
-          {/* ---------------- PAGINATION ---------------- */}
           {search.trim() === '' && total > limit && (
             <div className="mt-8 flex justify-center gap-4">
               <button
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
-                className="px-4 py-2 border rounded disabled:opacity-50"
+                className="rounded border px-4 py-2 disabled:opacity-50"
               >
                 <Image
                   src="/images/icons/left-arrow-svgrepo-com.svg"
@@ -263,14 +247,14 @@ export default function BlogPage({
                 />
               </button>
 
-              <span className="text-sm text-gray-500 self-center">
+              <span className="self-center text-sm text-gray-500">
                 Seite {currentPage} von {totalPages}
               </span>
 
               <button
                 disabled={currentPage >= totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
-                className="px-4 py-2 border rounded disabled:opacity-50"
+                className="rounded border px-4 py-2 disabled:opacity-50"
               >
                 <Image
                   src="/images/icons/right-arrow-svgrepo-com.svg"

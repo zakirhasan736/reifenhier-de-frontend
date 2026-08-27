@@ -19,7 +19,22 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'images.productserve.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images1.productserve.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'images2.productserve.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images3.productserve.com',
         pathname: '/**',
       },
       {

@@ -1,141 +1,8 @@
-// 'use client';
-
-// import React from 'react';
-// import Link from 'next/link';
-// import Image from 'next/image';
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Navigation, Autoplay, Pagination } from 'swiper/modules';
-
-// import 'swiper/css';
-// import 'swiper/css/navigation';
-// import 'swiper/css/pagination';
-// import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
-
-// interface WPBlog {
-//   id: number;
-//   title: string;
-//   slug: string;
-//   coverImage: string;
-//   date: string;
-// }
-
-// interface BlogProps {
-//   blogs: WPBlog[];
-// }
-
-// const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
-//   const hasBlogs = Array.isArray(blogs) && blogs.length > 0;
-
-//   return (
-//     <section className="news-section lg:pb-[70px] pb-14 bg-mono-0">
-//       <div className="custom-container max-sm:pr-0">
-//         <div className="news-content">
-//           {/* Header */}
-//           <div className="section-header text-left md:mb-8 mb-6">
-//             <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
-//               News & Testberichte
-//             </h2>
-//             <p className="font-normal font-secondary text-[16px] text-center text-[#404042]">
-//               Bleiben Sie auf dem Laufenden mit den neuesten Erkenntnissen und
-//               Tipps zu Reifen.
-//             </p>
-//           </div>
-
-//           {/* Slider */}
-//           <div className="news-list blogs-slides-area md:pr-[16px] md:pl-[10px] pr-10 pl-0 overflow-hidden">
-//             <Swiper
-//               spaceBetween={20}
-//               slidesPerView={1}
-//               navigation
-//               modules={[Navigation, Autoplay, Pagination]}
-//               autoplay={{ delay: 3900, disableOnInteraction: false }}
-//               pagination={{
-//                 el: '.blogs-swiper-pagination',
-//                 clickable: true,
-//                 renderBullet: (index, className) =>
-//                   `<span class="${className}"></span>`,
-//               }}
-//               breakpoints={{
-//                 640: { slidesPerView: 1, spaceBetween: 10 },
-//                 768: { slidesPerView: 3, spaceBetween: 15 },
-//                 1024: { slidesPerView: 3, spaceBetween: 24 },
-//               }}
-//             >
-//               {hasBlogs
-//                 ? blogs.map(blog => (
-//                     <SwiperSlide key={blog.id}>
-//                       <Link
-//                         href={`/artikel/${blog.slug}`}
-//                         className="max-w-[384px] w-full"
-//                       >
-//                         <div className="news-item bg-mono-0 relative rounded-[4px] cursor-pointer">
-//                           {/* Blog image */}
-//                           <Image
-//                             src={blog.coverImage}
-//                             alt={blog.title}
-//                             className="w-full h-[200px] object-cover rounded-[10px]"
-//                             width={1024}
-//                             height={200}
-//                             loading="lazy"
-//                           />
-
-//                           {/* Content */}
-//                           <div className="news-item-content relative pt-5">
-//                             <h3
-//                               className="text-[#404042] font-medium h6 font-primary line-clamp-2"
-//                               dangerouslySetInnerHTML={{ __html: blog.title }}
-//                             />
-
-//                             <p className="text-[#404042] text-[12px] font-medium font-primary mt-2">
-//                               {new Date(blog.date).toLocaleDateString('de-DE', {
-//                                 year: 'numeric',
-//                                 month: 'long',
-//                                 day: 'numeric',
-//                               })}
-//                             </p>
-
-//                             <span className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium font-secondary mt-3 block">
-//                               Mehr lesen
-//                             </span>
-//                           </div>
-//                         </div>
-//                       </Link>
-//                     </SwiperSlide>
-//                   ))
-//                 : Array.from({ length: 3 }).map((_, index) => (
-//                     <SwiperSlide key={`skeleton-${index}`}>
-//                       <ProductSkeletonCard />
-//                     </SwiperSlide>
-//                   ))}
-//             </Swiper>
-//           </div>
-
-//           {/* Pagination dots */}
-//           <div className="blogs-swiper-pagination flex justify-center mt-6"></div>
-
-//           {/* View all link */}
-//           <Link
-//             href="/artikel"
-//             className="mx-auto block text-center underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
-//           >
-//             Alle anzeigen
-//           </Link>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default NewArticles;
-'use client';
-
-import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import ProductSkeletonCard from '@/components/elements/cards/productskeletonCard';
+import BlogCoverImage from '@/components/blogpage/BlogCoverImage';
 
 interface WPBlog {
-  id: number;
+  id: number | string;
   title: string;
   slug: string;
   coverImage: string;
@@ -146,77 +13,71 @@ interface BlogProps {
   blogs: WPBlog[];
 }
 
+function BlogGridCard({ blog }: { blog: WPBlog }) {
+  return (
+    <Link
+      href={`/artikel/${blog.slug}`}
+      className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[#F0F0F2] bg-white shadow-[0_2px_12px_rgba(13,1,19,0.04)] transition hover:border-primary-100/30 hover:shadow-[0_8px_24px_rgba(13,1,19,0.08)]"
+    >
+      <BlogCoverImage
+        src={blog.coverImage}
+        alt={blog.title}
+        className="h-[160px] w-full object-cover sm:h-[168px]"
+        width={1024}
+        height={220}
+      />
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <h3
+          className="line-clamp-2 font-primary text-[16px] font-medium leading-[140%] text-[#16171A] group-hover:text-primary-100"
+          dangerouslySetInnerHTML={{ __html: blog.title }}
+        />
+        <p className="mt-2 text-[12px] font-medium text-[#89898B]">
+          {blog.date
+            ? new Date(blog.date).toLocaleDateString('de-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })
+            : ''}
+        </p>
+        <span className="mt-auto pt-3 text-[14px] font-medium text-primary-100 underline">
+          Mehr lesen
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 const NewArticles: React.FC<BlogProps> = ({ blogs }) => {
-  const hasBlogs = Array.isArray(blogs) && blogs.length > 0;
+  const items = Array.isArray(blogs) ? blogs.slice(0, 8) : [];
+
+  if (items.length === 0) return null;
 
   return (
-    <section className="news-section lg:py-[70px] py-14 bg-mono-0">
+    <section className="news-section bg-mono-0 py-14 lg:py-[70px]">
       <div className="custom-container">
-        <div className="news-content">
-          {/* Header */}
-          <div className="section-header text-left md:mb-8 mb-6">
-            <h2 className="h3 font-primary font-medium text-center text-[#16171A] mb-3">
-              News & Testberichte
-            </h2>
-            <p className="font-normal font-secondary text-[16px] text-center text-[#404042]">
-              Bleiben Sie auf dem Laufenden mit den neuesten Erkenntnissen und
-              Tipps zu Reifen.
-            </p>
-          </div>
-
-          {/* 👉 3-Column Grid (Replaces Slider) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-8">
-            {hasBlogs
-              ? blogs.map(blog => (
-                  <Link
-                    key={blog.id}
-                    href={`/artikel/${blog.slug}`}
-                    className="bg-mono-0 relative rounded-[4px] cursor-pointer block max-w-[384px] w-full mx-auto"
-                  >
-                    {/* Blog image */}
-                    <Image
-                      src={blog.coverImage}
-                      alt={blog.title}
-                      className="w-full h-[200px] object-cover rounded-[10px]"
-                      width={1024}
-                      height={200}
-                      loading="lazy"
-                    />
-
-                    {/* Content */}
-                    <div className="news-item-content relative pt-5">
-                      <h3
-                        className="text-[#404042] font-medium h6 font-primary line-clamp-2"
-                        dangerouslySetInnerHTML={{ __html: blog.title }}
-                      />
-
-                      <p className="text-[#404042] text-[12px] font-medium mt-2">
-                        {new Date(blog.date).toLocaleDateString('de-DE', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </p>
-
-                      <span className="text-primary-100 underline hover:text-primary-90 transition text-[14px] font-medium mt-3 block">
-                        Mehr lesen
-                      </span>
-                    </div>
-                  </Link>
-                ))
-              : Array.from({ length: 3 }).map((_, index) => (
-                  <ProductSkeletonCard key={`skeleton-${index}`} />
-                ))}
-          </div>
-
-          {/* View All */}
-          <Link
-            href="/artikel"
-            className="mx-auto block text-center underline whitespace-nowrap rounded-full bg-transparent text-primary-70 font-semibold transition ease cursor-pointer py-2 px-6"
-          >
-            Alle anzeigen
-          </Link>
+        <div className="section-header mb-6 text-left md:mb-8">
+          <h2 className="h3 mb-3 text-center font-primary font-medium text-[#16171A]">
+            News & Testberichte
+          </h2>
+          <p className="text-center font-secondary text-[16px] font-normal text-[#404042]">
+            Bleiben Sie auf dem Laufenden mit den neuesten Erkenntnissen und
+            Tipps zu Reifen.
+          </p>
         </div>
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 min-[1100px]:grid-cols-4 sm:gap-6">
+          {items.map(blog => (
+            <BlogGridCard key={blog.id} blog={blog} />
+          ))}
+        </div>
+
+        <Link
+          href="/artikel"
+          className="mx-auto mt-8 block w-fit cursor-pointer rounded-full border border-primary-100 px-8 py-2.5 text-center font-semibold text-primary-100 transition hover:bg-primary-100 hover:text-white"
+        >
+          Mehr anzeigen
+        </Link>
       </div>
     </section>
   );

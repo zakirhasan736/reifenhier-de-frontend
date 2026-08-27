@@ -255,7 +255,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
                   <div className="foot-left-content">
                     <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#404042] leading-[150%]">
-                      © 2025 reifexa.de Alle Rechte vorbehalten.
+                      © {new Date().getFullYear()} reifexa.de Alle Rechte vorbehalten.
                     </p>
                   </div>
                   <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">

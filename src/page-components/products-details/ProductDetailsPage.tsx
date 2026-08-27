@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductSinglepage from '@/components/productpage/ProductDetailsSec';
 import RelatedProducts from '@/components/productpage/RelatedProducts';
-import CompareModal from '@/components/productpage/CompareModal';
-import CompareFloatingButton from '@/components/productpage/CompareFloatingButton';
 import HowItWorks from '@/components/homepage/HowItWorks';
 import Loading from '@/app/loading';
 
@@ -17,6 +15,7 @@ interface Offer {
   brand: string;
   vendor_logo: string;
   vendor: string;
+  vendor_id?: string;
   brand_name: string;
   product_category: string;
   product_name: string;
@@ -39,6 +38,7 @@ interface CheapestVendor {
   vendor_id: string;
   vendor_logo: string;
   original_affiliate_url: string;
+  price?: number;
 }
 
 interface Product {
@@ -73,6 +73,16 @@ interface Product {
   lastIndex?: string;
   speedIndex?: string;
   offers?: Offer[];
+  tyre_label_info?: {
+    supplier?: string | null;
+    identifier?: string | null;
+    size?: string | null;
+    efficiency_class?: string | null;
+    wet_grip_class?: string | null;
+    noise_level_db?: string | number | null;
+    noise_class?: string | null;
+    snow_icon?: boolean | null;
+  } | null;
 }
 
 interface RelatedProduct {
@@ -177,8 +187,6 @@ export default function ProductDetailsPage({ slug }: { slug: string }) {
       )}
       <HowItWorks />
       <RelatedProducts relatedProductData={relatedProducts} loading={loading} />
-      <CompareFloatingButton />
-      <CompareModal relatedProducts={relatedProducts} />
     </div>
   );
 }

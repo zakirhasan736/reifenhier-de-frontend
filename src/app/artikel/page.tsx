@@ -1,8 +1,9 @@
 import { use } from 'react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
-import BlogPage from '@/components/blogpage/BlogPage';
+import BlogPage, { type BlogCard } from '@/components/blogpage/BlogPage';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
+import { blogCoverSrc, BLOGS_PER_PAGE, fetchMongoBlogs } from '@/libs/blogs/mongo';
 
 const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
@@ -21,6 +22,8 @@ export const metadata: Metadata = {
     'Winterreifen Sommerreifen Artikel',
     'Reifenpflege und Sicherheit',
     'EU Reifenlabel erklärt',
+    'Reifenrechner',
+    'Reifen Preisvergleich',
   ],
   openGraph: {
     type: 'website',
@@ -58,21 +61,50 @@ export const metadata: Metadata = {
   },
 };
 
-/* Helpers */
 async function getCategoryIdBySlug(slug: string) {
   const res = await fetch(`${WP_API}/categories?slug=${slug}`);
   const data = await res.json();
   return data[0]?.id ?? null;
 }
 
+function matchesTag(tags: string[] | undefined, needle: string) {
+  const q = needle.trim().toLowerCase();
+  if (!q) return true;
+  return (tags || []).some(t => t.trim().toLowerCase().includes(q));
+}
+
 async function getBlogs(
   page: number,
   parentSlug: string | null,
   subSlug: string | null
-) {
-  const perPage = 6;
-  let filter = '';
+): Promise<{ blogs: BlogCard[]; total: number }> {
+  const perPage = BLOGS_PER_PAGE;
+  const tagFilter = subSlug || parentSlug;
 
+  const mongo = await fetchMongoBlogs({
+    page: tagFilter ? 1 : page,
+    limit: tagFilter ? 50 : perPage,
+  });
+
+  if (mongo.blogs.length > 0) {
+    const filtered = tagFilter
+      ? mongo.blogs.filter(b => matchesTag(b.tags, tagFilter))
+      : mongo.blogs;
+    const start = (page - 1) * perPage;
+    const paged = filtered.slice(start, start + perPage);
+    return {
+      blogs: paged.map(b => ({
+        id: b._id,
+        slug: b.slug,
+        title: b.title,
+        date: b.createdAt,
+        coverImage: blogCoverSrc(b.coverImage),
+      })),
+      total: filtered.length,
+    };
+  }
+
+  let filter = '';
   if (subSlug) {
     const id = await getCategoryIdBySlug(subSlug);
     if (id) filter = `&categories=${id}`;
@@ -80,10 +112,32 @@ async function getBlogs(
 
   const url = `${WP_API}/posts?page=${page}&per_page=${perPage}&_embed${filter}`;
   const res = await fetch(url, { next: { revalidate: 60 } });
+  const data = await res.json();
+  const blogs: BlogCard[] = Array.isArray(data)
+    ? data.map(
+        (post: {
+          id: number;
+          slug: string;
+          date?: string;
+          title?: { rendered?: string };
+          _embedded?: {
+            'wp:featuredmedia'?: { source_url?: string }[];
+          };
+        }) => ({
+          id: String(post.id),
+          slug: post.slug,
+          title: post.title?.rendered || '',
+          date: post.date || '',
+          coverImage:
+            post._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+            '',
+        })
+      )
+    : [];
 
   return {
-    blogs: await res.json(),
-    total: Number(res.headers.get('X-WP-Total')),
+    blogs,
+    total: Number(res.headers.get('X-WP-Total')) || blogs.length,
   };
 }
 
@@ -113,18 +167,18 @@ async function ServerContent({
   subSlug: string | null;
 }) {
   const { blogs, total } = await getBlogs(page, parentSlug, subSlug);
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      '@id': 'https://www.reifexa.de/artikel#collection',
-      url: 'https://www.reifexa.de/artikel',
-      name: 'Reifexa Artikel',
-      description:
-        'Reifexa.de Artikel – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
-      inLanguage: 'de-DE',
-      isPartOf: { '@id': 'https://www.reifexa.de/#website' },
-      publisher: { '@id': 'https://www.reifexa.de/#org' },
-    };
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://www.reifexa.de/artikel#collection',
+    url: 'https://www.reifexa.de/artikel',
+    name: 'Reifexa Artikel',
+    description:
+      'Reifexa.de Artikel – Tipps, Ratgeber und aktuelle News rund um Reifen, Autos und Fahrsicherheit.',
+    inLanguage: 'de-DE',
+    isPartOf: { '@id': 'https://www.reifexa.de/#website' },
+    publisher: { '@id': 'https://www.reifexa.de/#org' },
+  };
   return (
     <>
       <BlogPage
@@ -134,7 +188,7 @@ async function ServerContent({
         parentSlug={parentSlug}
         subSlug={subSlug}
       />
-      
+
       <Script id="ld-artikel" type="application/ld+json">
         {JSON.stringify(jsonLd)}
       </Script>
