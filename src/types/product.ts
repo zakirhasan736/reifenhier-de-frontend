@@ -6,6 +6,8 @@ export interface Product {
   brand_name: string;
   product_image: string;
   awin_image_url?: string;
+  merchant_thumb_url?: string;
+  merchant_image_url?: string;
   dimensions: string;
   search_price: number;
   fuel_class: string;

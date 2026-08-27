@@ -2,9 +2,15 @@
 export function toMoneyNumber(value: unknown): number | null {
   if (typeof value === 'number' && Number.isFinite(value)) return value;
   if (typeof value === 'string') {
-    const cleaned = value.trim().replace(/\s/g, '').replace(',', '.');
-    if (!cleaned) return null;
-    const n = Number(cleaned);
+    const s = value.trim();
+    if (!s) return null;
+    const normalized = s
+      .replace(/\s/g, '')
+      .replace(/\.(?=\d{3}(\D|$))/g, '')
+      .replace(',', '.')
+      .replace(/[^\d.-]/g, '');
+    if (!normalized || normalized === '-' || normalized === '.') return null;
+    const n = Number(normalized);
     return Number.isFinite(n) ? n : null;
   }
   return null;

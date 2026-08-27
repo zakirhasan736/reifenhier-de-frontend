@@ -34,7 +34,22 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'images3.productserve.com',
+        hostname: 'images.awin.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.awin1.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.productserve.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.awin.com',
         pathname: '/**',
       },
       {

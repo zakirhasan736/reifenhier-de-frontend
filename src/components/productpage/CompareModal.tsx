@@ -15,6 +15,7 @@ import {
 } from '@/store/compareSlice';
 import type { AppDispatch, RootState } from '@/store/store';
 import { formatEuro } from '@/libs/money';
+import { formatSavingsPercent, highestPrice, lowestPrice } from '@/libs/savings';
 import {
   comparePrice,
   listingUrlForSize,
@@ -179,20 +180,24 @@ export default function CompareModal() {
               })}
 
               <RowLabel>Preis</RowLabel>
-              {products.map(p => (
+              {products.map(p => {
+                const label = formatSavingsPercent(
+                  lowestPrice(p.cheapest_offer, p.search_price),
+                  highestPrice(p.expensive_offer),
+                );
+                return (
                 <Cell key={p._id} win={winners.cheapestId === p._id}>
                   <span className="text-[20px] font-semibold text-[#16171A]">
                     {formatEuro(comparePrice(p))}
                   </span>
-                  {p.savings_percent &&
-                  p.savings_percent !== '0%' &&
-                  p.savings_percent !== '-0%' ? (
+                  {label ? (
                     <span className="mt-1 block text-[12px] font-medium text-[#E66605]">
-                      {p.savings_percent}
+                      {label}
                     </span>
                   ) : null}
                 </Cell>
-              ))}
+                );
+              })}
 
               <RowLabel>Größe / Passform</RowLabel>
               {products.map(p => {

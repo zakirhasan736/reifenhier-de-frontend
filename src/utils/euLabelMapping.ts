@@ -5,6 +5,12 @@
 export type FuelGrade = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
 export type WetGrade = 'A' | 'B' | 'C' | 'D' | 'E';
 
+export const EU_LABEL_TIPS = {
+  fuel: 'Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch.',
+  wet: 'Nasshaftung: Wie gut ist der Reifen bei Nässe.',
+  noise: 'Rollgeräusch: Wie laut ist der Reifen beim Fahren.',
+} as const;
+
 /* ---------- Fuel Efficiency ---------- */
 export function getFuelEfficiencyMeta(grade?: string) {
   switch ((grade || '').toUpperCase()) {

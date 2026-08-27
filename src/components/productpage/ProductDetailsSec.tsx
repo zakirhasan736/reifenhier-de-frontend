@@ -19,7 +19,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import NotFound from '@/app/produkte/not-found';
 import OptimizedImage from '../elements/OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
-import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import { EU_LABEL_TIPS, getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import {
+  formatSavingsPercent,
+  highestPrice,
+  lowestPrice,
+  SAVINGS_TOOLTIP,
+} from '@/libs/savings';
+import SavingsPercentBadge from '@/components/elements/SavingsPercentBadge';
 import {
   buildVendorExitUrl,
   onVendorExitClick,
@@ -90,6 +97,8 @@ interface Product {
   brand_name: string;
   product_image: string | string[];
   awin_image_url?: string;
+  merchant_thumb_url?: string;
+  merchant_image_url?: string;
   dimensions: string;
   search_price: number | string;
   fuel_class: string;
@@ -320,7 +329,11 @@ const ProductSinglepage: React.FC<ProductProps> = ({
         search_price: toMoneyNumber(product.search_price) ?? 0,
         cheapest_offer: toMoneyNumber(product.cheapest_offer) ?? undefined,
         expensive_offer: toMoneyNumber(product.expensive_offer) ?? undefined,
-        savings_percent: product.savings_percent,
+        savings_percent:
+          formatSavingsPercent(
+            product.cheapest_offer,
+            product.expensive_offer,
+          ) || product.savings_percent,
         wet_grip: product.wet_grip,
         speedIndex: product.speedIndex,
         lastIndex: product.lastIndex,
@@ -420,12 +433,17 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     return wishlist.some(item => item._id === product._id);
   }, [wishlist, product._id]);
 
-  const cheapPrice = parseMoneyEU(
-    product.cheapest_vendor?.price ??
-      product.cheapest_offer ??
+  const offerPrices = (product.offers || []).map((o: Offer) => o.price);
+  const cheapPrice =
+    lowestPrice(
+      product.cheapest_vendor?.price,
+      product.cheapest_offer,
       product.search_price,
-  );
-  const expensivePrice = parseMoneyEU(product.expensive_offer);
+      ...offerPrices,
+    ) ?? 0;
+  const expensivePrice =
+    highestPrice(product.expensive_offer, ...offerPrices) ?? 0;
+  const productSavings = formatSavingsPercent(cheapPrice, expensivePrice);
   const showStrikePrice = expensivePrice > cheapPrice && cheapPrice > 0;
   const offerCount = Array.isArray(product.offers) ? product.offers.length : 0;
 
@@ -853,6 +871,8 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                     <ProductImageGallery
                       images={product.product_image}
                       awinImageUrl={product.awin_image_url}
+                      merchantThumbUrl={product.merchant_thumb_url}
+                      merchantImageUrl={product.merchant_image_url}
                       alt={[product.brand_name, product.product_name]
                         .filter(Boolean)
                         .join(' ')}
@@ -1059,16 +1079,14 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           {formatEUR(cheapPrice)}
                         </span>
                       )}
-                      {product.savings_percent &&
-                        product.savings_percent !== '0%' &&
-                        product.savings_percent !== '-0%' && (
+                      {productSavings ? (
                           <span
-                            title="Ersparnisse im Vergleich zum teuersten Angebot"
+                            title={SAVINGS_TOOLTIP}
                             className="inline-flex h-[28px] items-center rounded-[6px] border border-[#00BE00] px-2 text-[13px] font-medium leading-none text-[#E66605]"
                           >
-                            {product.savings_percent}
+                            {productSavings}
                           </span>
-                        )}
+                        ) : null}
                       {offerCount > 1 && (
                         <a
                           href="#angebote"
@@ -1146,7 +1164,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                             <span
                               className="tooltip tooltip-top"
-                              data-tip="Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch."
+                              data-tip={EU_LABEL_TIPS.fuel}
                             >
                               <Image
                                 src="/images/icons/fuel.svg"
@@ -1180,7 +1198,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                             <span
                               className="tooltip tooltip-top"
-                              data-tip="Nasshaftung: Wie gut ist der Reifen bei Nässe."
+                              data-tip={EU_LABEL_TIPS.wet}
                             >
                               <Image
                                 src="/images/icons/heavy-rain.png"
@@ -1211,7 +1229,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                           <span
                             className="tooltip tooltip-top"
-                            data-tip="Rollgeräusch: Wie laut ist der Reifen beim Fahren."
+                            data-tip={EU_LABEL_TIPS.noise}
                           >
                             <Image
                               src="/images/icons/noise.svg"
@@ -1650,10 +1668,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 vendorPrice: price,
                               });
 
-                            const showSavings =
-                              !!offer.savings_percent &&
-                              offer.savings_percent !== '0%' &&
-                              offer.savings_percent !== '-0%';
+                            const savingsLabel = formatSavingsPercent(
+                              price,
+                              expensivePrice,
+                            );
 
                             return (
                               <div
@@ -1669,42 +1687,12 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                           {formatEUR(price)}
                                         </h4>
 
-                                        {showSavings && (
-                                          <p className="px-1 py-[2px] border border-[#CC0C39] text-[14px] gap-1 flex items-center justify-center text-[#E66605] h-[24px] max-w-[65px] rounded-[6px] w-full">
-                                            {offer.savings_percent}
-                                            <span
-                                              className="tooltip tooltip-right cursor-pointer flex items-center"
-                                              data-tip="Ersparnis gegenüber dem teuersten Angebot"
-                                            >
-                                              <svg
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                className="inline-block"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                              >
-                                                <circle
-                                                  cx="12"
-                                                  cy="12"
-                                                  r="12"
-                                                  fill="#E66605"
-                                                />
-                                                <text
-                                                  x="12"
-                                                  y="16"
-                                                  textAnchor="middle"
-                                                  fontSize="14"
-                                                  fill="#fff"
-                                                  fontFamily="Arial"
-                                                  fontWeight="bold"
-                                                >
-                                                  i
-                                                </text>
-                                              </svg>
-                                            </span>
-                                          </p>
-                                        )}
+                                        {savingsLabel ? (
+                                          <SavingsPercentBadge
+                                            label={savingsLabel}
+                                            tooltipPlacement="right"
+                                          />
+                                        ) : null}
                                       </div>
 
                                       <p className="text-[12px] lg:text-[12px] font-normal mt-[4px] font-secondary text-left text-[#404042]">

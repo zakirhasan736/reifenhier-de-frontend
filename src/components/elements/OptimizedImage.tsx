@@ -18,6 +18,10 @@ function isRemote(url: string) {
   return /^https?:\/\//i.test(url);
 }
 
+function skipOptimizer(url: string) {
+  return isRemote(url) || url.includes('/images/product-image/');
+}
+
 export default function OptimizedImage({
   src,
   fallback = DEFAULT_FALLBACK,
@@ -51,7 +55,7 @@ export default function OptimizedImage({
       {...props}
       src={current}
       alt={alt}
-      unoptimized={isRemote(current)}
+      unoptimized={skipOptimizer(current)}
       onError={() => {
         setIdx(i => (i < chain.length - 1 ? i + 1 : i));
       }}

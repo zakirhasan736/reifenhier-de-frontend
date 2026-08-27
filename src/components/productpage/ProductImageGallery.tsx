@@ -14,18 +14,26 @@ function normalizeImages(source: string | string[] | undefined | null): string[]
 export default function ProductImageGallery({
   images,
   awinImageUrl,
+  merchantThumbUrl,
+  merchantImageUrl,
   alt,
   header,
 }: {
   images?: string | string[] | null;
   awinImageUrl?: string | null;
+  merchantThumbUrl?: string | null;
+  merchantImageUrl?: string | null;
   alt: string;
   header?: ReactNode;
 }) {
   const list = useMemo(() => normalizeImages(images), [images]);
+  const extras = useMemo(
+    () => [merchantThumbUrl, merchantImageUrl],
+    [merchantThumbUrl, merchantImageUrl]
+  );
   const [active, setActive] = useState(0);
   const current = list[Math.min(active, Math.max(list.length - 1, 0))];
-  const { src, fallbacks } = productImageSrc(current, awinImageUrl);
+  const { src, fallbacks } = productImageSrc(current, awinImageUrl, extras);
 
   const go = (dir: 1 | -1) => {
     if (list.length < 2) return;
@@ -95,7 +103,12 @@ export default function ProductImageGallery({
                 className="h-[70px] w-[87px] object-contain xl:h-[106px] xl:w-auto"
                 width={106}
                 height={106}
-                fallbacks={awinImageUrl ? [awinImageUrl] : []}
+                fallbacks={
+                  productImageSrc(image, awinImageUrl, [
+                    merchantThumbUrl,
+                    merchantImageUrl,
+                  ]).fallbacks
+                }
               />
             </button>
           ))}
@@ -110,7 +123,12 @@ export default function ProductImageGallery({
                 className="w-[87px] xl:w-auto xl:h-[106px] max-sm:h-[78px] h-[70px] object-contain"
                 width={106}
                 height={106}
-                fallbacks={awinImageUrl ? [awinImageUrl] : []}
+                fallbacks={
+                  productImageSrc(list[0], awinImageUrl, [
+                    merchantThumbUrl,
+                    merchantImageUrl,
+                  ]).fallbacks
+                }
               />
             </div>
           </div>

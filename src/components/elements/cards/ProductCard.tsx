@@ -17,7 +17,13 @@ import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
 import type { RootState, AppDispatch } from '@/store/store';
 import OptimizedImage from '../OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
-import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import { EU_LABEL_TIPS, getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import SavingsPercentBadge from '@/components/elements/SavingsPercentBadge';
+import {
+  formatSavingsPercent,
+  highestPrice,
+  lowestPrice,
+} from '@/libs/savings';
 import {
   buildVendorExitUrl,
   onVendorExitClick,
@@ -37,6 +43,8 @@ interface ProductCardProps {
   brand_logo: string;
   product_image: string | string[];
   awin_image_url?: string;
+  merchant_thumb_url?: string;
+  merchant_image_url?: string;
   merchant_product_third_category: string;
   brand_name: string;
   search_price: number;
@@ -108,6 +116,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   brand_logo,
   product_image,
   awin_image_url,
+  merchant_thumb_url,
+  merchant_image_url,
   merchant_product_third_category,
   brand_name,
   search_price,
@@ -135,8 +145,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const uuid = useVisitorUuid();
   const { src: mainImage, fallbacks: imageFallbacks } = productImageSrc(
     product_image,
-    awin_image_url
+    awin_image_url,
+    [merchant_thumb_url, merchant_image_url]
   );
+
+  const savingsLabel = useMemo(() => {
+    const offerPrices = (offers || []).map(o => o.price);
+    const expensive = highestPrice(expensive_offer, ...offerPrices);
+    const cheap = lowestPrice(cheapest_offer, search_price, ...offerPrices);
+    return formatSavingsPercent(cheap, expensive);
+  }, [offers, expensive_offer, cheapest_offer, search_price]);
 
   const { data: wishlistData } = useGetWishlistQuery();
   const [addWishlist] = useAddWishlistMutation();
@@ -198,7 +216,7 @@ const wetMeta = getWetGripMeta(wet_grip);
         search_price,
         cheapest_offer,
         expensive_offer,
-        savings_percent,
+        savings_percent: savingsLabel || savings_percent,
         fuel_class,
         wet_grip,
         noise_class,
@@ -388,7 +406,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                 <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px]">
                   <span
                     className="tooltip tooltip-bottom cursor-pointer flex items-center"
-                    data-tip="Kraftstoffeffizienzklasse"
+                    data-tip={EU_LABEL_TIPS.fuel}
                   >
                     <Image
                       src="/images/icons/fuel.svg"
@@ -418,7 +436,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                 <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px]">
                   <span
                     className="tooltip tooltip-bottom cursor-pointer flex items-center"
-                    data-tip="Kraftstoffeffizienz: Wie sparsam ist der Reifen beim Verbrauch."
+                    data-tip={EU_LABEL_TIPS.wet}
                   >
                     <Image
                       src="/images/icons/heavy-rain.png"
@@ -447,7 +465,7 @@ const wetMeta = getWetGripMeta(wet_grip);
               <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px]">
                 <span
                   className="tooltip tooltip-bottom cursor-pointer flex items-center"
-                  data-tip="Nasshaftung: Wie gut ist der Reifen bei Nässe."
+                    data-tip={EU_LABEL_TIPS.noise}
                 >
                   <Image
                     src="/images/icons/noise.svg"
@@ -462,39 +480,9 @@ const wetMeta = getWetGripMeta(wet_grip);
             )}
           </ul>
 
-          {savings_percent &&
-            savings_percent !== '0%' &&
-            savings_percent !== '-0%' && (
-              <p className="px-3 py-[3px] border text-[14px] border-[#CC0C39] gap-1 flex items-center justify-center text-[#E66605] h-[26px] max-w-[65px] rounded-[6px] w-full">
-                {savings_percent}
-                <span
-                  className="tooltip tooltip-left cursor-pointer flex items-center"
-                  data-tip="Ersparnis gegenüber dem teuersten Angebot"
-                >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="inline-block"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="12" cy="12" r="12" fill="#E66605" />
-                    <text
-                      x="12"
-                      y="16"
-                      textAnchor="middle"
-                      fontSize="14"
-                      fill="#fff"
-                      fontFamily="Arial"
-                      fontWeight="bold"
-                    >
-                      i
-                    </text>
-                  </svg>
-                </span>
-              </p>
-            )}
+          {savingsLabel ? (
+            <SavingsPercentBadge label={savingsLabel} tooltipPlacement="left" />
+          ) : null}
         </div>
         {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
         <div className="flex gap-2 w-full mt-2 flex-wrap">
