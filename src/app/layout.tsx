@@ -353,7 +353,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </Script>
         <Script
           id="awin-mastertag"
-          src={`https://www.dwin2.com/pub.2985775.min.js`}
+          src={`/pub.2985775.min.js`}
           strategy="afterInteractive"
         />
       </body>
