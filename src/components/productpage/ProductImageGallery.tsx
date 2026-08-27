@@ -84,7 +84,12 @@ export default function ProductImageGallery({
 
       {list.length > 1 ? (
         <div className="mt-3 flex justify-center gap-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {list.map((image, index) => (
+          {list.map((image, index) => {
+              const thumb = productImageSrc(image, awinImageUrl, [
+                merchantThumbUrl,
+                merchantImageUrl,
+              ])
+              return (
             <button
               key={`${image}-${index}`}
               type="button"
@@ -98,37 +103,28 @@ export default function ProductImageGallery({
               }`}
             >
               <OptimizedImage
-                src={image}
+                src={thumb.src}
                 alt=""
                 className="h-[70px] w-[87px] object-contain xl:h-[106px] xl:w-auto"
                 width={106}
                 height={106}
-                fallbacks={
-                  productImageSrc(image, awinImageUrl, [
-                    merchantThumbUrl,
-                    merchantImageUrl,
-                  ]).fallbacks
-                }
+                fallbacks={thumb.fallbacks}
               />
             </button>
-          ))}
+              )
+            })}
         </div>
       ) : list.length === 1 ? (
         <div className="swiper-product-slide-tab-item mt-3 flex justify-center items-center">
           <div className="slide-tab-item">
             <div className="slide-tab-item-wrap w-[87px] xl:w-auto bg-[#F7F7F7] rounded-[10px] xl:pl-[47px] xl:pt-[25px] xl:pr-[47px] xl:pb-[24px] py-3 px-4 flex justify-center">
               <OptimizedImage
-                src={list[0]}
+                src={src}
                 alt=""
                 className="w-[87px] xl:w-auto xl:h-[106px] max-sm:h-[78px] h-[70px] object-contain"
                 width={106}
                 height={106}
-                fallbacks={
-                  productImageSrc(list[0], awinImageUrl, [
-                    merchantThumbUrl,
-                    merchantImageUrl,
-                  ]).fallbacks
-                }
+                fallbacks={fallbacks}
               />
             </div>
           </div>

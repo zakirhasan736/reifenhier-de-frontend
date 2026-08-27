@@ -32,11 +32,11 @@ export function savingsPercentValue(
   return pct;
 }
 
-/** Same badge on listing and product page, e.g. "-15%". */
+/** Same badge on listing, homepage, and product page, e.g. "15%". */
 export function formatSavingsPercent(
   price: unknown,
   expensive: unknown,
 ): string | null {
   const pct = savingsPercentValue(price, expensive);
-  return pct == null ? null : `-${pct}%`;
+  return pct == null ? null : `${pct}%`;
 }

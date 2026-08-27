@@ -59,6 +59,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'reifen.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'www.rubbex.com',
         pathname: '/**',
       },

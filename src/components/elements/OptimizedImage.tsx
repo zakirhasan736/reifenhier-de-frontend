@@ -27,15 +27,22 @@ export default function OptimizedImage({
   fallback = DEFAULT_FALLBACK,
   fallbacks = [],
   alt,
+  className,
+  width,
+  height,
+  fill,
+  priority,
+  fetchPriority,
+  sizes,
   ...props
 }: Props) {
   const chain = useMemo(() => {
     const list: string[] = [];
     const primary = asUrl(src);
-    if (primary) list.push(primary);
+    if (primary && primary !== DEFAULT_FALLBACK) list.push(primary);
     for (const extra of fallbacks) {
       const url = String(extra || '').trim();
-      if (url && !list.includes(url)) list.push(url);
+      if (url && url !== DEFAULT_FALLBACK && !list.includes(url)) list.push(url);
     }
     if (fallback && !list.includes(fallback)) list.push(fallback);
     if (list.length === 0) list.push(DEFAULT_FALLBACK);
@@ -49,16 +56,43 @@ export default function OptimizedImage({
   }, [chain.join('|')]);
 
   const current = chain[Math.min(idx, chain.length - 1)];
+  const goNext = () => setIdx(i => (i < chain.length - 1 ? i + 1 : i));
+
+  if (skipOptimizer(current) && !fill) {
+    return (
+      // Native img avoids Next optimizer 400s on merchant/AWIN hosts
+      // and keeps the uploaded/AWIN URL in the listing HTML.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={current}
+        alt={alt}
+        className={className}
+        width={typeof width === 'number' ? width : undefined}
+        height={typeof height === 'number' ? height : undefined}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={fetchPriority || (priority ? 'high' : 'auto')}
+        referrerPolicy="no-referrer"
+        decoding="async"
+        onError={goNext}
+      />
+    );
+  }
 
   return (
     <Image
       {...props}
       src={current}
       alt={alt}
+      className={className}
+      width={width}
+      height={height}
+      fill={fill}
+      sizes={sizes}
+      priority={priority}
+      fetchPriority={fetchPriority}
       unoptimized={skipOptimizer(current)}
-      onError={() => {
-        setIdx(i => (i < chain.length - 1 ? i + 1 : i));
-      }}
+      referrerPolicy="no-referrer"
+      onError={goNext}
     />
   );
 }

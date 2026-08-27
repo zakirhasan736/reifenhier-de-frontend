@@ -39,13 +39,17 @@ export function productImageSrc(
   const locals = fromProduct.filter(url => !/^https?:\/\//i.test(url))
   const productRemotes = fromProduct.filter(url => /^https?:\/\//i.test(url))
 
-  // Prefer merchant/AWIN remotes so listing and product page show the same image
-  // instead of a missing local file falling back to the default wheel.
+  // Uploaded file first, then AWIN/merchant URL. Default wheel only if both fail.
   const src =
-    remotes[0] || productRemotes[0] || locals[0] || PRODUCT_IMAGE_FALLBACK
+    locals[0] || remotes[0] || productRemotes[0] || PRODUCT_IMAGE_FALLBACK
 
-  const fallbacks = [...new Set([...remotes, ...productRemotes, ...locals, PRODUCT_IMAGE_FALLBACK])]
-    .filter(url => url && url !== src)
+  const fallbacks = [
+    ...new Set(
+      [...locals, ...remotes, ...productRemotes, PRODUCT_IMAGE_FALLBACK].filter(
+        url => url && url !== src
+      )
+    ),
+  ]
 
   return { src, fallbacks }
 }
