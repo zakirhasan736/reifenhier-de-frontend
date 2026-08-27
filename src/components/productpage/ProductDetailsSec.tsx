@@ -20,6 +20,7 @@ import NotFound from '@/app/produkte/not-found';
 import OptimizedImage from '../elements/OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
 import { EU_LABEL_TIPS, getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import { resolveEuLabelData } from '@/utils/euTyreLabel';
 import {
   formatSavingsPercent,
   highestPrice,
@@ -286,8 +287,12 @@ const ProductSinglepage: React.FC<ProductProps> = ({
 }) => {
   const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const fuelMeta = getFuelEfficiencyMeta(product.fuel_class);
-  const wetMeta = getWetGripMeta(product.wet_grip);
+  const euLabel = resolveEuLabelData(
+    product,
+    `${SiteUrl}/produkte/${product.slug}`,
+  );
+  const fuelMeta = getFuelEfficiencyMeta(euLabel.fuel || undefined);
+  const wetMeta = getWetGripMeta(euLabel.wet || undefined);
   const uuidCookie = useVisitorUuid();
   const dispatch = useDispatch<AppDispatch>();
   const compareProducts = useSelector(
@@ -434,9 +439,20 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   }, [wishlist, product._id]);
 
   const offerPrices = (product.offers || []).map((o: Offer) => o.price);
+  const cheapestOffer = (() => {
+    const list = Array.isArray(product.offers) ? [...product.offers] : [];
+    list.sort((a, b) => parseMoneyEU(a.price) - parseMoneyEU(b.price));
+    const top = list.find(o => parseMoneyEU(o.price) > 0);
+    if (!top) return product.cheapest_vendor;
+    return {
+      ...(product.cheapest_vendor || {}),
+      ...top,
+      price: parseMoneyEU(top.price),
+    };
+  })();
   const cheapPrice =
     lowestPrice(
-      product.cheapest_vendor?.price,
+      cheapestOffer?.price,
       product.cheapest_offer,
       product.search_price,
       ...offerPrices,
@@ -982,12 +998,12 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
 
                     <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] md:text-[13px] font-medium text-[#404042]">
                       <span className="rounded-full border border-[#D9DDE5] bg-[#F5F7FF] px-2.5 py-1 text-[#1F2937]">
-                        {product.cheapest_vendor?.delivery_cost === '0' ||
-                        product.cheapest_vendor?.delivery_cost === '0.00'
+                        {cheapestOffer?.delivery_cost === '0' ||
+                        cheapestOffer?.delivery_cost === '0.00'
                           ? 'Versandkostenfrei'
-                          : product.cheapest_vendor?.delivery_cost
+                          : cheapestOffer?.delivery_cost
                             ? `Versand: ${parseFloat(
-                                product.cheapest_vendor.delivery_cost
+                                cheapestOffer.delivery_cost
                                   .toString()
                                   .replace(/[^\d.]/g, ''),
                               )
@@ -1103,17 +1119,17 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       <span className="text-[12px] md:text-[13px] font-medium text-[#5A5B61]">
                         Bester Preis:
                       </span>
-                      {product.cheapest_vendor?.affiliate_product_cloak_url ? (
+                      {cheapestOffer?.affiliate_product_cloak_url ? (
                         <a
                           href={buildVendorExitUrl({
                             token:
-                              product.cheapest_vendor
+                              cheapestOffer
                                 ?.affiliate_product_cloak_url || '',
                             productId: product._id,
                             uuid: uuidCookie || 'guest',
                             from: 'product-details-vendor-logo',
-                            vendor: product.cheapest_vendor?.vendor,
-                            vendorId: product.cheapest_vendor?.vendor_id,
+                            vendor: cheapestOffer?.vendor,
+                            vendorId: cheapestOffer?.vendor_id,
                             brand: product.brand_name,
                             instruction: 'Zum Angebot',
                           })}
@@ -1124,26 +1140,26 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               productId: product._id,
                               productName: product.product_name,
                               brandName: product.brand_name,
-                              vendor: product.cheapest_vendor?.vendor,
-                              vendorId: product.cheapest_vendor?.vendor_id,
+                              vendor: cheapestOffer?.vendor,
+                              vendorId: cheapestOffer?.vendor_id,
                               source: 'product-details-vendor-logo',
                               instruction: 'Zum Angebot',
-                              vendorPrice: product.cheapest_vendor?.price,
+                              vendorPrice: cheapestOffer?.price,
                             });
                           }}
                           className="inline-flex max-w-[160px] items-center rounded-md border border-[#E4E5EA] bg-white px-2 py-1 underline underline-offset-2 decoration-primary-100 hover:border-primary-100"
-                          title={`Zum Angebot bei ${product.cheapest_vendor?.vendor || 'Anbieter'}`}
+                          title={`Zum Angebot bei ${cheapestOffer?.vendor || 'Anbieter'}`}
                         >
                           <OfferVendorLogo
-                            vendor={product.cheapest_vendor?.vendor}
-                            vendorLogo={product.cheapest_vendor?.vendor_logo}
+                            vendor={cheapestOffer?.vendor}
+                            vendorLogo={cheapestOffer?.vendor_logo}
                             className="h-[28px] w-auto max-w-[120px] object-contain"
                           />
                         </a>
                       ) : (
                         <OfferVendorLogo
-                          vendor={product.cheapest_vendor?.vendor}
-                          vendorLogo={product.cheapest_vendor?.vendor_logo}
+                          vendor={cheapestOffer?.vendor}
+                          vendorLogo={cheapestOffer?.vendor_logo}
                           className="h-[28px] w-auto max-w-[120px] object-contain"
                         />
                       )}
@@ -1158,7 +1174,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                     </div>
 
                     <ul className="attributes flex items-center w-full justify-start mt-2 md:mt-3">
-                      {product.fuel_class && (
+                      {euLabel.fuel && (
                         <>
                           <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
                             <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
@@ -1176,23 +1192,21 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             </span>{' '}
                             <span
                               style={{
-                                color: gradeFuelColor(product.fuel_class),
+                                color: gradeFuelColor(euLabel.fuel),
                                 fontWeight: 500,
-                                background: gradeFuelBgColor(
-                                  product.fuel_class,
-                                ),
+                                background: gradeFuelBgColor(euLabel.fuel),
                                 padding: '2px 6px',
                                 borderRadius: '4px',
                               }}
                             >
-                              {product.fuel_class}
+                              {euLabel.fuel}
                             </span>
                             </a>
                           </li>
                           <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
                         </>
                       )}
-                      {product.wet_grip && (
+                      {euLabel.wet && (
                         <>
                           <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
                             <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
@@ -1210,21 +1224,21 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             </span>{' '}
                             <span
                               style={{
-                                color: gradeGripColor(product.wet_grip),
+                                color: gradeGripColor(euLabel.wet),
                                 fontWeight: 500,
-                                background: gradeGripBgColor(product.wet_grip),
+                                background: gradeGripBgColor(euLabel.wet),
                                 padding: '2px 6px',
                                 borderRadius: '4px',
                               }}
                             >
-                              {product.wet_grip}
+                              {euLabel.wet}
                             </span>
                             </a>
                           </li>
                           <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
                         </>
                       )}
-                      {product.noise_class && (
+                      {(euLabel.noiseClass || euLabel.noiseDb) && (
                         <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
                           <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
                           <span
@@ -1239,7 +1253,22 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                               loading="lazy"
                             />
                           </span>{' '}
-                          {product.noise_class} db
+                          {euLabel.noiseClass ? (
+                            <span
+                              style={{
+                                color: '#16171A',
+                                fontWeight: 500,
+                                background: '#F0F0F2',
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                              }}
+                            >
+                              {euLabel.noiseClass}
+                            </span>
+                          ) : null}
+                          {euLabel.noiseDb ? (
+                            <span>{euLabel.noiseDb} dB</span>
+                          ) : null}
                           </a>
                         </li>
                       )}
@@ -1300,13 +1329,13 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       <a
                         href={buildVendorExitUrl({
                           token:
-                            product.cheapest_vendor
+                            cheapestOffer
                               ?.affiliate_product_cloak_url || '',
                           productId: product._id,
                           uuid: uuidCookie || 'guest',
                           from: 'product-details-page',
-                          vendor: product.cheapest_vendor?.vendor,
-                          vendorId: product.cheapest_vendor?.vendor_id,
+                          vendor: cheapestOffer?.vendor,
+                          vendorId: cheapestOffer?.vendor_id,
                           brand: product.brand_name,
                           instruction: 'Zum Angebot',
                         })}
@@ -1317,10 +1346,11 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             productId: product._id,
                             productName: product.product_name,
                             brandName: product.brand_name,
-                            vendor: product.cheapest_vendor?.vendor,
-                            vendorId: product.cheapest_vendor?.vendor_id,
+                            vendor: cheapestOffer?.vendor,
+                            vendorId: cheapestOffer?.vendor_id,
                             source: 'product-details-page',
                             instruction: 'Zum Angebot',
+                            vendorPrice: cheapestOffer?.price,
                           });
                         }}
                         className="block w-full"
@@ -1361,7 +1391,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                     </button>
                   </div>
                   <ul className="payment-method-list flex flex-wrap items-center gap-2 mt-6">
-                    {product.cheapest_vendor?.payment_icons?.map(
+                    {cheapestOffer?.payment_icons?.map(
                       (icon: string, idx: number) => {
                         // Map known payment icon names to display names
                         const paymentNameMap: Record<string, string> = {
@@ -1498,7 +1528,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 Kraftstoff
                               </div>
                               <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.fuel_class || 'N/A'}
+                                {euLabel.fuel || product.fuel_class || 'N/A'}
                               </div>
                             </div>
                             <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
@@ -1506,7 +1536,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 Nasshaftung
                               </div>
                               <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.wet_grip || 'N/A'}
+                                {euLabel.wet || product.wet_grip || 'N/A'}
                               </div>
                             </div>
                             <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
@@ -1514,7 +1544,9 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                 Geräusch
                               </div>
                               <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.noise_class || 'N/A'}
+                                {euLabel.noiseDb
+                                  ? `${euLabel.noiseDb} dB${euLabel.noiseClass ? ` · ${euLabel.noiseClass}` : ''}`
+                                  : euLabel.noiseClass || product.noise_class || 'N/A'}
                               </div>
                             </div>
                             <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">

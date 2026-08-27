@@ -18,6 +18,7 @@ import type { RootState, AppDispatch } from '@/store/store';
 import OptimizedImage from '../OptimizedImage';
 import { CloudRain, Leaf } from 'lucide-react';
 import { EU_LABEL_TIPS, getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import { resolveEuLabelData, type TyreLabelInfo } from '@/utils/euTyreLabel';
 import SavingsPercentBadge from '@/components/elements/SavingsPercentBadge';
 import {
   formatSavingsPercent,
@@ -63,12 +64,15 @@ interface ProductCardProps {
   in_stock: string;
   showCompareButton?: boolean;
   offers?: Offer[];
+  total_offers?: number;
   isPriority?: boolean;
   width?: string;
   height?: string;
   diameter?: string;
   lastIndex?: string;
   speedIndex?: string;
+  ean?: string;
+  tyre_label_info?: TyreLabelInfo | null;
 }
 interface Offer {
   brand: string;
@@ -126,6 +130,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   expensive_offer,
   savings_percent,
   offers,
+  total_offers,
   product_name,
   dimensions,
   fuel_class,
@@ -139,6 +144,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   diameter,
   lastIndex,
   speedIndex,
+  ean,
+  tyre_label_info,
 }) => {
 
   const dispatch = useDispatch<AppDispatch>();
@@ -150,17 +157,55 @@ const ProductCard: React.FC<ProductCardProps> = ({
   );
 
   const savingsLabel = useMemo(() => {
-    const offerPrices = (offers || []).map(o => o.price);
-    const expensive = highestPrice(expensive_offer, ...offerPrices);
-    const cheap = lowestPrice(cheapest_offer, search_price, ...offerPrices);
-    return formatSavingsPercent(cheap, expensive);
-  }, [offers, expensive_offer, cheapest_offer, search_price]);
+    return formatSavingsPercent(
+      lowestPrice(cheapest_offer, search_price),
+      highestPrice(expensive_offer),
+    );
+  }, [expensive_offer, cheapest_offer, search_price]);
+
+  const euLabel = useMemo(
+    () =>
+      resolveEuLabelData({
+        brand_name,
+        product_name,
+        ean,
+        dimensions,
+        width,
+        lastIndex,
+        speedIndex,
+        fuel_class,
+        wet_grip,
+        noise_class,
+        merchant_product_third_category,
+        tyre_label_info,
+        slug,
+      }),
+    [
+      brand_name,
+      product_name,
+      ean,
+      dimensions,
+      width,
+      lastIndex,
+      speedIndex,
+      fuel_class,
+      wet_grip,
+      noise_class,
+      merchant_product_third_category,
+      tyre_label_info,
+      slug,
+    ],
+  );
+
+  const fuelLetter = euLabel.fuel;
+  const wetLetter = euLabel.wet;
+  const noiseLetter = euLabel.noiseClass;
 
   const { data: wishlistData } = useGetWishlistQuery();
   const [addWishlist] = useAddWishlistMutation();
   const [removeWishlist] = useRemoveWishlistMutation();
-const fuelMeta = getFuelEfficiencyMeta(fuel_class);
-const wetMeta = getWetGripMeta(wet_grip);
+const fuelMeta = getFuelEfficiencyMeta(fuelLetter || fuel_class);
+const wetMeta = getWetGripMeta(wetLetter || wet_grip);
   // Ensure wishlist is always an array
   const wishlist: WishlistProduct[] = useMemo(() => {
     return wishlistData?.wishlist ?? [];
@@ -401,7 +446,7 @@ const wetMeta = getWetGripMeta(wet_grip);
         <div className="divider !h-[1px] !my-3 !bg-[#F0F0F2]"></div>
         <div className="brand-box flex items-center justify-between w-full gap-2">
           <ul className="attributes h-[44px] flex items-center w-full justify-start">
-            {fuel_class && (
+            {fuelLetter && (
               <>
                 <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px]">
                   <span
@@ -418,20 +463,20 @@ const wetMeta = getWetGripMeta(wet_grip);
                   </span>
                   <span
                     style={{
-                      color: gradeFuelColor(fuel_class),
+                      color: gradeFuelColor(fuelLetter),
                       fontWeight: 500,
-                      background: gradeFuelBgColor(fuel_class),
+                      background: gradeFuelBgColor(fuelLetter),
                       padding: '2px 6px',
                       borderRadius: '4px',
                     }}
                   >
-                    {fuel_class}
+                    {fuelLetter}
                   </span>
                 </li>
                 <li className="divider mx-2 w-[2px] h-3 bg-[#F0F0F2]"></li>
               </>
             )}
-            {wet_grip && (
+            {wetLetter && (
               <>
                 <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px]">
                   <span
@@ -448,20 +493,20 @@ const wetMeta = getWetGripMeta(wet_grip);
                   </span>
                   <span
                     style={{
-                      color: gradeGripColor(wet_grip),
+                      color: gradeGripColor(wetLetter),
                       fontWeight: 500,
-                      background: gradeGripBgColor(wet_grip),
+                      background: gradeGripBgColor(wetLetter),
                       padding: '2px 6px',
                       borderRadius: '4px',
                     }}
                   >
-                    {wet_grip}
+                    {wetLetter}
                   </span>
                 </li>
                 <li className="divider mx-2 w-[2px] h-3 bg-[#F0F0F2]"></li>
               </>
             )}
-            {noise_class && (
+            {noiseLetter && (
               <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px]">
                 <span
                   className="tooltip tooltip-bottom cursor-pointer flex items-center"
@@ -475,7 +520,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                     loading="lazy"
                   />
                 </span>
-                {noise_class}
+                {noiseLetter}
               </li>
             )}
           </ul>
@@ -559,8 +604,18 @@ const wetMeta = getWetGripMeta(wet_grip);
               className="max-w-full flex items-center w-full text-[14px] md:text-[14px] font-medium leading-[120%] font-secondary xl:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"
             >
               Alle Angebote{' '}
-              {Array.isArray(offers) && offers.length > 0 && (
-                <>({offers.length})</>
+              {Math.max(
+                Array.isArray(offers) ? offers.length : 0,
+                Number(total_offers) || 0,
+              ) > 0 && (
+                <>
+                  (
+                  {Math.max(
+                    Array.isArray(offers) ? offers.length : 0,
+                    Number(total_offers) || 0,
+                  )}
+                  )
+                </>
               )}{' '}
               anzeigen
             </button>
@@ -637,6 +692,7 @@ const wetMeta = getWetGripMeta(wet_grip);
                                 vendorId: item.vendor_id,
                                 source: 'product-card',
                                 instruction: 'Direkt zum Angebot',
+                                vendorPrice: toMoneyNumber(item.price) ?? undefined,
                               });
                             }}
                             className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"

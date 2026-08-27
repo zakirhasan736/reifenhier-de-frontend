@@ -18,6 +18,7 @@ export type EuLabelProduct = {
   product_name?: string
   ean?: string
   dimensions?: string
+  width?: string | number
   lastIndex?: string
   speedIndex?: string
   fuel_class?: string
@@ -58,9 +59,11 @@ function parseNoiseClass(raw?: string | null): EuNoiseClass | null {
   const s = String(raw || '')
     .toUpperCase()
     .replace(/KLASSE/g, '')
+    .replace(/[()]/g, '')
     .trim()
   if (s === 'A' || s === 'B' || s === 'C') return s
-  return null
+  const match = s.match(/\b([ABC])\b/)
+  return match ? (match[1] as EuNoiseClass) : null
 }
 
 function parseNoiseDb(raw?: string | number | null): number | null {
@@ -76,6 +79,57 @@ function tyreClassFromCategory(category?: string): 'C1' | 'C2' | 'C3' {
   if (s.includes('van') || s.includes('transporter') || s.includes('c2'))
     return 'C2'
   return 'C1'
+}
+
+function parseWidthMm(product: EuLabelProduct): number | null {
+  const fromField = Number(product.width)
+  if (Number.isFinite(fromField) && fromField >= 100 && fromField <= 400) {
+    return fromField
+  }
+  const m = String(product.dimensions || product.product_name || '').match(
+    /\b(\d{3})\s*[\/]/
+  )
+  return m ? Number(m[1]) : null
+}
+
+function isExtraLoad(product: EuLabelProduct): boolean {
+  return /\b(XL|RF|EXL|XLTL|REINFORCED|EXTRA\s*LOAD)\b/i.test(
+    `${product.product_name || ''} ${product.dimensions || ''}`
+  )
+}
+
+/** UN ECE R117 stage-2 limit used by EU 2020/740 for class A/B/C. */
+function noiseLimitDb(
+  tyreClass: 'C1' | 'C2' | 'C3',
+  widthMm: number | null,
+  extraLoad: boolean
+): number {
+  let limit = 72
+  if (tyreClass === 'C1') {
+    const w = widthMm || 205
+    if (w <= 185) limit = 70
+    else if (w <= 245) limit = 71
+    else if (w <= 275) limit = 72
+    else limit = 74
+  } else if (tyreClass === 'C2') {
+    limit = 72
+  } else {
+    limit = 73
+  }
+  if (extraLoad && tyreClass === 'C1') limit += 1
+  return limit
+}
+
+function deriveNoiseClass(
+  db: number,
+  tyreClass: 'C1' | 'C2' | 'C3',
+  widthMm: number | null,
+  extraLoad: boolean
+): EuNoiseClass {
+  const limit = noiseLimitDb(tyreClass, widthMm, extraLoad)
+  if (db <= limit - 3) return 'A'
+  if (db <= limit) return 'B'
+  return 'C'
 }
 
 function buildSize(p: EuLabelProduct, info: TyreLabelInfo): string {
@@ -99,19 +153,29 @@ export function resolveEuLabelData(
   const info = product.tyre_label_info || {}
   const fuel = parseGradeAE(info.efficiency_class || product.fuel_class)
   const wet = parseGradeAE(info.wet_grip_class || product.wet_grip)
+  const tyreClass = tyreClassFromCategory(product.merchant_product_third_category)
 
   const noiseFromInfo = parseNoiseDb(info.noise_level_db)
   const noiseFromField = parseNoiseDb(product.noise_class)
   const noiseDb = noiseFromInfo ?? noiseFromField
 
-  const noiseClass =
+  let noiseClass =
     parseNoiseClass(info.noise_class) || parseNoiseClass(product.noise_class)
+
+  if (!noiseClass && noiseDb != null) {
+    noiseClass = deriveNoiseClass(
+      noiseDb,
+      tyreClass,
+      parseWidthMm(product),
+      isExtraLoad(product)
+    )
+  }
 
   return {
     brand: String(info.supplier || product.brand_name || '').trim() || '—',
     identifier: String(info.identifier || product.ean || '').trim() || '—',
     size: buildSize(product, info),
-    tyreClass: tyreClassFromCategory(product.merchant_product_third_category),
+    tyreClass,
     fuel,
     wet,
     noiseDb,
