@@ -218,15 +218,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   name: 'Reifexa.de',
                   inLanguage: 'de-DE',
                   publisher: { '@id': 'https://www.reifexa.de/#org' },
-                  potentialAction: {
-                    '@type': 'SearchAction',
-                    target: {
-                      '@type': 'EntryPoint',
-                      urlTemplate:
-                        'https://www.reifexa.de/produkte?q={search_term_string}',
-                    },
-                    'query-input': 'required name=search_term_string',
-                  },
                 },
               ],
             }} />
