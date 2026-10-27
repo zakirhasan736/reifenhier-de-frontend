@@ -78,6 +78,7 @@ interface Offer {
   payment_icons: string[];
   original_affiliate_url: string;
   affiliate_product_cloak_url: string;
+  in_stock?: boolean;
 }
 
 interface CheapestVendor {
@@ -441,7 +442,12 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   const offerPrices = (product.offers || []).map((o: Offer) => o.price);
   const cheapestOffer = (() => {
     const list = Array.isArray(product.offers) ? [...product.offers] : [];
-    list.sort((a, b) => parseMoneyEU(a.price) - parseMoneyEU(b.price));
+    // Best price = cheapest vendor that can actually deliver
+    list.sort(
+      (a, b) =>
+        Number(a.in_stock === false) - Number(b.in_stock === false) ||
+        parseMoneyEU(a.price) - parseMoneyEU(b.price),
+    );
     const top = list.find(o => parseMoneyEU(o.price) > 0);
     if (!top) return product.cheapest_vendor;
     return {
@@ -1646,6 +1652,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       <div className="offer-list-item-area">
                         {([...(product.offers || [])] as Offer[])
                           .sort((a, b) => {
+                            const stock =
+                              Number(a.in_stock === false) -
+                              Number(b.in_stock === false);
+                            if (stock !== 0) return stock;
                             const priceA = parseMoneyEU(a.price);
                             const deliveryA = parseMoneyEU(a.delivery_cost);
                             const priceB = parseMoneyEU(b.price);

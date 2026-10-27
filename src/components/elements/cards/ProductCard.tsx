@@ -659,8 +659,14 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                 {[...offers]
                   .sort(
                     (a, b) =>
+                      Number(
+                        (a as { in_stock?: boolean }).in_stock === false
+                      ) -
+                        Number(
+                          (b as { in_stock?: boolean }).in_stock === false
+                        ) ||
                       (toMoneyNumber(a.price) ?? 0) -
-                      (toMoneyNumber(b.price) ?? 0)
+                        (toMoneyNumber(b.price) ?? 0)
                   )
                   .slice(0, 3)
                   .map(item => {
