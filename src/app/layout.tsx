@@ -129,6 +129,21 @@ export default function RootLayout({
   return (
     <html lang="de" className={poppins.className}>
       <head>
+        {/*
+          Guard against "Failed to execute 'removeChild' on 'Node'" crashes.
+          Browser translation (Chrome/Google Translate, very common for a German
+          site viewed abroad) and some extensions replace React's text nodes with
+          their own <font> elements. When React later removes or inserts next to
+          a node that is no longer where it left it, the whole page crashed into
+          "Something went wrong". This makes those two calls tolerant instead.
+          (Workaround recommended in facebook/react#11538.) Must run before React.
+        */}
+        <script
+          id="dom-mutation-guard"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(typeof Node!=='function'||!Node.prototype||Node.prototype.__rxGuard)return;var p=Node.prototype;p.__rxGuard=true;var rc=p.removeChild;p.removeChild=function(c){if(c&&c.parentNode!==this){if(c.parentNode){return c.parentNode.removeChild(c)}return c}return rc.apply(this,arguments)};var ib=p.insertBefore;p.insertBefore=function(n,r){if(r&&r.parentNode!==this){return this.appendChild(n)}return ib.apply(this,arguments)}})();`,
+          }}
+        />
         {/* Google Tag Manager — as high in <head> as possible */}
         <script
           id="gtm-init"
