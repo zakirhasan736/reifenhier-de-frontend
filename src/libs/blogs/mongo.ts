@@ -18,13 +18,6 @@ export type ContentBlock =
       items?: string[]
       text?: string
     }
-  | {
-      /** Interactive component, e.g. 'reifen-preisrechner' */
-      type: 'widget'
-      widget?: string
-      text?: string
-      items?: string[]
-    }
 
 export type MongoBlog = {
   _id: string
