@@ -13,6 +13,7 @@ import {
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
 import SocialShareButtons from '@/components/elements/SocialShareButtons';
+import { SITE_URL } from '@/libs/seo/site';
 import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
 import { AppDispatch, RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,7 +40,8 @@ import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
 import ProductImageGallery from '@/components/productpage/ProductImageGallery';
 import type { TyreLabelInfo } from '@/utils/euTyreLabel';
 
-const SiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+// Never fall back to localhost — shared links would point to nobody's machine.
+const SiteUrl = SITE_URL;
 
 interface WishlistProduct {
   _id: string;
@@ -484,6 +486,16 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   };
 const productUrl = `${SiteUrl}/produkte/${product.slug}`;
 const productTitle = `${product.brand_name} ${product.product_name}`;
+const rawShareImage = String(
+  (Array.isArray(product.product_image)
+    ? product.product_image[0]
+    : product.product_image) || '',
+);
+const shareImage = !rawShareImage
+  ? undefined
+  : /^https?:\/\//.test(rawShareImage)
+    ? rawShareImage
+    : `${SiteUrl}${rawShareImage.startsWith('/') ? '' : '/'}${rawShareImage}`;
 
   return (
     <>
@@ -968,6 +980,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                         <SocialShareButtons
                           url={productUrl}
                           title={productTitle}
+                          image={shareImage}
                         />
                       </li>
                     </ul>
