@@ -64,7 +64,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       { userAgent: 'Googlebot', ...publicAllow },
       { userAgent: 'Googlebot-Image', allow: '/' },
       { userAgent: 'Googlebot-News', ...publicAllow },
-      { userAgent: 'Google-Extended', ...publicAllow }, // Gemini / AI Overviews
+      { userAgent: 'Google-Extended', ...publicAllow }, // Google's AI training control; not a guarantee of AI Search inclusion
       { userAgent: 'GoogleOther', ...publicAllow },
       { userAgent: 'Storebot-Google', ...publicAllow },
 
@@ -109,7 +109,6 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       `${SITE_URL}/sitemap.xml`,
       ...productSitemaps,
       `${SITE_URL}/sitemap-blogs/sitemap/0.xml`,
-      `${SITE_URL}/llms.txt`,
     ],
     host: SITE_URL,
   }

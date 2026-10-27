@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { SITE_KEYWORDS, SITE_URL } from "@/libs/seo/site";
 import JsonLd from '@/components/seo/JsonLd';
 import PopularLinks from '@/components/seo/PopularLinks';
+import Link from 'next/link';
 
 export const revalidate = 1800;
 
@@ -71,6 +72,11 @@ export default function Home() {
     <div className="home-page-wrapper-area">
       <HomePageMain />
       <PopularLinks />
+      <section className="mx-auto max-w-6xl px-4 py-8" aria-labelledby="vergleich-ratgeber-title">
+        <h2 id="vergleich-ratgeber-title" className="text-2xl font-semibold">Reifenpreise vergleichen: transparent und einfach</h2>
+        <p className="mt-3">Vergleichen Sie verfügbare Angebote nach Reifengröße, Marke und Saison. Prüfen Sie vor dem Kauf auch Versandkosten, Lieferzeit und das EU-Reifenlabel. Der Kauf erfolgt beim jeweiligen Händler; Preise und Verfügbarkeit können sich ändern.</p>
+        <Link href="/reifenpreisvergleich" className="mt-4 inline-block underline">So funktioniert der Reifenpreisvergleich</Link>
+      </section>
       {/* JSON-LD: Organization + WebSite (homepage) */}
       <JsonLd id="ld-org-website" data={{
             '@context': 'https://schema.org',
