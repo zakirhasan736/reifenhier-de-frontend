@@ -1134,7 +1134,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                             instruction: 'Zum Angebot',
                           })}
                           target="_blank"
-                          rel="nofollow sponsored noopener noreferrer"
+                          rel="nofollow sponsored noopener"
                           onClick={() => {
                             onVendorExitClick({
                               productId: product._id,
@@ -1340,7 +1340,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                           instruction: 'Zum Angebot',
                         })}
                         target="_blank"
-                        rel="nofollow sponsored noopener noreferrer"
+                        rel="nofollow sponsored noopener"
                         onClick={() => {
                           onVendorExitClick({
                             productId: product._id,
@@ -1747,7 +1747,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="nofollow sponsored noopener"
                                       onClick={onOfferExit}
                                       className="lg:hidden block"
                                     >
@@ -1764,7 +1764,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="nofollow sponsored noopener"
                                       onClick={onOfferExit}
                                     >
                                       <OfferVendorLogo
@@ -1889,7 +1889,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="nofollow sponsored noopener"
                                       onClick={onOfferExit}
                                       className="cta-button-shop"
                                     >
@@ -1904,7 +1904,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                                     <a
                                       href={outHref}
                                       target="_blank"
-                                      rel="nofollow sponsored noopener noreferrer"
+                                      rel="nofollow sponsored noopener"
                                       onClick={onOfferExit}
                                     >
                                       <button
