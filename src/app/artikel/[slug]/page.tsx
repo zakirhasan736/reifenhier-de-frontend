@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Script from 'next/script';
 import Image from 'next/image';
 import BlogRelated from '@/page-components/blogs/RelatedBlogsSectiob';
@@ -230,14 +231,7 @@ export default async function BlogDetailPage({
 
   const blog = await fetchBlog(slug);
 
-  if (!blog) {
-    return (
-      <main className="container mx-auto py-10">
-        <h1 className="text-xl font-semibold mb-2">Blog nicht gefunden</h1>
-        <p>Dieser Blogartikel ist nicht verfügbar.</p>
-      </main>
-    );
-  }
+  if (!blog) notFound();
 
   const featured =
     blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
