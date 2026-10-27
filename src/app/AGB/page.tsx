@@ -4,7 +4,7 @@ import NewArticlesWrapper from '@/components/homepage/Blogs';
 import JsonLd from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifexa.de',
+  title: { absolute: 'Allgemeine Geschäftsbedingungen (AGB) | Reifexa.de' },
   description:
     'AGB für Reifexa.de (Preisvergleich & Informationen zu Reifenangeboten). Geltungsbereich, Leistungen, Haftung, Pflichten der Nutzer, Datenschutz & Schlussbestimmungen.',
   alternates: { canonical: 'https://www.reifexa.de/AGB' },

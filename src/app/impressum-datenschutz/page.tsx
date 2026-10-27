@@ -3,7 +3,7 @@ import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
 import JsonLd from '@/components/seo/JsonLd';
 export const metadata: Metadata = {
-  title: 'Impressum & Datenschutz – Reifexa.de',
+  title: { absolute: 'Impressum & Datenschutz | Reifexa.de' },
   description:
     'Datenschutzerklärung von Reifexa.de (Jens Kippels) – Verantwortlicher, Verarbeitungszwecke, Rechtsgrundlagen, Cookies, Webanalyse, Onlinemarketing u.v.m.',
   alternates: { canonical: 'https://www.reifexa.de/impressum-datenschutz' },

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import ProductListingsSec from '@/components/productpage/ProductListingsSec';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
+import { seasonForCategory } from '@/libs/seo/landing';
 
 interface Props {
   searchParams: Promise<{
@@ -20,9 +21,9 @@ export async function generateMetadata({
   const page = Number(resolvedParams.page) || 1;
 
   const titles: Record<string, string> = {
-    Sommerreifen: 'Sommerreifen Angebote | Reifexa.de',
-    Winterreifen: 'Winterreifen Angebote | Reifexa.de',
-    Ganzjahresreifen: 'Ganzjahresreifen Angebote | Reifexa.de',
+    Sommerreifen: 'Sommerreifen Angebote | Reifexa',
+    Winterreifen: 'Winterreifen Angebote | Reifexa',
+    Ganzjahresreifen: 'Ganzjahresreifen Angebote | Reifexa',
   };
 
   const descriptions: Record<string, string> = {
@@ -34,19 +35,23 @@ export async function generateMetadata({
       'Finden Sie günstige Ganzjahresreifen-Angebote auf Reifexa.de.',
   };
 
-  const title = titles[category] || 'Reifenangebote | Reifexa.de';
+  const title = titles[category] || 'Reifen online kaufen & Preise vergleichen | Reifexa';
   const description =
     descriptions[category] ||
     'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommer-, Winter- und Ganzjahresreifen nach Marke und Preis.';
 
   // Clean canonical: category landing yes; paginated/filter pages canonicalize to base/category
-  const canonical = category
-    ? `${SITE_URL}/produkte?kategorie=${encodeURIComponent(category)}`
-    : `${SITE_URL}/produkte`;
+  // Season filters consolidate on the indexable season landing pages
+  const seasonSlug = seasonForCategory(category)?.slug;
+  const canonical = seasonSlug
+    ? `${SITE_URL}/${seasonSlug}`
+    : category
+      ? `${SITE_URL}/produkte?kategorie=${encodeURIComponent(category)}`
+      : `${SITE_URL}/produkte`;
 
   return {
     metadataBase: new URL(SITE_URL),
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical },
     keywords: [
