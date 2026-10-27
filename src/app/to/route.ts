@@ -65,6 +65,9 @@ async function bounce(req: NextRequest, method: 'GET' | 'POST') {
     'cf-connecting-ip': req.headers.get('cf-connecting-ip') || '',
     'cf-ipcountry': req.headers.get('cf-ipcountry') || '',
     referer: req.headers.get('referer') || '',
+    // Let the backend skip prefetch/prerender requests (no AWIN click for them)
+    'sec-purpose':
+      req.headers.get('sec-purpose') || req.headers.get('purpose') || '',
   }
 
   try {
@@ -80,7 +83,8 @@ async function bounce(req: NextRequest, method: 'GET' | 'POST') {
       const redirect = NextResponse.redirect(location, 302)
       redirect.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
       redirect.headers.set('X-Robots-Tag', 'noindex, nofollow')
-      redirect.headers.set('Referrer-Policy', 'no-referrer')
+      // Origin-only referrer so AWIN sees clicks coming from reifexa.de
+      redirect.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
       return redirect
     }
 
@@ -93,6 +97,14 @@ async function bounce(req: NextRequest, method: 'GET' | 'POST') {
 
 export async function GET(req: NextRequest) {
   return bounce(req, 'GET')
+}
+
+/** HEAD probes (link checkers, previews) must not create AWIN clicks. */
+export async function HEAD() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: { 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' },
+  })
 }
 
 export async function POST(req: NextRequest) {

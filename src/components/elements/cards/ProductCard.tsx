@@ -682,7 +682,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                               instruction: 'Direkt zum Angebot',
                             })}
                             target="_blank"
-                            rel="nofollow sponsored noopener noreferrer"
+                            rel="nofollow sponsored noopener"
                             onClick={() => {
                               onVendorExitClick({
                                 productId: _id,
