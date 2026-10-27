@@ -30,6 +30,7 @@ import {
   onVendorExitClick,
 } from '@/libs/analytics/vendorExit';
 import { formatEuro, toMoneyNumber } from '@/libs/money';
+import PriceSparkline from '@/components/elements/PriceSparkline';
 import { productImageSrc } from '@/libs/productImage';
 
 interface RelatedCheaperItem {
@@ -73,6 +74,7 @@ interface ProductCardProps {
   speedIndex?: string;
   ean?: string;
   tyre_label_info?: TyreLabelInfo | null;
+  price_trend?: { points?: [string, number][] } | null;
 }
 interface Offer {
   brand: string;
@@ -137,6 +139,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   wet_grip,
   noise_class,
   in_stock,
+  price_trend,
   showCompareButton = true,
   isPriority = true,
   width,
@@ -597,6 +600,11 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
             </>
           )}
         </p>
+        <PriceSparkline
+          points={price_trend?.points}
+          current={toMoneyNumber(cheapest_offer) ?? toMoneyNumber(search_price)}
+          className="mt-1.5"
+        />
         <div className="button-box pt-4">
           <Link href={`/produkte/${slug}`} passHref>
             <button

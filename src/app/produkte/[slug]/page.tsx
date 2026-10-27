@@ -14,6 +14,7 @@ import {
 } from '@/libs/seo/productMeta';
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
+import PriceHistoryChart from '@/components/productpage/PriceHistoryChart';
 
 // ---- Config ----
 const API = (
@@ -80,6 +81,7 @@ interface Product {
   lastIndex?: string;
   speedIndex?: string;
   offers?: Offer[];
+  price_trend?: { points?: [string, number][] } | null;
   tyre_label_info?: {
     supplier?: string | null;
     identifier?: string | null;
@@ -196,6 +198,12 @@ export default async function ProductPage({
           product={product}
           loading={false}
           indexVariants={indexVariants ?? []}
+        />
+        <PriceHistoryChart
+          slug={product.slug}
+          productName={[product.brand_name, product.product_name].filter(Boolean).join(' ')}
+          initialTrend={product.price_trend?.points}
+          currentBest={Number(product.cheapest_offer) || undefined}
         />
         <HowItWorks />
         <RelatedProducts

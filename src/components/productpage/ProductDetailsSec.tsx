@@ -13,6 +13,7 @@ import {
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
 import SocialShareButtons from '@/components/elements/SocialShareButtons';
+import PriceSparkline from '@/components/elements/PriceSparkline';
 import { SITE_URL } from '@/libs/seo/site';
 import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
 import { AppDispatch, RootState } from '@/store/store';
@@ -96,6 +97,7 @@ interface CheapestVendor {
 
 interface Product {
   _id: string;
+  price_trend?: { points?: [string, number][] } | null;
   slug: string;
   product_name: string;
   brand_name: string;
@@ -1191,6 +1193,14 @@ const shareImage = !rawShareImage
                         </a>
                       )}
                     </div>
+                    <a href="#preisverlauf-title" className="mt-2 inline-flex" aria-label="Zur Preisentwicklung">
+                      <PriceSparkline
+                        points={product.price_trend?.points}
+                        current={cheapPrice || undefined}
+                        width={88}
+                        height={24}
+                      />
+                    </a>
 
                     <ul className="attributes flex items-center w-full justify-start mt-2 md:mt-3">
                       {euLabel.fuel && (
