@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import ProductListingsSec from '@/components/productpage/ProductListingsSec';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
+import JsonLd from '@/components/seo/JsonLd';
 
 interface Props {
   searchParams: Promise<{
@@ -154,12 +154,7 @@ export default async function ProductsPage({ searchParams }: Props) {
         total={total}
         initialPage={page}
       />
-      <Script
-        id="ld-produkte-static"
-        type="application/ld+json"
-        strategy="afterInteractive"
-      >
-        {JSON.stringify({
+      <JsonLd id="ld-produkte-static" data={{
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
           '@id': `${pageUrl}#collection`,
@@ -168,15 +163,8 @@ export default async function ProductsPage({ searchParams }: Props) {
           inLanguage: 'de-DE',
           isPartOf: { '@id': `${SITE_URL}/#website` },
           publisher: { '@id': `${SITE_URL}/#org` },
-        })}
-      </Script>
-      <Script
-        id="ld-produkte-breadcrumb"
-        type="application/ld+json"
-        strategy="afterInteractive"
-      >
-        {JSON.stringify(breadcrumbLd)}
-      </Script>
+        }} />
+      <JsonLd id="ld-produkte-breadcrumb" data={breadcrumbLd} />
     </>
   );
 }

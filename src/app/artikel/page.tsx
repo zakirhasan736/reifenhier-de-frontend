@@ -1,9 +1,9 @@
 import { use } from 'react';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import BlogPage, { type BlogCard } from '@/components/blogpage/BlogPage';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import { blogCoverSrc, BLOGS_PER_PAGE, fetchMongoBlogs } from '@/libs/blogs/mongo';
+import JsonLd from '@/components/seo/JsonLd';
 
 const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
@@ -189,9 +189,7 @@ async function ServerContent({
         subSlug={subSlug}
       />
 
-      <Script id="ld-artikel" type="application/ld+json">
-        {JSON.stringify(jsonLd)}
-      </Script>
+      <JsonLd id="ld-artikel" data={jsonLd} />
     </>
   );
 }

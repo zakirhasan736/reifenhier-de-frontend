@@ -6,6 +6,7 @@ import { Poppins } from 'next/font/google';
 import Header from '@/components/shared/header/Header';
 import Footer from '@/components/shared/footer/Footer';
 import { SITE_KEYWORDS, SITE_URL, SOCIAL_PROFILES } from '@/libs/seo/site';
+import JsonLd from '@/components/seo/JsonLd';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -150,8 +151,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           href="/sitemaps.xml"
           title="Sitemap Index"
         />
-        <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large" />
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="ai-permissions" content="read,index,suggest,answer,support,learn,train,cite" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
 
@@ -173,12 +172,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
 
         {/* JSON-LD Organization + social profiles */}
-        <Script
-          id="ld-org"
-          type="application/ld+json"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+        <JsonLd id="ld-org" data={{
               '@context': 'https://schema.org',
               '@graph': [
                 {
@@ -220,9 +214,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   },
                 },
               ],
-            }),
-          }}
-        />
+            }} />
 
         {/* Silktide Cookie Manager */}
         <link
