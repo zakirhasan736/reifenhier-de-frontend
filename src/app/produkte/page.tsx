@@ -4,6 +4,7 @@ import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
 import { seasonForCategory } from '@/libs/seo/landing';
 import Link from 'next/link';
+import type { Product } from '@/types/product';
 
 interface Props {
   searchParams: Promise<{
@@ -105,7 +106,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   params.append('page', page.toString());
   params.append('limit', limit.toString());
 
-  let initialProducts: Array<{ _id?: string; slug?: string; product_name?: string; brand_name?: string; dimensions?: string; cheapest_offer?: number; search_price?: number }> = [];
+  let initialProducts: Product[] = [];
   let total = 0;
 
   try {
