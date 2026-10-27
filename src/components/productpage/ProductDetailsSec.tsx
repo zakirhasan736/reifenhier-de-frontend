@@ -13,6 +13,7 @@ import {
   useGetWishlistQuery,
 } from '@/store/api/wishlistApi';
 import SocialShareButtons from '@/components/elements/SocialShareButtons';
+import { SITE_URL } from '@/libs/seo/site';
 import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
 import { AppDispatch, RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,7 +40,8 @@ import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
 import ProductImageGallery from '@/components/productpage/ProductImageGallery';
 import type { TyreLabelInfo } from '@/utils/euTyreLabel';
 
-const SiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+// Never fall back to localhost — shared links would point to nobody's machine.
+const SiteUrl = SITE_URL;
 
 interface WishlistProduct {
   _id: string;
@@ -78,6 +80,7 @@ interface Offer {
   payment_icons: string[];
   original_affiliate_url: string;
   affiliate_product_cloak_url: string;
+  in_stock?: boolean;
 }
 
 interface CheapestVendor {
@@ -441,7 +444,12 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   const offerPrices = (product.offers || []).map((o: Offer) => o.price);
   const cheapestOffer = (() => {
     const list = Array.isArray(product.offers) ? [...product.offers] : [];
-    list.sort((a, b) => parseMoneyEU(a.price) - parseMoneyEU(b.price));
+    // Best price = cheapest vendor that can actually deliver
+    list.sort(
+      (a, b) =>
+        Number(a.in_stock === false) - Number(b.in_stock === false) ||
+        parseMoneyEU(a.price) - parseMoneyEU(b.price),
+    );
     const top = list.find(o => parseMoneyEU(o.price) > 0);
     if (!top) return product.cheapest_vendor;
     return {
@@ -478,6 +486,16 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   };
 const productUrl = `${SiteUrl}/produkte/${product.slug}`;
 const productTitle = `${product.brand_name} ${product.product_name}`;
+const rawShareImage = String(
+  (Array.isArray(product.product_image)
+    ? product.product_image[0]
+    : product.product_image) || '',
+);
+const shareImage = !rawShareImage
+  ? undefined
+  : /^https?:\/\//.test(rawShareImage)
+    ? rawShareImage
+    : `${SiteUrl}${rawShareImage.startsWith('/') ? '' : '/'}${rawShareImage}`;
 
   return (
     <>
@@ -962,6 +980,7 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                         <SocialShareButtons
                           url={productUrl}
                           title={productTitle}
+                          image={shareImage}
                         />
                       </li>
                     </ul>
@@ -1646,6 +1665,10 @@ const productTitle = `${product.brand_name} ${product.product_name}`;
                       <div className="offer-list-item-area">
                         {([...(product.offers || [])] as Offer[])
                           .sort((a, b) => {
+                            const stock =
+                              Number(a.in_stock === false) -
+                              Number(b.in_stock === false);
+                            if (stock !== 0) return stock;
                             const priceA = parseMoneyEU(a.price);
                             const deliveryA = parseMoneyEU(a.delivery_cost);
                             const priceB = parseMoneyEU(b.price);

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
   addProduct,
+  refreshCompareProducts,
   closeModal,
   clearProducts,
   removeProduct,
@@ -26,6 +27,9 @@ import {
   loadRank,
 } from '@/libs/compare';
 import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
+import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
+
+const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
 
 function displayName(p: CompareProduct) {
   return [p.brand_name, p.product_name].filter(Boolean).join(' ');
@@ -62,6 +66,30 @@ export default function CompareModal() {
       .filter(s => sameSize(base, s))
       .slice(0, 6);
   }, [suggestions, products, base]);
+
+  // Refresh live prices / best vendor whenever the comparison is opened.
+  const idsKey = products.map(p => p._id).join(',');
+  useEffect(() => {
+    if (!isOpen || !API || products.length === 0) return;
+    let cancelled = false;
+    Promise.all(
+      products.map(p =>
+        fetch(`${API}/api/products/product-details/${encodeURIComponent(p.slug)}`, {
+          cache: 'no-store',
+        })
+          .then(r => (r.ok ? r.json() : null))
+          .then(j => (j?.product?._id ? j.product : null))
+          .catch(() => null),
+      ),
+    ).then(list => {
+      const fresh = list.filter(Boolean);
+      if (!cancelled && fresh.length) dispatch(refreshCompareProducts(fresh));
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, idsKey, dispatch]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -194,6 +222,44 @@ export default function CompareModal() {
                     <span className="mt-1 block text-[12px] font-medium text-[#E66605]">
                       {label}
                     </span>
+                  ) : null}
+                  {p.best_vendor ? (
+                    <span className="mt-1 block text-[12px] text-[#5A5B61]">
+                      bei {p.best_vendor}
+                      {p.offer_count && p.offer_count > 1
+                        ? ` · ${p.offer_count} Angebote`
+                        : ''}
+                    </span>
+                  ) : null}
+                  {p.best_vendor_token ? (
+                    <a
+                      href={buildVendorExitUrl({
+                        token: p.best_vendor_token,
+                        productId: p._id,
+                        from: 'compare-modal',
+                        vendor: p.best_vendor,
+                        vendorId: p.best_vendor_id,
+                        brand: p.brand_name,
+                        instruction: 'Zum Angebot',
+                      })}
+                      target="_blank"
+                      rel="nofollow sponsored noopener"
+                      onClick={() =>
+                        onVendorExitClick({
+                          productId: p._id,
+                          productName: p.product_name,
+                          brandName: p.brand_name,
+                          vendor: p.best_vendor,
+                          vendorId: p.best_vendor_id,
+                          source: 'compare-modal',
+                          instruction: 'Zum Angebot',
+                          vendorPrice: comparePrice(p) || undefined,
+                        })
+                      }
+                      className="mt-2 inline-flex items-center justify-center rounded-full bg-primary-100 px-3 py-1.5 text-[12px] font-semibold text-white hover:opacity-90"
+                    >
+                      Zum Angebot
+                    </a>
                   ) : null}
                 </Cell>
                 );

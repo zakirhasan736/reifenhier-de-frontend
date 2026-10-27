@@ -24,7 +24,27 @@ export interface CompareProduct {
   merchant_product_third_category?: string;
   average_rating?: number;
   in_stock?: string;
+  /** Best (cheapest in-stock) vendor — refreshed from the API on open */
+  best_vendor?: string;
+  best_vendor_id?: string;
+  best_vendor_token?: string;
+  offer_count?: number;
+  price_checked_at?: number;
 }
+
+type CheapestVendorLike = {
+  vendor?: string;
+  vendor_id?: string;
+  affiliate_product_cloak_url?: string;
+};
+
+type RawCompareInput = Partial<CompareProduct> & {
+  _id: string;
+  slug: string;
+  cheapest_vendor?: CheapestVendorLike | null;
+  total_offers?: number;
+  offers?: unknown[];
+};
 
 interface CompareState {
   products: CompareProduct[];
@@ -42,9 +62,8 @@ function asImage(value: unknown) {
   return String(value || '');
 }
 
-export function normalizeCompareProduct(
-  raw: Partial<CompareProduct> & { _id: string; slug: string }
-): CompareProduct {
+export function normalizeCompareProduct(raw: RawCompareInput): CompareProduct {
+  const cv = raw.cheapest_vendor || undefined;
   return {
     _id: raw._id,
     slug: raw.slug,
@@ -71,6 +90,14 @@ export function normalizeCompareProduct(
     merchant_product_third_category: raw.merchant_product_third_category,
     average_rating: raw.average_rating,
     in_stock: raw.in_stock,
+    best_vendor: cv?.vendor || raw.best_vendor,
+    best_vendor_id: cv?.vendor_id || raw.best_vendor_id,
+    best_vendor_token: cv?.affiliate_product_cloak_url || raw.best_vendor_token,
+    offer_count:
+      raw.total_offers ??
+      (Array.isArray(raw.offers) ? raw.offers.length : undefined) ??
+      raw.offer_count,
+    price_checked_at: raw.price_checked_at,
   };
 }
 
@@ -98,11 +125,27 @@ const compareSlice = createSlice({
     },
     addProduct: (
       state,
-      action: PayloadAction<Partial<CompareProduct> & { _id: string; slug: string }>
+      action: PayloadAction<RawCompareInput>
     ) => {
       if (state.products.some(p => p._id === action.payload._id)) return;
       if (state.products.length >= MAX_COMPARE) return;
       state.products.push(normalizeCompareProduct(action.payload));
+    },
+    /**
+     * Compared items live in localStorage, so their prices went stale forever.
+     * Merge fresh API data (price, best vendor, stock) into stored items.
+     */
+    refreshCompareProducts: (state, action: PayloadAction<RawCompareInput[]>) => {
+      const fresh = new Map(action.payload.map(p => [p._id, p]));
+      state.products = state.products.map(p => {
+        const f = fresh.get(p._id);
+        if (!f) return p;
+        return {
+          ...p,
+          ...normalizeCompareProduct({ ...p, ...f }),
+          price_checked_at: Date.now(),
+        };
+      });
     },
     removeProduct: (state, action: PayloadAction<string>) => {
       state.products = state.products.filter(p => p._id !== action.payload);
@@ -130,6 +173,7 @@ const compareSlice = createSlice({
 export const {
   hydrateCompare,
   addProduct,
+  refreshCompareProducts,
   removeProduct,
   clearProducts,
   setSuggestions,

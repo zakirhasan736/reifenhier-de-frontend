@@ -5,51 +5,123 @@ import {
   FacebookIcon,
   EmailShareButton,
   EmailIcon,
-  LinkedinShareButton,
-  LinkedinIcon,
+  PinterestShareButton,
+  PinterestIcon,
   TwitterShareButton,
   TwitterIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+  TelegramShareButton,
+  TelegramIcon,
 } from 'next-share';
 
-import { useState, useEffect, useRef } from 'react';
-import { Copy, Share2 } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Copy, Check, Share2 } from 'lucide-react';
 
-export default function SocialShareButtons({
-  url,
-  title,
-}: {
+type Props = {
   url: string;
   title: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  /** Product image (needed for Pinterest) */
+  image?: string;
+};
 
-  // CLICK OUTSIDE TO CLOSE
+function withUtm(url: string, source: string) {
+  try {
+    const u = new URL(url);
+    u.searchParams.set('utm_source', source);
+    u.searchParams.set('utm_medium', 'social_share');
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+async function copyText(text: string) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // fall through to legacy copy
+  }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+export default function SocialShareButtons({ url, title, image }: Props) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  // Click outside / Escape closes. The ref wraps the trigger too, so the
+  // trigger button can close the menu again (it used to reopen instantly).
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+    if (!open) return;
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('touchstart', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('touchstart', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  const handleTrigger = useCallback(async () => {
+    // Phones: use the native share sheet (WhatsApp, Messenger, SMS, ...)
+    const isTouch =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(pointer: coarse)').matches;
+    if (isTouch && typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title, url: withUtm(url, 'native_share') });
+        return;
+      } catch (err) {
+        if ((err as Error)?.name === 'AbortError') return; // user cancelled
+      }
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+    setOpen(o => !o);
+  }, [title, url]);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    const ok = await copyText(url);
+    setCopied(ok ? 'ok' : 'fail');
+    setTimeout(() => setCopied('idle'), 1800);
   };
 
+  const close = () => setOpen(false);
+  const itemCls =
+    'flex w-full items-center gap-2 px-3 py-2 hover:bg-gray-100 text-[#404042] text-[14px]';
+
   return (
-    <div className="relative inline-block text-left">
-      {/* SHARE BUTTON */}
+    <div ref={wrapperRef} className="relative inline-block text-left">
       <button
-        onClick={() => setOpen(!open)}
+        type="button"
+        onClick={handleTrigger}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Produkt teilen"
         className="py-2 px-3 border rounded-md hover:bg-gray-100 transition cursor-pointer"
       >
         <Share2 className="w-4 h-4 text-[#404042]" />
@@ -57,67 +129,111 @@ export default function SocialShareButtons({
 
       {open && (
         <div
-          ref={dropdownRef}
-          className="absolute right-0 mt-2 w-44 bg-white border rounded-xl overflow-hidden shadow-lg z-50"
+          role="menu"
+          className="absolute right-0 mt-2 w-52 bg-white border rounded-xl overflow-hidden shadow-lg z-50"
         >
-          {/* Arrow */}
-          <div className="absolute -top-2 right-4 w-3 h-3 rotate-45 bg-white border-l border-t"></div>
-
-          <ul className="pt-2 socials-sheare-button-list overflow-hidden">
-            {/* EMAIL */}
-            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-              <EmailShareButton
-                url={url}
-                subject={title}
-                className="flex items-center gap-2"
+          <ul className="py-1 socials-sheare-button-list">
+            <li role="none">
+              <WhatsappShareButton
+                url={withUtm(url, 'whatsapp')}
+                title={title}
+                separator=" – "
+                onClick={close}
+                style={{ width: '100%' }}
               >
-                <EmailIcon size={28} round />
-                <span>Email</span>
-              </EmailShareButton>
+                <span className={itemCls}>
+                  <WhatsappIcon size={28} round />
+                  WhatsApp
+                </span>
+              </WhatsappShareButton>
             </li>
-
-            {/* PINTEREST → using LinkedIn icon if needed */}
-            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-              <LinkedinShareButton
-                url={url}
-                className="flex items-center gap-2"
-              >
-                <LinkedinIcon size={28} round />
-                <span>Pinterest</span>
-              </LinkedinShareButton>
-            </li>
-
-            {/* FACEBOOK */}
-            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+            <li role="none">
               <FacebookShareButton
-                url={url}
+                url={withUtm(url, 'facebook')}
                 quote={title}
-                className="flex items-center gap-2"
+                onClick={close}
+                style={{ width: '100%' }}
               >
-                <FacebookIcon size={28} round />
-                <span>Facebook</span>
+                <span className={itemCls}>
+                  <FacebookIcon size={28} round />
+                  Facebook
+                </span>
               </FacebookShareButton>
             </li>
-
-            {/* X / TWITTER */}
-            <li className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+            <li role="none">
               <TwitterShareButton
-                url={url}
+                url={withUtm(url, 'x')}
                 title={title}
-                className="flex items-center gap-2"
+                onClick={close}
+                style={{ width: '100%' }}
               >
-                <TwitterIcon size={28} round />
-                <span>X.com</span>
+                <span className={itemCls}>
+                  <TwitterIcon size={28} round />
+                  X (Twitter)
+                </span>
               </TwitterShareButton>
             </li>
-
-            {/* COPY LINK */}
-            <li
-              onClick={handleCopy}
-              className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-[#404042]"
-            >
-              <Copy className="w-4 h-4" />
-              {copied ? 'Kopiert!' : 'Link kopieren'}
+            {image ? (
+              <li role="none">
+                <PinterestShareButton
+                  url={withUtm(url, 'pinterest')}
+                  media={image}
+                  description={title}
+                  onClick={close}
+                  style={{ width: '100%' }}
+                >
+                  <span className={itemCls}>
+                    <PinterestIcon size={28} round />
+                    Pinterest
+                  </span>
+                </PinterestShareButton>
+              </li>
+            ) : null}
+            <li role="none">
+              <TelegramShareButton
+                url={withUtm(url, 'telegram')}
+                title={title}
+                onClick={close}
+                style={{ width: '100%' }}
+              >
+                <span className={itemCls}>
+                  <TelegramIcon size={28} round />
+                  Telegram
+                </span>
+              </TelegramShareButton>
+            </li>
+            <li role="none">
+              <EmailShareButton
+                url={withUtm(url, 'email')}
+                subject={title}
+                body={`${title}\n`}
+                onClick={close}
+                style={{ width: '100%' }}
+              >
+                <span className={itemCls}>
+                  <EmailIcon size={28} round />
+                  E-Mail
+                </span>
+              </EmailShareButton>
+            </li>
+            <li role="none">
+              <button
+                type="button"
+                role="menuitem"
+                onClick={handleCopy}
+                className={itemCls}
+              >
+                {copied === 'ok' ? (
+                  <Check className="w-4 h-4 mx-[6px] text-green-600" />
+                ) : (
+                  <Copy className="w-4 h-4 mx-[6px]" />
+                )}
+                {copied === 'ok'
+                  ? 'Link kopiert!'
+                  : copied === 'fail'
+                    ? 'Kopieren fehlgeschlagen'
+                    : 'Link kopieren'}
+              </button>
             </li>
           </ul>
         </div>
