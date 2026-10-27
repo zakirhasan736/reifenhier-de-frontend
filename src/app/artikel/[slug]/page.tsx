@@ -88,7 +88,7 @@ export async function generateMetadata({
   const mongoBlog = await fetchMongoBlogBySlug(slug);
 
   if (mongoBlog) {
-    const title = `${mongoBlog.title} | Reifexa.de`;
+    const title = `${mongoBlog.title} | Reifexa`;
     const description = (mongoBlog.metaDescription || mongoBlog.title).slice(
       0,
       155
@@ -107,7 +107,7 @@ export async function generateMetadata({
 
     return {
       metadataBase: new URL(SITE_URL),
-      title,
+      title: { absolute: title },
       description,
       alternates: { canonical },
       keywords,
@@ -136,7 +136,7 @@ export async function generateMetadata({
 
   if (!blog) {
     return {
-      title: 'Artikel nicht gefunden | Reifexa.de',
+      title: { absolute: 'Artikel nicht gefunden | Reifexa' },
       description: 'Dieser Artikel ist nicht verfügbar.',
       robots: { index: false, follow: true },
       alternates: { canonical: `${SITE_URL}/artikel/${slug}` },
@@ -164,7 +164,7 @@ function getCategories(blog: WPBlog): string[] {
 
   const title =
     blog.acf?.meta_title ||
-    `${blog.title.rendered.replace(/<[^>]+>/g, '')} | Reifexa.de`;
+    `${blog.title.rendered.replace(/<[^>]+>/g, '')} | Reifexa`;
 
   const excerpt =
     blog.acf?.meta_description ||
@@ -179,7 +179,7 @@ function getCategories(blog: WPBlog): string[] {
 
   return {
     metadataBase: new URL(SITE_URL),
-    title,
+    title: { absolute: title },
     description: excerpt,
     alternates: { canonical },
     keywords: mergedKeywords,

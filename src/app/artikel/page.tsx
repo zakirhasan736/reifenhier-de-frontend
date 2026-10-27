@@ -9,7 +9,7 @@ const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Reifen Ratgeber & Artikel | Reifexa.de',
+  title: { absolute: 'Reifen-Ratgeber & Tests 2026 | Reifexa' },
   description:
     'Aktuelle Ratgeber, Tests und Tipps zu Sommerreifen, Winterreifen, Ganzjahresreifen und Reifenkauf auf Reifexa.de.',
   alternates: { canonical: `${SITE_URL}/artikel` },
