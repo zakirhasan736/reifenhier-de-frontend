@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { ContentBlock } from '@/libs/blogs/mongo'
+import TyrePriceCalculator from '@/components/blogpage/TyrePriceCalculator'
 
 /**
  * Inline links in blog text: "[205/55 R16 Reifen](/reifen/205-55-r16)".
@@ -56,6 +57,11 @@ function Heading({
 function Block({ block }: { block: ContentBlock }) {
   if (block.type === 'heading') {
     return <Heading level={block.level} text={block.text} />
+  }
+
+  if (block.type === 'widget') {
+    if (block.widget === 'reifen-preisrechner') return <TyrePriceCalculator />
+    return null
   }
 
   if (block.type === 'list') {
