@@ -11,6 +11,7 @@ import {
   fetchMongoBlogs,
 } from '@/libs/blogs/mongo';
 import { buildArticleKeywords } from '@/libs/seo/blogKeywords';
+import JsonLd from '@/components/seo/JsonLd';
 
 /* ------------------------------------------
    WORDPRESS API TYPES
@@ -396,12 +397,8 @@ export default async function BlogDetailPage({
       <BlogRelated blog={blog} />
       <LatestBlogs limit={8} />
 
-      <Script id="blog-jsonld" type="application/ld+json">
-        {JSON.stringify(jsonLd)}
-      </Script>
-      <Script id="blog-breadcrumb-jsonld" type="application/ld+json">
-        {JSON.stringify(breadcrumbLd)}
-      </Script>
+      <JsonLd id="blog-jsonld" data={jsonLd} />
+      <JsonLd id="blog-breadcrumb-jsonld" data={breadcrumbLd} />
       <Script
         src="/wp-calculator.js"
         strategy="lazyOnload"

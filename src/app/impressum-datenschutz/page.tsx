@@ -1,7 +1,7 @@
 import React from 'react';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
-import Script from 'next/script';
+import JsonLd from '@/components/seo/JsonLd';
 export const metadata: Metadata = {
   title: 'Impressum & Datenschutz – Reifexa.de',
   description:
@@ -383,12 +383,7 @@ const PrivacyPolicy: React.FC = () => {
           </p>
         </footer>
       </main>
-      <Script
-        id="ld-impressum"
-        type="application/ld+json"
-        strategy="afterInteractive"
-      >
-        {JSON.stringify({
+      <JsonLd id="ld-impressum" data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
           '@id': 'https://www.reifexa.de/impressum-datenschutz#webpage',
@@ -399,8 +394,7 @@ const PrivacyPolicy: React.FC = () => {
           inLanguage: 'de-DE',
           isPartOf: { '@id': 'https://www.reifexa.de/#website' },
           about: { '@id': 'https://www.reifexa.de/#org' },
-        })}
-      </Script>
+        }} />
       <NewArticlesWrapper limit={8} />
     </>
   );

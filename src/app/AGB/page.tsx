@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Allgemeine Geschäftsbedingungen (AGB) – Reifexa.de',
@@ -206,8 +206,7 @@ export default function TermsPage() {
           </p>
         </div>
       </div>
-      <Script id="ld-agb" type="application/ld+json" strategy="afterInteractive">
-        {JSON.stringify({
+      <JsonLd id="ld-agb" data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
           '@id': 'https://www.reifexa.de/AGB#webpage',
@@ -218,8 +217,7 @@ export default function TermsPage() {
           inLanguage: 'de-DE',
           isPartOf: { '@id': 'https://www.reifexa.de/#website' },
           about: { '@id': 'https://www.reifexa.de/#org' },
-        })}
-      </Script>
+        }} />
       <NewArticlesWrapper limit={8} />
     </>
   );

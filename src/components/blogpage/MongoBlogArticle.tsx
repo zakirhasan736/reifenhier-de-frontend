@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Script from 'next/script'
 import ContentBlocks from '@/components/blogpage/ContentBlocks'
 import BlogTyreCalculator from '@/components/blogpage/BlogTyreCalculator'
 import BlogCoverImage from '@/components/blogpage/BlogCoverImage'
@@ -9,6 +8,7 @@ import {
 } from '@/libs/blogs/mongo'
 import { SITE_URL } from '@/libs/seo/site'
 import { buildArticleKeywords } from '@/libs/seo/blogKeywords'
+import JsonLd from '@/components/seo/JsonLd';
 
 const CALCULATOR_SLUG =
   'reifenrechner-2026-preise-vergleichen-modelle-pruefen-und-die-richtige-reifengroesse-finden'
@@ -186,12 +186,8 @@ export default function MongoBlogArticle({
         </section>
       )}
 
-      <Script id="blog-jsonld" type="application/ld+json">
-        {JSON.stringify(jsonLd)}
-      </Script>
-      <Script id="blog-breadcrumb-jsonld" type="application/ld+json">
-        {JSON.stringify(breadcrumbLd)}
-      </Script>
+      <JsonLd id="blog-jsonld" data={jsonLd} />
+      <JsonLd id="blog-breadcrumb-jsonld" data={breadcrumbLd} />
     </>
   )
 }

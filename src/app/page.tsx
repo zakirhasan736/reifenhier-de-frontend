@@ -1,7 +1,10 @@
 import HomePageMain from "@/page-components/Home/HomePage";
 import { Metadata } from "next";
-import Script from "next/script";
 import { SITE_KEYWORDS, SITE_URL } from "@/libs/seo/site";
+import JsonLd from '@/components/seo/JsonLd';
+import PopularLinks from '@/components/seo/PopularLinks';
+
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -67,13 +70,9 @@ export default function Home() {
   return (
     <div className="home-page-wrapper-area">
       <HomePageMain />
+      <PopularLinks />
       {/* JSON-LD: Organization + WebSite (homepage) */}
-      <Script
-        id="ld-org-website"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+      <JsonLd id="ld-org-website" data={{
             '@context': 'https://schema.org',
             '@graph': [
               {
@@ -131,9 +130,7 @@ export default function Home() {
                 ],
               },
             ],
-          }),
-        }}
-      />
+          }} />
     </div>
   );
 }

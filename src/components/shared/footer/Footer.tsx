@@ -159,7 +159,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                          href="/produkte?kategorie=Sommerreifen"
+                          href="/sommerreifen"
                         >
                           Sommerreifen
                         </Link>
@@ -167,7 +167,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                          href="/produkte?kategorie=Winterreifen"
+                          href="/winterreifen"
                         >
                           Winterreifen
                         </Link>
@@ -175,19 +175,21 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                          href="/produkte?kategorie=Ganzjahresreifen"
+                          href="/ganzjahresreifen"
                         >
                           Ganzjahresreifen
                         </Link>
                       </li>
-                      {/* <li>
-                      <Link
-                        className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#16171A]"
-                        href="./#byBrand"
-                      >
-                        Nach Marke
-                      </Link>
-                    </li> */}
+                      <li>
+                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/reifen">
+                          Reifengrößen
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/marken">
+                          Reifenmarken
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                   <div className="quick-link-cont">

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { currentTyreSeason } from '@/libs/season';
 import { useRouter } from 'next/navigation';
 import { useGetTyreFiltersQuery } from '@/store/api/filterApi';
 import CustomSelect from '@/components/elements/inputs/CustomCategorySelect';
@@ -31,7 +32,9 @@ const DEFAULT_KATEGORIES: FilterOption[] = [
 const FilterForm = () => {
   const router = useRouter();
 
-  const [kategorie, setKategories] = useState('Sommerreifen');
+  // Pre-select the tyre type that's in season in Germany right now
+  // (winter tyres Oct–Easter, summer tyres Easter–Sep).
+  const [kategorie, setKategories] = useState<string>(() => currentTyreSeason());
   const [width, setWidth] = useState('205');
   const [height, setHeight] = useState('55');
   const [diameter, setDiameter] = useState('16');

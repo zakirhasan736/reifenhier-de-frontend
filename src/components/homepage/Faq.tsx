@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import Script from 'next/script';
+import JsonLd from '@/components/seo/JsonLd';
 
 interface FAQ {
   _id: string;
@@ -97,13 +97,7 @@ const FaqSection = async () => {
         </div>
       </div>
       {faqJsonLd && (
-        <Script
-          id="ld-faq"
-          type="application/ld+json"
-          strategy="afterInteractive"
-        >
-          {JSON.stringify(faqJsonLd)}
-        </Script>
+        <JsonLd id="ld-faq" data={faqJsonLd} />
       )}
     </section>
   );
