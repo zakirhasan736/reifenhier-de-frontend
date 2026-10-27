@@ -3,6 +3,8 @@ import ProductListingsSec from '@/components/productpage/ProductListingsSec';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
 import { seasonForCategory } from '@/libs/seo/landing';
+import Link from 'next/link';
+import type { Product } from '@/types/product';
 
 interface Props {
   searchParams: Promise<{
@@ -104,7 +106,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   params.append('page', page.toString());
   params.append('limit', limit.toString());
 
-  let initialProducts = [];
+  let initialProducts: Product[] = [];
   let total = 0;
 
   try {
@@ -154,6 +156,22 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   return (
     <>
+      <section className="mx-auto max-w-6xl px-4 pt-8" aria-labelledby="server-reifen-title">
+        <h1 id="server-reifen-title" className="mb-4 text-2xl font-semibold">{category || 'Reifenangebote'} im Preisvergleich</h1>
+        <p className="mb-4">Aktuelle Reifenangebote nach Modell, Größe und Händler vergleichen. Preise können sich beim Anbieter ändern.</p>
+        {initialProducts.length > 0 && (
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {initialProducts.filter(p => p.slug).map(p => (
+              <li key={p._id || p.slug} className="rounded border p-3">
+                <Link className="font-medium underline" href={`/produkte/${encodeURIComponent(p.slug!)}`}>
+                  {[p.brand_name, p.product_name, p.dimensions].filter(Boolean).join(' ')}
+                </Link>
+                {Number(p.cheapest_offer ?? p.search_price) > 0 && <p>Ab {Number(p.cheapest_offer ?? p.search_price).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
       <ProductListingsSec
         initialProducts={initialProducts}
         total={total}
