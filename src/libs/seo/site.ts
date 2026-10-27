@@ -144,14 +144,6 @@ export function websiteJsonLd() {
     name: SITE_NAME,
     inLanguage: 'de-DE',
     publisher: { '@id': `${SITE_URL}/#org` },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/produkte?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   }
 }
 
