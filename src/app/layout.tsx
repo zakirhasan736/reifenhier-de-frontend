@@ -144,6 +144,17 @@ export default function RootLayout({
             __html: `(function(){if(typeof Node!=='function'||!Node.prototype||Node.prototype.__rxGuard)return;var p=Node.prototype;p.__rxGuard=true;var rc=p.removeChild;p.removeChild=function(c){if(c&&c.parentNode!==this){if(c.parentNode){return c.parentNode.removeChild(c)}return c}return rc.apply(this,arguments)};var ib=p.insertBefore;p.insertBefore=function(n,r){if(r&&r.parentNode!==this){return this.appendChild(n)}return ib.apply(this,arguments)}})();`,
           }}
         />
+        {/*
+          Google Consent Mode v2 defaults — MUST run before GTM / gtag.js.
+          Everything is denied until the visitor accepts in the Silktide banner
+          (its onAccept handlers send gtag('consent','update', …)).
+        */}
+        <script
+          id="consent-default"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('set','ads_data_redaction',true);gtag('set','url_passthrough',true);`,
+          }}
+        />
         {/* Google Tag Manager — as high in <head> as possible */}
         <script
           id="gtm-init"
@@ -257,7 +268,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       id: "analytics",
                       name: "Analyse",
                       description: "<p>Hilft uns zu verstehen, wie Besucher die Website nutzen.</p>",
-                      defaultValue: true,
+                      defaultValue: false,
                       onAccept: function() {
                         if (typeof gtag === 'function') {
                           gtag('consent', 'update', { analytics_storage: 'granted' });
@@ -283,6 +294,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                           });
                           dataLayer.push({ event: 'consent_accepted_advertising' });
                         }
+                        // AWIN publisher MasterTag only after advertising consent.
+                        // (Not needed for sale tracking — our /to links are already
+                        // AWIN click links — so loading it later costs no commission.)
+                        if (!document.getElementById('awin-mastertag')) {
+                          var aw = document.createElement('script');
+                          aw.id = 'awin-mastertag';
+                          aw.async = true;
+                          aw.src = '/pub.2985775.min.js';
+                          document.body.appendChild(aw);
+                        }
                       },
                       onReject: function() {
                         if (typeof gtag === 'function') {
@@ -297,7 +318,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   ],
                   text: {
                     banner: {
-                      description: "<p>Hiermit informieren wir Sie darüber, dass auf dieser Website Cookies verwendet werden. <a href='/cookie-policy' target='_blank'>Cookie-Richtlinie</a></p>",
+                      description: "<p>Hiermit informieren wir Sie darüber, dass auf dieser Website Cookies verwendet werden. <a href='/impressum-datenschutz' target='_blank'>Datenschutzerklärung</a></p>",
                       acceptAllButtonText: "Alle akzeptieren",
                       rejectNonEssentialButtonText: "Alle ablehnen",
                       preferencesButtonText: "Einstellungen"
@@ -342,18 +363,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {/* </Suspense> */}
           </ClientProviders>
         </main>
-        <Script id="awin-consent" strategy="beforeInteractive">
-          {`
-            window.AWIN = window.AWIN || {};
-            window.AWIN.Tracking = window.AWIN.Tracking || {};
-            window.AWIN.Tracking.AdvertiserConsent = true;
-          `}
-        </Script>
-        <Script
-          id="awin-mastertag"
-          src={`/pub.2985775.min.js`}
-          strategy="afterInteractive"
-        />
+        {/* AWIN publisher MasterTag is injected by the Silktide "advertising"
+            onAccept handler above — never before consent. */}
       </body>
     </html>
   );

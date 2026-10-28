@@ -8,6 +8,7 @@ import {
 const privatePaths = [
   '/api/',
   '/admin/',
+  '/admin-alerts',
   '/favoriten',
   '/unsubscribe',
   '/server/',
