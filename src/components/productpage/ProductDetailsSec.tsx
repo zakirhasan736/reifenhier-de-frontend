@@ -49,6 +49,7 @@ import { toMoneyNumber } from '@/libs/money';
 import PriceAlertToggle from '@/components/productpage/PriceAlertToggle';
 import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
 import ProductImageGallery from '@/components/productpage/ProductImageGallery';
+import StickyOfferBar from '@/components/productpage/StickyOfferBar';
 import type { TyreLabelInfo } from '@/utils/euTyreLabel';
 
 // Never fall back to localhost — shared links would point to nobody's machine.
@@ -923,10 +924,10 @@ const shareImage = !rawShareImage
                 </Link>
               </div>
 
-              <div className="grid grid-cols-12 gap-y-6 md:gap-x-8 lg:gap-x-10 items-start">
+              <div className="grid grid-cols-12 gap-y-6 md:gap-x-8 lg:gap-x-10 items-start max-md:flex max-md:flex-col">
                 {/* ---------------- Gallery ---------------- */}
-                <div className="product-singlepage-left-cont col-span-12 md:col-span-6 lg:col-span-6 md:sticky md:top-24">
-                  <div className="swiper-product-slider-area relative rounded-[20px] border border-[#E9ECF3] bg-[#F7F8FB] p-3 md:p-4">
+                <div className="product-singlepage-left-cont col-span-12 md:col-span-6 lg:col-span-6 flex flex-col gap-5 max-md:contents">
+                  <div className="swiper-product-slider-area relative w-full rounded-[20px] border border-[#E9ECF3] bg-[#F7F8FB] p-3 md:p-4">
                     <ProductImageGallery
                       images={product.product_image}
                       awinImageUrl={product.awin_image_url}
@@ -968,10 +969,21 @@ const shareImage = !rawShareImage
                       }
                     />
                   </div>
+                <div id="produktinformation" className="pdp-specs w-full rounded-[18px] border border-[#E9ECF3] overflow-hidden max-md:order-last">
+                    <h2 className="px-5 md:px-6 pt-5 md:pt-6 pb-3 text-[18px] md:text-[20px] font-semibold text-[#16171A]">Produktinformation</h2>
+                    <dl className="divide-y divide-[#EEF0F4] text-[14px] md:text-[15px]">
+                      {specRows.map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between gap-4 px-5 md:px-6 py-2.5 odd:bg-[#F9FAFC]">
+                          <dt className="text-[#6B6E76]">{label}</dt>
+                          <dd className="text-right font-semibold text-[#16171A]">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
                 </div>
 
                 {/* ---------------- Buy box ---------------- */}
-                <div className="product-singlepage-right-cont col-span-12 md:col-span-6 lg:col-span-6 min-w-0">
+                <div className="product-singlepage-right-cont col-span-12 md:col-span-6 lg:col-span-6 min-w-0 w-full">
                   <div className="product-details-top">
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                       <span
@@ -1087,7 +1099,7 @@ const shareImage = !rawShareImage
                     </div>
 
                     {/* CTAs */}
-                    <div className="product-cta-box mt-4 flex items-stretch gap-2">
+                    <div className="product-cta-box mt-4 flex flex-wrap md:flex-nowrap items-stretch gap-2">
                       <a
                         href={buildVendorExitUrl({
                           token: cheapestOffer?.affiliate_product_cloak_url || '',
@@ -1113,14 +1125,14 @@ const shareImage = !rawShareImage
                             vendorPrice: cheapestOffer?.price,
                           });
                         }}
-                        className="product-card-btn-states primary-button-state flex-1 inline-flex h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
+                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-md:basis-full flex-1 inline-flex h-14 md:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
                       >
                         <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
                       </a>
                       <button
                         type="button"
                         onClick={handleCompareClick}
-                        className={`inline-flex h-12 items-center justify-center gap-1.5 rounded-[12px] border px-4 text-[14px] font-semibold cursor-pointer transition ${
+                        className={`max-md:flex-1 inline-flex h-14 md:h-12 items-center justify-center gap-1.5 rounded-[12px] border px-4 text-[14px] font-semibold cursor-pointer transition ${
                           isCompared ? 'border-[#2d8934] bg-[#E9F8EF] text-[#1F7A3A]' : 'border-[#DCE3FB] bg-white text-primary-100 hover:border-primary-100'
                         }`}
                       >
@@ -1128,13 +1140,28 @@ const shareImage = !rawShareImage
                         <span className="max-sm:hidden">{isCompared ? 'Im Vergleich' : 'Reifen vergleichen'}</span>
                         <span className="sm:hidden">{isCompared ? 'Im Vergleich' : 'Vergleichen'}</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={handleToggleWishlist}
+                        aria-label={isFavorited ? 'Von der Wunschliste entfernen' : 'Zu den Favoriten hinzufügen'}
+                        className="inline-flex h-14 w-14 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-[12px] border border-[#E4E7EE] bg-white cursor-pointer hover:border-[#C9D6FC]"
+                      >
+                        <Image
+                          src={isFavorited ? '/images/icons/heart-filled.svg' : '/images/icons/heart.svg'}
+                          alt="favorite"
+                          className="w-5 h-auto"
+                          width={32}
+                          height={32}
+                          loading="lazy"
+                        />
+                      </button>
                     </div>
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                       <PriceAlertToggle productId={product._id} />
                       {offerCount > 1 && (
-                        <a href="#angebote" className="inline-flex items-center gap-1 text-[13px] font-semibold text-primary-100 hover:underline">
-                          Alle {offerCount} Angebote vergleichen <ChevronDown size={15} />
+                        <a href="#angebote" className="inline-flex min-h-11 items-center gap-1 text-[14px] md:text-[13px] font-semibold text-primary-100 hover:underline">
+                          Weitere Angebote anzeigen ({offerCount}) <ChevronDown size={15} />
                         </a>
                       )}
                     </div>
@@ -1275,8 +1302,8 @@ const shareImage = !rawShareImage
               </div>
 
               {/* ---------------- Overview + specs ---------------- */}
-              <div className="product-specification-box mt-10 md:mt-14 grid grid-cols-12 items-start gap-y-5 md:gap-x-8 lg:gap-x-10">
-                <div className="col-span-12 lg:col-span-7 rounded-[18px] border border-[#E9ECF3] p-5 md:p-6">
+              <div className="product-specification-box mt-8 md:mt-12 grid grid-cols-12 items-start gap-y-5">
+                <div id="beschreibung" className="col-span-12 rounded-[18px] border border-[#E9ECF3] p-5 md:p-7">
                   <h2 className="mb-3 text-[18px] md:text-[20px] font-semibold text-[#16171A]">Beschreibung</h2>
                   {summary ? <p className="!text-[15px] !leading-[170%] text-[#404042] mb-3">{summary}</p> : null}
                   <div className="text-[14px] md:text-[15px] leading-[170%] font-secondary text-[#404042]">
@@ -1302,17 +1329,6 @@ const shareImage = !rawShareImage
                   </div>
                 </div>
 
-                <div className="col-span-12 lg:col-span-5 rounded-[18px] border border-[#E9ECF3] overflow-hidden">
-                  <h2 className="px-5 md:px-6 pt-5 md:pt-6 pb-3 text-[18px] md:text-[20px] font-semibold text-[#16171A]">Produktinformation</h2>
-                  <dl className="divide-y divide-[#EEF0F4] text-[14px] md:text-[15px]">
-                    {specRows.map(([label, value]) => (
-                      <div key={label} className="flex items-center justify-between gap-4 px-5 md:px-6 py-2.5 odd:bg-[#F9FAFC]">
-                        <dt className="text-[#6B6E76]">{label}</dt>
-                        <dd className="text-right font-semibold text-[#16171A]">{value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
               </div>
             </div>
 
@@ -1338,7 +1354,7 @@ const shareImage = !rawShareImage
                       <ArrowUpDown size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#6B6E76]" />
                       <select
                         id="sort"
-                        className="h-10 appearance-none rounded-[10px] border border-[#E4E7EE] bg-white pl-9 pr-9 text-[14px] font-medium text-[#16171A] outline-none focus:border-primary-100"
+                        className="h-12 md:h-10 appearance-none rounded-[10px] border border-[#E4E7EE] bg-white pl-9 pr-9 text-[14px] font-medium text-[#16171A] outline-none focus:border-primary-100"
                         value={`${sortBy}_${sortOrder}`}
                         onChange={e => {
                           const [sortKey, sortDir] = e.target.value.split('_');
@@ -1482,13 +1498,13 @@ const shareImage = !rawShareImage
                             </div>
 
                             {/* CTAs */}
-                            <div className="offer-product-card-footer col-span-2 md:col-span-2 flex md:flex-col items-center gap-2 md:gap-1">
+                            <div className="offer-product-card-footer col-span-2 md:col-span-2 flex max-md:flex-col md:flex-col items-stretch md:items-center gap-1">
                               <a
                                 href={outHref}
                                 target="_blank"
                                 rel="nofollow sponsored noopener"
                                 onClick={onOfferExit}
-                                className="cta-button-shop primary-button-state flex-1 md:w-full inline-flex h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 text-[14px] font-semibold text-white transition hover:opacity-90"
+                                className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 text-[14px] font-semibold text-white transition hover:opacity-90"
                               >
                                 <MdAddShoppingCart className="text-[18px]" /> Zum Angebot
                               </a>
@@ -1497,7 +1513,7 @@ const shareImage = !rawShareImage
                                 target="_blank"
                                 rel="nofollow sponsored noopener"
                                 onClick={onOfferExit}
-                                className="shop-info-btn inline-flex items-center justify-center px-2 py-1 text-[13px] font-medium text-primary-100 hover:underline"
+                                className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
                               >
                                 Shop Informationen
                               </a>
@@ -1513,6 +1529,36 @@ const shareImage = !rawShareImage
             <EuTyreLabelSection
               product={product}
               pageUrl={`${SiteUrl}/produkte/${product.slug}`}
+            />
+
+            <StickyOfferBar
+              watchId="pdp-main-cta"
+              title={headingTitle}
+              price={fromPriceLabel}
+              vendor={cheapestOffer?.vendor}
+              offerCount={offerCount}
+              href={buildVendorExitUrl({
+                token: cheapestOffer?.affiliate_product_cloak_url || '',
+                productId: product._id,
+                uuid: uuidCookie || 'guest',
+                from: 'product-details-sticky-bar',
+                vendor: cheapestOffer?.vendor,
+                vendorId: cheapestOffer?.vendor_id,
+                brand: product.brand_name,
+                instruction: 'Zum Angebot',
+              })}
+              onExit={() =>
+                onVendorExitClick({
+                  productId: product._id,
+                  productName: product.product_name,
+                  brandName: product.brand_name,
+                  vendor: cheapestOffer?.vendor,
+                  vendorId: cheapestOffer?.vendor_id,
+                  source: 'product-details-sticky-bar',
+                  instruction: 'Zum Angebot',
+                  vendorPrice: cheapestOffer?.price,
+                })
+              }
             />
           </section>
         </>
