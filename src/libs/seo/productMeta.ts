@@ -83,8 +83,20 @@ function positivePrice(v: unknown): number | null {
   return n != null && n > 0 ? n : null;
 }
 
-function priceRange(p: SeoProduct) {
+/**
+ * Offers a shopper can actually buy: in-stock ones when there are any,
+ * otherwise all priced offers. Title, description, OpenGraph and the
+ * Product schema all use this, so they always show the same "ab" price —
+ * an out-of-stock shop must never set the lowest price.
+ */
+function sellableOffers(p: SeoProduct) {
   const offers = pricedOffers(p);
+  const inStock = offers.filter(o => isInStock(o.in_stock));
+  return inStock.length ? inStock : offers;
+}
+
+function priceRange(p: SeoProduct) {
+  const offers = sellableOffers(p);
   const prices = offers.map(o => o.price as number);
   const low =
     (prices.length ? Math.min(...prices) : null) ??
@@ -97,6 +109,11 @@ function priceRange(p: SeoProduct) {
     low;
   const high = low != null && highRaw != null && highRaw < low ? low : highRaw;
   return { low, high, count: offers.length };
+}
+
+/** Public: the price range every visible "ab …" label should use. */
+export function productPriceRange(p: SeoProduct) {
+  return priceRange(p);
 }
 
 export function isInStock(v: unknown) {
@@ -222,10 +239,6 @@ export function buildProductMetadata(p: SeoProduct): Metadata {
   const image = safeSeoImageUrl(
     Array.isArray(p.product_image) ? p.product_image[0] : p.product_image
   );
-  const { low } = priceRange(p);
-  const inStock = p.offers?.length
-    ? p.offers.some(o => isInStock(o.in_stock))
-    : isInStock(p.in_stock);
   const alt = `${p.brand_name || ''} ${p.product_name || ''}`.trim() || 'Reifen';
 
   return {
@@ -234,8 +247,10 @@ export function buildProductMetadata(p: SeoProduct): Metadata {
     description,
     keywords: buildProductKeywords(p),
     alternates: { canonical: url },
+    // og:type "product" + product:* tags are rendered by the page as
+    // <meta property> (Next's metadata API only knows og:type website/article
+    // and writes `other` keys as <meta name>, which Facebook ignores).
     openGraph: {
-      type: 'website',
       locale: 'de_DE',
       url,
       siteName: 'Reifexa.de',
@@ -253,13 +268,6 @@ export function buildProductMetadata(p: SeoProduct): Metadata {
           follow: true,
           googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
         },
-    other: {
-      'product:brand': p.brand_name || '',
-      'product:availability': inStock ? 'in stock' : 'out of stock',
-      ...(low
-        ? { 'product:price:amount': low.toFixed(2), 'product:price:currency': 'EUR' }
-        : {}),
-    },
   };
 }
 
@@ -273,7 +281,7 @@ export function buildProductJsonLd(p: SeoProduct) {
     Array.isArray(p.product_image) ? p.product_image[0] : p.product_image
   );
   const { low, high } = priceRange(p);
-  const offers = pricedOffers(p);
+  const offers = sellableOffers(p);
   const gtin = String(p.ean || '').replace(/\D/g, '');
   const gtinKey =
     gtin.length === 13
@@ -376,6 +384,24 @@ export function buildProductJsonLd(p: SeoProduct) {
         }
       : {}),
   };
+}
+
+/** OpenGraph product tags (property=…) for the product page <head>. */
+export function productOgTags(p: SeoProduct): Array<[string, string]> {
+  const { low } = priceRange(p);
+  const offers = sellableOffers(p);
+  const inStock = offers.length
+    ? offers.some(o => isInStock(o.in_stock))
+    : isInStock(p.in_stock);
+  const tags: Array<[string, string]> = [['og:type', 'product']];
+  if (p.brand_name) tags.push(['product:brand', p.brand_name]);
+  tags.push(['product:availability', inStock ? 'in stock' : 'out of stock']);
+  tags.push(['product:condition', 'new']);
+  if (low) {
+    tags.push(['product:price:amount', low.toFixed(2)]);
+    tags.push(['product:price:currency', 'EUR']);
+  }
+  return tags;
 }
 
 export type Crumb = { name: string; url: string };

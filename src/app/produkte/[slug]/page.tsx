@@ -11,6 +11,8 @@ import {
   buildProductJsonLd,
   buildProductMetadata,
   buildProductTitle,
+  productOgTags,
+  productPriceRange,
 } from '@/libs/seo/productMeta';
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
@@ -191,17 +193,22 @@ export default async function ProductPage({
   const pageUrl = productCanonicalUrl(product.slug);
   const crumbs = buildProductBreadcrumbs(product);
   const productLd = buildProductJsonLd(product);
+  const { low: lowPrice } = productPriceRange(product);
 
   return (
     <>
+      {/* React hoists these into <head> */}
+      {productOgTags(product).map(([property, content]) => (
+        <meta key={property} property={property} content={content} />
+      ))}
       <div className="product-details-cont-wrapper">
         <Breadcrumbs crumbs={crumbs} />
         <section className="mx-auto max-w-6xl px-4 py-5" aria-label="Reifendaten und Händlerpreise">
           <h1 className="text-2xl font-semibold">{[product.brand_name, product.product_name, product.dimensions].filter(Boolean).join(" ")}</h1>
           <p className="mt-2">{buildProductDescription(product)}</p>
-          {Number(product.cheapest_offer || product.search_price) > 0 && (
-            <p className="mt-2 font-semibold">Angebote ab {Number(product.cheapest_offer || product.search_price).toLocaleString("de-DE", { style: "currency", currency: "EUR" })}</p>
-          )}
+          {lowPrice ? (
+            <p className="mt-2 font-semibold">Angebote ab {lowPrice.toLocaleString("de-DE", { style: "currency", currency: "EUR" })}</p>
+          ) : null}
           <p className="mt-2 text-sm">Preise und Verfügbarkeit können beim Händler abweichen. Bitte vor dem Kauf prüfen.</p>
           <Link className="mt-2 inline-block underline" href="/reifenpreisvergleich">Reifenpreise richtig vergleichen</Link>
         </section>

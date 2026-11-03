@@ -41,7 +41,21 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description,
     alternates: { canonical: url },
     robots: { index: total >= MIN_LANDING_PRODUCTS, follow: true },
-    openGraph: { type: 'website', locale: 'de_DE', url, siteName: 'Reifexa.de', title, description },
+    openGraph: {
+      type: 'website',
+      locale: 'de_DE',
+      url,
+      siteName: 'Reifexa.de',
+      title,
+      description,
+      images: [{ url: `${SITE_URL}/images/banner-og-image.png`, width: 1230, height: 613, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${SITE_URL}/images/banner-og-image.png`],
+    },
   };
 }
 

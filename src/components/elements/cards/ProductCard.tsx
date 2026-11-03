@@ -141,7 +141,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   in_stock,
   price_trend,
   showCompareButton = true,
-  isPriority = true,
+  isPriority = false,
   width,
   height,
   diameter,
@@ -371,7 +371,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
               height={159}
               src={mainImage}
               alt={`${brand_name} ${product_name}`}
-              fetchPriority="high"
+              fetchPriority={isPriority ? 'high' : 'auto'}
               priority={isPriority}
               sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
               fallbacks={imageFallbacks}
