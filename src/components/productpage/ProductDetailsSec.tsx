@@ -987,12 +987,12 @@ const shareImage = !rawShareImage
                       </li>
                     </ul>
                     <div className="product-details-title-box mb-4">
-                      <h1 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
+                      <h2 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
                         {[product.brand_name, product.product_name]
                           .filter(Boolean)
                           .join(' ')
                           .toUpperCase()}
-                      </h1>
+                      </h2>
 
                       <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
                         <span className="flex items-center gap-2">

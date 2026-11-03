@@ -77,18 +77,25 @@ function pricedOffers(p: SeoProduct) {
     .filter(o => o.price > 0);
 }
 
+/** Positive price or null — a 0 / negative price means "no price". */
+function positivePrice(v: unknown): number | null {
+  const n = toMoneyNumber(v);
+  return n != null && n > 0 ? n : null;
+}
+
 function priceRange(p: SeoProduct) {
   const offers = pricedOffers(p);
   const prices = offers.map(o => o.price as number);
   const low =
     (prices.length ? Math.min(...prices) : null) ??
-    toMoneyNumber(p.cheapest_offer) ??
-    toMoneyNumber(p.search_price) ??
+    positivePrice(p.cheapest_offer) ??
+    positivePrice(p.search_price) ??
     null;
-  const high =
+  const highRaw =
     (prices.length ? Math.max(...prices) : null) ??
-    toMoneyNumber(p.expensive_offer) ??
+    positivePrice(p.expensive_offer) ??
     low;
+  const high = low != null && highRaw != null && highRaw < low ? low : highRaw;
   return { low, high, count: offers.length };
 }
 
@@ -307,6 +314,11 @@ export function buildProductJsonLd(p: SeoProduct) {
 
   const reviewCount = Number(p.review_count || p.rating_count || 0);
   const rating = Number(p.average_rating || 0);
+  const hasRating = rating > 0 && reviewCount > 0;
+
+  // Google requires offers, review or aggregateRating on a Product.
+  // Without a price or rating the block would be an error — emit nothing.
+  if (!low && !hasRating) return null;
 
   return {
     '@context': 'https://schema.org',
@@ -314,14 +326,14 @@ export function buildProductJsonLd(p: SeoProduct) {
     '@id': `${url}#produkt`,
     url,
     name: [p.brand_name, modelName(p), size, ls].filter(Boolean).join(' '),
-    image: [image],
+    ...(image ? { image: [image] } : {}),
     description: buildProductDescription(p),
     sku: gtin || p.slug,
     ...(gtinKey ? { [gtinKey]: gtin } : {}),
     ...(p.brand_name ? { brand: { '@type': 'Brand', name: p.brand_name } } : {}),
     category: season ? `Reifen > ${season}` : 'Reifen',
     additionalProperty,
-    ...(rating > 0 && reviewCount > 0
+    ...(hasRating
       ? {
           aggregateRating: {
             '@type': 'AggregateRating',

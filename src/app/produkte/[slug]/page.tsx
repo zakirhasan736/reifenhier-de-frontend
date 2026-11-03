@@ -190,6 +190,7 @@ export default async function ProductPage({
 
   const pageUrl = productCanonicalUrl(product.slug);
   const crumbs = buildProductBreadcrumbs(product);
+  const productLd = buildProductJsonLd(product);
 
   return (
     <>
@@ -232,11 +233,11 @@ export default async function ProductPage({
           description: buildProductDescription(product),
           inLanguage: 'de-DE',
           isPartOf: { '@id': `${SITE_URL}/#website` },
-          mainEntity: { '@id': `${pageUrl}#produkt` },
+          ...(productLd ? { mainEntity: { '@id': `${pageUrl}#produkt` } } : {}),
           breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
         }}
       />
-      <JsonLd id="ld-product" data={buildProductJsonLd(product)} />
+      <JsonLd id="ld-product" data={productLd} />
       <JsonLd
         id="ld-breadcrumb"
         data={{ ...breadcrumbJsonLd(crumbs), '@id': `${pageUrl}#breadcrumb` }}
