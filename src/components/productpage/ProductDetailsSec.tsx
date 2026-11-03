@@ -544,6 +544,7 @@ const shareImage = !rawShareImage
   const productName = [product.brand_name, product.product_name].filter(Boolean).join(' ');
   const headingTitle = title || [productName, product.dimensions].filter(Boolean).join(' ');
   const fromPriceLabel = cheapPrice > 0 ? formatEUR(cheapPrice) : '';
+  const currentIndexLabel = `${product.lastIndex || ''}${product.speedIndex || ''}`.trim();
   const specRows: [string, string][] = [
     ['Reifentyp', product.merchant_product_third_category || 'N/A'],
     ['Marke', product.brand_name || 'N/A'],
@@ -1019,6 +1020,73 @@ const shareImage = !rawShareImage
                     </p>
                   </div>
 
+                  {/* Same tyre, other load/speed index — and size/brand links */}
+                  {(indexVariants.length > 0 || product.width || product.dimensions || product.brand_name) && (
+                    <div className="pdp-variants mt-4 rounded-[16px] border border-[#E9ECF3] p-3.5 md:p-4">
+                      {indexVariants.length > 0 && (
+                        <div className="mb-3">
+                          <div className="mb-2 flex items-baseline justify-between gap-2">
+                            <p className="!text-[14px] font-semibold text-[#16171A]">Andere Last-/Geschwindigkeitsindex</p>
+                            <span className="hidden sm:inline text-[12px] text-[#9AA0A8]">{product.brand_name} · {product.dimensions}</span>
+                          </div>
+                          <ul className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                            {currentIndexLabel && (
+                              <li>
+                                <span
+                                  aria-current="true"
+                                  className="flex h-full min-h-[58px] flex-col items-center justify-center rounded-[12px] border-2 border-primary-100 bg-[#F5F8FF] px-2 py-2 text-center"
+                                >
+                                  <span className="text-[15px] font-bold text-primary-100">{currentIndexLabel}</span>
+                                  <span className="text-[12px] font-semibold text-[#16171A] tabular-nums">{fromPriceLabel || 'Aktuell'}</span>
+                                </span>
+                              </li>
+                            )}
+                            {indexVariants.map(v => {
+                              const label = v.label || `${v.lastIndex || ''}${v.speedIndex || ''}`.trim();
+                              const price = formatIndexPrice(v.cheapest_offer);
+                              return (
+                                <li key={v.slug}>
+                                  <Link
+                                    href={`/produkte/${v.slug}`}
+                                    title={v.product_name}
+                                    className="flex h-full min-h-[58px] flex-col items-center justify-center rounded-[12px] border border-[#E4E7EE] bg-white px-2 py-2 text-center transition hover:border-primary-100 hover:bg-[#F5F8FF]"
+                                  >
+                                    <span className="text-[15px] font-bold text-[#16171A]">{label || '—'}</span>
+                                    {price ? <span className="text-[12px] font-semibold text-primary-100 tabular-nums">{price}</span> : null}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
+                      <div className={`flex flex-wrap items-center gap-2 text-[13px] font-medium ${indexVariants.length > 0 ? 'border-t border-[#EEF0F4] pt-3' : ''}`}>
+                        <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9AA0A8]">Mehr</span>
+                        {(product.width || product.dimensions) && (
+                          <Link
+                            href={buildProductFilterUrl({
+                              kategorie: product.merchant_product_third_category,
+                              width: product.width,
+                              height: product.height,
+                              diameter: product.diameter,
+                            })}
+                            className="inline-flex min-h-9 items-center gap-1 rounded-full border border-[#DCE3FB] px-3 py-1.5 text-primary-100 hover:bg-[#F5F8FF]"
+                          >
+                            Größe {product.dimensions || `${product.width}/${product.height} R${product.diameter}`}
+                          </Link>
+                        )}
+                        {product.brand_name && (
+                          <Link
+                            href={buildProductFilterUrl({ brand: product.brand_name })}
+                            className="inline-flex min-h-9 items-center gap-1 rounded-full border border-[#DCE3FB] px-3 py-1.5 text-primary-100 hover:bg-[#F5F8FF]"
+                          >
+                            Marke {product.brand_name}
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Price card */}
                   <div className="product-price-group mt-5 rounded-[18px] border border-[#E9ECF3] bg-[#F7F8FB] p-4 md:p-5">
                     <div className="flex flex-col gap-3">
@@ -1252,54 +1320,6 @@ const shareImage = !rawShareImage
                     </a>
                   </div>
 
-                  {/* Related links + index variants */}
-                  <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px] font-medium">
-                    <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9AA0A8]">Mehr</span>
-                    {(product.width || product.dimensions) && (
-                      <Link
-                        href={buildProductFilterUrl({
-                          kategorie: product.merchant_product_third_category,
-                          width: product.width,
-                          height: product.height,
-                          diameter: product.diameter,
-                        })}
-                        className="inline-flex items-center gap-1 rounded-full border border-[#DCE3FB] px-3 py-1.5 text-primary-100 hover:bg-[#F5F8FF]"
-                      >
-                        Größe {product.dimensions || `${product.width}/${product.height} R${product.diameter}`}
-                      </Link>
-                    )}
-                    {product.brand_name && (
-                      <Link
-                        href={buildProductFilterUrl({ brand: product.brand_name })}
-                        className="inline-flex items-center gap-1 rounded-full border border-[#DCE3FB] px-3 py-1.5 text-primary-100 hover:bg-[#F5F8FF]"
-                      >
-                        Marke {product.brand_name}
-                      </Link>
-                    )}
-                  </div>
-
-                  {indexVariants.length > 0 && (
-                    <div className="mt-4">
-                      <p className="!text-[13px] font-semibold text-[#404042]">Andere Last-/Geschwindigkeitsindex</p>
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {indexVariants.map(v => {
-                          const label = v.label || `${v.lastIndex || ''}${v.speedIndex || ''}`.trim();
-                          const price = formatIndexPrice(v.cheapest_offer);
-                          return (
-                            <Link
-                              key={v.slug}
-                              href={`/produkte/${v.slug}`}
-                              title={v.product_name}
-                              className="inline-flex items-center gap-1.5 rounded-[10px] border border-[#E4E5EA] bg-white px-3 py-1.5 text-[13px] hover:border-primary-100"
-                            >
-                              <span className="font-semibold text-[#16171A]">{label || '—'}</span>
-                              {price ? <span className="font-semibold text-primary-100">{price}</span> : null}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
