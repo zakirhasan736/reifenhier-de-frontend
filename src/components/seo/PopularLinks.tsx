@@ -3,6 +3,7 @@ import { ArrowRight, CloudSun, Ruler, Snowflake, Sun, Tag } from 'lucide-react';
 import { brandPath, euro, SEASONS, sizeLabel, sizePath } from '@/libs/seo/landing';
 import { fetchLandings } from '@/libs/seo/landingData';
 import SizeFinder from './SizeFinder';
+import BrandTiles from './BrandTiles';
 
 const SEASON_STYLE: Record<string, { icon: typeof Sun; tint: string; iconBg: string; iconColor: string }> = {
   sommerreifen: { icon: Sun, tint: 'hover:border-[#F8C98A]', iconBg: 'bg-[#FFF4E5]', iconColor: 'text-[#D97706]' },
@@ -82,36 +83,14 @@ export default async function PopularLinks() {
             <h3 className="flex items-center gap-2 mb-4 text-[18px] md:text-[20px] font-semibold text-[#16171A]">
               <Tag size={20} className="text-primary-100" /> Reifen nach Marke
             </h3>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7 gap-2.5">
-              {brands.slice(0, 20).map((b, idx) => (
-                <li key={b.name} className={idx >= 9 ? 'max-sm:hidden' : ''}>
-                  <Link
-                    href={brandPath(b.name)}
-                    className="group flex h-full flex-col rounded-[12px] border border-[#E9ECF3] bg-mono-0 px-3.5 py-3 transition-all hover:border-[#C9D6FC] hover:shadow-[0_10px_24px_-16px_rgba(58,100,246,0.45)]"
-                  >
-                    <span className="text-[14px] md:text-[15px] font-semibold text-[#16171A] truncate group-hover:text-primary-100 transition-colors">
-                      {b.name}
-                    </span>
-                    <span className="mt-1 flex flex-wrap items-center justify-between gap-x-2 text-[12px] font-secondary whitespace-nowrap">
-                      {b.minPrice ? (
-                        <span className="text-primary-100 font-semibold tabular-nums">ab {euro(b.minPrice)} €</span>
-                      ) : (
-                        <span />
-                      )}
-                      {b.count ? <span className="text-[#9AA0A8]">{b.count} Reifen</span> : null}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/marken"
-                  className="flex h-full min-h-[58px] items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-[#C9D6FC] bg-[#F5F8FF] px-3 py-3 text-[14px] font-semibold text-primary-100 hover:bg-[#EEF2FF] transition-colors"
-                >
-                  Alle Marken <ArrowRight size={15} strokeWidth={2.4} />
-                </Link>
-              </li>
-            </ul>
+            <BrandTiles
+              items={brands.slice(0, 20).map(b => ({
+                href: brandPath(b.name),
+                name: b.name,
+                price: euro(b.minPrice),
+                count: Number(b.count) || 0,
+              }))}
+            />
           </div>
         ) : null}
       </div>

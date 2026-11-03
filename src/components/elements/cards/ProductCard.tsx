@@ -430,12 +430,12 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
       {/* ---------- Body ---------- */}
       <div className="p-card-body flex flex-1 flex-col px-4 pt-2 pb-0">
         <div className="card-header-bottom flex items-center gap-2 justify-between w-full mb-2">
-          <div className="h-[28px] max-w-[120px] flex items-center justify-start">
+          <div className="h-[35px] min-w-0 max-w-[130px] flex items-center justify-start">
             {brand_logo ? (
               <Image
                 loading="lazy"
                 src={brand_logo}
-                className="h-[24px] w-auto object-contain mr-auto"
+                className="h-[30px] w-auto object-contain mr-auto"
                 alt="product brand"
                 width={110}
                 height={35}
@@ -447,7 +447,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
             )}
           </div>
           <p
-            className={`inline-flex items-center gap-1.5 text-[12px] font-medium font-secondary ${
+            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[12px] font-medium font-secondary ${
               isInStock ? 'text-[#1F7A3A]' : 'text-[#B42318]'
             }`}
           >
@@ -531,7 +531,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                 Kraftstoffeffizienz
               </span>
             </div>
-            <span className="text-[11px] font-bold leading-tight break-words max-w-full" style={{ color: fuelMeta.color }}>
+            <span className="text-[10px] font-bold leading-tight max-w-full" style={{ color: fuelMeta.color }}>
               {fuelMeta.textDE}
             </span>
           </div>
@@ -545,7 +545,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                 Nasshaftung
               </span>
             </div>
-            <span className="text-[11px] font-bold leading-tight break-words max-w-full" style={{ color: wetMeta.color }}>
+            <span className="text-[10px] font-bold leading-tight max-w-full" style={{ color: wetMeta.color }}>
               {wetMeta.textDE}
             </span>
           </div>

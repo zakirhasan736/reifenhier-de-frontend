@@ -19,7 +19,7 @@ export type SizeFinderItem = {
 export default function SizeFinder({ items }: { items: SizeFinderItem[] }) {
   const [rim, setRim] = useState<string>('');
   const [showAll, setShowAll] = useState(false);
-  const MOBILE_LIMIT = 8;
+  const MOBILE_LIMIT = 6;
 
   const rims = useMemo(
     () =>
@@ -93,7 +93,7 @@ export default function SizeFinder({ items }: { items: SizeFinderItem[] }) {
             </li>
           );
         })}
-        <li>
+        <li className={!rim && !showAll && items.length > MOBILE_LIMIT ? 'max-sm:hidden' : ''}>
           <Link
             href="/reifen"
             className="flex h-full min-h-[64px] items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-[#C9D6FC] bg-[#F5F8FF] px-3 py-3 text-[14px] font-semibold text-primary-100 hover:bg-[#EEF2FF] transition-colors"
