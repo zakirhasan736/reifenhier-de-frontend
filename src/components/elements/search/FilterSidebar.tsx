@@ -12,9 +12,22 @@ import {
 } from '@/store/productSlice';
 import { RootState } from '@/store/store';
 
-import { ArrowDownIcon } from '@/icons';
 import PriceRangeSlider from '@/components/elements/search/PriceFilter';
-import { Car, Check, CloudRain, Info, Ruler, Search, Snowflake, Sun } from 'lucide-react';
+import {
+  Car,
+  Check,
+  ChevronDown,
+  CloudRain,
+  Euro,
+  Fuel,
+  Leaf,
+  Ruler,
+  Search,
+  Snowflake,
+  Sun,
+  Tag,
+  Volume2,
+} from 'lucide-react';
 
 interface FilterItem {
   name: string | number;
@@ -61,15 +74,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   min,
   max,
 }) => {
-console.log('availableProducts.kategorie:', availableProducts);
 
   const [brandSearch, setBrandSearch] = useState('');
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
 
-    const [activeTab, setActiveTab] = useState<'size' | 'car'>('size');
-    const [carMake, setCarMake] = useState('');
-    const [carYear, setCarYear] = useState('');
     const [showAllBrands, setShowAllBrands] = useState(false);
 
   // treat price as "selected" if active range differs from full range
@@ -85,7 +94,7 @@ console.log('availableProducts.kategorie:', availableProducts);
     height: false,
     diameter: false,
     noise: false,
-    fuelClass: false,
+    fuelClass: true,
     wetGrip: false,
     speedIndex: false,
     lastIndex: false,
@@ -161,18 +170,19 @@ console.log('availableProducts.kategorie:', availableProducts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilters, hasPriceActive]);
 
-  // click outside → close only un-selected sections
+  // click outside → close the size dropdowns (accordion sections stay as they are)
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       const el = sidebarRef.current;
       if (el && !el.contains(event.target as Node)) {
-        setOpenSections(prev => {
-          const next = { ...prev };
-          (Object.keys(prev) as (keyof typeof prev)[]).forEach(key => {
-            next[key] = sectionHasSelection(key) ? true : false;
-          });
-          return next;
-        });
+        setOpenSections(prev => ({
+          ...prev,
+          width: false,
+          height: false,
+          diameter: false,
+          speedIndex: false,
+          lastIndex: false,
+        }));
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -249,1024 +259,421 @@ console.log('availableProducts.kategorie:', availableProducts);
     }
   };
 
-  return (
-    <div className="filter-sidebar" ref={sidebarRef}>
-      {/* Dimension Selectors Box */}
-      <div className="bg-blue-50/40 pb-3 pt-2 px-2 rounded-xl border border-blue-100/90">
-        <h3 className="text-lg mb-2 font-medium"> Reifen Finder</h3>
-        {/* Tabs */}
-        <div className="flex bg-slate-300 p-1 rounded-lg mb-6">
-          <button
-            onClick={() => setActiveTab('size')}
-            className={`flex-1 flex items-center cursor-pointer justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all ${
-              activeTab === 'size'
-                ? 'bg-blue-600 text-white shadow-md filter-active-tabs'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Ruler className="w-4 h-4" />
-            Nach Größe
-          </button>
-          <button
-            disabled
-            className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition-all cursor-not-allowed opacity-50 text-slate-400`}
-          >
-            <Car className="w-4 h-4" />
-            Nach Auto
-          </button>
-        </div>
-        {activeTab === 'size' ? (
-          <>
-            <div className="flex-group-box grid grid-cols-3 gap-2">
-              {/* Width (Dropdown Single Select) */}
-              {availableProducts.widths && (
-                <div className="flex flex-col gap-1.5 mb-0">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    Breite
-                  </label>
-                  <div className="relative mb-3 w-full">
-                    {/* Trigger */}
-                    <div
-                      onClick={() => toggleSection('width')}
-                      className="w-full text-sm font-medium border border-gray-200 rounded-lg
-                 pl-3 pr-1 bg-white cursor-pointer shadow-sm
-                 flex items-center justify-between hover:border-blue-400 transition"
-                    >
-                      <span className="text-gray-700 py-2">
-                        {selectedFilters.width.length > 0
-                          ? selectedFilters.width[0]
-                          : 'All'}
-                      </span>
+  /* ---------------- helpers for the markup ---------------- */
+  const cleanItems = (items: FilterItem[] = []) =>
+    items.filter(item => {
+      const name = String(item.name ?? '').trim().toLowerCase();
+      return name && name !== 'unbekannt' && name !== '0';
+    });
+  const byNumber = (a: FilterItem, b: FilterItem) => Number(a.name) - Number(b.name);
+  const byText = (a: FilterItem, b: FilterItem) =>
+    String(a.name).localeCompare(String(b.name));
 
-                      <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform`}
-                      >
-                        <ArrowDownIcon />
-                      </span>
-                    </div>
+  type SizeKey = 'width' | 'height' | 'diameter' | 'lastIndex' | 'speedIndex';
 
-                    {/* Dropdown */}
-                    {openSections.width && (
-                      <div
-                        className="absolute z-30 mt-2 w-full bg-white rounded-lg
-                      border border-gray-200 shadow-lg
-                      max-h-56 overflow-y-auto py-1"
-                      >
-                        {/* ALL */}
-                        <button
-                          onClick={() => {
-                            dispatch(setFilters({ width: [] }));
-                            dispatch(setPage(1));
-                            toggleSection('width');
-                          }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100
-            ${
-              selectedFilters.width.length === 0
-                ? 'bg-blue-50 text-blue-700 font-medium'
-                : ''
-            }`}
-                        >
-                          All
-                        </button>
-
-                        {[...availableProducts.widths]
-                          .filter(item => {
-                            const name =
-                              typeof item.name === 'string'
-                                ? item.name.trim()
-                                : '';
-                            return name && name !== 'unbekannt' && name !== '0';
-                          })
-                          .sort((a, b) => Number(a.name) - Number(b.name))
-                          .map((item, index) => {
-                            const value = String(item.name);
-                            const active = selectedFilters.width[0] === value;
-
-                            return (
-                              <button
-                                key={`${value}-${index}`}
-                                onClick={() => {
-                                  dispatch(setFilters({ width: [value] }));
-                                  dispatch(setPage(1));
-                                  toggleSection('width');
-                                }}
-                                className={`w-full text-left px-3 py-2 text-sm transition
-                  ${
-                    active
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
-                              >
-                                {value}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Height (Dropdown Single Select) */}
-              {availableProducts.heights && (
-                <div className="flex flex-col gap-1.5 mb-0">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    HÖHE
-                  </label>
-                  <div className="relative mb-3 w-full">
-                    {/* Trigger */}
-                    <div
-                      onClick={() => toggleSection('height')}
-                      className="w-full text-sm font-medium border border-gray-200 rounded-lg
-                 pl-3 pr-1 bg-white cursor-pointer shadow-sm
-                 flex items-center justify-between hover:border-blue-400 transition"
-                    >
-                      <span className="text-gray-700 py-2">
-                        {selectedFilters.height.length > 0
-                          ? selectedFilters.height[0]
-                          : 'All'}
-                      </span>
-
-                      <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform `}
-                      >
-                        <ArrowDownIcon />
-                      </span>
-                    </div>
-
-                    {/* Dropdown */}
-                    {openSections.height && (
-                      <div
-                        className="absolute z-30 mt-2 w-full bg-white rounded-lg
-                   border border-gray-200 shadow-lg
-                   max-h-56 overflow-y-auto py-1"
-                      >
-                        {/* ALL */}
-                        <button
-                          onClick={() => {
-                            dispatch(setFilters({ height: [] }));
-                            dispatch(setPage(1));
-                            toggleSection('height');
-                          }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100
-                        ${
-                          selectedFilters.height.length === 0
-                            ? 'bg-blue-50 text-blue-700 font-medium'
-                            : ''
-                        }`}
-                        >
-                          All
-                        </button>
-
-                        {[...availableProducts.heights]
-                          .filter(item => {
-                            const name =
-                              typeof item.name === 'string'
-                                ? item.name.trim()
-                                : '';
-                            return name && name !== 'unbekannt' && name !== '0';
-                          })
-                          .sort((a, b) => Number(a.name) - Number(b.name))
-                          .map((item, index) => {
-                            const value = String(item.name);
-                            const active = selectedFilters.height[0] === value;
-
-                            return (
-                              <button
-                                key={`${value}-${index}`}
-                                onClick={() => {
-                                  dispatch(setFilters({ height: [value] }));
-                                  dispatch(setPage(1));
-                                  toggleSection('height');
-                                }}
-                                className={`w-full text-left px-3 py-2 text-sm transition
-                              ${
-                                active
-                                  ? 'bg-blue-600 text-white font-medium'
-                                  : 'hover:bg-gray-100 text-gray-700'
-                              }`}
-                              >
-                                {value}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Diameter (Dropdown Single Select) */}
-              {availableProducts.diameters && (
-                <div className="flex flex-col gap-1.5 mb-0">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    Zoll
-                  </label>
-                  <div className="relative mb-3 w-full">
-                    {/* Trigger */}
-                    <div
-                      onClick={() => toggleSection('diameter')}
-                      className="w-full text-sm font-medium border border-gray-200 rounded-lg
-                 pl-3 pr-1 bg-white cursor-pointer shadow-sm
-                 flex items-center justify-between hover:border-blue-400 transition"
-                    >
-                      <span className="text-gray-700 py-2">
-                        {selectedFilters.diameter.length > 0
-                          ? selectedFilters.diameter[0]
-                          : 'All'}
-                      </span>
-
-                      <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform`}
-                      >
-                        <ArrowDownIcon />
-                      </span>
-                    </div>
-
-                    {/* Dropdown */}
-                    {openSections.diameter && (
-                      <div
-                        className="absolute z-30 mt-2 w-full bg-white rounded-lg
-                   border border-gray-200 shadow-lg
-                   max-h-56 overflow-y-auto py-1"
-                      >
-                        {/* ALL */}
-                        <button
-                          onClick={() => {
-                            dispatch(setFilters({ diameter: [] }));
-                            dispatch(setPage(1));
-                            toggleSection('diameter');
-                          }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100
-            ${
-              selectedFilters.diameter.length === 0
-                ? 'bg-blue-50 text-blue-700 font-medium'
-                : ''
-            }`}
-                        >
-                          All
-                        </button>
-
-                        {[...availableProducts.diameters]
-                          .filter(item => {
-                            const name =
-                              typeof item.name === 'string'
-                                ? item.name.trim()
-                                : '';
-                            return name && name !== 'unbekannt' && name !== '0';
-                          })
-                          .sort((a, b) => Number(a.name) - Number(b.name))
-                          .map((item, index) => {
-                            const value = String(item.name);
-                            const active =
-                              selectedFilters.diameter[0] === value;
-
-                            return (
-                              <button
-                                key={`${value}-${index}`}
-                                onClick={() => {
-                                  dispatch(setFilters({ diameter: [value] }));
-                                  dispatch(setPage(1));
-                                  toggleSection('diameter');
-                                }}
-                                className={`w-full text-left px-3 py-2 text-sm transition
-                  ${
-                    active
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
-                              >
-                                {value}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="flex-group-box grid grid-cols-2 gap-2">
-              {/* Last Index (Dropdown Single Select) */}
-              {availableProducts.lastIndexes && (
-                <div className="flex flex-col gap-1.5 mb-0">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    Lastindex
-                  </label>
-                  <div className="relative">
-                    {/* Trigger */}
-                    <div
-                      onClick={() => toggleSection('lastIndex')}
-                      className="w-full text-sm font-medium border border-gray-200 rounded-lg
-                 pl-3 pr-1 bg-white cursor-pointer shadow-sm
-                 flex items-center justify-between hover:border-blue-400 transition"
-                    >
-                      <span className="text-gray-700 py-2">
-                        {selectedFilters.lastIndex.length > 0
-                          ? selectedFilters.lastIndex[0]
-                          : 'All'}
-                      </span>
-
-                      <span
-                        className={`border-l border-gray-300 h-8 pl-[3px] flex items-center  transition-transform  `}
-                      >
-                        <ArrowDownIcon />
-                      </span>
-                    </div>
-
-                    {/* Dropdown */}
-                    {openSections.lastIndex && (
-                      <div
-                        className="absolute z-30 mt-2 w-full bg-white rounded-lg
-                   border border-gray-200 shadow-lg
-                   max-h-56 overflow-y-auto py-1"
-                      >
-                        {/* ALL */}
-                        <button
-                          onClick={() => {
-                            dispatch(setFilters({ lastIndex: [] }));
-                            dispatch(setPage(1));
-                            toggleSection('lastIndex');
-                          }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100
-            ${
-              selectedFilters.lastIndex.length === 0
-                ? 'bg-blue-50 text-blue-700 font-medium'
-                : ''
-            }`}
-                        >
-                          All
-                        </button>
-
-                        {[...availableProducts.lastIndexes]
-                          .filter(item => {
-                            const name =
-                              typeof item.name === 'string'
-                                ? item.name.trim()
-                                : '';
-                            return name && name !== 'unbekannt' && name !== '0';
-                          })
-                          .sort((a, b) => Number(a.name) - Number(b.name))
-                          .map((item, index) => {
-                            const value = String(item.name);
-                            const active =
-                              selectedFilters.lastIndex[0] === value;
-
-                            return (
-                              <button
-                                key={`${value}-${index}`}
-                                onClick={() => {
-                                  dispatch(setFilters({ lastIndex: [value] }));
-                                  dispatch(setPage(1));
-                                  toggleSection('lastIndex');
-                                }}
-                                className={`w-full text-left px-3 py-2 text-sm transition
-                  ${
-                    active
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
-                              >
-                                {value}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              {/* Speed Index (Dropdown Single Select) */}
-              {availableProducts.speedIndexes && (
-                <div className="flex flex-col gap-1.5 mb-0">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                    SpeedIndex
-                  </label>
-                  <div className="relative">
-                    {/* Trigger */}
-                    <div
-                      onClick={() => toggleSection('speedIndex')}
-                      className="w-full text-sm font-medium border border-gray-200 rounded-lg
-                 pl-3 pr-1 bg-white cursor-pointer shadow-sm
-                 flex items-center justify-between hover:border-blue-400 transition"
-                    >
-                      <span className="text-gray-700 py-2">
-                        {selectedFilters.speedIndex.length > 0
-                          ? selectedFilters.speedIndex[0]
-                          : 'All'}
-                      </span>
-
-                      <span className="border-l border-gray-300 h-8 pl-[3px] flex items-center">
-                        <ArrowDownIcon />
-                      </span>
-                    </div>
-
-                    {/* Dropdown */}
-                    {openSections.speedIndex && (
-                      <div
-                        className="absolute z-30 mt-2 w-full bg-white rounded-lg
-                   border border-gray-200 shadow-lg
-                   max-h-56 overflow-y-auto py-1"
-                      >
-                        {/* ALL */}
-                        <button
-                          onClick={() => {
-                            dispatch(setFilters({ speedIndex: [] }));
-                            dispatch(setPage(1));
-                            toggleSection('speedIndex');
-                          }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100
-            ${
-              selectedFilters.speedIndex.length === 0
-                ? 'bg-blue-50 text-blue-700 font-medium'
-                : ''
-            }`}
-                        >
-                          All
-                        </button>
-
-                        {[...availableProducts.speedIndexes]
-                          .filter(item => {
-                            const name =
-                              typeof item.name === 'string'
-                                ? item.name.trim()
-                                : '';
-                            return name && name !== 'unbekannt' && name !== '0';
-                          })
-                          .sort((a, b) =>
-                            String(a.name).localeCompare(String(b.name))
-                          )
-                          .map((item, index) => {
-                            const value = String(item.name);
-                            const active =
-                              selectedFilters.speedIndex[0] === value;
-
-                            return (
-                              <button
-                                key={`${value}-${index}`}
-                                onClick={() => {
-                                  dispatch(setFilters({ speedIndex: [value] }));
-                                  dispatch(setPage(1));
-                                  toggleSection('speedIndex');
-                                }}
-                                className={`w-full text-left px-3 py-2 text-sm transition
-                  ${
-                    active
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
-                              >
-                                {value}
-                              </button>
-                            );
-                          })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="space-y-3 mb-6">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 uppercase">
-                    Make
-                  </label>
-                  <select
-                    value={carMake}
-                    onChange={e => setCarMake(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none transition duration-200 ease-in-out hover:bg-gray-700"
-                  >
-                    <option value="">Select...</option>
-                    <option value="audi">Audi</option>
-                    <option value="bmw">BMW</option>
-                    <option value="vw">Volkswagen</option>
-                    <option value="mb">Mercedes</option>
-                    <option value="ford">Ford</option>
-                  </select>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 uppercase">
-                    Year
-                  </label>
-                  <select
-                    value={carYear}
-                    onChange={e => setCarYear(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none transition duration-200 ease-in-out hover:bg-gray-700"
-                  >
-                    <option value="">Year</option>
-                    <option>2024</option>
-                    <option>2023</option>
-                    <option>2022</option>
-                    <option>2021</option>
-                    <option>2020</option>
-                    <option>2019</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 uppercase">
-                  Model
-                </label>
-                <select
-                  disabled={!carMake}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 ease-in-out hover:bg-gray-700"
-                >
-                  <option>Select Model...</option>
-                  {carMake === 'vw' && <option>Golf VIII</option>}
-                  {carMake === 'vw' && <option>Passat Variant</option>}
-                  {carMake === 'vw' && <option>Tiguan</option>}
-                  {carMake === 'bmw' && <option>3 Series (G20)</option>}
-                  {carMake === 'bmw' && <option>5 Series (G30)</option>}
-                  {carMake === 'audi' && <option>A4 Avant</option>}
-                  {carMake === 'audi' && <option>A6</option>}
-                  {!['vw', 'bmw', 'audi'].includes(carMake) && carMake && (
-                    <option>Standard Model</option>
-                  )}
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 uppercase">
-                  Engine / Version
-                </label>
-                <select
-                  disabled={!carMake}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none disabled:opacity-50 disabled:cursor-not-allowed transition duration-200 ease-in-out hover:bg-gray-700"
-                >
-                  <option>Select Version...</option>
-                  <option>2.0 TDI (150 HP)</option>
-                  <option>1.5 TSI (130 HP)</option>
-                  <option>2.0 TSI (190 HP)</option>
-                  <option>Hybrid / GTE</option>
-                </select>
-              </div>
-            </div>
-            {/* Submit */}
-            <button className="w-full bg-white text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-50 transition-colors">
-              <Search className="w-5 h-5 text-blue-600" />
-              Find Matching Tires
-            </button>
-          </>
-        )}
-      </div>
-
-      <div className="bg-blue-50/40  pb-3 pt-1 mt-3 px-0 rounded-xl border border-blue-100/90">
-        {/* kategorie */}
-        {availableProducts.kategories && (
-          <div className="relative mb-2  border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center justify-between pr-6"
-              onClick={() => toggleSection('kategorie')}
-              style={{ cursor: 'pointer' }}
-            >
-              <h4 className="filter-sidebar-title !text-[#16171A]   w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-3 py-3">
-                Reifentyp{' '}
-                <span className="text-[#404042] absolute right-2 text-[14px]">
-                  {selectedFilters.kategorie.length > 0
-                    ? `(${selectedFilters.kategorie.length})`
-                    : ''}
-                </span>
-              </h4>
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7]  ${
-                  openSections.kategorie ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-
-            {openSections.kategorie && (
-              <div className="px-3 pt-0 pb-4 space-y-2">
-                {/* Helper to check if current label is selected */}
-                {(() => {
-                  const isSelected = (label: string) =>
-                    selectedFilters.kategorie.includes(label);
-
-                  return (
-                    <>
-                      {/* SUMMER CARD */}
-                      <button
-                        onClick={() =>
-                          handleFilterChange('kategorie', 'Sommerreifen')
-                        }
-                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all
-                        ${
-                          isSelected('Sommerreifen')
-                            ? 'border-blue-600 bg-blue-50/30 ring-1 ring-blue-600'
-                            : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
-                        }
-                      `}
-                      >
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center
-                          ${
-                            isSelected('Sommerreifen')
-                              ? 'bg-blue-600 text-white selected-reifen-category-icons'
-                              : 'bg-gray-100 text-gray-500'
-                          }
-                        `}
-                        >
-                          <Sun size={16} />
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="font-semibold text-gray-900 text-sm">
-                            Sommerreifen
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Optimiert für {'>'} 7°C
-                          </p>
-                        </div>
-                        {isSelected('Sommerreifen') && (
-                          <Check size={14} className="text-blue-600" />
-                        )}
-                      </button>
-
-                      {/* WINTER CARD */}
-                      <button
-                        onClick={() =>
-                          handleFilterChange('kategorie', 'Winterreifen')
-                        }
-                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all
-              ${
-                isSelected('Winterreifen')
-                  ? 'border-blue-600 bg-blue-50/30 ring-1 ring-blue-600'
-                  : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
-              }
-            `}
-                      >
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center
-                ${
-                  isSelected('Winterreifen')
-                    ? 'bg-blue-600 text-white selected-reifen-category-icons'
-                    : 'bg-gray-100 text-gray-500'
-                }
-              `}
-                        >
-                          <Snowflake size={16} />
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="font-semibold text-gray-900 text-sm">
-                            Winterreifen
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Sicherheit bei Schnee
-                          </p>
-                        </div>
-                        {isSelected('Winterreifen') && (
-                          <Check size={14} className="text-blue-600" />
-                        )}
-                      </button>
-
-                      {/* ALL-SEASON CARD */}
-                      <button
-                        onClick={() =>
-                          handleFilterChange('kategorie', 'Ganzjahresreifen')
-                        }
-                        className={`w-full flex items-center gap-4 p-3 rounded-xl border transition-all
-                        ${
-                          isSelected('Ganzjahresreifen')
-                            ? 'border-blue-600 bg-blue-50/30 ring-1 ring-blue-600'
-                            : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
-                        }
-                      `}
-                      >
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center
-                          ${
-                            isSelected('Ganzjahresreifen')
-                              ? 'bg-blue-600 text-white selected-reifen-category-icons'
-                              : 'bg-gray-100 text-gray-500'
-                          }
-                        `}
-                        >
-                          <CloudRain size={16} />
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="font-semibold text-gray-900 text-sm">
-                            Ganzjahresreifen
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Ein Reifen, alle Wetterlagen
-                          </p>
-                        </div>
-                        {isSelected('Ganzjahresreifen') && (
-                          <Check size={14} className="text-blue-600" />
-                        )}
-                      </button>
-                    </>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Price */}
-        <PriceRangeSlider
-          min={min}
-          max={max}
-          minPrice={filters.minPrice}
-          maxPrice={filters.maxPrice}
-          onChange={handlePriceChange}
-        />
-
-        {/* BRAND FILTER */}
-        {availableProducts.brands && (
-          <div className="relative mb-2 pb-1 border-b border-b-[#C6C7CC]">
-            <div
-              className="filter-item-title-box flex items-center justify-between pr-6 cursor-pointer"
-              onClick={() => toggleSection('brand')}
-            >
-              <h4 className="filter-sidebar-title !text-[#16171A] w-full text-[16px] text-left font-secondary font-normal leading-[100%] pr-8 relative flex items-center gap-1 justify-start pl-3 py-3">
-                Marke{' '}
-                <span className="text-[#404042] absolute right-2 text-[14px]">
-                  {selectedFilters.brand.length > 0
-                    ? `(${selectedFilters.brand.length})`
-                    : ''}
-                </span>
-              </h4>
-
-              <span
-                className={`arrow absolute right-0 px-2 h-10 flex flex-col justify-center items-center bg-[#F5F5F7] ${
-                  openSections.brand ? 'open' : 'closed'
-                }`}
-              >
-                <ArrowDownIcon />
-              </span>
-            </div>
-
-            {openSections.brand && (
-              <div className="px-3 pt-2 pb-4 space-y-3">
-                {/* 🔍 Search Box */}
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={brandSearch}
-                    onChange={e => setBrandSearch(e.target.value)}
-                    placeholder="Marke suchen…"
-                    className="w-full py-2 pl-9 pr-3 text-sm rounded-lg border border-slate-200 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <Search
-                    className="absolute top-2.5 left-2.5 text-slate-400"
-                    size={16}
-                  />
-                </div>
-                {/** -------------------------------------------
-               * BRAND LIST LOGIC:
-               * - Search filters ALL brands
-               * - No search → show first 10 only
-               * - Expand button shows all brands
-               ---------------------------------------------- */}
-                {(() => {
-                  const allBrands = [...availableProducts.brands]
-                    .filter(item => {
-                      const name =
-                        typeof item.name === 'string' ? item.name.trim() : '';
-                      return name && name !== 'unbekannt' && name !== '0';
-                    })
-                    .sort((a, b) =>
-                      String(a.name).localeCompare(String(b.name))
-                    );
-
-                  // If searching → always show full list
-                  const filteredBrands = brandSearch
-                    ? allBrands.filter(item =>
-                        String(item.name)
-                          .toLowerCase()
-                          .includes(brandSearch.toLowerCase())
-                      )
-                    : allBrands;
-
-                  const visibleBrands =
-                    !brandSearch && !showAllBrands
-                      ? filteredBrands.slice(0, 8)
-                      : filteredBrands;
-
-                  return (
-                    <>
-                      {/* Brand Buttons */}
-                      <div className="grid grid-cols-2 gap-2 max-h-[190px] overflow-y-auto pr-1">
-                        {visibleBrands.map(item => {
-                          const label =
-                            typeof item.name === 'string' ||
-                            typeof item.name === 'number'
-                              ? item.name
-                              : JSON.stringify(item.name);
-
-                          const active = selectedFilters.brand.includes(
-                            String(label)
-                          );
-
-                          return (
-                            <button
-                              key={label}
-                              onClick={() =>
-                                handleFilterChange('brand', String(label))
-                              }
-                              className={`text-xs font-semibold w-full text-left truncate px-3 py-2 rounded-lg border transition-all
-                        ${
-                          active
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                            : 'bg-white text-slate-700 border-slate-200 hover:bg-blue-50 hover:border-blue-300'
-                        }
-                      `}
-                            >
-                              {label}
-                              <span className="text-[10px] text-slate-400 ml-1">
-                                ({item.count})
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Expand Button — only when not searching */}
-                      {!brandSearch && filteredBrands.length > 10 && (
-                        <button
-                          onClick={() => setShowAllBrands(!showAllBrands)}
-                          className="w-full text-center text-blue-600 text-xs font-bold py-1.5 hover:underline"
-                        >
-                          {showAllBrands
-                            ? 'Weniger Marken anzeigen'
-                            : `Alle ${filteredBrands.length} Marken anzeigen`}
-                        </button>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-      {/* EU LABEL SECTION */}
-      <div className="bg-white rounded-xl shadow-sm border border-blue-100/90 pb-3 pt-1 px-2 mt-3">
-        <div
-          className="flex justify-between items-center cursor-pointer"
-          // onClick={() => toggleSection('label')}
+  const renderSizeSelect = (
+    key: SizeKey,
+    label: string,
+    items: FilterItem[] | undefined,
+    sorter: (a: FilterItem, b: FilterItem) => number
+  ) => {
+    if (!items) return null;
+    const current = selectedFilters[key][0];
+    const options = [...cleanItems(items)].sort(sorter);
+    const open = openSections[key];
+    return (
+      <div className="relative flex flex-col gap-1 min-w-0">
+        <span className="text-[11px] font-semibold text-[#6B6E76] font-secondary">
+          {label}
+        </span>
+        <button
+          type="button"
+          onClick={() => toggleSection(key)}
+          aria-expanded={open}
+          className={`h-10 w-full flex items-center justify-between gap-1 rounded-[10px] border bg-white pl-3 pr-2 text-[14px] font-semibold font-secondary cursor-pointer transition ${
+            current
+              ? 'border-primary-100 text-primary-100 bg-[#F5F8FF]'
+              : 'border-[#E4E7EE] text-[#16171A] hover:border-[#C9D6FC]'
+          }`}
         >
-          <h4 className="filter-sidebar-title !text-[#16171A] w-full text-[16px] text-left font-secondary font-medium leading-[100%] pr-8 relative flex items-center  gap-1 justify-start pl-1 py-3">
-            EU Label
-          </h4>
-          {/* {expandedSections['label'] ? (
-            <ChevronUp size={16} />
-          ) : (
-            <ChevronDown size={16} />
-          )} */}
-        </div>
-
-        {/* {expandedSections['label'] && ( */}
-        <div className="space-y-5">
-          {/* FUEL CLASS */}
-          {availableProducts.fuelClasses && (
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                  Kraftstoffeffizienz
-                </span>
-                <Info size={12} className="text-slate-400" />
-              </div>
-
-              <div className="grid grid-cols-4 gap-2">
-                {[...availableProducts.fuelClasses]
-                  .filter(item => {
-                    const label = String(item.name).trim().toLowerCase();
-                    return label && label !== 'unbekannt' && label !== '0';
-                  })
-                  .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                  .map(item => {
-                    const label = String(item.name);
-                    const active = selectedFilters.fuelClass.includes(label);
-
-                    return (
-                      <button
-                        key={label}
-                        onClick={() => handleFilterChange('fuelClass', label)}
-                        className={`flex flex-col items-center justify-center py-2 rounded-lg border text-sm font-semibold transition-all
-                      ${
-                        active
-                          ? ''
-                          : 'border-slate-200 text-slate-700 bg-white hover:border-blue-400'
-                      }`}
-                        style={{
-                          color: gradeFuelColor(label),
-                          backgroundColor: active
-                            ? gradeFuelBgColor(label)
-                            : undefined,
-                        }}
-                      >
-                        {label}
-                        <span className="text-[10px] text-slate-400 hidden">
-                          ({item.count})
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-            </div>
-          )}
-
-          {/* WET GRIP */}
-          {availableProducts.wetGrips && (
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                  Nasshaftung
-                </span>
-                <Info size={12} className="text-slate-400" />
-              </div>
-
-              <div className="grid grid-cols-4 gap-2">
-                {[...availableProducts.wetGrips]
-                  .filter(item => {
-                    const label = String(item.name).trim().toLowerCase();
-                    return label && label !== 'unbekannt' && label !== '0';
-                  })
-                  .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                  .map(item => {
-                    const label = String(item.name);
-                    const active = selectedFilters.wetGrip.includes(label);
-
-                    return (
-                      <button
-                        key={label}
-                        onClick={() => handleFilterChange('wetGrip', label)}
-                        className={`flex flex-col items-center justify-center py-2 rounded-lg border text-sm font-semibold transition-all
-                      ${
-                        active
-                          ? ''
-                          : 'border-slate-200 text-slate-700 bg-white hover:border-blue-400'
-                      }`}
-                        style={{
-                          color: gradeGripColor(label),
-                          backgroundColor: active
-                            ? gradeGripBgColor(label)
-                            : undefined,
-                        }}
-                      >
-                        {label}
-                        <span className="text-[10px] text-slate-400 hidden">
-                          ({item.count})
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-            </div>
-          )}
-
-          {/* NOISE */}
-          {availableProducts.noises && (
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                  externes Rollgeräusch (dB)
-                </span>
-                <Info size={12} className="text-slate-400" />
-              </div>
-
-              <div className="grid grid-cols-4 gap-2">
-                {[...availableProducts.noises]
-                  .filter(item => {
-                    const label = String(item.name).trim().toLowerCase();
-                    return label && label !== 'unbekannt' && label !== '0';
-                  })
-                  .sort((a, b) => Number(a.name) - Number(b.name))
-                  .map(item => {
-                    const label = String(item.name);
-                    const active = selectedFilters.noise.includes(label);
-
-                    return (
-                      <button
-                        key={label}
-                        onClick={() => handleFilterChange('noise', label)}
-                        className={`py-2 rounded-lg border text-sm font-semibold transition-all
-                      ${
-                        active
-                          ? 'border-blue-600 text-blue-700 bg-blue-50'
-                          : 'border-slate-200 text-slate-700 bg-white hover:border-blue-400'
-                      }`}
-                      >
-                        {label} dB
-                        <span className="text-[10px] text-slate-400 hidden">
-                          ({item.count})
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-            </div>
-          )}
-        </div>
-        {/* )} */}
+          <span className="truncate">{current || 'Alle'}</span>
+          <ChevronDown
+            size={16}
+            className={`shrink-0 text-[#9AA0A8] transition-transform ${open ? 'rotate-180' : ''}`}
+          />
+        </button>
+        {open && (
+          <div className="absolute top-full left-0 z-40 mt-1.5 w-full min-w-[96px] max-h-60 overflow-y-auto rounded-[12px] border border-[#E9ECF3] bg-white p-1 shadow-[0_16px_32px_-12px_rgba(16,24,40,0.25)]">
+            <button
+              type="button"
+              onClick={() => {
+                dispatch(setFilters({ [key]: [] } as Partial<SelectedFilters>));
+                dispatch(setPage(1));
+                toggleSection(key);
+              }}
+              className={`w-full text-left rounded-[8px] px-2.5 py-1.5 text-[13px] font-secondary cursor-pointer ${
+                !current ? 'bg-[#EEF2FF] text-primary-100 font-semibold' : 'text-[#404042] hover:bg-[#F5F7FB]'
+              }`}
+            >
+              Alle
+            </button>
+            {options.map((item, index) => {
+              const value = String(item.name);
+              const active = current === value;
+              return (
+                <button
+                  type="button"
+                  key={`${value}-${index}`}
+                  onClick={() => {
+                    dispatch(setFilters({ [key]: [value] } as Partial<SelectedFilters>));
+                    dispatch(setPage(1));
+                    toggleSection(key);
+                  }}
+                  className={`w-full flex items-center justify-between gap-2 rounded-[8px] px-2.5 py-1.5 text-[13px] font-secondary cursor-pointer ${
+                    active
+                      ? 'bg-primary-100 text-white font-semibold'
+                      : 'text-[#16171A] hover:bg-[#F5F7FB]'
+                  }`}
+                >
+                  <span>{value}</span>
+                  {Number(item.count) > 0 && (
+                    <span className={`text-[11px] ${active ? 'text-white/80' : 'text-[#9AA0A8]'}`}>
+                      {item.count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
+    );
+  };
+
+  const sectionHeader = ({
+    id,
+    title,
+    icon: Icon,
+    count,
+  }: {
+    id: keyof typeof openSections;
+    title: string;
+    icon: typeof Sun;
+    count?: number;
+  }) => (
+    <button
+      type="button"
+      onClick={() => toggleSection(id)}
+      aria-expanded={openSections[id]}
+      className="w-full flex items-center gap-2.5 px-4 py-3.5 cursor-pointer"
+    >
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#EEF2FF] text-primary-100">
+        <Icon size={16} strokeWidth={2.2} />
+      </span>
+      <span className="flex-1 text-left text-[15px] font-semibold text-[#16171A] font-primary">
+        {title}
+      </span>
+      {count ? (
+        <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary-100 px-1.5 text-[11px] font-semibold text-white">
+          {count}
+        </span>
+      ) : null}
+      <ChevronDown
+        size={18}
+        className={`text-[#9AA0A8] transition-transform ${openSections[id] ? 'rotate-180' : ''}`}
+      />
+    </button>
+  );
+
+  const card = 'rounded-[16px] border border-[#E9ECF3] bg-white';
+
+  const SEASON_OPTIONS = [
+    { value: 'Sommerreifen', hint: 'Optimiert für > 7 °C', icon: Sun, tint: 'bg-[#FFF4E5] text-[#D97706]' },
+    { value: 'Winterreifen', hint: 'Sicherheit bei Schnee', icon: Snowflake, tint: 'bg-[#EAF2FF] text-[#2563EB]' },
+    { value: 'Ganzjahresreifen', hint: 'Ein Reifen, alle Wetterlagen', icon: CloudRain, tint: 'bg-[#E7F7F1] text-[#0F8A6B]' },
+  ];
+
+  const sizeLabel = [
+    selectedFilters.width[0] || '–',
+    '/',
+    selectedFilters.height[0] || '–',
+    ' R',
+    selectedFilters.diameter[0] || '–',
+  ].join('');
+  const hasSize =
+    selectedFilters.width.length + selectedFilters.height.length + selectedFilters.diameter.length > 0;
+
+  const euCount =
+    selectedFilters.fuelClass.length + selectedFilters.wetGrip.length + selectedFilters.noise.length;
+
+  const gradeGrid = (
+    key: 'fuelClass' | 'wetGrip',
+    items: FilterItem[],
+    color: (g: string) => string,
+    bg: (g: string) => string
+  ) => (
+    <div className="grid grid-cols-5 gap-1.5">
+      {[...cleanItems(items)].sort(byText).map(item => {
+        const label = String(item.name);
+        const active = selectedFilters[key].includes(label);
+        return (
+          <button
+            type="button"
+            key={label}
+            onClick={() => handleFilterChange(key, label)}
+            aria-pressed={active}
+            className={`flex flex-col items-center justify-center rounded-[10px] border py-1.5 cursor-pointer transition-all ${
+              active ? 'border-transparent ring-2' : 'border-[#E9ECF3] bg-white hover:border-[#C9D6FC]'
+            }`}
+            style={{
+              backgroundColor: active ? bg(label) : undefined,
+              ['--tw-ring-color' as string]: color(label),
+            }}
+          >
+            <span className="text-[15px] font-bold leading-none" style={{ color: color(label) }}>
+              {label}
+            </span>
+            {Number(item.count) > 0 && (
+              <span className="mt-1 text-[10px] text-[#9AA0A8] leading-none">{item.count}</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  return (
+    <div className="filter-sidebar filter-sidebar-v2 flex flex-col gap-3" ref={sidebarRef}>
+      {/* ---------------- Size finder ---------------- */}
+      <div className={`${card} p-4 relative z-30`}>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="text-[16px] font-semibold text-[#16171A] font-primary">Reifen-Finder</h3>
+          <span
+            className={`rounded-[8px] px-2 py-1 text-[12px] font-bold tabular-nums font-secondary ${
+              hasSize ? 'bg-primary-100 text-white' : 'bg-[#F2F4F8] text-[#6B6E76]'
+            }`}
+          >
+            {sizeLabel}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-1 rounded-[12px] bg-[#F2F4F8] p-1 mb-4">
+          <button
+            type="button"
+            className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[9px] bg-white py-2 text-[13px] font-semibold text-primary-100 shadow-[0_1px_3px_rgba(16,24,40,0.08)] cursor-default"
+          >
+            <Ruler size={15} /> Nach Größe
+          </button>
+          <button
+            type="button"
+            disabled
+            title="Demnächst verfügbar"
+            aria-label="Nach Auto (demnächst verfügbar)"
+            className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[9px] py-2 text-[13px] font-semibold text-[#B4B9C2] cursor-not-allowed"
+          >
+            <Car size={15} /> Nach Auto
+          </button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2">
+          {renderSizeSelect('width', 'Breite', availableProducts.widths, byNumber)}
+          {renderSizeSelect('height', 'Höhe', availableProducts.heights, byNumber)}
+          {renderSizeSelect('diameter', 'Zoll', availableProducts.diameters, byNumber)}
+        </div>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {renderSizeSelect('lastIndex', 'Lastindex', availableProducts.lastIndexes, byNumber)}
+          {renderSizeSelect('speedIndex', 'Geschw.-Index', availableProducts.speedIndexes, byText)}
+        </div>
+      </div>
+
+      {/* ---------------- Tyre type ---------------- */}
+      {availableProducts.kategories && (
+        <div className={card}>
+          {sectionHeader({ id: 'kategorie', title: 'Reifentyp', icon: Sun, count: selectedFilters.kategorie.length })}
+          {openSections.kategorie && (
+            <div className="px-4 pb-4 flex flex-col gap-2">
+              {SEASON_OPTIONS.map(({ value, hint, icon: Icon, tint }) => {
+                const active = selectedFilters.kategorie.includes(value);
+                return (
+                  <button
+                    type="button"
+                    key={value}
+                    onClick={() => handleFilterChange('kategorie', value)}
+                    aria-pressed={active}
+                    className={`w-full flex items-center gap-3 rounded-[12px] border p-2.5 text-left cursor-pointer transition-all ${
+                      active
+                        ? 'border-primary-100 bg-[#F5F8FF] shadow-[0_0_0_1px_var(--primary-color)]'
+                        : 'border-[#E9ECF3] bg-white hover:border-[#C9D6FC]'
+                    }`}
+                  >
+                    <span className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] ${tint}`}>
+                      <Icon size={17} />
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[14px] font-semibold text-[#16171A]">{value}</span>
+                      <span className="block text-[12px] text-[#6B6E76] font-secondary">{hint}</span>
+                    </span>
+                    <span
+                      className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                        active ? 'border-primary-100 bg-primary-100 text-white' : 'border-[#D0D5DD]'
+                      }`}
+                    >
+                      {active && <Check size={12} strokeWidth={3} />}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ---------------- Price ---------------- */}
+      <div className={card}>
+        {sectionHeader({ id: 'price', title: 'Preis', icon: Euro, count: hasPriceActive ? 1 : 0 })}
+        {openSections.price && (
+          <div className="px-4 pb-4">
+            <PriceRangeSlider
+              min={min}
+              max={max}
+              minPrice={filters.minPrice}
+              maxPrice={filters.maxPrice}
+              onChange={handlePriceChange}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* ---------------- Brand ---------------- */}
+      {availableProducts.brands && (
+        <div className={card}>
+          {sectionHeader({ id: 'brand', title: 'Marke', icon: Tag, count: selectedFilters.brand.length })}
+          {openSections.brand && (
+            <div className="px-4 pb-4">
+              <div className="relative mb-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9AA0A8]" size={16} />
+                <input
+                  type="text"
+                  value={brandSearch}
+                  onChange={e => setBrandSearch(e.target.value)}
+                  placeholder="Marke suchen…"
+                  className="w-full h-10 rounded-[10px] border border-[#E4E7EE] bg-[#F7F8FB] pl-9 pr-3 text-[14px] text-[#16171A] outline-none transition focus:bg-white focus:border-primary-100 focus:ring-2 focus:ring-[#3a63f623]"
+                />
+              </div>
+              {(() => {
+                const allBrands = [...cleanItems(availableProducts.brands)].sort(byText);
+                const filteredBrands = brandSearch
+                  ? allBrands.filter(item =>
+                      String(item.name).toLowerCase().includes(brandSearch.toLowerCase())
+                    )
+                  : allBrands;
+                const visibleBrands =
+                  !brandSearch && !showAllBrands ? filteredBrands.slice(0, 8) : filteredBrands;
+
+                return (
+                  <>
+                    <ul className="flex flex-col max-h-[280px] overflow-y-auto -mx-1 pr-1">
+                      {visibleBrands.map(item => {
+                        const label = String(item.name);
+                        const active = selectedFilters.brand.includes(label);
+                        return (
+                          <li key={label}>
+                            <button
+                              type="button"
+                              onClick={() => handleFilterChange('brand', label)}
+                              aria-pressed={active}
+                              className="w-full flex items-center gap-2.5 rounded-[8px] px-1.5 py-1.5 text-left cursor-pointer hover:bg-[#F5F7FB]"
+                            >
+                              <span
+                                className={`inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border-2 transition ${
+                                  active ? 'border-primary-100 bg-primary-100 text-white' : 'border-[#D0D5DD] bg-white'
+                                }`}
+                              >
+                                {active && <Check size={11} strokeWidth={3.5} />}
+                              </span>
+                              <span className={`flex-1 truncate text-[14px] ${active ? 'font-semibold text-[#16171A]' : 'text-[#404042]'}`}>
+                                {label}
+                              </span>
+                              <span className="text-[12px] text-[#9AA0A8] tabular-nums">{item.count}</span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                      {visibleBrands.length === 0 && (
+                        <li className="px-1.5 py-2 text-[13px] text-[#9AA0A8]">Keine Marke gefunden</li>
+                      )}
+                    </ul>
+                    {!brandSearch && filteredBrands.length > 8 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllBrands(!showAllBrands)}
+                        className="mt-2 w-full rounded-[10px] border border-[#DCE3FB] py-2 text-[13px] font-semibold text-primary-100 hover:bg-[#F5F8FF] cursor-pointer"
+                      >
+                        {showAllBrands ? 'Weniger Marken anzeigen' : `Alle ${filteredBrands.length} Marken anzeigen`}
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ---------------- EU label ---------------- */}
+      {(availableProducts.fuelClasses || availableProducts.wetGrips || availableProducts.noises) && (
+        <div className={card}>
+          {sectionHeader({ id: 'fuelClass', title: 'EU-Reifenlabel', icon: Leaf, count: euCount })}
+          {openSections.fuelClass && (
+            <div className="px-4 pb-4 flex flex-col gap-4">
+              {availableProducts.fuelClasses && (
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2 text-[12px] font-semibold text-[#6B6E76]">
+                    <Fuel size={13} /> Kraftstoffeffizienz
+                  </div>
+                  {gradeGrid('fuelClass', availableProducts.fuelClasses, gradeFuelColor, gradeFuelBgColor)}
+                </div>
+              )}
+              {availableProducts.wetGrips && (
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2 text-[12px] font-semibold text-[#6B6E76]">
+                    <CloudRain size={13} /> Nasshaftung
+                  </div>
+                  {gradeGrid('wetGrip', availableProducts.wetGrips, gradeGripColor, gradeGripBgColor)}
+                </div>
+              )}
+              {availableProducts.noises && (
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2 text-[12px] font-semibold text-[#6B6E76]">
+                    <Volume2 size={13} /> Externes Rollgeräusch
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[...cleanItems(availableProducts.noises)].sort(byNumber).map(item => {
+                      const label = String(item.name);
+                      const active = selectedFilters.noise.includes(label);
+                      return (
+                        <button
+                          type="button"
+                          key={label}
+                          onClick={() => handleFilterChange('noise', label)}
+                          aria-pressed={active}
+                          className={`rounded-full border px-3 py-1.5 text-[13px] font-semibold cursor-pointer transition ${
+                            active
+                              ? 'border-primary-100 bg-primary-100 text-white'
+                              : 'border-[#E4E7EE] bg-white text-[#404042] hover:border-[#C9D6FC]'
+                          }`}
+                        >
+                          {label} dB
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
