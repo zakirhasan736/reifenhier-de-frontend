@@ -251,7 +251,9 @@ section.banner-section::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, .5);
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgba(11, 21, 51, .35) 0%, rgba(11, 21, 51, .75) 70%),
+      linear-gradient(180deg, rgba(9, 16, 38, .55) 0%, rgba(9, 16, 38, .85) 100%);
     z-index: 99;
 }
 .blog-details-content-block p {
@@ -2246,4 +2248,65 @@ flex-direction: column;
 }
 .filter-active-tabs svg{
     stroke: #FFFFFF;
+}
+
+/* ================= Homepage v2 (hero / filter / about / faq) ================= */
+.banner-section.hero-v2 {
+  height: auto;
+  min-height: 560px;
+}
+.hero-v2-glow {
+  background: radial-gradient(50% 60% at 50% 70%, rgba(58, 100, 246, .45) 0%, rgba(58, 100, 246, 0) 100%);
+  filter: blur(20px);
+}
+.hero-v2-eyebrow {
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.hero-v2-highlight {
+  background: linear-gradient(90deg, #8FB0FF 0%, #C7D6FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-filter-card {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .6),
+    0 30px 60px -20px rgba(4, 10, 30, .55),
+    0 12px 24px -12px rgba(4, 10, 30, .35);
+}
+.hero-search-btn {
+  box-shadow: 0 10px 24px -8px rgba(58, 100, 246, .65);
+}
+.hero-search-btn:hover {
+  box-shadow: 0 14px 28px -8px rgba(58, 100, 246, .75);
+}
+.hero-filter-v2 .input {
+  min-height: 46px;
+  border-radius: 10px !important;
+}
+.hero-filter-v2 .input .arrow {
+  border-left: 0 !important;
+  background: transparent !important;
+}
+.about-v2-image {
+  box-shadow: 0 30px 60px -30px rgba(15, 30, 77, .45);
+}
+.about-v2-badge {
+  box-shadow: 0 20px 40px -16px rgba(15, 30, 77, .3);
+}
+.about-v2-feature:hover {
+  box-shadow: 0 16px 32px -18px rgba(58, 100, 246, .35);
+}
+.faq-v2-item[open] .faq-v2-answer {
+  animation: faqV2In .25s ease-out;
+}
+@keyframes faqV2In {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media screen and (max-width: 767px) {
+  .banner-section.hero-v2 { min-height: 0; }
 }

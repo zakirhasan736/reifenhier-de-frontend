@@ -6,6 +6,17 @@ import { useRouter } from 'next/navigation';
 import { useGetTyreFiltersQuery } from '@/store/api/filterApi';
 import CustomSelect from '@/components/elements/inputs/CustomCategorySelect';
 import Image from 'next/image';
+import {
+  ArrowRight,
+  ChevronDown,
+  CircleDot,
+  CloudSun,
+  Info,
+  Search,
+  SlidersHorizontal,
+  Snowflake,
+  Sun,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface FilterOption {
@@ -218,169 +229,183 @@ const FilterForm = () => {
       : undefined;
   };
 
-  // const openDialogById = (id: string) => {
-  //   (document.getElementById(id) as HTMLDialogElement | null)?.showModal();
-  // };
+  const openDialogById = (id: string) => {
+    (document.getElementById(id) as HTMLDialogElement | null)?.showModal();
+  };
+
+  const seasonIcon = (name: string) => {
+    const n = name.toLowerCase();
+    if (n.includes('winter')) return Snowflake;
+    if (n.includes('sommer')) return Sun;
+    if (n.includes('ganzjahr')) return CloudSun;
+    return CircleDot;
+  };
+
+  const sizeLabel = `${width || '–'}/${height || '–'} R${diameter || '–'}`;
+  const extraCount = [lastIndex, wetGrip, fuelClass, noise].filter(Boolean)
+    .length;
 
   return (
-    <div className="tyres-search-main-content max-w-[978px] w-full relative mx-auto">
-      <div className="lg:h-[207px] h-[260px] md:block hidden w-full" />
-      <div className="tyres-search-content md:absolute flex flex-col top-0 left-0 w-full bg-mono-0 md:px-[30px] px-4 py-4 md:py-6 rounded-[10px]">
-        <div className="lg:pb-16 pb-8 relative">
-          <div className="tyre-search-box relative lg:flex-row flex-col flex items-end gap-5 justify-between w-full">
-            <div className="tyre-type-area w-full relative  z-150">
-              <div className="grid grid-cols-2 tyre-type-top-filter-area sm:flex w-full items-end justify-between gap-x-4 md:gap-x-3 lg:gap-x-4 lg:gap-y-5 gap-y-4">
-                <CustomSelect
-                  label="Reifentyp"
-                  value={kategorie}
-                  onChange={setKategories} // ⬅️ no cascading resets
-                  className="categories-select"
-                  options={kategorieOptions}
-                  placeholder="Auswählen..."
-                />
-
-                <CustomSelect
-                  label="Breite"
-                  value={width}
-                  onChange={setWidth}
-                  className="brand-select"
-                  options={sortNumericDesc(data.widths || [])}
-                  placeholder="Auswählen..."
-                />
-
-                <CustomSelect
-                  label="Höhe"
-                  value={height}
-                  onChange={setHeight}
-                  className="height-select"
-                  options={sortNumericDesc(data.heights || [])}
-                  placeholder="Auswählen..."
-                />
-
-                <CustomSelect
-                  label="Durchmesser (Zoll)"
-                  value={diameter}
-                  onChange={setDiameter}
-                  options={sortNumericDesc(data.diameters || [])}
-                  className="diameter-select"
-                  placeholder="Auswählen..."
-                />
-              </div>
-
-              {showMoreFilters && (
-                <div className="tyre-type-bottom-filter-area w-full gap-x-4 lg:gap-y-5 gap-y-4 mt-4 md:mt-5 grid grid-cols-2 md:grid-cols-4">
-                  <CustomSelect
-                    label="Lastindex"
-                    value={lastIndex}
-                    onChange={setLastIndex}
-                    options={sortNumericDesc(data.lastIndexes || [])}
-                    placeholder="Auswählen..."
-                    className="lastindex-select"
-                  />
-
-                  <CustomSelect
-                    label="Nasshaftung"
-                    value={wetGrip}
-                    onChange={setWetGrip}
-                    options={sortAlphaAsc(data.wetGrips || [])}
-                    placeholder="Auswählen..."
-                    className="wetgrid-select"
-                  />
-
-                  <CustomSelect
-                    label="Kraftstoffeffizienz"
-                    value={fuelClass}
-                    onChange={setFuelClass}
-                    options={sortAlphaAsc(data.fuelClasses || [])}
-                    className="fuelclass-select"
-                    placeholder="Auswählen..."
-                  />
-
-                  <CustomSelect
-                    label="Rollgeräusch in dB"
-                    value={noise}
-                    onChange={setNoise}
-                    options={sortNumericDesc(data.noises || [])}
-                    className="noise-select"
-                    placeholder="Auswählen..."
-                  />
-                </div>
-              )}
-            </div>
-
-            <button
-              onClick={handleSearch}
-              className="md:max-w-[170px] flex items-center justify-center md:gap-[10px] gap-2 max-w-[139px] md:text-[16px] text-[12px] font-medium font-primary text-left relative w-full border text-mono-0 bg-primary-100 rounded-[6px] hover:opacity-85 transition ease !border-primary-100 cursor-pointer py-2 px-3"
-            >
-              Reifen suchen{' '}
-              <Image
-                src="/images/icons/search-normal.svg"
-                alt="suchen"
-                loading="lazy"
-                width={16}
-                height={16}
-              />
-            </button>
+    <div className="tyres-search-main-content hero-filter-v2 max-w-[1040px] w-full relative mx-auto">
+      <div className="hero-filter-card relative w-full rounded-[18px] bg-mono-0 p-4 md:p-6 lg:p-7">
+        {/* ---- Season tabs + helper link ---- */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5 md:mb-6">
+          <div
+            role="tablist"
+            aria-label="Reifentyp"
+            className="season-tabs grid grid-cols-3 md:inline-flex gap-1 p-1 rounded-[12px] bg-[#F2F4F8]"
+          >
+            {kategorieOptions.map(opt => {
+              const Icon = seasonIcon(opt.name);
+              const active = kategorie === opt.name;
+              return (
+                <button
+                  key={opt.name}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setKategories(active ? '' : opt.name)}
+                  className={`season-tab flex items-center justify-center gap-1.5 md:gap-2 rounded-[9px] px-2 md:px-4 py-2 md:py-2.5 text-[12px] md:text-[14px] font-medium font-secondary cursor-pointer transition-all duration-200 ${
+                    active
+                      ? 'bg-mono-0 text-primary-100 shadow-[0_2px_10px_rgba(22,23,26,0.08)]'
+                      : 'text-[#5B5D63] hover:text-[#16171A]'
+                  }`}
+                >
+                  <Icon size={16} strokeWidth={2} className="shrink-0" />
+                  <span className="truncate md:hidden">
+                    {opt.name.replace(/(es)?reifen$/i, '')}
+                  </span>
+                  <span className="truncate max-md:hidden">{opt.name}</span>
+                </button>
+              );
+            })}
           </div>
 
           <button
             type="button"
-            onClick={() => setShowMoreFilters(prev => !prev)}
-            className="filter-type-view-more-button cursor-pointer text-primary-100 mt-5 text-[14px] text-left font-secondary inline-block font-normal leading-[120%] z-90 lg:relative lg:bottom-0 lg:left-0 absolute bottom-12 left-0 max-sm:left-0"
+            onClick={() => openDialogById('tyre_size_modal')}
+            className="inline-flex items-center gap-1.5 self-start md:self-auto text-[13px] md:text-[14px] font-secondary text-primary-100 hover:underline cursor-pointer"
           >
-            {showMoreFilters ? 'Weniger Filter' : 'Weitere Filteroptionen'}
+            <Info size={15} strokeWidth={2} />
+            Wo finde ich meine Reifengröße?
           </button>
         </div>
-        <div className="tyre-model-image bottom-0 left-0 right-0 mx-auto absolute hidden md:flex flex-col items-center pl-0 justify-center">
-          <div
-            className={`tyre-filter-lists flex items-center pl-0 pt-1 justify-center gap-1 bg-transparent absolute h-9 max-w-42 rounded-tr-full rounded-tl-full w-full ${
-              width && height && diameter
-                ? '-rotate-28 -top-[32px]'
-                : width && height && !diameter
-                ? '-rotate-26 -top-[28px]'
-                : width && !height && !diameter
-                ? '-rotate-22 -top-[20px]'
-                : !width && !height && !diameter
-                ? '-rotate-29 -top-[28px]'
-                : (width && height) || diameter
-                ? '-rotate-28 -top-[34px]'
-                : '-rotate-33 -top-[34px]'
-            }`}
-          >
-            <div className="filter-item opacity-80 max-w-[47px] relative -top-1 width font-bold text-[20px] text-mono-0 font-secondary">
-              {width || '*'}
-            </div>
-            <div className="filter-item relative top-0 opacity-80 slash font-bold text-[18px] text-mono-0 font-secondary">
-              /
-            </div>
-            <div className="filter-item opacity-80 h-[33px] relative top-[7px] height font-bold text-[20px] text-mono-0 font-secondary">
-              {height || '*'}
-            </div>
-            <div
-              className={`filter-item relative opacity-80 h-[33px] diameter font-bold text-[20px] text-mono-0 font-secondary ${
-                (width && height) || diameter ? 'top-[28px]' : 'top-[17px]'
-              }`}
-            >
-              {diameter ? `R${diameter}` : '*'}
-            </div>
+
+        {/* ---- Size row ---- */}
+        <div className="tyre-search-box flex flex-col lg:flex-row lg:items-end gap-4 lg:gap-5">
+          <div className="size-fields relative z-150 grid grid-cols-3 gap-2 md:gap-3 flex-1 items-end">
+            <CustomSelect
+              label="Breite"
+              value={width}
+              onChange={setWidth}
+              className="brand-select"
+              options={sortNumericDesc(data.widths || [])}
+              placeholder="Alle"
+            />
+            <CustomSelect
+              label="Höhe"
+              value={height}
+              onChange={setHeight}
+              className="height-select"
+              options={sortNumericDesc(data.heights || [])}
+              placeholder="Alle"
+            />
+            <CustomSelect
+              label="Zoll"
+              value={diameter}
+              onChange={setDiameter}
+              options={sortNumericDesc(data.diameters || [])}
+              className="diameter-select"
+              placeholder="Alle"
+            />
           </div>
 
-          <Image
-            src="/images/wmremove-transformed.png"
-            alt="Reifenmodell"
-            fetchPriority="high"
-            width={340}
-            height={85}
-            objectFit="cover"
-          />
+          <div className="flex items-stretch gap-3 lg:w-auto w-full">
+            <div className="size-preview hidden md:flex flex-col justify-center rounded-[10px] border-2 border-dashed border-[#DCE3FB] bg-[#F5F8FF] px-4 min-w-[150px]">
+              <span className="text-[11px] uppercase tracking-[0.08em] text-[#6B6E76] font-secondary">
+                Ihre Größe
+              </span>
+              <span className="text-[18px] font-semibold text-[#16171A] font-primary leading-tight tabular-nums">
+                {sizeLabel}
+              </span>
+            </div>
+
+            <button
+              onClick={handleSearch}
+              className="hero-search-btn group flex-1 lg:flex-none flex items-center justify-center gap-2 rounded-[10px] bg-primary-100 px-6 md:px-8 py-3.5 text-[15px] md:text-[16px] font-semibold font-primary text-mono-0 cursor-pointer transition-all duration-200 hover:-translate-y-[1px]"
+            >
+              <Search size={18} strokeWidth={2.4} />
+              Reifen finden
+              <ArrowRight
+                size={18}
+                strokeWidth={2.4}
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </button>
+          </div>
         </div>
 
-        {/* <button
-          className="cursor-pointer md:text-right max-w-[235px] ml-auto text-center underline text-primary-100 mt-5 text-sm lg:text-[14px] font-secondary inline-block font-normal leading-[120%] z-50 lg:relative lg:bottom-0 lg:left-0 absolute md:bottom-10 bottom-6 md:left-5 left-0 right-0"
-          onClick={() => openDialogById('tyre_size_modal')}
-        >
-          Wo finde ich die Reifen-Größen?
-        </button> */}
+        {/* ---- More filters ---- */}
+        <div className="mt-4 md:mt-5 pt-4 border-t border-[#EEF0F4]">
+          <button
+            type="button"
+            onClick={() => setShowMoreFilters(prev => !prev)}
+            aria-expanded={showMoreFilters}
+            className="filter-type-view-more-button inline-flex items-center gap-2 cursor-pointer text-[13px] md:text-[14px] font-medium font-secondary text-[#404042] hover:text-primary-100 transition-colors"
+          >
+            <SlidersHorizontal size={16} strokeWidth={2} />
+            {showMoreFilters ? 'Weniger Filter' : 'Weitere Filteroptionen'}
+            {extraCount > 0 && (
+              <span className="inline-flex items-center justify-center rounded-full bg-primary-100 text-mono-0 text-[11px] font-semibold h-5 min-w-5 px-1.5">
+                {extraCount}
+              </span>
+            )}
+            <ChevronDown
+              size={16}
+              strokeWidth={2}
+              className={`transition-transform duration-200 ${
+                showMoreFilters ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+
+          {showMoreFilters && (
+            <div className="tyre-type-bottom-filter-area relative z-140 w-full gap-3 mt-4 grid grid-cols-2 md:grid-cols-4">
+              <CustomSelect
+                label="Lastindex"
+                value={lastIndex}
+                onChange={setLastIndex}
+                options={sortNumericDesc(data.lastIndexes || [])}
+                placeholder="Alle"
+                className="lastindex-select"
+              />
+              <CustomSelect
+                label="Nasshaftung"
+                value={wetGrip}
+                onChange={setWetGrip}
+                options={sortAlphaAsc(data.wetGrips || [])}
+                placeholder="Alle"
+                className="wetgrid-select"
+              />
+              <CustomSelect
+                label="Kraftstoffeffizienz"
+                value={fuelClass}
+                onChange={setFuelClass}
+                options={sortAlphaAsc(data.fuelClasses || [])}
+                className="fuelclass-select"
+                placeholder="Alle"
+              />
+              <CustomSelect
+                label="Rollgeräusch (dB)"
+                value={noise}
+                onChange={setNoise}
+                options={sortNumericDesc(data.noises || [])}
+                className="noise-select"
+                placeholder="Alle"
+              />
+            </div>
+          )}
+        </div>
 
         <dialog id="tyre_size_modal" className="modal">
           <div className="modal-box max-w-3xl bg-white">
