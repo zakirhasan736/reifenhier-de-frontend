@@ -52,7 +52,8 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   )
 
   const publicAllow = {
-    allow: '/' as const,
+    // Blog archive pages must stay crawlable; the longer rule beats '/*?page='.
+    allow: ['/', '/artikel?page='],
     disallow: [...privatePaths, ...filterQueryBlocks],
   }
 

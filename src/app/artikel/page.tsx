@@ -7,7 +7,50 @@ import JsonLd from '@/components/seo/JsonLd';
 
 const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
-export const metadata: Metadata = {
+const BASE_TITLE = 'Reifen-Ratgeber & Tests 2026 | Reifexa';
+const BASE_DESCRIPTION =
+  'Aktuelle Ratgeber, Tests und Tipps zu Sommerreifen, Winterreifen, Ganzjahresreifen und Reifenkauf auf Reifexa.de.';
+
+/**
+ * Page 2, 3, … are their own pages (self-canonical, own title) so Google
+ * crawls through the archive; pointing them at page 1 hid older articles.
+ */
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page) || 1);
+  const kategorie = params.kategorie || '';
+  const sub = params.subkategorie || '';
+
+  const qs = new URLSearchParams();
+  if (kategorie) qs.set('kategorie', kategorie);
+  if (sub) qs.set('subkategorie', sub);
+  if (page > 1) qs.set('page', String(page));
+  const canonical = `${SITE_URL}/artikel${qs.toString() ? `?${qs}` : ''}`;
+
+  const suffix = page > 1 ? ` – Seite ${page}` : '';
+  const topic = sub || kategorie;
+  const title = topic
+    ? `${topic} – Reifen-Ratgeber${suffix} | Reifexa`
+    : page > 1
+      ? `Reifen-Ratgeber & Tests${suffix} | Reifexa`
+      : BASE_TITLE;
+  const description =
+    page > 1 ? `${BASE_DESCRIPTION} Seite ${page}.` : BASE_DESCRIPTION;
+
+  return {
+    ...staticMetadata,
+    title: { absolute: title },
+    description,
+    alternates: { canonical },
+    openGraph: { ...staticMetadata.openGraph, url: canonical },
+  };
+}
+
+const staticMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { absolute: 'Reifen-Ratgeber & Tests 2026 | Reifexa' },
   description:
