@@ -21,7 +21,7 @@ const HomePageMain = async () => {
 
   return (
     <div className="home-page-main-wrapper">
-      <BannerSection />
+      <BannerSection season={featured.category} />
       <FeaturedProducts
         products={featured.products}
         title={featured.title}

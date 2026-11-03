@@ -1,7 +1,15 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { BadgeCheck, RefreshCw, ShieldCheck } from 'lucide-react';
 import FilterForm from './BannerFilter';
+import {
+  HeroSeason,
+  SEASON_HERO,
+  initialHeroSeason,
+  isHeroSeason,
+} from '@/libs/seasonHero';
 
 const TRUST_POINTS = [
   { icon: RefreshCw, label: 'Preise mehrmals täglich aktualisiert' },
@@ -9,26 +17,67 @@ const TRUST_POINTS = [
   { icon: ShieldCheck, label: '100 % kostenlos' },
 ];
 
-const BannerSection = () => {
-  return (
-    <section className="banner-section hero-v2 relative font-primary overflow-visible">
-      <Image
-        className="banner-image-fill object-cover object-[70%_center]"
-        src="/images/banner-image.jpg"
-        alt="Bannerbild Reifexa.de"
-        fill
-        sizes="100vw"
-        priority
-        fetchPriority="high"
-        quality={60}
-        placeholder="empty"
-      />
+type BannerSectionProps = {
+  /** Season the admin chose for the featured "sessions" slider. */
+  season?: string;
+};
 
-      {/* soft brand glow behind the search card */}
-      <div
-        aria-hidden
-        className="hero-v2-glow pointer-events-none absolute left-1/2 bottom-0 -translate-x-1/2 w-[900px] max-w-full h-[320px] z-[100]"
-      />
+const BannerSection = ({ season }: BannerSectionProps) => {
+  const [startSeason] = useState<HeroSeason>(() => initialHeroSeason(season));
+  const [kategorie, setKategorie] = useState<string>(startSeason);
+  // Keep the last chosen season's background when a tab is deselected.
+  const [bgSeason, setBgSeason] = useState<HeroSeason>(startSeason);
+
+  const handleKategorie = (value: string) => {
+    setKategorie(value);
+    if (isHeroSeason(value)) setBgSeason(value);
+  };
+
+  return (
+    <section
+      className="banner-section hero-v2 relative font-primary overflow-visible"
+      data-season={bgSeason}
+    >
+      {/* one layer per season, cross-faded */}
+      <div className="absolute inset-0 overflow-hidden z-[98]">
+        {(Object.keys(SEASON_HERO) as HeroSeason[]).map(key => {
+          const cfg = SEASON_HERO[key];
+          const active = key === bgSeason;
+          const first = key === startSeason;
+          return (
+            <div
+              key={key}
+              aria-hidden={!active}
+              className={`hero-v2-bg absolute inset-0 transition-opacity duration-700 ease-out ${
+                active ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <Image
+                className="object-cover"
+                style={{ objectPosition: cfg.position }}
+                src={cfg.src}
+                alt={active ? 'Bannerbild Reifexa.de' : ''}
+                fill
+                sizes="100vw"
+                priority={first}
+                fetchPriority={first ? 'high' : 'low'}
+                quality={60}
+              />
+              <div
+                className="absolute inset-0 mix-blend-color opacity-60"
+                style={{ background: cfg.wash }}
+              />
+              <div className="absolute inset-0" style={{ background: cfg.tint }} />
+              <div
+                className="pointer-events-none absolute left-1/2 bottom-0 -translate-x-1/2 w-[900px] max-w-full h-[320px] blur-[20px]"
+                style={{
+                  background: `radial-gradient(50% 60% at 50% 70%, ${cfg.glow} 0%, transparent 100%)`,
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
 
       <div className="custom-container relative z-999 h-full">
         <div className="banner-content w-full lg:pt-[72px] md:pt-14 pt-10 lg:pb-[72px] md:pb-12 pb-8">
@@ -53,7 +102,7 @@ const BannerSection = () => {
             </p>
           </div>
 
-          <FilterForm />
+          <FilterForm kategorie={kategorie} onKategorieChange={handleKategorie} />
 
           <ul className="hero-v2-trust flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 md:mt-8">
             {TRUST_POINTS.map(({ icon: Icon, label }) => (
@@ -61,7 +110,7 @@ const BannerSection = () => {
                 key={label}
                 className="flex items-center gap-2 text-[13px] md:text-[14px] text-white/85"
               >
-                <Icon size={16} strokeWidth={2} className="text-[#8FB0FF]" />
+                <Icon size={16} strokeWidth={2} className="text-white/70" />
                 {label}
               </li>
             ))}

@@ -244,7 +244,7 @@ svg{
     color: #000;
     margin-bottom: 10px;
 }
-section.banner-section::before {
+section.banner-section:not(.hero-v2)::before {
     content: '';
     position: absolute;
     top: 0;
@@ -2255,9 +2255,8 @@ flex-direction: column;
   height: auto;
   min-height: 560px;
 }
-.hero-v2-glow {
-  background: radial-gradient(50% 60% at 50% 70%, rgba(58, 100, 246, .45) 0%, rgba(58, 100, 246, 0) 100%);
-  filter: blur(20px);
+.banner-section.hero-v2::before {
+  display: none;
 }
 .hero-v2-eyebrow {
   background: rgba(255, 255, 255, .1);

@@ -40,12 +40,25 @@ const DEFAULT_KATEGORIES: FilterOption[] = [
   { name: 'Ganzjahresreifen' },
 ];
 
-const FilterForm = () => {
+type FilterFormProps = {
+  /** Controlled tyre type (e.g. driven by the hero so the background can follow it). */
+  kategorie?: string;
+  onKategorieChange?: (value: string) => void;
+};
+
+const FilterForm = ({ kategorie: kategorieProp, onKategorieChange }: FilterFormProps) => {
   const router = useRouter();
 
-  // Pre-select the tyre type that's in season in Germany right now
-  // (winter tyres Oct–Easter, summer tyres Easter–Sep).
-  const [kategorie, setKategories] = useState<string>(() => currentTyreSeason());
+  // Uncontrolled fallback: pre-select the tyre type that's in season in
+  // Germany right now (winter tyres Oct–Easter, summer tyres Easter–Sep).
+  const [internalKategorie, setInternalKategorie] = useState<string>(() =>
+    currentTyreSeason()
+  );
+  const kategorie = kategorieProp !== undefined ? kategorieProp : internalKategorie;
+  const setKategories = (value: string) => {
+    if (onKategorieChange) onKategorieChange(value);
+    if (kategorieProp === undefined) setInternalKategorie(value);
+  };
   const [width, setWidth] = useState('205');
   const [height, setHeight] = useState('55');
   const [diameter, setDiameter] = useState('16');
