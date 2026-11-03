@@ -19,8 +19,18 @@ import { addProduct, openModal, removeProduct } from '@/store/compareSlice';
 import { AppDispatch, RootState } from '@/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFound from '@/app/produkte/not-found';
-import OptimizedImage from '../elements/OptimizedImage';
-import { CloudRain, Leaf } from 'lucide-react';
+import {
+  ArrowUpDown,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  Clock,
+  CloudRain,
+  GitCompare,
+  Info,
+  Leaf,
+  Truck,
+} from 'lucide-react';
 import { EU_LABEL_TIPS, getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
 import { resolveEuLabelData } from '@/utils/euTyreLabel';
 import {
@@ -39,10 +49,31 @@ import { toMoneyNumber } from '@/libs/money';
 import PriceAlertToggle from '@/components/productpage/PriceAlertToggle';
 import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
 import ProductImageGallery from '@/components/productpage/ProductImageGallery';
+import StickyOfferBar from '@/components/productpage/StickyOfferBar';
 import type { TyreLabelInfo } from '@/utils/euTyreLabel';
 
 // Never fall back to localhost — shared links would point to nobody's machine.
 const SiteUrl = SITE_URL;
+
+const PAYMENT_NAMES: Record<string, string> = {
+  sofort: 'Sofortüberweisung',
+  amazonpay: 'Amazon Pay',
+  paypal: 'PayPal',
+  banktransfer: 'Banküberweisung',
+  americanexpress: 'American Express (AMEX)',
+  amex: 'American Express (AMEX)',
+  sepa: 'SEPA',
+  applepay: 'Apple Pay',
+  payu: 'PayU',
+};
+
+/** "…/american_express.png" → "American Express (AMEX)" */
+function paymentDisplayName(icon: string, idx: number): string {
+  const m = icon.match(/\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i);
+  if (!m) return `Zahlungsmethode ${idx + 1}`;
+  const normalized = m[1].replace(/[-_]/g, '').toLowerCase();
+  return PAYMENT_NAMES[normalized] || m[1].replace(/[-_]/g, ' ');
+}
 
 interface WishlistProduct {
   _id: string;
@@ -146,6 +177,12 @@ interface ProductProps {
   product: Product;
   loading: boolean;
   indexVariants?: IndexVariant[];
+  /** Page h1 (brand, model, size) — built on the server. */
+  title?: string;
+  /** Short server-built product summary shown under "Beschreibung". */
+  summary?: string;
+  /** Lowest buyable price, identical to the schema/OpenGraph price. */
+  fromPrice?: number | null;
 }
 
 type MoneyLike = string | number | null | undefined;
@@ -173,7 +210,8 @@ const parseMoneyEU = (val: MoneyLike): number => {
 
 const formatEUR = (n: number) => {
   if (!Number.isFinite(n)) return '';
-  return `€${n.toFixed(2).replace('.', ',')}`;
+  // German format: 52,43 €
+  return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
 };
 
 const buildProductFilterUrl = (filters: Record<string, string | undefined>) => {
@@ -289,6 +327,9 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   product,
   loading,
   indexVariants = [],
+  title,
+  summary,
+  fromPrice,
 }) => {
   const [sortBy, setSortBy] = useState<'price' | 'priceWithDelivery'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -461,6 +502,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     };
   })();
   const cheapPrice =
+    (fromPrice && fromPrice > 0 ? fromPrice : null) ??
     lowestPrice(
       cheapestOffer?.price,
       product.cheapest_offer,
@@ -498,6 +540,27 @@ const shareImage = !rawShareImage
   : /^https?:\/\//.test(rawShareImage)
     ? rawShareImage
     : `${SiteUrl}${rawShareImage.startsWith('/') ? '' : '/'}${rawShareImage}`;
+
+  const productName = [product.brand_name, product.product_name].filter(Boolean).join(' ');
+  const headingTitle = title || [productName, product.dimensions].filter(Boolean).join(' ');
+  const fromPriceLabel = cheapPrice > 0 ? formatEUR(cheapPrice) : '';
+  const currentIndexLabel = `${product.lastIndex || ''}${product.speedIndex || ''}`.trim();
+  const specRows: [string, string][] = [
+    ['Reifentyp', product.merchant_product_third_category || 'N/A'],
+    ['Marke', product.brand_name || 'N/A'],
+    ['Größe', product.dimensions || 'N/A'],
+    ['Lastindex', product.lastIndex || 'N/A'],
+    ['Geschwindigkeitsindex', product.speedIndex || 'N/A'],
+    ['Kraftstoff', euLabel.fuel || product.fuel_class || 'N/A'],
+    ['Nasshaftung', euLabel.wet || product.wet_grip || 'N/A'],
+    [
+      'Geräusch',
+      euLabel.noiseDb
+        ? `${euLabel.noiseDb} dB${euLabel.noiseClass ? ` · ${euLabel.noiseClass}` : ''}`
+        : euLabel.noiseClass || product.noise_class || 'N/A',
+    ],
+    ['EAN', product.ean || 'N/A'],
+  ];
 
   return (
     <>
@@ -851,301 +914,218 @@ const shareImage = !rawShareImage
         </section>
       ) : (
         <>
-          <section className="product-singlepage-section overflow-hidden">
+          <section className="product-singlepage-section pdp-v2 overflow-hidden bg-white">
             <div className="custom-container w-full">
-              <div className="product-breadcrumb-area pt-6 pb-8 max-sm:pb-4 flex items-center justify-start gap-3">
-                <Link href="/produkte" className="">
-                  <button
-                    type="button"
-                    className="flex text-[14px] lg:text-base items-center gap-2 cursor-pointer font-normal text-[#404042] font-primary"
-                  >
-                    <OptimizedImage
-                      src="/images/icons/arrow-left.svg"
-                      alt="Back"
-                      className="md:h-6 h-4"
-                      width={24}
-                      height={24}
-                      loading="lazy"
-                      fallback="/images/fallback-image.png"
-                    />
-                    Zurück zu den Suchergebnissen
-                  </button>
+              <div className="pt-2 pb-3 md:pt-3 md:pb-5">
+                <Link
+                  href="/produkte"
+                  className="inline-flex items-center gap-1.5 text-[13px] md:text-[14px] font-medium text-[#5B5D63] hover:text-primary-100"
+                >
+                  <ChevronLeft size={16} /> Zurück zu den Suchergebnissen
                 </Link>
-                <ul className="breadcrumb-area md:flex md:items-center md:justify-center hidden md:gap-2  lg:gap-[10px] mx-auto">
-                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
-                    <Link
-                      className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                      href="/"
-                    >
-                      Home
-                    </Link>
-                    <span className="angle">{'>'}</span>
-                  </li>
-                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base prev-pages flex items-center gap-[10px]">
-                    <Link
-                      className="body-caption text-[12px] lg:text-base capitalize text-mono-100"
-                      href={`/produkte?kategorie=${product.merchant_product_third_category}`}
-                    >
-                      {product.merchant_product_third_category || 'produkte'}
-                    </Link>
-                    <span className="angle">{'>'}</span>
-                  </li>
-                  <li className="breadcrumb-item body-caption text-[12px] lg:text-base current-page text-[#16171A] flex items-center gap-[10px]">
-                    <span className="body-caption text-[12px] lg:text-base text-[#16171A]">
-                      {[product.brand_name, product.product_name]
-                        .filter(Boolean)
-                        .join(' ')
-                        .toUpperCase()}
-                    </span>
-                  </li>
-                </ul>
               </div>
 
-              <div className="product-singlepage-cont-wrapper w-full flex items-start justify-between lg:gap-6 md:gap-5 gap-9 max-sm:flex-col">
-                <div className="product-singlepage-left-cont sticky  top-0 w-full">
-                  <div className="swiper-product-slider-area relative">
+              <div className="pdp-top grid grid-cols-1 gap-5 md:gap-6 lg:gap-x-10 xl:gap-x-14 items-start [grid-template-areas:'gallery'_'buy'_'specs'] lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:[grid-template-areas:'gallery_buy'_'specs_buy']">
+                {/* ---------------- Gallery ---------------- */}
+                <div className="product-singlepage-left-cont [grid-area:gallery] min-w-0">
+                  <div className="swiper-product-slider-area relative w-full">
                     <ProductImageGallery
                       images={product.product_image}
                       awinImageUrl={product.awin_image_url}
                       merchantThumbUrl={product.merchant_thumb_url}
                       merchantImageUrl={product.merchant_image_url}
-                      alt={[product.brand_name, product.product_name]
-                        .filter(Boolean)
-                        .join(' ')}
+                      alt={productName}
                       header={
                         <div className="product-slide-top-cont flex items-center justify-between">
-                          <div className="brand-logo flex items-start justify-start text-left">
+                          <div className="brand-logo flex items-center rounded-[10px] bg-white px-2.5 py-1.5 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
                             {product.brand_logo && product.brand_logo !== '0' ? (
                               <Image
                                 src={product.brand_logo}
                                 alt={product.brand_name || ''}
                                 width={110}
                                 height={45}
+                                className="h-[28px] w-auto object-contain"
                               />
                             ) : (
-                              <span className="font-bold text-primary-100 text-md">
+                              <span className="font-bold text-primary-100 text-[15px]">
                                 {product.brand_name}
                               </span>
                             )}
                           </div>
-                          <div className="product-favorite-icon">
-                            <button
-                              onClick={handleToggleWishlist}
-                              className="cursor-pointer"
-                            >
-                              <Image
-                                src={
-                                  isFavorited
-                                    ? '/images/icons/heart-filled.svg'
-                                    : '/images/icons/heart.svg'
-                                }
-                                alt="favorite"
-                                className="lg:w-6 h-auto w-5"
-                                width={32}
-                                height={32}
-                                loading="lazy"
-                              />
-                            </button>
-                          </div>
+                          <button
+                            onClick={handleToggleWishlist}
+                            aria-label={isFavorited ? 'Von der Wunschliste entfernen' : 'Zu den Favoriten hinzufügen'}
+                            className="product-favorite-icon cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_1px_3px_rgba(16,24,40,0.08)] transition-transform hover:scale-110"
+                          >
+                            <Image
+                              src={isFavorited ? '/images/icons/heart-filled.svg' : '/images/icons/heart.svg'}
+                              alt="favorite"
+                              className="w-5 h-auto"
+                              width={32}
+                              height={32}
+                              loading="lazy"
+                            />
+                          </button>
                         </div>
                       }
                     />
                   </div>
                 </div>
 
-                <div className="product-singlepage-right-cont  w-full">
-                  <div className="product-details-top">
-                    <ul className="flex flex-wrap items-center justify-start gap-3 mb-4">
-                      <li className="in-stock-info flex items-center gap-1">
-                        <Image
-                          src="/images/icons/tick-square.svg"
-                          alt="Auf Lager"
-                          width={16}
-                          height={16}
-                          loading="lazy"
-                        />{' '}
-                        <p className="md:text-[16px] text-[14px] font-normal font-secondary leading-[140%] text-[#16171A]">
-                          {product.in_stock === 'true'
-                            ? 'Auf Lager'
-                            : 'Nicht Verfügbar'}
-                        </p>
-                      </li>
-                      <li className="product-category">
-                        <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
-                          {product.merchant_product_third_category || 'N/A'}
-                        </p>
-                      </li>
-                      <li className="socials-sheare-button ml-auto flex items-center gap-2">
-                        <p className="md:text-[16px] text-[14px] font-normal font-secondary text-[#404042] leading-[140%]">
-                          Teilen:
-                        </p>{' '}
-                        <SocialShareButtons
-                          url={productUrl}
-                          title={productTitle}
-                          image={shareImage}
-                        />
-                      </li>
-                    </ul>
-                    <div className="product-details-title-box mb-4">
-                      <h2 className="text-[20px] md:text-[22px] lg:text-[24px] font-medium font-primary text-[#404042] leading-[120%]">
-                        {[product.brand_name, product.product_name]
-                          .filter(Boolean)
-                          .join(' ')
-                          .toUpperCase()}
-                      </h2>
-
-                      <p className="review-stars md:text-[16px] text-[14px] mt-[10px] font-normal font-secondary text-[#404042] leading-[140%] flex items-center gap-1">
-                        <span className="flex items-center gap-2">
-                          <Image
-                            src={'/images/icons/Vector.svg'}
-                            alt="Star"
-                            width={16}
-                            height={16}
-                            loading="lazy"
-                          />
-                          {product.average_rating ? (
-                            <span className="pr-3 text-[#404042]">
-                              {product.average_rating
-                                .toFixed(1)
-                                .replace('.', ',')}
-                            </span>
-                          ) : null}
-                        </span>{' '}
-                        <span className="text-[#404042]">
-                          {product.review_count || 0} Bewertungen
-                        </span>
-                      </p>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] md:text-[13px] font-medium text-[#404042]">
-                      <span className="rounded-full border border-[#D9DDE5] bg-[#F5F7FF] px-2.5 py-1 text-[#1F2937]">
-                        {cheapestOffer?.delivery_cost === '0' ||
-                        cheapestOffer?.delivery_cost === '0.00'
-                          ? 'Versandkostenfrei'
-                          : cheapestOffer?.delivery_cost
-                            ? `Versand: ${parseFloat(
-                                cheapestOffer.delivery_cost
-                                  .toString()
-                                  .replace(/[^\d.]/g, ''),
-                              )
-                                .toFixed(2)
-                                .replace('.', ',')} €`
-                            : 'Versandkostenfrei'}
-                      </span>
-                      <span className="rounded-full border border-[#D9DDE5] bg-[#F5F7FF] px-2.5 py-1 text-[#1F2937]">
-                        Verfügbarkeit: {product.delivery_time || '2–5 Werktage'}
-                      </span>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] md:text-[13px] font-medium text-[#404042]">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9AA0A8]">
-                        Mehr
-                      </span>
-                      {(product.width || product.dimensions) && (
-                        <Link
-                          href={buildProductFilterUrl({
-                            kategorie: product.merchant_product_third_category,
-                            width: product.width,
-                            height: product.height,
-                            diameter: product.diameter,
-                          })}
-                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
-                        >
-                          Größe {product.dimensions || `${product.width}/${product.height} R${product.diameter}`}
-                        </Link>
-                      )}
-                      {product.brand_name && (
-                        <Link
-                          href={buildProductFilterUrl({
-                            brand: product.brand_name,
-                          })}
-                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
-                        >
-                          Marke {product.brand_name}
-                        </Link>
-                      )}
-                    </div>
-
-                    {indexVariants.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-[12px] md:text-[13px] font-medium text-[#5A5B61]">
-                          Andere Last-/Geschwindigkeitsindex
-                        </p>
-                        <div className="mt-1.5 flex flex-wrap gap-1.5">
-                          {indexVariants.map(v => {
-                            const label =
-                              v.label ||
-                              `${v.lastIndex || ''}${v.speedIndex || ''}`.trim();
-                            const price = formatIndexPrice(v.cheapest_offer);
-                            return (
-                              <Link
-                                key={v.slug}
-                                href={`/produkte/${v.slug}`}
-                                title={v.product_name}
-                                className="inline-flex items-center gap-1.5 rounded-full border border-[#E4E5EA] bg-white px-2.5 py-1 text-[12px] md:text-[13px] underline underline-offset-2 decoration-primary-100 hover:border-primary-100"
-                              >
-                                <span className="font-semibold text-[#16171A]">
-                                  {label || '—'}
-                                </span>
-                                {price ? (
-                                  <span className="font-medium text-primary-100">
-                                    {price}
-                                  </span>
-                                ) : null}
-                              </Link>
-                            );
-                          })}
+                {/* ---------------- Specs ---------------- */}
+                <div id="produktinformation" className="pdp-specs [grid-area:specs] min-w-0 rounded-[18px] border border-[#E9ECF3] overflow-hidden">
+                    <h2 className="px-5 md:px-6 pt-5 md:pt-6 pb-3 text-[18px] md:text-[20px] font-semibold text-[#16171A]">Produktinformation</h2>
+                    <dl className="divide-y divide-[#EEF0F4] text-[14px] md:text-[15px]">
+                      {specRows.map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between gap-4 px-5 md:px-6 py-2.5 odd:bg-[#F9FAFC]">
+                          <dt className="text-[#6B6E76]">{label}</dt>
+                          <dd className="text-right font-semibold text-[#16171A]">{value}</dd>
                         </div>
+                      ))}
+                    </dl>
+                </div>
+
+                {/* ---------------- Buy box ---------------- */}
+                <div className="product-singlepage-right-cont [grid-area:buy] min-w-0 lg:sticky lg:top-24 lg:self-start">
+                  <div className="product-details-top">
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span
+                        className={`in-stock-info inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] md:text-[13px] font-semibold ${
+                          product.in_stock === 'true' ? 'bg-[#E9F8EF] text-[#1F7A3A]' : 'bg-[#FDECEC] text-[#B42318]'
+                        }`}
+                      >
+                        <span className={`h-2 w-2 rounded-full ${product.in_stock === 'true' ? 'bg-[#22C55E]' : 'bg-[#EF4444]'}`} />
+                        {product.in_stock === 'true' ? 'Auf Lager' : 'Nicht Verfügbar'}
+                      </span>
+                      <span className="product-category rounded-full bg-[#F2F4F8] px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-[#404042]">
+                        {product.merchant_product_third_category || 'N/A'}
+                      </span>
+                      <div className="socials-sheare-button ml-auto flex items-center gap-2">
+                        <span className="text-[13px] text-[#6B6E76]">Teilen:</span>
+                        <SocialShareButtons url={productUrl} title={productTitle} image={shareImage} />
                       </div>
-                    )}
+                    </div>
+
+                    <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em] text-[#16171A]">
+                      {headingTitle}
+                    </h1>
+
+                    <p className="review-stars mt-2 flex items-center gap-2 text-[13px] md:text-[14px] text-[#5B5D63]">
+                      <span className="inline-flex items-center gap-1 font-semibold text-[#16171A]">
+                        <Image src={'/images/icons/Vector.svg'} alt="Star" width={15} height={15} loading="lazy" />
+                        {product.average_rating ? product.average_rating.toFixed(1).replace('.', ',') : null}
+                      </span>
+                      <span className="text-[#C0C4CC]">·</span>
+                      <span>{product.review_count || 0} Bewertungen</span>
+                    </p>
                   </div>
 
-                  <div className="product-price-group mt-4 w-full">
-                    <div className="input-type-text flex w-full flex-wrap items-center gap-2 text-left font-medium text-primary-70">
-                      {showStrikePrice ? (
-                        <div className="price-box flex items-center gap-2 whitespace-nowrap">
-                          <span className="text-[20px] leading-none font-semibold font-secondary text-[#404042] md:text-[24px]">
+                  {/* Same tyre, other load/speed index — and size/brand links (compact) */}
+                  {(indexVariants.length > 0 || product.width || product.dimensions || product.brand_name) && (
+                    <div className="pdp-variants mt-3">
+                      {indexVariants.length > 0 && (
+                        <>
+                          <p className="mb-1.5 !text-[12px] md:!text-[13px] font-semibold text-[#5B5D63]">
+                            Andere Last-/Geschwindigkeitsindex
+                          </p>
+                          <ul className="flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-wrap lg:overflow-visible">
+                            {currentIndexLabel && (
+                              <li className="shrink-0">
+                                <span
+                                  aria-current="true"
+                                  className="inline-flex h-8 items-center gap-1 rounded-full border-2 border-primary-100 bg-[#F5F8FF] px-2.5 text-[12px] md:text-[13px] whitespace-nowrap"
+                                >
+                                  <span className="font-bold text-primary-100">{currentIndexLabel}</span>
+                                  {fromPriceLabel ? <span className="font-semibold text-[#16171A] tabular-nums">{fromPriceLabel}</span> : null}
+                                </span>
+                              </li>
+                            )}
+                            {indexVariants.map(v => {
+                              const label = v.label || `${v.lastIndex || ''}${v.speedIndex || ''}`.trim();
+                              const price = formatIndexPrice(v.cheapest_offer);
+                              return (
+                                <li key={v.slug} className="shrink-0">
+                                  <Link
+                                    href={`/produkte/${v.slug}`}
+                                    title={v.product_name}
+                                    className="inline-flex h-8 items-center gap-1 rounded-full border border-[#E4E7EE] bg-white px-2.5 text-[12px] md:text-[13px] whitespace-nowrap transition hover:border-primary-100 hover:bg-[#F5F8FF]"
+                                  >
+                                    <span className="font-bold text-[#16171A]">{label || '—'}</span>
+                                    {price ? <span className="font-semibold text-primary-100 tabular-nums">{price}</span> : null}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </>
+                      )}
+                      <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 !text-[13px]">
+                        <span className="font-semibold text-[#9AA0A8]">Mehr:</span>
+                        {(product.width || product.dimensions) && (
+                          <Link
+                            href={buildProductFilterUrl({
+                              kategorie: product.merchant_product_third_category,
+                              width: product.width,
+                              height: product.height,
+                              diameter: product.diameter,
+                            })}
+                            className="font-semibold text-primary-100 underline-offset-2 hover:underline"
+                          >
+                            Größe {product.dimensions || `${product.width}/${product.height} R${product.diameter}`}
+                          </Link>
+                        )}
+                        {product.brand_name && (
+                          <Link
+                            href={buildProductFilterUrl({ brand: product.brand_name })}
+                            className="font-semibold text-primary-100 underline-offset-2 hover:underline"
+                          >
+                            Marke {product.brand_name}
+                          </Link>
+                        )}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Price card */}
+                  <div className="product-price-group mt-4 rounded-[18px] border border-[#E9ECF3] bg-[#F7F8FB] p-4 md:p-5">
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6B6E76]">Bester Preis</span>
+                        <div className="mt-1 flex flex-wrap items-baseline gap-2">
+                          <span className="text-[30px] md:text-[34px] leading-none font-semibold font-primary text-[#16171A] tabular-nums">
                             {formatEUR(cheapPrice)}
                           </span>
-                          <span className="text-[16px] leading-none font-medium font-secondary text-[#9AA0A8] line-through md:text-[20px]">
-                            {formatEUR(expensivePrice)}
-                          </span>
+                          {showStrikePrice ? (
+                            <span className="text-[16px] md:text-[18px] leading-none text-[#9AA0A8] line-through tabular-nums">
+                              {formatEUR(expensivePrice)}
+                            </span>
+                          ) : null}
+                          {productSavings ? (
+                            <span title={SAVINGS_TOOLTIP} className="inline-flex h-[26px] items-center rounded-[6px] bg-[#E9F8EF] px-2 text-[13px] font-semibold leading-none text-[#1F7A3A]">
+                              {productSavings}
+                            </span>
+                          ) : null}
                         </div>
-                      ) : (
-                        <span className="whitespace-nowrap text-[20px] leading-none font-semibold font-secondary text-[#404042] md:text-[24px]">
-                          {formatEUR(cheapPrice)}
-                        </span>
-                      )}
-                      {productSavings ? (
-                          <span
-                            title={SAVINGS_TOOLTIP}
-                            className="inline-flex h-[28px] items-center rounded-[6px] border border-[#00BE00] px-2 text-[13px] font-medium leading-none text-[#E66605]"
-                          >
-                            {productSavings}
-                          </span>
-                        ) : null}
-                      {offerCount > 1 && (
-                        <a
-                          href="#angebote"
-                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
-                        >
-                          Weitere Angebote anzeigen
-                        </a>
-                      )}
-                      <PriceAlertToggle productId={product._id} />
+                        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
+                        {fromPriceLabel && (
+                          <p className="!text-[13px] text-[#6B6E76]">
+                            Angebote ab {fromPriceLabel}
+                            {offerCount > 1 ? ` bei ${offerCount} Händlern` : ''}
+                          </p>
+                        )}
+                          <a href="#preisverlauf-title" className="inline-flex shrink-0 rounded-[10px] bg-white px-2 py-1 border border-[#E9ECF3] hover:border-[#C9D6FC]" aria-label="Zur Preisentwicklung">
+                        <PriceSparkline points={product.price_trend?.points} current={cheapPrice || undefined} width={88} height={24} />
+                      </a>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Best Price Vendor */}
-                    <div className="best-price-vendor mt-3 flex w-full flex-wrap items-center gap-2">
-                      <span className="text-[12px] md:text-[13px] font-medium text-[#5A5B61]">
-                        Bester Preis:
-                      </span>
+                    <div className="best-price-vendor mt-4 flex flex-wrap items-center gap-2 border-t border-[#E9ECF3] pt-4">
+                      <span className="text-[13px] font-medium text-[#5A5B61]">bei</span>
                       {cheapestOffer?.affiliate_product_cloak_url ? (
                         <a
                           href={buildVendorExitUrl({
-                            token:
-                              cheapestOffer
-                                ?.affiliate_product_cloak_url || '',
+                            token: cheapestOffer?.affiliate_product_cloak_url || '',
                             productId: product._id,
                             uuid: uuidCookie || 'guest',
                             from: 'product-details-vendor-logo',
@@ -1168,198 +1148,32 @@ const shareImage = !rawShareImage
                               vendorPrice: cheapestOffer?.price,
                             });
                           }}
-                          className="inline-flex max-w-[160px] items-center rounded-md border border-[#E4E5EA] bg-white px-2 py-1 underline underline-offset-2 decoration-primary-100 hover:border-primary-100"
+                          className="inline-flex max-w-[160px] items-center rounded-[10px] border border-[#E4E5EA] bg-white px-2.5 py-1.5 hover:border-primary-100"
                           title={`Zum Angebot bei ${cheapestOffer?.vendor || 'Anbieter'}`}
                         >
-                          <OfferVendorLogo
-                            vendor={cheapestOffer?.vendor}
-                            vendorLogo={cheapestOffer?.vendor_logo}
-                            className="h-[28px] w-auto max-w-[120px] object-contain"
-                          />
+                          <OfferVendorLogo vendor={cheapestOffer?.vendor} vendorLogo={cheapestOffer?.vendor_logo} className="h-[26px] w-auto max-w-[120px] object-contain" />
                         </a>
                       ) : (
-                        <OfferVendorLogo
-                          vendor={cheapestOffer?.vendor}
-                          vendorLogo={cheapestOffer?.vendor_logo}
-                          className="h-[28px] w-auto max-w-[120px] object-contain"
-                        />
+                        <OfferVendorLogo vendor={cheapestOffer?.vendor} vendorLogo={cheapestOffer?.vendor_logo} className="h-[26px] w-auto max-w-[120px] object-contain" />
                       )}
-                      {offerCount > 1 && (
-                        <a
-                          href="#angebote"
-                          className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
-                        >
-                          Weitere Angebote ({offerCount})
-                        </a>
-                      )}
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E9ECF3] px-2.5 py-1 text-[12px] font-medium text-[#404042]">
+                        <Truck size={13} />
+                        {cheapestOffer?.delivery_cost === '0' || cheapestOffer?.delivery_cost === '0.00'
+                          ? 'Versandkostenfrei'
+                          : cheapestOffer?.delivery_cost
+                            ? `Versand: ${parseFloat(cheapestOffer.delivery_cost.toString().replace(/[^\d.]/g, '')).toFixed(2).replace('.', ',')} €`
+                            : 'Versandkostenfrei'}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E9ECF3] px-2.5 py-1 text-[12px] font-medium text-[#404042]">
+                        <Clock size={13} /> Verfügbarkeit: {product.delivery_time || '2–5 Werktage'}
+                      </span>
                     </div>
-                    <a href="#preisverlauf-title" className="mt-2 inline-flex" aria-label="Zur Preisentwicklung">
-                      <PriceSparkline
-                        points={product.price_trend?.points}
-                        current={cheapPrice || undefined}
-                        width={88}
-                        height={24}
-                      />
-                    </a>
 
-                    <ul className="attributes flex items-center w-full justify-start mt-2 md:mt-3">
-                      {euLabel.fuel && (
-                        <>
-                          <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
-                            <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
-                            <span
-                              className="tooltip tooltip-top"
-                              data-tip={EU_LABEL_TIPS.fuel}
-                            >
-                              <Image
-                                src="/images/icons/fuel.svg"
-                                alt="Fuel Class"
-                                width={16}
-                                height={16}
-                                loading="lazy"
-                              />
-                            </span>{' '}
-                            <span
-                              style={{
-                                color: gradeFuelColor(euLabel.fuel),
-                                fontWeight: 500,
-                                background: gradeFuelBgColor(euLabel.fuel),
-                                padding: '2px 6px',
-                                borderRadius: '4px',
-                              }}
-                            >
-                              {euLabel.fuel}
-                            </span>
-                            </a>
-                          </li>
-                          <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
-                        </>
-                      )}
-                      {euLabel.wet && (
-                        <>
-                          <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
-                            <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
-                            <span
-                              className="tooltip tooltip-top"
-                              data-tip={EU_LABEL_TIPS.wet}
-                            >
-                              <Image
-                                src="/images/icons/heavy-rain.png"
-                                alt="Weight"
-                                width={16}
-                                height={16}
-                                loading="lazy"
-                              />
-                            </span>{' '}
-                            <span
-                              style={{
-                                color: gradeGripColor(euLabel.wet),
-                                fontWeight: 500,
-                                background: gradeGripBgColor(euLabel.wet),
-                                padding: '2px 6px',
-                                borderRadius: '4px',
-                              }}
-                            >
-                              {euLabel.wet}
-                            </span>
-                            </a>
-                          </li>
-                          <li className="divider mx-3 w-[2px] h-2 bg-[#F0F0F2]"></li>
-                        </>
-                      )}
-                      {(euLabel.noiseClass || euLabel.noiseDb) && (
-                        <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px] md:text-[16px] text-[#404042]">
-                          <a href="#eu-reifenlabel" className="flex items-center gap-2 hover:opacity-80">
-                          <span
-                            className="tooltip tooltip-top"
-                            data-tip={EU_LABEL_TIPS.noise}
-                          >
-                            <Image
-                              src="/images/icons/noise.svg"
-                              alt="External Rolling Noise"
-                              width={16}
-                              height={16}
-                              loading="lazy"
-                            />
-                          </span>{' '}
-                          {euLabel.noiseClass ? (
-                            <span
-                              style={{
-                                color: '#16171A',
-                                fontWeight: 500,
-                                background: '#F0F0F2',
-                                padding: '2px 6px',
-                                borderRadius: '4px',
-                              }}
-                            >
-                              {euLabel.noiseClass}
-                            </span>
-                          ) : null}
-                          {euLabel.noiseDb ? (
-                            <span>{euLabel.noiseDb} dB</span>
-                          ) : null}
-                          </a>
-                        </li>
-                      )}
-                    </ul>
-                    {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
-                    <div className="flex gap-2 w-full mt-2 flex-wrap">
-                      {/* Feature Badges - DYNAMICALLY STYLED */}
-                      <a
-                        href="#eu-reifenlabel"
-                        className="flex w-full gap-2 hover:opacity-90"
-                      >
-                        <div
-                          style={{ backgroundColor: fuelMeta.bg }}
-                          className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
-                        >
-                          <div className="flex items-center gap-1">
-                            <Leaf size={14} />
-                            <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                              Kraftstoffeffizienz
-                            </span>
-                          </div>
-                          <span
-                            className="text-[12px] font-black whitespace-nowrap"
-                            style={{ color: fuelMeta.color }}
-                          >
-                            {fuelMeta.textDE}
-                          </span>
-                        </div>
-                        <div
-                          style={{ backgroundColor: wetMeta.bg }}
-                          className="flex-1 rounded-lg px-3 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
-                        >
-                          <div className="flex gap-1 items-center">
-                            <CloudRain size={14} />
-                            <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                              Nasshaftung
-                            </span>
-                          </div>
-                          <span
-                            className="text-[12px] font-black whitespace-nowrap"
-                            style={{ color: wetMeta.color }}
-                          >
-                            {wetMeta.textDE}
-                          </span>
-                        </div>
-                      </a>
-                    </div>
-                    <a
-                      href="#eu-reifenlabel"
-                      className="mt-3 inline-flex items-center rounded-full border border-primary-100 px-3 py-1.5 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
-                    >
-                      EU-Reifenlabel ansehen
-                    </a>
-                  </div>
-
-                  <div className="product-cta-box flex flex-col lg:flex-row gap-4 mt-4 w-full">
-                    <div className="product-card-btn-states lg:min-w-[173px] w-full">
+                    {/* CTAs */}
+                    <div className="product-cta-box mt-4 flex flex-wrap sm:flex-nowrap items-stretch gap-2">
                       <a
                         href={buildVendorExitUrl({
-                          token:
-                            cheapestOffer
-                              ?.affiliate_product_cloak_url || '',
+                          token: cheapestOffer?.affiliate_product_cloak_url || '',
                           productId: product._id,
                           uuid: uuidCookie || 'guest',
                           from: 'product-details-page',
@@ -1382,248 +1196,188 @@ const shareImage = !rawShareImage
                             vendorPrice: cheapestOffer?.price,
                           });
                         }}
-                        className="block w-full"
+                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
                       >
-                        <button
-                          type="button"
-                          className="primary-button-state w-full h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center justify-center gap-3 !border-primary-100 bg-primary-100 text-mono-0 border py-2 px-6 rounded-full cursor-pointer  transition ease-in hover:!border-primary-100"
-                        >
-                          <MdAddShoppingCart className="text-[22px]" /> Zum
-                          Angebot
-                        </button>
+                        <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
+                      </a>
+                      <button
+                        type="button"
+                        onClick={handleCompareClick}
+                        className={`max-sm:flex-1 shrink-0 inline-flex h-14 sm:h-12 items-center justify-center gap-1.5 rounded-[12px] border px-4 text-[14px] font-semibold cursor-pointer transition ${
+                          isCompared ? 'border-[#2d8934] bg-[#E9F8EF] text-[#1F7A3A]' : 'border-[#DCE3FB] bg-white text-primary-100 hover:border-primary-100'
+                        }`}
+                      >
+                        {isCompared ? <Check size={16} /> : <GitCompare size={16} />}
+                        <span className="max-sm:hidden">{isCompared ? 'Im Vergleich' : 'Reifen vergleichen'}</span>
+                        <span className="sm:hidden">{isCompared ? 'Im Vergleich' : 'Vergleichen'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleToggleWishlist}
+                        aria-label={isFavorited ? 'Von der Wunschliste entfernen' : 'Zu den Favoriten hinzufügen'}
+                        className="inline-flex h-14 w-14 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-[12px] border border-[#E4E7EE] bg-white cursor-pointer hover:border-[#C9D6FC]"
+                      >
+                        <Image
+                          src={isFavorited ? '/images/icons/heart-filled.svg' : '/images/icons/heart.svg'}
+                          alt="favorite"
+                          className="w-5 h-auto"
+                          width={32}
+                          height={32}
+                          loading="lazy"
+                        />
+                      </button>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                      <PriceAlertToggle productId={product._id} />
+                      {offerCount > 1 && (
+                        <a href="#angebote" className="inline-flex min-h-11 items-center gap-1 text-[14px] md:text-[13px] font-semibold text-primary-100 hover:underline">
+                          Weitere Angebote anzeigen ({offerCount}) <ChevronDown size={15} />
+                        </a>
+                      )}
+                    </div>
+
+                    {cheapestOffer?.payment_icons?.length ? (
+                      <div className="mt-4 border-t border-[#E9ECF3] pt-3">
+                        <span className="text-[12px] font-medium text-[#6B6E76]">Zahlungsmethoden</span>
+                        <ul className="payment-method-list mt-2 flex flex-wrap items-center gap-1.5">
+                          {cheapestOffer.payment_icons.map((icon: string, idx: number) => {
+                            const paymentName = paymentDisplayName(icon, idx);
+                            return (
+                              <li className="payment-item h-8" key={idx}>
+                                <span className="tooltip tooltip-top" data-tip={paymentName}>
+                                  <Image src={icon} width={70} height={36} loading="lazy" alt={paymentName} className="h-8 w-auto rounded-[6px] border border-[#E9ECF3] bg-white" />
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {/* EU label summary */}
+                  <div className="mt-4 rounded-[18px] border border-[#E9ECF3] p-4">
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <span className="text-[14px] font-semibold text-[#16171A]">EU-Reifenlabel</span>
+                      <a href="#eu-reifenlabel" className="text-[13px] font-semibold text-primary-100 hover:underline">
+                        EU-Reifenlabel ansehen
                       </a>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={handleCompareClick}
-                      className="w-full  h-[42px] lg:h-[47px] font-secondary whitespace-nowrap flex items-center leading-tight justify-center gap-2 !border-primary-100 bg-transparent hover:bg-primary-100 text-primary-100 border py-2 px-6 rounded-full cursor-pointer hover:text-mono-0  transition ease-in hover:!border-primary-100"
-                    >
-                      {isCompared ? 'Im Vergleich' : 'Reifen vergleichen'}
-                    </button>
-                    <button
-                      onClick={handleToggleWishlist}
-                      className="cursor-pointer w-full hidden xl:flex items-center justify-center max-w-12 h-12 !border !border-[#89898b60] rounded-full"
-                    >
-                      <Image
-                        src={
-                          isFavorited
-                            ? '/images/icons/heart-filled.svg'
-                            : '/images/icons/heart.svg'
-                        }
-                        alt="favorite"
-                        className="lg:w-6 h-auto w-5"
-                        width={32}
-                        height={32}
-                        loading="lazy"
-                      />
-                    </button>
-                  </div>
-                  <ul className="payment-method-list flex flex-wrap items-center gap-2 mt-6">
-                    {cheapestOffer?.payment_icons?.map(
-                      (icon: string, idx: number) => {
-                        // Map known payment icon names to display names
-                        const paymentNameMap: Record<string, string> = {
-                          sofort: 'Sofortüberweisung',
-                          amazonpay: 'Amazon Pay',
-                          paypal: 'PayPal',
-                          banktransfer: 'Banküberweisung',
-                          american_express: 'American Express (AMEX)',
-                          amex: 'American Express (AMEX)',
-                          sepa: 'SEPA',
-                          applepay: 'Apple Pay',
-                          'apple-pay': 'Apple Pay',
-                          payu: 'PayU',
-                        };
-
-                        const match = icon.match(
-                          /\/([^\/]+)\.(png|svg|jpg|jpeg)$/i,
-                        );
-                        let paymentName = match
-                          ? match[1]
-                              .replace(/-/g, '')
-                              .replace(/_/g, '')
-                              .toLowerCase()
-                          : '';
-                        paymentName =
-                          paymentNameMap[paymentName] ||
-                          (match
-                            ? match[1].replace(/-/g, ' ').replace(/_/g, ' ')
-                            : `Zahlungsmethode ${idx + 1}`);
-                        return (
-                          <li
-                            className="payment-item cursor-pointer lg:h-9 h-7 lg:w-[56px] w-auto"
-                            key={idx}
-                          >
-                            <span
-                              className="tooltip tooltip-top"
-                              data-tip={paymentName}
-                            >
-                              <Image
-                                src={icon}
-                                width={70}
-                                height={36}
-                                loading="lazy"
-                                alt={paymentName}
-                                className="lg:h-9  h-7 lg:w-[56px] w-auto rounded-[6px]"
-                              />
+                    <ul className="attributes flex flex-wrap items-center gap-2 mb-3">
+                      {euLabel.fuel && (
+                        <li className="fuelclass">
+                          <a href="#eu-reifenlabel" className="inline-flex items-center gap-1.5 rounded-[10px] border border-[#EEF0F4] pl-2 pr-1.5 py-1 hover:border-[#C9D6FC]">
+                            <span className="tooltip tooltip-top" data-tip={EU_LABEL_TIPS.fuel}>
+                              <Image src="/images/icons/fuel.svg" alt="Fuel Class" width={16} height={16} loading="lazy" />
                             </span>
-                          </li>
-                        );
-                      },
+                            <span className="rounded-[6px] px-2 text-[15px] font-bold leading-[24px]" style={{ color: gradeFuelColor(euLabel.fuel), background: gradeFuelBgColor(euLabel.fuel) }}>
+                              {euLabel.fuel}
+                            </span>
+                          </a>
+                        </li>
+                      )}
+                      {euLabel.wet && (
+                        <li className="fuelconsumption">
+                          <a href="#eu-reifenlabel" className="inline-flex items-center gap-1.5 rounded-[10px] border border-[#EEF0F4] pl-2 pr-1.5 py-1 hover:border-[#C9D6FC]">
+                            <span className="tooltip tooltip-top" data-tip={EU_LABEL_TIPS.wet}>
+                              <Image src="/images/icons/heavy-rain.png" alt="Weight" width={16} height={16} loading="lazy" />
+                            </span>
+                            <span className="rounded-[6px] px-2 text-[15px] font-bold leading-[24px]" style={{ color: gradeGripColor(euLabel.wet), background: gradeGripBgColor(euLabel.wet) }}>
+                              {euLabel.wet}
+                            </span>
+                          </a>
+                        </li>
+                      )}
+                      {(euLabel.noiseClass || euLabel.noiseDb) && (
+                        <li className="externalrollingnoiseindbt">
+                          <a href="#eu-reifenlabel" className="inline-flex items-center gap-1.5 rounded-[10px] border border-[#EEF0F4] px-2 py-1 text-[14px] font-semibold text-[#404042] hover:border-[#C9D6FC]">
+                            <span className="tooltip tooltip-top" data-tip={EU_LABEL_TIPS.noise}>
+                              <Image src="/images/icons/noise.svg" alt="External Rolling Noise" width={16} height={16} loading="lazy" />
+                            </span>
+                            {euLabel.noiseClass ? (
+                              <span className="rounded-[6px] bg-[#F0F0F2] px-2 leading-[24px] text-[#16171A]">{euLabel.noiseClass}</span>
+                            ) : null}
+                            {euLabel.noiseDb ? <span>{euLabel.noiseDb} dB</span> : null}
+                          </a>
+                        </li>
+                      )}
+                    </ul>
+                    <a href="#eu-reifenlabel" className="grid grid-cols-2 gap-2 hover:opacity-90">
+                      <div style={{ backgroundColor: fuelMeta.bg }} className="rounded-[10px] px-3 py-2 flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1 text-[#6B6E76]">
+                          <Leaf size={13} />
+                          <span className="text-[11px] font-semibold leading-none">Kraftstoffeffizienz</span>
+                        </div>
+                        <span className="text-[13px] font-bold" style={{ color: fuelMeta.color }}>{fuelMeta.textDE}</span>
+                      </div>
+                      <div style={{ backgroundColor: wetMeta.bg }} className="rounded-[10px] px-3 py-2 flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1 text-[#6B6E76]">
+                          <CloudRain size={13} />
+                          <span className="text-[11px] font-semibold leading-none">Nasshaftung</span>
+                        </div>
+                        <span className="text-[13px] font-bold" style={{ color: wetMeta.color }}>{wetMeta.textDE}</span>
+                      </div>
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* ---------------- Overview + specs ---------------- */}
+              <div className="product-specification-box mt-8 md:mt-12 grid grid-cols-12 items-start gap-y-5">
+                <div id="beschreibung" className="col-span-12 rounded-[18px] border border-[#E9ECF3] p-5 md:p-7">
+                  <h2 className="mb-3 text-[18px] md:text-[20px] font-semibold text-[#16171A]">Beschreibung</h2>
+                  {summary ? <p className="!text-[15px] !leading-[170%] text-[#404042] mb-3">{summary}</p> : null}
+                  <div className="text-[14px] md:text-[15px] leading-[170%] font-secondary text-[#404042]">
+                    {product.description ? (
+                      <div
+                        className="whitespace-pre-line"
+                        dangerouslySetInnerHTML={{
+                          __html: cleanDescription(product.description || 'Keine Beschreibung verfügbar'),
+                        }}
+                      />
+                    ) : summary ? null : (
+                      'Keine Beschreibung verfügbar'
                     )}
-                  </ul>
-                  <div className="product-specification-box mt-6">
-                    <div className="FAQ-list">
-                      <div className="collapse collapse-plus bg-mono-0 border border-border-100 mb-3">
-                        <input
-                          className="!min-h-[46px] flex items-center !h-[46px]"
-                          type="radio"
-                          name="my-accordion-3"
-                        />
-                        <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                          Beschreibung
-                        </div>
-                        <div className="collapse-content text-[14px] md:text-[16px] font-normal font-secondary text-[#404042] leading-[140%]">
-                          {product.description ? (
-                            <div
-                              className="whitespace-pre-line"
-                              dangerouslySetInnerHTML={{
-                                __html: cleanDescription(
-                                  product.description ||
-                                    'Keine Beschreibung verfügbar',
-                                ),
-                              }}
-                            />
-                          ) : (
-                            'Keine Beschreibung verfügbar'
-                          )}
-                        </div>
-                      </div>
-                      <div className="collapse collapse-plus bg-mono-0 border border-[#E9EAEE] rounded-[12px] overflow-hidden mb-3">
-                        <input
-                          type="radio"
-                          name="my-accordion-3"
-                          className="!min-h-[46px] flex items-center !h-[46px]"
-                          defaultChecked
-                        />
-                        <div className="collapse-title !min-h-[46px] flex items-center !h-[46px] !px-5 !py-3 font-semibold text-primary-70 text-[14px] md:text-[16px] bg-[#F5F5F7]">
-                          Produktinformation
-                        </div>
-                        <div className="collapse-content !px-0 !pb-0 !pt-0">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-[#E9EAEE] bg-[#F5F5F7]">
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Reifentyp
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.merchant_product_third_category || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Marke
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.brand_name || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Größe
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.dimensions || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Lastindex
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.lastIndex || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Geschwindigkeitsindex
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.speedIndex || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Kraftstoff
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {euLabel.fuel || product.fuel_class || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Nasshaftung
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {euLabel.wet || product.wet_grip || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                Geräusch
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {euLabel.noiseDb
-                                  ? `${euLabel.noiseDb} dB${euLabel.noiseClass ? ` · ${euLabel.noiseClass}` : ''}`
-                                  : euLabel.noiseClass || product.noise_class || 'N/A'}
-                              </div>
-                            </div>
-                            <div className="border border-[#E9EAEE] bg-[#F5F5F7] px-4 py-4">
-                              <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5D6168]">
-                                EAN
-                              </div>
-                              <div className="text-[16px] font-medium text-[#1B1D22]">
-                                {product.ean || 'N/A'}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-[12px] bg-[#F7F8FB] px-4 py-3">
+                    <Info size={16} className="shrink-0 text-[#6B6E76]" />
+                    <p className="!text-[13px] text-[#6B6E76] flex-1">
+                      Preise und Verfügbarkeit können beim Händler abweichen. Bitte vor dem Kauf prüfen.
+                    </p>
+                    <Link className="shrink-0 text-[13px] font-semibold text-primary-100 hover:underline" href="/reifenpreisvergleich">
+                      Reifenpreise richtig vergleichen
+                    </Link>
                   </div>
                 </div>
+
               </div>
             </div>
 
-            <div id="angebote" className="custom-container-full lg:pt-[55px] pt-9 scroll-mt-24">
-              {/* name of each tab group should be unique */}
-              <div className="custom-container relative flex md:flex-row gap-6 md:gap-2 flex-col items-start md:items-center md:justify-between max-sm:mb-6">
-                <div className="best-offer-vendor-sec-title">
-                  <h2 className="md:text-[28px] text-[26px] font-medium font-primary text-[#16171A] leading-[120%] mb-1 md:mb-3">
-                    Bestes Angebot
-                  </h2>
-                  <p className="lg:text-[18px] text-[14px] text-left font-secondary font-normal leading-[140%] text-[#404042]">
-                    Vertrauenswürdige Marken und täglich die niedrigsten Preise!
-                  </p>
-                </div>
-                <div className="offer-vendor-navigator  items-baseline-last gap-5">
-                  <div className="flex flex-wrap items-center justify-end gap-3">
-                    <a
-                      href="#eu-reifenlabel"
-                      className="inline-flex items-center rounded-full border border-primary-100 px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-primary-100 underline underline-offset-2 decoration-primary-100 hover:bg-[#F5F7FF]"
-                    >
+            {/* ---------------- Offers ---------------- */}
+            <div id="angebote" className="mt-12 md:mt-16 bg-[#F6F8FC] py-10 md:py-14 scroll-mt-24">
+              <div className="custom-container">
+                <div className="mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                  <div className="best-offer-vendor-sec-title">
+                    <h2 className="text-[24px] md:text-[30px] font-semibold font-primary text-[#16171A] leading-[120%] mb-1">
+                      Bestes Angebot
+                    </h2>
+                    <p className="md:!text-[16px] !text-[14px] text-[#6B6E76]">
+                      Vertrauenswürdige Marken und täglich die niedrigsten Preise!
+                      {offerCount > 0 ? ` ${offerCount} ${offerCount === 1 ? 'Angebot' : 'Angebote'}.` : ''}
+                    </p>
+                  </div>
+                  <div className="offer-vendor-navigator flex flex-wrap items-center gap-3">
+                    <a href="#eu-reifenlabel" className="text-[13px] font-semibold text-primary-100 hover:underline">
                       EU-Reifenlabel ansehen
                     </a>
-                    <label
-                      htmlFor="sort"
-                      className="mr-2 text-sm text-[#16171A]"
-                    >
-                      Sortierung:
-                    </label>
+                    <label htmlFor="sort" className="sr-only">Sortierung</label>
                     <div className="relative">
+                      <ArrowUpDown size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#6B6E76]" />
                       <select
                         id="sort"
-                        className="appearance-none border border-primary-100 px-3 py-2 text-sm pr-8"
+                        className="h-12 md:h-10 appearance-none rounded-[10px] border border-[#E4E7EE] bg-white pl-9 pr-9 text-[14px] font-medium text-[#16171A] outline-none focus:border-primary-100"
                         value={`${sortBy}_${sortOrder}`}
                         onChange={e => {
                           const [sortKey, sortDir] = e.target.value.split('_');
@@ -1633,328 +1387,164 @@ const shareImage = !rawShareImage
                       >
                         <option value="price_asc">Preis aufsteigend</option>
                         <option value="price_desc">Preis absteigend</option>
-                        <option value="priceWithDelivery_asc">
-                          Preis mit Versand aufsteigend
-                        </option>
-                        <option value="priceWithDelivery_desc">
-                          Preis mit Versand absteigend
-                        </option>
+                        <option value="priceWithDelivery_asc">Preis mit Versand aufsteigend</option>
+                        <option value="priceWithDelivery_desc">Preis mit Versand absteigend</option>
                       </select>
-
-                      {/* Dropdown arrow */}
-                      <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                        <svg
-                          className="w-4 h-4 text-[#404042]"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </div>
+                      <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6E76]" />
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="tabs tabs-box bg-mono-0 pb-10 lg:pb-16 ">
-                <input
-                  type="radio"
-                  name="my_tabs_6"
-                  className="tab !text-[18px] hidden !text-primary-70 !shadow-none focus:!rounded-[4px] !py-0 !rounded-[4px] !bg-transparent !px-6 border-border-100 !border hover:border-primary-100 hover:!bg-primary-100 transition ease-in hover:!text-mono-0 !leading-[150%]"
-                  aria-label="Angebote"
-                  defaultChecked
-                />
-                <div className="tab-content !text-primary-70 bg-mono-0 body-regular border-base-300 pt-2 md:pt-8 px-0">
-                  <div className="offer-list-item-wrapper">
-                    <div className="custom-container">
-                      <div className="offer-list-item-area">
-                        {([...(product.offers || [])] as Offer[])
-                          .sort((a, b) => {
-                            const stock =
-                              Number(a.in_stock === false) -
-                              Number(b.in_stock === false);
-                            if (stock !== 0) return stock;
-                            const priceA = parseMoneyEU(a.price);
-                            const deliveryA = parseMoneyEU(a.delivery_cost);
-                            const priceB = parseMoneyEU(b.price);
-                            const deliveryB = parseMoneyEU(b.delivery_cost);
 
-                            const valA =
-                              sortBy === 'priceWithDelivery'
-                                ? priceA + deliveryA
-                                : priceA;
-                            const valB =
-                              sortBy === 'priceWithDelivery'
-                                ? priceB + deliveryB
-                                : priceB;
+                <div className="offer-list-item-area flex flex-col gap-3">
+                  {([...(product.offers || [])] as Offer[])
+                    .sort((a, b) => {
+                      const stock = Number(a.in_stock === false) - Number(b.in_stock === false);
+                      if (stock !== 0) return stock;
+                      const priceA = parseMoneyEU(a.price);
+                      const deliveryA = parseMoneyEU(a.delivery_cost);
+                      const priceB = parseMoneyEU(b.price);
+                      const deliveryB = parseMoneyEU(b.delivery_cost);
+                      const valA = sortBy === 'priceWithDelivery' ? priceA + deliveryA : priceA;
+                      const valB = sortBy === 'priceWithDelivery' ? priceB + deliveryB : priceB;
+                      return sortOrder === 'asc' ? valA - valB : valB - valA;
+                    })
+                    .map((offer, index) => {
+                      const price = parseMoneyEU(offer.price);
+                      const delivery = parseMoneyEU(offer.delivery_cost);
+                      const hasFreeShipping =
+                        offer.delivery_cost === '' ||
+                        offer.delivery_cost === '0' ||
+                        offer.delivery_cost === '0.00' ||
+                        offer.delivery_cost == null ||
+                        delivery === 0;
+                      const total = price + (hasFreeShipping ? 0 : delivery);
+                      const outOfStock = offer.in_stock === false;
+                      const isBest = index === 0 && !outOfStock && sortBy === 'price' && sortOrder === 'asc';
 
-                            return sortOrder === 'asc'
-                              ? valA - valB
-                              : valB - valA;
-                          })
-                          .map((offer, index) => {
-                            const price = parseMoneyEU(offer.price);
-                            const delivery = parseMoneyEU(offer.delivery_cost);
-                            const hasFreeShipping =
-                              offer.delivery_cost === '' ||
-                              offer.delivery_cost === '0' ||
-                              offer.delivery_cost === '0.00' ||
-                              offer.delivery_cost == null ||
-                              delivery === 0;
+                      const outHref = buildVendorExitUrl({
+                        token: offer.affiliate_product_cloak_url,
+                        productId: product._id,
+                        uuid: uuidCookie || 'guest',
+                        from: 'product-offer-card',
+                        vendor: offer.vendor,
+                        vendorId: offer.vendor_id,
+                        brand: product.brand_name,
+                        instruction: 'Zum Angebot',
+                      });
 
-                            const total =
-                              price + (hasFreeShipping ? 0 : delivery);
+                      const onOfferExit = () =>
+                        onVendorExitClick({
+                          productId: product._id,
+                          productName: product.product_name,
+                          brandName: product.brand_name,
+                          vendor: offer.vendor,
+                          vendorId: offer.vendor_id,
+                          source: 'product-offer-card',
+                          instruction: 'Zum Angebot',
+                          vendorPrice: price,
+                        });
 
-                            const outHref = buildVendorExitUrl({
-                              token: offer.affiliate_product_cloak_url,
-                              productId: product._id,
-                              uuid: uuidCookie || 'guest',
-                              from: 'product-offer-card',
-                              vendor: offer.vendor,
-                              vendorId: offer.vendor_id,
-                              brand: product.brand_name,
-                              instruction: 'Zum Angebot',
-                            });
+                      const savingsLabel = formatSavingsPercent(price, expensivePrice);
 
-                            const onOfferExit = () =>
-                              onVendorExitClick({
-                                productId: product._id,
-                                productName: product.product_name,
-                                brandName: product.brand_name,
-                                vendor: offer.vendor,
-                                vendorId: offer.vendor_id,
-                                source: 'product-offer-card',
-                                instruction: 'Zum Angebot',
-                                vendorPrice: price,
-                              });
+                      return (
+                        <div
+                          key={`${offer.vendor}-${index}-${price}`}
+                          className={`offer-product-card-item relative rounded-[16px] border bg-white p-4 md:p-5 transition-shadow hover:shadow-[0_12px_28px_-18px_rgba(16,24,40,0.35)] ${
+                            isBest ? 'border-primary-100 shadow-[0_0_0_1px_var(--primary-color)]' : 'border-[#E9ECF3]'
+                          } ${outOfStock ? 'opacity-70' : ''}`}
+                        >
+                          {isBest && (
+                            <span className="absolute -top-2.5 left-4 rounded-full bg-primary-100 px-2.5 py-0.5 text-[11px] font-semibold text-white">
+                              Bester Preis
+                            </span>
+                          )}
+                          <div className="offer-product-card-inner grid grid-cols-2 md:grid-cols-12 items-center gap-x-4 gap-y-3">
+                            {/* Vendor */}
+                            <div className="vendor-box col-span-1 md:col-span-2">
+                              <a href={outHref} target="_blank" rel="nofollow sponsored noopener" onClick={onOfferExit} className="inline-flex">
+                                <OfferVendorLogo
+                                  vendor={offer.vendor}
+                                  vendorLogo={offer.vendor_logo}
+                                  className="h-[32px] md:h-[36px] w-[110px] md:w-[130px] object-contain object-left transition-transform hover:scale-105"
+                                />
+                              </a>
+                              {outOfStock && <span className="mt-1 block text-[11px] font-semibold text-[#B42318]">Nicht auf Lager</span>}
+                            </div>
 
-                            const savingsLabel = formatSavingsPercent(
-                              price,
-                              expensivePrice,
-                            );
-
-                            return (
-                              <div
-                                key={`${offer.vendor}-${index}-${price}`}
-                                className="offer-product-card-item not-last:mb-5"
-                              >
-                                <div className="offer-product-card-inner flex md:flex-row flex-col justify-between items-center h-full lg:gap-4 border border-border-100 rounded-[12px] bg-[#F5F5F7] px-5 py-5">
-                                  {/* Left: Price + Vendor (mobile) */}
-                                  <div className="offer-product-top-cont w-full md:max-w-[170px] mb-3 md:mb-0 flex flex-row md:flex-col lg:flex-row justify-between items-start gap-2 md:gap-3 lg:gap-2">
-                                    <div className="cont-box">
-                                      <div className="title-box flex gap-2 items-center">
-                                        <h4 className="offer-price flex items-center gap-2 text-[20px] lg:text-[24px] font-semibold text-left text-[#404042]">
-                                          {formatEUR(price)}
-                                        </h4>
-
-                                        {savingsLabel ? (
-                                          <SavingsPercentBadge
-                                            label={savingsLabel}
-                                            tooltipPlacement="right"
-                                          />
-                                        ) : null}
-                                      </div>
-
-                                      <p className="text-[12px] lg:text-[12px] font-normal mt-[4px] font-secondary text-left text-[#404042]">
-                                        {hasFreeShipping ? (
-                                          'Versandkostenfrei'
-                                        ) : (
-                                          <>
-                                            {formatEUR(price)} +{' '}
-                                            {formatEUR(delivery)}={' '}
-                                            {formatEUR(total)}{' '}
-                                            <span className="whitespace-nowrap">
-                                              (inklusive Versandkosten)
-                                            </span>
-                                          </>
-                                        )}
-                                      </p>
-                                    </div>
-
-                                    {/* Vendor (mobile) */}
-                                    <a
-                                      href={outHref}
-                                      target="_blank"
-                                      rel="nofollow sponsored noopener"
-                                      onClick={onOfferExit}
-                                      className="lg:hidden block"
-                                    >
-                                      <OfferVendorLogo
-                                        vendor={offer.vendor}
-                                        vendorLogo={offer.vendor_logo}
-                                        className="lg:w-[140px] hover:scale-105 transition-all ease-in-out cursor-pointer lg:hidden block lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                      />
-                                    </a>
-                                  </div>
-
-                                  {/* Vendor (desktop) */}
-                                  <div className="vendor-box lg:block hidden">
-                                    <a
-                                      href={outHref}
-                                      target="_blank"
-                                      rel="nofollow sponsored noopener"
-                                      onClick={onOfferExit}
-                                    >
-                                      <OfferVendorLogo
-                                        vendor={offer.vendor}
-                                        vendorLogo={offer.vendor_logo}
-                                        className="lg:w-[140px] hover:scale-105 transition-all ease-in-out lg:h-[37px] h-[32px] w-[120px] object-contain"
-                                      />
-                                    </a>
-                                  </div>
-
-                                  {/* Payment methods */}
-                                  <div className="offer-product-bottom-cont max-sm:mb-3 md:max-w-[180px] xl:max-w-[220px] w-full">
-                                    <div className="offer-info-right-cont">
-                                      <h6 className="text-[14px] lg:text-[16px] mb-2 leading-[120%] font-medium font-secondary">
-                                        Zahlungsmethoden:
-                                      </h6>
-                                      <ul className="payment-methods-list flex items-center justify-start flex-wrap gap-2">
-                                        {resolveOfferPaymentIcons(
-                                          offer.vendor,
-                                          offer.payment_icons,
-                                        ).map((icon: string, i: number) => {
-                                            // Pretty tooltip name based on filename
-                                            const m = icon.match(
-                                              /\/([^/]+)\.(png|svg|jpg|jpeg|webp)$/i,
-                                            );
-                                            const key = m
-                                              ? m[1]
-                                              : `Zahlungsmethode ${i + 1}`;
-                                            const normalized = key
-                                              .replace(/[-_]/g, '')
-                                              .toLowerCase();
-                                            const paymentNameMap: Record<
-                                              string,
-                                              string
-                                            > = {
-                                              sofort: 'Sofortüberweisung',
-                                              amazonpay: 'Amazon Pay',
-                                              paypal: 'PayPal',
-                                              banktransfer: 'Banküberweisung',
-                                              americanexpress:
-                                                'American Express (AMEX)',
-                                              american_express:
-                                                'American Express (AMEX)',
-                                              amex: 'American Express (AMEX)',
-                                              sepa: 'SEPA',
-                                              applepay: 'Apple Pay',
-                                              'apple-pay': 'Apple Pay',
-                                              payu: 'PayU',
-                                            };
-                                            const display =
-                                              paymentNameMap[normalized] ||
-                                              key.replace(/[-_]/g, ' ');
-
-                                            return (
-                                              <li
-                                                key={`${display}-${i}`}
-                                                className="payment-method-item cursor-pointer h-7 flex items-center gap-2"
-                                              >
-                                                <span
-                                                  className="tooltip tooltip-top"
-                                                  data-tip={display}
-                                                >
-                                                  <Image
-                                                    src={icon}
-                                                    alt={display}
-                                                    width={45}
-                                                    height={48}
-                                                    loading="lazy"
-                                                    className="h-7 object-contain"
-                                                  />
-                                                </span>
-                                              </li>
-                                            );
-                                          },
-                                        )}
-                                      </ul>
-                                    </div>
-                                  </div>
-
-                                  {/* Delivery info */}
-                                  <ul className="product-info-item w-full max-sm:mb-3 md:max-w-[220px] xl:max-w-[280px] flex flex-col gap-2">
-                                    <li className="flex items-start gap-2">
-                                      <Image
-                                        src="/images/icons/iconoir_delivery-truck.svg"
-                                        alt="truck icons"
-                                        width={20}
-                                        height={20}
-                                        loading="lazy"
-                                        className="h-5 w-5 object-contain rounded-[4px]"
-                                      />
-                                      <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                        Lieferung: {offer.delivery_time || ''}
-                                      </span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                      <Image
-                                        src="/images/icons/check-circle.svg"
-                                        alt="tick icon"
-                                        width={20}
-                                        height={20}
-                                        loading="lazy"
-                                        className="h-5 w-5 object-contain rounded-[4px]"
-                                      />
-                                      <span className="text-[14px] text-left font-[#404042] leading-[120%] font-normal">
-                                        {hasFreeShipping
-                                          ? 'Versandkostenfrei'
-                                          : (() => {
-                                              // "Versandkosten: 4,90 €"
-                                              const formatted =
-                                                formatEUR(delivery); // "€4,90"
-                                              return `Versandkosten: ${formatted.replace(
-                                                '€',
-                                                '',
-                                              )} €`;
-                                            })()}
-                                      </span>
-                                    </li>
-                                  </ul>
-
-                                  {/* CTAs */}
-                                  <div className="offer-product-card-footer max-sm:w-full md:flex-col flex items-center justify-between gap-0">
-                                    <a
-                                      href={outHref}
-                                      target="_blank"
-                                      rel="nofollow sponsored noopener"
-                                      onClick={onOfferExit}
-                                      className="cta-button-shop"
-                                    >
-                                      <button
-                                        type="button"
-                                        className="primary-button-state w-full flex whitespace-nowrap items-center justify-center text-[14px] lg:text-base h-10 gap-2 border border-primary-100 bg-primary-100 !text-mono-0 py-2 px-6 rounded-full cursor-pointer hover:border-primary-100 hover:opacity-80 transition ease-in"
-                                      >
-                                        <MdAddShoppingCart className="text-[22px]" />{' '}
-                                        Zum Angebot
-                                      </button>
-                                    </a>
-                                    <a
-                                      href={outHref}
-                                      target="_blank"
-                                      rel="nofollow sponsored noopener"
-                                      onClick={onOfferExit}
-                                    >
-                                      <button
-                                        type="button"
-                                        className="w-full flex items-center shop-info-btn text-[14px] lg:text-base justify-center gap-2 underline bg-transparent text-primary-100 py-[6px] px-2 cursor-pointer"
-                                      >
-                                        Shop Informationen
-                                      </button>
-                                    </a>
-                                  </div>
-                                </div>
+                            {/* Price */}
+                            <div className="offer-product-top-cont col-span-1 md:col-span-3 text-right md:text-left">
+                              <div className="flex items-center justify-end md:justify-start gap-2 flex-wrap">
+                                <span className="offer-price text-[22px] md:text-[24px] font-semibold text-[#16171A] tabular-nums">
+                                  {formatEUR(price)}
+                                </span>
+                                {savingsLabel ? <SavingsPercentBadge label={savingsLabel} tooltipPlacement="right" /> : null}
                               </div>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  </div>
+                              <p className="mt-0.5 !text-[12px] !tracking-normal text-[#6B6E76]">
+                                {hasFreeShipping ? (
+                                  'Versandkostenfrei'
+                                ) : (
+                                  <>
+                                    {formatEUR(price)} + {formatEUR(delivery)} = {formatEUR(total)}{' '}
+                                    <span className="whitespace-nowrap">(inklusive Versandkosten)</span>
+                                  </>
+                                )}
+                              </p>
+                            </div>
+
+                            {/* Delivery */}
+                            <ul className="product-info-item col-span-2 md:col-span-3 flex flex-col gap-1.5 text-[13px] text-[#404042]">
+                              <li className="flex items-center gap-2">
+                                <Truck size={15} className="shrink-0 text-[#6B6E76]" />
+                                Lieferung: {offer.delivery_time || ''}
+                              </li>
+                              <li className="flex items-center gap-2">
+                                <Check size={15} className="shrink-0 text-[#1F7A3A]" />
+                                {hasFreeShipping ? 'Versandkostenfrei' : `Versandkosten: ${formatEUR(delivery)}`}
+                              </li>
+                            </ul>
+
+                            {/* Payments */}
+                            <div className="offer-product-bottom-cont col-span-2 md:col-span-2">
+                              <span className="sr-only">Zahlungsmethoden:</span>
+                              <ul className="payment-methods-list flex items-center flex-wrap gap-1.5" aria-label="Zahlungsmethoden">
+                                {resolveOfferPaymentIcons(offer.vendor, offer.payment_icons).map((icon: string, i: number) => {
+                                  const display = paymentDisplayName(icon, i);
+                                  return (
+                                    <li key={`${display}-${i}`} className="payment-method-item h-7">
+                                      <span className="tooltip tooltip-top" data-tip={display}>
+                                        <Image src={icon} alt={display} width={45} height={48} loading="lazy" className="h-7 w-auto object-contain rounded-[5px] border border-[#EEF0F4] bg-white" />
+                                      </span>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+
+                            {/* CTAs */}
+                            <div className="offer-product-card-footer col-span-2 md:col-span-2 flex max-md:flex-col md:flex-col items-stretch md:items-center gap-1">
+                              <a
+                                href={outHref}
+                                target="_blank"
+                                rel="nofollow sponsored noopener"
+                                onClick={onOfferExit}
+                                className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 text-[14px] font-semibold text-white transition hover:opacity-90"
+                              >
+                                <MdAddShoppingCart className="text-[18px]" /> Zum Angebot
+                              </a>
+                              <a
+                                href={outHref}
+                                target="_blank"
+                                rel="nofollow sponsored noopener"
+                                onClick={onOfferExit}
+                                className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
+                              >
+                                Shop Informationen
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>
@@ -1962,6 +1552,36 @@ const shareImage = !rawShareImage
             <EuTyreLabelSection
               product={product}
               pageUrl={`${SiteUrl}/produkte/${product.slug}`}
+            />
+
+            <StickyOfferBar
+              watchId="pdp-main-cta"
+              title={headingTitle}
+              price={fromPriceLabel}
+              vendor={cheapestOffer?.vendor}
+              offerCount={offerCount}
+              href={buildVendorExitUrl({
+                token: cheapestOffer?.affiliate_product_cloak_url || '',
+                productId: product._id,
+                uuid: uuidCookie || 'guest',
+                from: 'product-details-sticky-bar',
+                vendor: cheapestOffer?.vendor,
+                vendorId: cheapestOffer?.vendor_id,
+                brand: product.brand_name,
+                instruction: 'Zum Angebot',
+              })}
+              onExit={() =>
+                onVendorExitClick({
+                  productId: product._id,
+                  productName: product.product_name,
+                  brandName: product.brand_name,
+                  vendor: cheapestOffer?.vendor,
+                  vendorId: cheapestOffer?.vendor_id,
+                  source: 'product-details-sticky-bar',
+                  instruction: 'Zum Angebot',
+                  vendorPrice: cheapestOffer?.price,
+                })
+              }
             />
           </section>
         </>

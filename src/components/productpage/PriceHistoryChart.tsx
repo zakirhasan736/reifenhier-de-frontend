@@ -72,7 +72,7 @@ export default function PriceHistoryChart({
       .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((j: HistoryResponse) => {
         if (!cancelled) {
-          setData(j);
+          setData(j && typeof j === 'object' && !Array.isArray(j) ? j : null);
           setState('ready');
         }
       })
@@ -100,11 +100,13 @@ export default function PriceHistoryChart({
   // Shop lines: history + today's offer, top 6 by current price
   const shops = useMemo(() => {
     if (!data) return [];
-    const now = new Map(data.current.offers.map(o => [o.vendor.toLowerCase(), o]));
-    return data.vendors
+    // The API may answer with an error or partial body — never crash the page
+    const offers = Array.isArray(data.current?.offers) ? data.current.offers : [];
+    const now = new Map(offers.map(o => [String(o.vendor || '').toLowerCase(), o]));
+    return (Array.isArray(data.vendors) ? data.vendors : [])
       .map(v => {
         const cur = now.get(String(v.vendor || '').toLowerCase());
-        const t = buildTrend(v.points, cur?.price, days, today);
+        const t = buildTrend(Array.isArray(v.points) ? v.points : [], cur?.price, days, today);
         return t ? { key: v.key, vendor: v.vendor, trend: t, inStock: cur?.in_stock !== false, current: cur?.price } : null;
       })
       .filter((x): x is NonNullable<typeof x> => !!x && !!x.current)
@@ -165,7 +167,7 @@ export default function PriceHistoryChart({
 
   const recordingSince = (data?.best?.points?.[0]?.[0] || initialTrend?.[0]?.[0]) ?? today;
   const young = !bestTrend?.meaningful;
-  const priceList = (data?.current.offers || []).slice().sort((a, b) => a.price - b.price);
+  const priceList = (Array.isArray(data?.current?.offers) ? data.current.offers : []).slice().sort((a, b) => a.price - b.price);
   const maxPrice = priceList.length ? priceList[priceList.length - 1].price : 0;
 
   // No history API yet (e.g. backend not deployed) and no trend on the product: show nothing
