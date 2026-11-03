@@ -64,7 +64,7 @@ const BannerSection = ({ season }: BannerSectionProps) => {
                 quality={60}
               />
               <div
-                className="absolute inset-0 mix-blend-color opacity-60"
+                className="absolute inset-0 mix-blend-color opacity-35"
                 style={{ background: cfg.wash }}
               />
               <div className="absolute inset-0" style={{ background: cfg.tint }} />
