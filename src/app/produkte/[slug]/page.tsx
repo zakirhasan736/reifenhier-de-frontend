@@ -17,7 +17,6 @@ import {
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
 import PriceHistoryChart from '@/components/productpage/PriceHistoryChart';
-import Link from 'next/link';
 
 // ---- Config ----
 const API = (
@@ -203,19 +202,13 @@ export default async function ProductPage({
       ))}
       <div className="product-details-cont-wrapper">
         <Breadcrumbs crumbs={crumbs} />
-        <section className="mx-auto max-w-6xl px-4 py-5" aria-label="Reifendaten und Händlerpreise">
-          <h1 className="text-2xl font-semibold">{[product.brand_name, product.product_name, product.dimensions].filter(Boolean).join(" ")}</h1>
-          <p className="mt-2">{buildProductDescription(product)}</p>
-          {lowPrice ? (
-            <p className="mt-2 font-semibold">Angebote ab {lowPrice.toLocaleString("de-DE", { style: "currency", currency: "EUR" })}</p>
-          ) : null}
-          <p className="mt-2 text-sm">Preise und Verfügbarkeit können beim Händler abweichen. Bitte vor dem Kauf prüfen.</p>
-          <Link className="mt-2 inline-block underline" href="/reifenpreisvergleich">Reifenpreise richtig vergleichen</Link>
-        </section>
         <ProductSinglepage
           product={product}
           loading={false}
           indexVariants={indexVariants ?? []}
+          title={[product.brand_name, product.product_name, product.dimensions].filter(Boolean).join(' ')}
+          summary={buildProductDescription(product)}
+          fromPrice={lowPrice}
         />
         <PriceHistoryChart
           slug={product.slug}
