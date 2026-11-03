@@ -99,6 +99,8 @@ async function getBlogs(
         title: b.title,
         date: b.createdAt,
         coverImage: blogCoverSrc(b.coverImage),
+        excerpt: b.metaDescription || '',
+        tags: b.tags || [],
       })),
       total: filtered.length,
     };
@@ -120,6 +122,7 @@ async function getBlogs(
           slug: string;
           date?: string;
           title?: { rendered?: string };
+          excerpt?: { rendered?: string };
           _embedded?: {
             'wp:featuredmedia'?: { source_url?: string }[];
           };
@@ -128,6 +131,7 @@ async function getBlogs(
           slug: post.slug,
           title: post.title?.rendered || '',
           date: post.date || '',
+          excerpt: post.excerpt?.rendered || '',
           coverImage:
             post._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
             '',
