@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import ProductListingsSec from '@/components/productpage/ProductListingsSec';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
-import { seasonForCategory } from '@/libs/seo/landing';
+import { brandPath, seasonForCategory, sizePath } from '@/libs/seo/landing';
 import Link from 'next/link';
 import type { Product } from '@/types/product';
 
@@ -11,6 +11,10 @@ interface Props {
     category?: string;
     kategorie?: string;
     page?: string;
+    brand?: string;
+    width?: string;
+    height?: string;
+    diameter?: string;
   }>;
 }
 
@@ -44,12 +48,26 @@ export async function generateMetadata({
 
   // Clean canonical: category landing yes; paginated/filter pages canonicalize to base/category
   // Season filters consolidate on the indexable season landing pages
+  // Brand-only or exact-size filters consolidate on their landing pages too
+  const one = (v?: string) => {
+    const list = String(v || '').split(',').map(x => x.trim()).filter(Boolean);
+    return list.length === 1 ? list[0] : '';
+  };
+  const brand = one(resolvedParams.brand);
+  const width = one(resolvedParams.width);
+  const height = one(resolvedParams.height);
+  const diameter = one(resolvedParams.diameter);
   const seasonSlug = seasonForCategory(category)?.slug;
-  const canonical = seasonSlug
-    ? `${SITE_URL}/${seasonSlug}`
-    : category
-      ? `${SITE_URL}/produkte?kategorie=${encodeURIComponent(category)}`
-      : `${SITE_URL}/produkte`;
+  const canonical =
+    width && height && diameter && !brand
+      ? `${SITE_URL}${sizePath({ width, height, diameter })}`
+      : brand && !category && !width && !height && !diameter
+        ? `${SITE_URL}${brandPath(brand)}`
+        : seasonSlug
+          ? `${SITE_URL}/${seasonSlug}`
+          : category
+            ? `${SITE_URL}/produkte?kategorie=${encodeURIComponent(category)}`
+            : `${SITE_URL}/produkte`;
 
   return {
     metadataBase: new URL(SITE_URL),
