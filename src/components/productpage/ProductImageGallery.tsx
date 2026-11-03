@@ -43,10 +43,10 @@ export default function ProductImageGallery({
 
   return (
     <div className="product-image-gallery">
-      <div className="swiper-slides-view-area relative overflow-hidden rounded-[20px] border border-[#E9ECF3] bg-gradient-to-b from-[#F7F8FB] to-white p-4 md:p-6">
+      <div className="swiper-slides-view-area relative overflow-hidden rounded-[20px] border border-[#E9ECF3] bg-gradient-to-b from-[#F7F8FB] to-white p-3 md:p-6">
         {header ? <div className="relative z-20">{header}</div> : null}
         <div className="swiper-slider-view relative w-full">
-          <div className="slide-view-item flex h-[260px] sm:h-[340px] lg:h-[420px] items-center justify-center">
+          <div className="slide-view-item flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center">
             <OptimizedImage
               key={src}
               src={src}
@@ -84,7 +84,7 @@ export default function ProductImageGallery({
       </div>
 
       {list.length > 1 ? (
-        <div className="mt-3 flex justify-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="mt-2 md:mt-3 flex justify-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {list.map((image, index) => {
             const thumb = productImageSrc(image, awinImageUrl, [merchantThumbUrl, merchantImageUrl]);
             return (
@@ -94,7 +94,7 @@ export default function ProductImageGallery({
                 onClick={() => setActive(index)}
                 aria-label={`Bild ${index + 1}`}
                 aria-current={index === active}
-                className={`slide-tab-item-wrap flex h-[72px] w-[72px] md:h-[84px] md:w-[84px] shrink-0 items-center justify-center rounded-[12px] border-2 bg-[#F7F8FB] p-1.5 cursor-pointer transition ${
+                className={`slide-tab-item-wrap flex h-[56px] w-[56px] md:h-[84px] md:w-[84px] shrink-0 items-center justify-center rounded-[12px] border-2 bg-[#F7F8FB] p-1.5 cursor-pointer transition ${
                   index === active ? 'border-primary-100' : 'border-transparent hover:border-[#C9D6FC]'
                 }`}
               >

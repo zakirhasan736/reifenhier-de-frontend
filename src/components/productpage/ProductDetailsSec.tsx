@@ -916,7 +916,7 @@ const shareImage = !rawShareImage
         <>
           <section className="product-singlepage-section pdp-v2 overflow-hidden bg-white">
             <div className="custom-container w-full">
-              <div className="pt-3 pb-5 md:pb-6">
+              <div className="pt-2 pb-3 md:pt-3 md:pb-5">
                 <Link
                   href="/produkte"
                   className="inline-flex items-center gap-1.5 text-[13px] md:text-[14px] font-medium text-[#5B5D63] hover:text-primary-100"
@@ -925,7 +925,7 @@ const shareImage = !rawShareImage
                 </Link>
               </div>
 
-              <div className="pdp-top grid grid-cols-1 gap-6 lg:gap-x-10 xl:gap-x-14 items-start [grid-template-areas:'gallery'_'buy'_'specs'] lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:[grid-template-areas:'gallery_buy'_'specs_buy']">
+              <div className="pdp-top grid grid-cols-1 gap-5 md:gap-6 lg:gap-x-10 xl:gap-x-14 items-start [grid-template-areas:'gallery'_'buy'_'specs'] lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:[grid-template-areas:'gallery_buy'_'specs_buy']">
                 {/* ---------------- Gallery ---------------- */}
                 <div className="product-singlepage-left-cont [grid-area:gallery] min-w-0">
                   <div className="swiper-product-slider-area relative w-full">
@@ -1020,24 +1020,23 @@ const shareImage = !rawShareImage
                     </p>
                   </div>
 
-                  {/* Same tyre, other load/speed index — and size/brand links */}
+                  {/* Same tyre, other load/speed index — and size/brand links (compact) */}
                   {(indexVariants.length > 0 || product.width || product.dimensions || product.brand_name) && (
-                    <div className="pdp-variants mt-4 rounded-[16px] border border-[#E9ECF3] p-3.5 md:p-4">
+                    <div className="pdp-variants mt-3">
                       {indexVariants.length > 0 && (
-                        <div className="mb-3">
-                          <div className="mb-2 flex items-baseline justify-between gap-2">
-                            <p className="!text-[14px] font-semibold text-[#16171A]">Andere Last-/Geschwindigkeitsindex</p>
-                            <span className="hidden sm:inline text-[12px] text-[#9AA0A8]">{product.brand_name} · {product.dimensions}</span>
-                          </div>
-                          <ul className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        <>
+                          <p className="mb-1.5 !text-[12px] md:!text-[13px] font-semibold text-[#5B5D63]">
+                            Andere Last-/Geschwindigkeitsindex
+                          </p>
+                          <ul className="flex gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-wrap lg:overflow-visible">
                             {currentIndexLabel && (
-                              <li>
+                              <li className="shrink-0">
                                 <span
                                   aria-current="true"
-                                  className="flex h-full min-h-[58px] flex-col items-center justify-center rounded-[12px] border-2 border-primary-100 bg-[#F5F8FF] px-2 py-2 text-center"
+                                  className="inline-flex h-8 items-center gap-1 rounded-full border-2 border-primary-100 bg-[#F5F8FF] px-2.5 text-[12px] md:text-[13px] whitespace-nowrap"
                                 >
-                                  <span className="text-[15px] font-bold text-primary-100">{currentIndexLabel}</span>
-                                  <span className="text-[12px] font-semibold text-[#16171A] tabular-nums">{fromPriceLabel || 'Aktuell'}</span>
+                                  <span className="font-bold text-primary-100">{currentIndexLabel}</span>
+                                  {fromPriceLabel ? <span className="font-semibold text-[#16171A] tabular-nums">{fromPriceLabel}</span> : null}
                                 </span>
                               </li>
                             )}
@@ -1045,23 +1044,23 @@ const shareImage = !rawShareImage
                               const label = v.label || `${v.lastIndex || ''}${v.speedIndex || ''}`.trim();
                               const price = formatIndexPrice(v.cheapest_offer);
                               return (
-                                <li key={v.slug}>
+                                <li key={v.slug} className="shrink-0">
                                   <Link
                                     href={`/produkte/${v.slug}`}
                                     title={v.product_name}
-                                    className="flex h-full min-h-[58px] flex-col items-center justify-center rounded-[12px] border border-[#E4E7EE] bg-white px-2 py-2 text-center transition hover:border-primary-100 hover:bg-[#F5F8FF]"
+                                    className="inline-flex h-8 items-center gap-1 rounded-full border border-[#E4E7EE] bg-white px-2.5 text-[12px] md:text-[13px] whitespace-nowrap transition hover:border-primary-100 hover:bg-[#F5F8FF]"
                                   >
-                                    <span className="text-[15px] font-bold text-[#16171A]">{label || '—'}</span>
-                                    {price ? <span className="text-[12px] font-semibold text-primary-100 tabular-nums">{price}</span> : null}
+                                    <span className="font-bold text-[#16171A]">{label || '—'}</span>
+                                    {price ? <span className="font-semibold text-primary-100 tabular-nums">{price}</span> : null}
                                   </Link>
                                 </li>
                               );
                             })}
                           </ul>
-                        </div>
+                        </>
                       )}
-                      <div className={`flex flex-wrap items-center gap-2 text-[13px] font-medium ${indexVariants.length > 0 ? 'border-t border-[#EEF0F4] pt-3' : ''}`}>
-                        <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#9AA0A8]">Mehr</span>
+                      <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 !text-[13px]">
+                        <span className="font-semibold text-[#9AA0A8]">Mehr:</span>
                         {(product.width || product.dimensions) && (
                           <Link
                             href={buildProductFilterUrl({
@@ -1070,7 +1069,7 @@ const shareImage = !rawShareImage
                               height: product.height,
                               diameter: product.diameter,
                             })}
-                            className="inline-flex min-h-9 items-center gap-1 rounded-full border border-[#DCE3FB] px-3 py-1.5 text-primary-100 hover:bg-[#F5F8FF]"
+                            className="font-semibold text-primary-100 underline-offset-2 hover:underline"
                           >
                             Größe {product.dimensions || `${product.width}/${product.height} R${product.diameter}`}
                           </Link>
@@ -1078,17 +1077,17 @@ const shareImage = !rawShareImage
                         {product.brand_name && (
                           <Link
                             href={buildProductFilterUrl({ brand: product.brand_name })}
-                            className="inline-flex min-h-9 items-center gap-1 rounded-full border border-[#DCE3FB] px-3 py-1.5 text-primary-100 hover:bg-[#F5F8FF]"
+                            className="font-semibold text-primary-100 underline-offset-2 hover:underline"
                           >
                             Marke {product.brand_name}
                           </Link>
                         )}
-                      </div>
+                      </p>
                     </div>
                   )}
 
                   {/* Price card */}
-                  <div className="product-price-group mt-5 rounded-[18px] border border-[#E9ECF3] bg-[#F7F8FB] p-4 md:p-5">
+                  <div className="product-price-group mt-4 rounded-[18px] border border-[#E9ECF3] bg-[#F7F8FB] p-4 md:p-5">
                     <div className="flex flex-col gap-3">
                       <div>
                         <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6B6E76]">Bester Preis</span>
@@ -1107,16 +1106,18 @@ const shareImage = !rawShareImage
                             </span>
                           ) : null}
                         </div>
+                        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
                         {fromPriceLabel && (
-                          <p className="mt-1.5 !text-[13px] text-[#6B6E76]">
+                          <p className="!text-[13px] text-[#6B6E76]">
                             Angebote ab {fromPriceLabel}
                             {offerCount > 1 ? ` bei ${offerCount} Händlern` : ''}
                           </p>
                         )}
-                      </div>
-                      <a href="#preisverlauf-title" className="self-start inline-flex shrink-0 rounded-[10px] bg-white px-2 py-1.5 border border-[#E9ECF3] hover:border-[#C9D6FC]" aria-label="Zur Preisentwicklung">
+                          <a href="#preisverlauf-title" className="inline-flex shrink-0 rounded-[10px] bg-white px-2 py-1 border border-[#E9ECF3] hover:border-[#C9D6FC]" aria-label="Zur Preisentwicklung">
                         <PriceSparkline points={product.price_trend?.points} current={cheapPrice || undefined} width={88} height={24} />
                       </a>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="best-price-vendor mt-4 flex flex-wrap items-center gap-2 border-t border-[#E9ECF3] pt-4">
