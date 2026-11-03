@@ -23,7 +23,6 @@ async function getBlogPages(): Promise<number> {
 
 /** Single sitemap index for Search Console (main + products chunks + blogs). */
 export async function GET() {
-  const now = new Date().toISOString()
   const { total, pages } = await fetchProductSitemapMeta()
   const productChunks = Math.max(
     1,
@@ -49,7 +48,6 @@ ${entries
   .map(
     loc => `  <sitemap>
     <loc>${loc}</loc>
-    <lastmod>${now}</lastmod>
   </sitemap>`
   )
   .join('\n')}

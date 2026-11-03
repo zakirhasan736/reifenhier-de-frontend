@@ -40,7 +40,6 @@ export default async function sitemap(props: {
         ? [
             {
               url: `${SITE_URL}/produkte`,
-              lastModified: new Date(),
               changeFrequency: 'daily',
               priority: 0.8,
             },
@@ -53,7 +52,7 @@ export default async function sitemap(props: {
 
     return products.map(p => ({
       url: `${SITE_URL}/produkte/${encodeURIComponent(p.slug!)}`,
-      lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+      ...(p.updatedAt ? { lastModified: new Date(p.updatedAt) } : {}),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))

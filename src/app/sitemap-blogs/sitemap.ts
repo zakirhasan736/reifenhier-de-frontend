@@ -79,7 +79,6 @@ export default async function sitemap(props: {
       ? [
           {
             url: `${SITE_URL}/artikel`,
-            lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.5,
           },

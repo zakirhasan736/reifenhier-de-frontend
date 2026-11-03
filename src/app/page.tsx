@@ -134,18 +134,6 @@ export default function Home() {
                 description:
                   'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
               },
-              {
-                '@type': 'BreadcrumbList',
-                '@id': `${SITE_URL}/#breadcrumb`,
-                itemListElement: [
-                  {
-                    '@type': 'ListItem',
-                    position: 1,
-                    name: 'Startseite',
-                    item: `${SITE_URL}/`,
-                  },
-                ],
-              },
             ],
           }} />
     </div>

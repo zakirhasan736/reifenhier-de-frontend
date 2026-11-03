@@ -7,8 +7,6 @@ export const revalidate = 3600
 
 /** Root sitemap: static pages + size/brand/season landing pages. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date()
-
   const pages: Array<{
     path: string
     changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
@@ -31,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter(s => s.count >= MIN_LANDING_PRODUCTS)
       .map(s => ({
         url: `${SITE_URL}${sizePath(s)}`,
-        lastModified: s.updatedAt ? new Date(s.updatedAt) : now,
+        ...(s.updatedAt ? { lastModified: new Date(s.updatedAt) } : {}),
         changeFrequency: 'daily' as const,
         priority: 0.8,
       })),
@@ -39,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter(b => b.count >= MIN_LANDING_PRODUCTS)
       .map(b => ({
         url: `${SITE_URL}${brandPath(b.name)}`,
-        lastModified: b.updatedAt ? new Date(b.updatedAt) : now,
+        ...(b.updatedAt ? { lastModified: new Date(b.updatedAt) } : {}),
         changeFrequency: 'daily' as const,
         priority: 0.7,
       })),
@@ -48,7 +46,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...pages.map(({ path, changeFrequency, priority }) => ({
       url: `${SITE_URL}${path}`,
-      lastModified: now,
       changeFrequency,
       priority,
     })),

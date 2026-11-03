@@ -28,10 +28,9 @@ const SortingSearch: React.FC<SortingSearchProps> = ({ onSortChange }) => {
         htmlFor="sort-select"
         className="font-secondary whitespace-nowrap font-normal text-[14px] max-sm:hidden leading-[100%] text-[#404042]"
       >
-        <h1 className="font-normal text-[14px] leading-[100%] text-[#404042]">
-          {' '}
+        <span className="font-normal text-[14px] leading-[100%] text-[#404042]">
           Sortieren nach:
-        </h1>
+        </span>
       </label>
 
       {/* Wrapper to position the custom arrow */}
