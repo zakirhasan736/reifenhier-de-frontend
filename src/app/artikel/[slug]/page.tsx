@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
-import Image from 'next/image';
 import BlogRelated from '@/page-components/blogs/RelatedBlogsSectiob';
 import LatestBlogs from '@/components/homepage/Blogs';
-import Link from 'next/link';
 import MongoBlogArticle from '@/components/blogpage/MongoBlogArticle';
+import ArticleLayout from '@/components/blogpage/ArticleLayout';
+import { headingId, readingMinutes, stripHtml } from '@/libs/blogs/format';
 import {
   blogCoverSrc,
   fetchMongoBlogBySlug,
@@ -237,11 +237,6 @@ export default async function BlogDetailPage({
     blog._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
     `${process.env.NEXT_PUBLIC_SITE_URL}/images/blog-default.jpg`;
 
-  const date = new Date(blog.date).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
 
 
   /* Helper: find parent category */
@@ -327,65 +322,45 @@ export default async function BlogDetailPage({
       item: item.url,
     })),
   };
+  // Anchor ids on h2s → table of contents
+  const toc: { id: string; text: string }[] = [];
+  const contentHtml = String(blog.content.rendered || '').replace(
+    /<h2([^>]*)>([\s\S]*?)<\/h2>/gi,
+    (full, attrs: string, inner: string) => {
+      const text = stripHtml(inner);
+      if (!text) return full;
+      const existing = /\sid=["']([^"']+)["']/i.exec(attrs)?.[1];
+      const id = existing || headingId(text);
+      toc.push({ id, text });
+      return existing ? full : `<h2${attrs} id="${id}">${inner}</h2>`;
+    }
+  );
+  const intro =
+    blog.yoast_head_json?.description ||
+    stripHtml(blog.excerpt.rendered).slice(0, 220);
+
   return (
     <>
-      <section className="blog-details-page">
-        <div className="custom-container pt-12">
-          {/* here need a bradcrump */}
-          {/* ---------------- BREADCRUMB ---------------- */}
-          <nav
-            aria-label="Breadcrumb"
-            className="text-sm mb-5 text-gray-500 flex gap-2 flex-wrap"
-          >
-            <Link href="/" className="hover:text-primary-100 underline">
-              Startseite
-            </Link>
-            <span>/</span>
-
-            <Link href="/artikel" className="hover:text-primary-100 underline">
-              News & Testberichte
-            </Link>
-
-            {parentCategory && (
-              <>
-                <span>/</span>
-                <Link
-                  href={`/artikel?kategorie=${parentCategory.slug}`}
-                  className="hover:text-primary-100 capitalize"
-                >
-                  {parentCategory.name}
-                </Link>
-              </>
-            )}
-
-            <span>/</span>
-            <span className="text-gray-700">{plainTitle}</span>
-          </nav>
-          <article className="md:max-w-full w-full mx-auto">
-            <h1
-              className="text-[26px] md:text-3xl font-semibold mb-2 text-[#16171A]"
-              dangerouslySetInnerHTML={{ __html: blog.title.rendered }}
-            />
-
-            <p className="text-gray-600 mb-4">{date}</p>
-            {featured && (
-              <Image
-                src={featured}
-                alt={blog.title.rendered}
-                width={848}
-                height={558}
-                className="md:h-[558px] h-auto rounded-xl mb-6"
-                priority
-              />
-            )}
-            {/* Gutenberg Content (HTML) */}
-            <div
-              className="wp-content"
-              dangerouslySetInnerHTML={{ __html: blog.content.rendered }}
-            />
-          </article>
-        </div>
-      </section>
+      <ArticleLayout
+        titleHtml={blog.title.rendered}
+        intro={intro}
+        published={blog.date}
+        updated={blog.modified}
+        minutes={readingMinutes(stripHtml(contentHtml))}
+        tags={wpTags.filter(Boolean)}
+        cover={blog._embedded?.['wp:featuredmedia']?.[0]?.source_url || ''}
+        crumbs={
+          parentCategory
+            ? [{ name: parentCategory.name, href: `/artikel?kategorie=${parentCategory.slug}` }]
+            : []
+        }
+        toc={toc}
+      >
+        <div
+          className="wp-content"
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
+        />
+      </ArticleLayout>
 
       {/* RELATED POSTS */}
       <BlogRelated blog={blog} />

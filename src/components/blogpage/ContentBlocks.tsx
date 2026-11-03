@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { ContentBlock } from '@/libs/blogs/mongo'
 import TyrePriceCalculator from '@/components/blogpage/TyrePriceCalculator'
+import { headingId } from '@/libs/blogs/format'
 
 /**
  * Inline links in blog text: "[205/55 R16 Reifen](/reifen/205-55-r16)".
@@ -35,22 +36,23 @@ function Heading({
   text?: string
 }) {
   const value = text || ''
-  const className = 'text-[#16171A] font-semibold mt-8 mb-3'
+  const className = 'text-[#16171A] font-semibold leading-[1.3] scroll-mt-28'
   switch (level) {
     case 'h1':
-      return <h1 className={`${className} text-[28px]`}>{value}</h1>
+      // the page title is the h1 — an h1 inside the article renders as h2
+      return <h2 id={headingId(value)} className={`${className} text-[24px] md:text-[28px] mt-10 mb-3`}>{value}</h2>
     case 'h2':
-      return <h2 className={`${className} text-[24px]`}>{value}</h2>
+      return <h2 id={headingId(value)} className={`${className} text-[22px] md:text-[26px] mt-10 mb-3`}>{value}</h2>
     case 'h3':
-      return <h3 className={`${className} text-[22px]`}>{value}</h3>
+      return <h3 className={`${className} text-[19px] md:text-[21px] mt-8 mb-2`}>{value}</h3>
     case 'h4':
-      return <h4 className={`${className} text-[20px]`}>{value}</h4>
+      return <h4 className={`${className} text-[18px] mt-6 mb-2`}>{value}</h4>
     case 'h5':
-      return <h5 className={`${className} text-[18px]`}>{value}</h5>
+      return <h5 className={`${className} text-[17px] mt-6 mb-2`}>{value}</h5>
     case 'h6':
-      return <h6 className={`${className} text-[16px]`}>{value}</h6>
+      return <h6 className={`${className} text-[16px] mt-6 mb-2`}>{value}</h6>
     default:
-      return <h3 className={`${className} text-[22px]`}>{value}</h3>
+      return <h3 className={`${className} text-[19px] md:text-[21px] mt-8 mb-2`}>{value}</h3>
   }
 }
 
@@ -69,8 +71,8 @@ function Block({ block }: { block: ContentBlock }) {
     const ListTag = block.style === 'ol' ? 'ol' : 'ul'
     const listClass =
       block.style === 'ol'
-        ? 'list-decimal pl-6 space-y-2 my-4 text-[#16171A]'
-        : 'list-disc pl-6 space-y-2 my-4 text-[#16171A]'
+        ? 'article-list list-decimal pl-6 space-y-2 my-5 text-[#2B2D33] marker:text-primary-100 marker:font-semibold'
+        : 'article-list list-disc pl-6 space-y-2 my-5 text-[#2B2D33] marker:text-primary-100'
     return (
       <ListTag className={listClass}>
         {items.map((item, i) => (
@@ -83,7 +85,7 @@ function Block({ block }: { block: ContentBlock }) {
   }
 
   return (
-    <p className="text-[#16171A] text-[16px] leading-[150%] mb-4">
+    <p className="article-p">
       <RichText text={block.text} />
     </p>
   )
