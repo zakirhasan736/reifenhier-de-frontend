@@ -924,10 +924,10 @@ const shareImage = !rawShareImage
                 </Link>
               </div>
 
-              <div className="grid grid-cols-12 gap-y-6 md:gap-x-8 lg:gap-x-10 items-start max-md:flex max-md:flex-col">
+              <div className="pdp-top grid grid-cols-1 gap-6 lg:gap-x-10 xl:gap-x-14 items-start [grid-template-areas:'gallery'_'buy'_'specs'] lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] lg:[grid-template-areas:'gallery_buy'_'specs_buy']">
                 {/* ---------------- Gallery ---------------- */}
-                <div className="product-singlepage-left-cont col-span-12 md:col-span-6 lg:col-span-6 flex flex-col gap-5 max-md:contents">
-                  <div className="swiper-product-slider-area relative w-full rounded-[20px] border border-[#E9ECF3] bg-[#F7F8FB] p-3 md:p-4">
+                <div className="product-singlepage-left-cont [grid-area:gallery] min-w-0">
+                  <div className="swiper-product-slider-area relative w-full">
                     <ProductImageGallery
                       images={product.product_image}
                       awinImageUrl={product.awin_image_url}
@@ -969,7 +969,10 @@ const shareImage = !rawShareImage
                       }
                     />
                   </div>
-                <div id="produktinformation" className="pdp-specs w-full rounded-[18px] border border-[#E9ECF3] overflow-hidden max-md:order-last">
+                </div>
+
+                {/* ---------------- Specs ---------------- */}
+                <div id="produktinformation" className="pdp-specs [grid-area:specs] min-w-0 rounded-[18px] border border-[#E9ECF3] overflow-hidden">
                     <h2 className="px-5 md:px-6 pt-5 md:pt-6 pb-3 text-[18px] md:text-[20px] font-semibold text-[#16171A]">Produktinformation</h2>
                     <dl className="divide-y divide-[#EEF0F4] text-[14px] md:text-[15px]">
                       {specRows.map(([label, value]) => (
@@ -979,11 +982,10 @@ const shareImage = !rawShareImage
                         </div>
                       ))}
                     </dl>
-                  </div>
                 </div>
 
                 {/* ---------------- Buy box ---------------- */}
-                <div className="product-singlepage-right-cont col-span-12 md:col-span-6 lg:col-span-6 min-w-0 w-full">
+                <div className="product-singlepage-right-cont [grid-area:buy] min-w-0 lg:sticky lg:top-24 lg:self-start">
                   <div className="product-details-top">
                     <div className="flex flex-wrap items-center gap-2 mb-3">
                       <span
@@ -1019,7 +1021,7 @@ const shareImage = !rawShareImage
 
                   {/* Price card */}
                   <div className="product-price-group mt-5 rounded-[18px] border border-[#E9ECF3] bg-[#F7F8FB] p-4 md:p-5">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="flex flex-col gap-3">
                       <div>
                         <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6B6E76]">Bester Preis</span>
                         <div className="mt-1 flex flex-wrap items-baseline gap-2">
@@ -1044,7 +1046,7 @@ const shareImage = !rawShareImage
                           </p>
                         )}
                       </div>
-                      <a href="#preisverlauf-title" className="self-start shrink-0 rounded-[10px] bg-white px-2 py-1.5 border border-[#E9ECF3] hover:border-[#C9D6FC]" aria-label="Zur Preisentwicklung">
+                      <a href="#preisverlauf-title" className="self-start inline-flex shrink-0 rounded-[10px] bg-white px-2 py-1.5 border border-[#E9ECF3] hover:border-[#C9D6FC]" aria-label="Zur Preisentwicklung">
                         <PriceSparkline points={product.price_trend?.points} current={cheapPrice || undefined} width={88} height={24} />
                       </a>
                     </div>
@@ -1099,7 +1101,7 @@ const shareImage = !rawShareImage
                     </div>
 
                     {/* CTAs */}
-                    <div className="product-cta-box mt-4 flex flex-wrap md:flex-nowrap items-stretch gap-2">
+                    <div className="product-cta-box mt-4 flex flex-wrap sm:flex-nowrap items-stretch gap-2">
                       <a
                         href={buildVendorExitUrl({
                           token: cheapestOffer?.affiliate_product_cloak_url || '',
@@ -1125,14 +1127,14 @@ const shareImage = !rawShareImage
                             vendorPrice: cheapestOffer?.price,
                           });
                         }}
-                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-md:basis-full flex-1 inline-flex h-14 md:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
+                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
                       >
                         <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
                       </a>
                       <button
                         type="button"
                         onClick={handleCompareClick}
-                        className={`max-md:flex-1 inline-flex h-14 md:h-12 items-center justify-center gap-1.5 rounded-[12px] border px-4 text-[14px] font-semibold cursor-pointer transition ${
+                        className={`max-sm:flex-1 shrink-0 inline-flex h-14 sm:h-12 items-center justify-center gap-1.5 rounded-[12px] border px-4 text-[14px] font-semibold cursor-pointer transition ${
                           isCompared ? 'border-[#2d8934] bg-[#E9F8EF] text-[#1F7A3A]' : 'border-[#DCE3FB] bg-white text-primary-100 hover:border-primary-100'
                         }`}
                       >
@@ -1144,7 +1146,7 @@ const shareImage = !rawShareImage
                         type="button"
                         onClick={handleToggleWishlist}
                         aria-label={isFavorited ? 'Von der Wunschliste entfernen' : 'Zu den Favoriten hinzufügen'}
-                        className="inline-flex h-14 w-14 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-[12px] border border-[#E4E7EE] bg-white cursor-pointer hover:border-[#C9D6FC]"
+                        className="inline-flex h-14 w-14 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-[12px] border border-[#E4E7EE] bg-white cursor-pointer hover:border-[#C9D6FC]"
                       >
                         <Image
                           src={isFavorited ? '/images/icons/heart-filled.svg' : '/images/icons/heart.svg'}
