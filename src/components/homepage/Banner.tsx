@@ -13,8 +13,8 @@ const BannerSection = () => {
   return (
     <section className="banner-section hero-v2 relative font-primary overflow-visible">
       <Image
-        className="banner-image-fill object-cover"
-        src="/images/banner-image-3.png"
+        className="banner-image-fill object-cover object-[70%_center]"
+        src="/images/banner-image.jpg"
         alt="Bannerbild Reifexa.de"
         fill
         sizes="100vw"
