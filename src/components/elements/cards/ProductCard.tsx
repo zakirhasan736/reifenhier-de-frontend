@@ -351,45 +351,22 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
     }
   };
  
-  return (
-    <div className="product-card-item bg-mono-0 border border-border-100 rounded-[12px] transition ease-in-out flex h-full w-full flex-col duration-300">
-      <div className="p-card-header py-3 px-4 relative">
-        <div className="status-area absolute top-0 z-50 left-0 w-full py-3 px-4 flex items-center justify-between">
-          <p className="review-rating text-[14px] font-normal font-secondary leading-[150%] text-[#404042] flex items-center gap-[3px]">
-            <Image
-              src="/images/icons/stars.svg"
-              alt="average rating"
-              width={16}
-              height={16}
-              loading="lazy"
-            />
-            {Number(average_rating) > 0 && (
-              <span>
-                {Number(average_rating).toFixed(1).replace('.', ',')}
-              </span>
-            )}
-          </p>
+  const offerCount = Math.max(
+    Array.isArray(offers) ? offers.length : 0,
+    Number(total_offers) || 0,
+  );
+  const isInStock = in_stock === 'true';
+  const singlePrice =
+    toMoneyNumber(cheapest_offer) === toMoneyNumber(expensive_offer);
 
-          <button onClick={handleToggleWishlist} className="cursor-pointer">
-            <div className="relative w-5 h-5">
-              <OptimizedImage
-                src={
-                  isFavorited
-                    ? '/images/icons/heart-filled.svg'
-                    : '/images/icons/heart.svg'
-                }
-                alt="favorite"
-                fill
-                className="object-contain"
-                loading="lazy"
-              />
-            </div>
-          </button>
-        </div>
-        <div className="card-header-image w-full h-[159px] max-md:h-[159px] bg-mono-0 flex items-center justify-center rounded-[4px] mb-2">
+  return (
+    <div className="product-card-item product-card-v2 group bg-mono-0 border border-[#E9ECF3] rounded-[16px] transition-all ease-out flex h-full w-full flex-col duration-300 hover:border-[#C9D6FC] hover:-translate-y-0.5">
+      {/* ---------- Image stage ---------- */}
+      <div className="p-card-header p-2.5 relative">
+        <div className="card-header-image relative w-full h-[170px] bg-[#F5F7FB] flex items-center justify-center rounded-[12px] overflow-hidden">
           <Link href={`/produkte/${slug}`} prefetch passHref>
             <OptimizedImage
-              className="w-auto h-[159px] max-md:h-[159px] object-cover"
+              className="w-auto h-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
               width={320}
               height={159}
               src={mainImage}
@@ -401,238 +378,229 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
               fallback="/images/realistic-complete-set-car-wheels-2.png"
             />
           </Link>
+
+          <div className="status-area absolute top-2 left-2 right-2 z-50 flex items-start justify-between pointer-events-none">
+            <p className="review-rating pointer-events-auto inline-flex items-center gap-1 rounded-full bg-mono-0/95 px-2 py-1 text-[12px] font-medium font-secondary leading-none text-[#16171A] shadow-[0_1px_3px_rgba(16,24,40,0.08)]">
+              <Image
+                src="/images/icons/stars.svg"
+                alt="average rating"
+                width={13}
+                height={13}
+                loading="lazy"
+              />
+              {Number(average_rating) > 0 ? (
+                <span>
+                  {Number(average_rating).toFixed(1).replace('.', ',')}
+                </span>
+              ) : null}
+            </p>
+
+            <button
+              onClick={handleToggleWishlist}
+              aria-label={isFavorited ? 'Von der Wunschliste entfernen' : 'Zu den Favoriten hinzufügen'}
+              className="pointer-events-auto cursor-pointer inline-flex h-8 w-8 items-center justify-center rounded-full bg-mono-0/95 shadow-[0_1px_3px_rgba(16,24,40,0.08)] transition-transform hover:scale-110"
+            >
+              <div className="relative w-[18px] h-[18px]">
+                <OptimizedImage
+                  src={
+                    isFavorited
+                      ? '/images/icons/heart-filled.svg'
+                      : '/images/icons/heart.svg'
+                  }
+                  alt="favorite"
+                  fill
+                  className="object-contain"
+                  loading="lazy"
+                />
+              </div>
+            </button>
+          </div>
+
+          <span className="product-sku absolute bottom-2 left-2 z-40 rounded-[6px] bg-[#16171A]/85 px-2 py-1 text-[12px] font-semibold font-secondary leading-none text-mono-0 tabular-nums">
+            {dimensions}
+          </span>
+          {savingsLabel ? (
+            <div className="absolute bottom-2 right-2 z-40 rounded-[6px] bg-mono-0">
+              <SavingsPercentBadge label={savingsLabel} tooltipPlacement="left" />
+            </div>
+          ) : null}
         </div>
-        <div className="card-header-bottom flex items-center gap-1 justify-between w-full">
-          <div className="h-[35px] w-[130px] flex items-center justify-start">
+      </div>
+
+      {/* ---------- Body ---------- */}
+      <div className="p-card-body flex flex-1 flex-col px-4 pt-2 pb-0">
+        <div className="card-header-bottom flex items-center gap-2 justify-between w-full mb-2">
+          <div className="h-[35px] min-w-0 max-w-[130px] flex items-center justify-start">
             {brand_logo ? (
               <Image
                 loading="lazy"
                 src={brand_logo}
-                className="h-[30px] object-contain mr-auto"
+                className="h-[30px] w-auto object-contain mr-auto"
                 alt="product brand"
                 width={110}
                 height={35}
               />
             ) : (
-              <p className="flex items-center gap-[6px] text-[#404042] text-[14px] font-normal font-secondary">
+              <p className="text-[#404042] text-[14px] font-semibold font-secondary">
                 {brand_name}
               </p>
             )}
           </div>
-          <p className="flex items-center gap-[6px] text-[#16171A] text-[16px] font-normal font-secondary">
-            <Image
-              src="/images/icons/tick-square.svg"
-              alt="search price"
-              width={16}
-              loading="lazy"
-              height={16}
+          <p
+            className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[12px] font-medium font-secondary ${
+              isInStock ? 'text-[#1F7A3A]' : 'text-[#B42318]'
+            }`}
+          >
+            <span
+              className={`h-2 w-2 rounded-full ${
+                isInStock ? 'bg-[#22C55E]' : 'bg-[#EF4444]'
+              }`}
             />
-            {in_stock === 'true' ? 'Auf Lager' : 'Nicht Verfügbar'}
+            {isInStock ? 'Auf Lager' : 'Nicht Verfügbar'}
           </p>
         </div>
-      </div>
-      <div className="p-card-body px-4 pt-3 pb-0">
-        <h3 className="h6 text-[16px] text-[#404042] h-[37px] font-medium font-primary mb-3 leading-tight line-clamp-2">
-          <Link href={`/produkte/${slug}`} passHref>
-            {[brand_name, product_name].filter(Boolean).join(' ').toUpperCase()}
+
+        <h3 className="h6 text-[15px] text-[#16171A] min-h-[38px] font-semibold font-primary leading-[1.3] line-clamp-2 mb-1">
+          <Link href={`/produkte/${slug}`} passHref className="hover:text-primary-100 transition-colors">
+            {[brand_name, product_name].filter(Boolean).join(' ')}
           </Link>
         </h3>
 
-        <div className="cat-diameter-box flex items-center justify-between w-full gap-1">
-          <p className="tyres-category text-left font-normal capitalize text-[#16171A] text-[14px] font-secondary">
-            {merchant_product_third_category}
-          </p>
-          <p className="product-sku font-medium text-right text-[#16171A] text-[14px] font-secondary">
-            {dimensions}
-          </p>
-        </div>
-        <div className="divider !h-[1px] !my-3 !bg-[#F0F0F2]"></div>
-        <div className="brand-box flex items-center justify-between w-full gap-2">
-          <ul className="attributes h-[44px] flex items-center w-full justify-start">
-            {fuelLetter && (
-              <>
-                <li className="fuelclass flex items-center gap-2 font-medium font-secondary text-[14px]">
-                  <span
-                    className="tooltip tooltip-bottom cursor-pointer flex items-center"
-                    data-tip={EU_LABEL_TIPS.fuel}
-                  >
-                    <Image
-                      src="/images/icons/fuel.svg"
-                      alt="Fuel Class"
-                      width={16}
-                      height={16}
-                      loading="lazy"
-                    />
-                  </span>
-                  <span
-                    style={{
-                      color: gradeFuelColor(fuelLetter),
-                      fontWeight: 500,
-                      background: gradeFuelBgColor(fuelLetter),
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    {fuelLetter}
-                  </span>
-                </li>
-                <li className="divider mx-2 w-[2px] h-3 bg-[#F0F0F2]"></li>
-              </>
-            )}
-            {wetLetter && (
-              <>
-                <li className="fuelconsumption flex items-center gap-2 font-medium font-secondary text-[14px]">
-                  <span
-                    className="tooltip tooltip-bottom cursor-pointer flex items-center"
-                    data-tip={EU_LABEL_TIPS.wet}
-                  >
-                    <Image
-                      src="/images/icons/heavy-rain.png"
-                      alt="Wet Grip"
-                      width={16}
-                      height={16}
-                      loading="lazy"
-                    />
-                  </span>
-                  <span
-                    style={{
-                      color: gradeGripColor(wetLetter),
-                      fontWeight: 500,
-                      background: gradeGripBgColor(wetLetter),
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                    }}
-                  >
-                    {wetLetter}
-                  </span>
-                </li>
-                <li className="divider mx-2 w-[2px] h-3 bg-[#F0F0F2]"></li>
-              </>
-            )}
-            {noiseLetter && (
-              <li className="externalrollingnoiseindbt flex items-center gap-2 font-medium font-secondary text-[14px]">
-                <span
-                  className="tooltip tooltip-bottom cursor-pointer flex items-center"
-                    data-tip={EU_LABEL_TIPS.noise}
-                >
-                  <Image
-                    src="/images/icons/noise.svg"
-                    alt="External Rolling Noise"
-                    width={16}
-                    height={16}
-                    loading="lazy"
-                  />
-                </span>
-                {noiseLetter}
-              </li>
-            )}
-          </ul>
+        <p className="tyres-category text-left capitalize text-[#6B6E76] text-[13px] font-secondary mb-3">
+          {merchant_product_third_category}
+          {merchant_product_third_category && dimensions ? ' · ' : ''}
+          {dimensions}
+        </p>
 
-          {savingsLabel ? (
-            <SavingsPercentBadge label={savingsLabel} tooltipPlacement="left" />
-          ) : null}
-        </div>
-        {/* HUMAN-READABLE HIGHLIGHTS (ONLY 2) */}
-        <div className="flex gap-2 w-full mt-2 flex-wrap">
-          {/* Feature Badges - DYNAMICALLY STYLED */}
-          <div className="flex w-full gap-2">
-            <div
-              style={{ backgroundColor: fuelMeta.bg }}
-              className="flex-1 rounded-lg px-2 py-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
-            >
-              <div className="flex items-center gap-1">
-                <Leaf size={12} />
-                <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                  Kraftstoffeffizienz
-                </span>
-              </div>
+        {/* EU label */}
+        <ul className="attributes flex items-center gap-1.5 flex-wrap mb-2">
+          {fuelLetter && (
+            <li className="fuelclass inline-flex items-center gap-1.5 rounded-[8px] border border-[#EEF0F4] pl-1.5 pr-1 py-1 font-secondary text-[13px]">
               <span
-                className="text-[10px] font-black whitespace-nowrap"
-                style={{ color: fuelMeta.color }}
+                className="tooltip tooltip-bottom cursor-pointer flex items-center"
+                data-tip={EU_LABEL_TIPS.fuel}
               >
-                {fuelMeta.textDE}
+                <Image src="/images/icons/fuel.svg" alt="Fuel Class" width={14} height={14} loading="lazy" />
+              </span>
+              <span
+                className="rounded-[5px] px-1.5 leading-[20px] font-semibold"
+                style={{ color: gradeFuelColor(fuelLetter), background: gradeFuelBgColor(fuelLetter) }}
+              >
+                {fuelLetter}
+              </span>
+            </li>
+          )}
+          {wetLetter && (
+            <li className="fuelconsumption inline-flex items-center gap-1.5 rounded-[8px] border border-[#EEF0F4] pl-1.5 pr-1 py-1 font-secondary text-[13px]">
+              <span
+                className="tooltip tooltip-bottom cursor-pointer flex items-center"
+                data-tip={EU_LABEL_TIPS.wet}
+              >
+                <Image src="/images/icons/heavy-rain.png" alt="Wet Grip" width={14} height={14} loading="lazy" />
+              </span>
+              <span
+                className="rounded-[5px] px-1.5 leading-[20px] font-semibold"
+                style={{ color: gradeGripColor(wetLetter), background: gradeGripBgColor(wetLetter) }}
+              >
+                {wetLetter}
+              </span>
+            </li>
+          )}
+          {noiseLetter && (
+            <li className="externalrollingnoiseindbt inline-flex items-center gap-1.5 rounded-[8px] border border-[#EEF0F4] px-1.5 py-1 font-secondary text-[13px] font-semibold text-[#404042]">
+              <span
+                className="tooltip tooltip-bottom cursor-pointer flex items-center"
+                data-tip={EU_LABEL_TIPS.noise}
+              >
+                <Image src="/images/icons/noise.svg" alt="External Rolling Noise" width={14} height={14} loading="lazy" />
+              </span>
+              <span className="leading-[20px]">{noiseLetter}</span>
+            </li>
+          )}
+        </ul>
+
+        {/* Human-readable highlights */}
+        <div className="grid grid-cols-2 gap-1.5 w-full">
+          <div
+            style={{ backgroundColor: fuelMeta.bg }}
+            className="min-w-0 rounded-[8px] px-2 py-1.5 flex flex-col gap-0.5 items-start"
+          >
+            <div className="flex items-center gap-1 text-[#6B6E76] max-w-full">
+              <Leaf size={11} />
+              <span className="text-[10px] font-semibold leading-none truncate">
+                Kraftstoffeffizienz
               </span>
             </div>
-            <div
-              style={{ backgroundColor: wetMeta.bg }}
-              className="flex-1 rounded-lg p-2 flex flex-col gap-1 items-start transition-all group-hover:bg-white group-hover:shadow-sm"
-            >
-              <div className="flex gap-1 items-center">
-                <CloudRain size={12} />
-                <span className="text-[9px] font-bold text-gray-400 uppercase leading-none">
-                  Nasshaftung
-                </span>
-              </div>
-              <span
-                className="text-[10px] font-black whitespace-nowrap"
-                style={{ color: wetMeta.color }}
-              >
-                {wetMeta.textDE}
+            <span className="text-[10px] font-bold leading-tight max-w-full" style={{ color: fuelMeta.color }}>
+              {fuelMeta.textDE}
+            </span>
+          </div>
+          <div
+            style={{ backgroundColor: wetMeta.bg }}
+            className="min-w-0 rounded-[8px] px-2 py-1.5 flex flex-col gap-0.5 items-start"
+          >
+            <div className="flex gap-1 items-center text-[#6B6E76] max-w-full">
+              <CloudRain size={11} />
+              <span className="text-[10px] font-semibold leading-none truncate">
+                Nasshaftung
               </span>
             </div>
+            <span className="text-[10px] font-bold leading-tight max-w-full" style={{ color: wetMeta.color }}>
+              {wetMeta.textDE}
+            </span>
           </div>
         </div>
-        <p className="product-price text-primary-100 font-normal font-secondary text-[14px] mt-4 flex items-center gap-1">
-          <span className="text-[14px] font-normal font-secondary text-[#16171A]">
-            Ab:
-          </span>{' '}
-          {toMoneyNumber(cheapest_offer) === toMoneyNumber(expensive_offer) ? (
-            <>
-              <span className="text-[18px] font-medium font-secondary text-[#404042]">
-                {formatEuro(search_price, { suffix: false })}
+
+        {/* Price */}
+        <div className="mt-auto pt-4">
+          <div className="product-price flex items-end justify-between gap-2">
+            <div className="flex flex-col">
+              <span className="text-[12px] font-secondary text-[#6B6E76] leading-none mb-1">
+                Ab
               </span>
-              <span className="text-[20px] font-normal font-secondary text-[#404042]">
-                €
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <span className="text-[22px] font-semibold font-primary text-[#16171A] leading-none tabular-nums">
+                  {singlePrice
+                    ? `${formatEuro(search_price, { suffix: false })} €`
+                    : formatEuro(cheapest_offer)}
+                </span>
+                {!singlePrice && (
+                  <span
+                    style={{ textDecoration: 'line-through' }}
+                    className="text-[14px] font-secondary text-[#9AA0A8] tabular-nums"
+                  >
+                    {formatEuro(expensive_offer)}
+                  </span>
+                )}
+              </div>
+            </div>
+            {offerCount > 0 && (
+              <span className="shrink-0 rounded-full bg-[#EEF2FF] px-2 py-1 text-[11px] font-semibold text-primary-100 font-secondary">
+                {offerCount} {offerCount === 1 ? 'Angebot' : 'Angebote'}
               </span>
-            </>
-          ) : (
-            <>
-              <span className="text-[18px] font-medium font-secondary text-[#404042]">
-                {formatEuro(cheapest_offer)}
-              </span>
-              <span className="ml-3 text-[#C6C7CC]"></span>
-              <span
-                style={{ textDecoration: 'line-through' }}
-                className="text-[16px] font-secondary font-normal text-[#404042] leading-[140%] text-line-through"
-              >
-                {formatEuro(expensive_offer)}
-              </span>{' '}
-            </>
-          )}
-        </p>
-        <PriceSparkline
-          points={price_trend?.points}
-          current={toMoneyNumber(cheapest_offer) ?? toMoneyNumber(search_price)}
-          className="mt-1.5"
-        />
-        <div className="button-box pt-4">
+            )}
+          </div>
+          <PriceSparkline
+            points={price_trend?.points}
+            current={toMoneyNumber(cheapest_offer) ?? toMoneyNumber(search_price)}
+            className="mt-2"
+          />
+        </div>
+
+        <div className="button-box pt-3">
           <Link href={`/produkte/${slug}`} passHref>
             <button
               type="button"
-              className="max-w-full flex items-center w-full text-[14px] md:text-[14px] font-medium leading-[120%] font-secondary xl:text-[14px] ml-auto border text-primary-100 bg-transparent rounded-full hover:bg-primary-100 hover:text-mono-0 transition ease !border-primary-100 justify-center cursor-pointer py-[11.5px] px-4"
+              className="w-full flex items-center justify-center gap-1.5 rounded-[10px] bg-primary-100 py-[11px] px-4 text-[14px] font-semibold font-secondary text-mono-0 cursor-pointer transition hover:opacity-90"
             >
-              Alle Angebote{' '}
-              {Math.max(
-                Array.isArray(offers) ? offers.length : 0,
-                Number(total_offers) || 0,
-              ) > 0 && (
-                <>
-                  (
-                  {Math.max(
-                    Array.isArray(offers) ? offers.length : 0,
-                    Number(total_offers) || 0,
-                  )}
-                  )
-                </>
-              )}{' '}
-              anzeigen
+              Alle Angebote{offerCount > 0 ? ` (${offerCount})` : ''} anzeigen
             </button>
           </Link>
           {showCompareButton && (
             <button
               type="button"
               onClick={handleCompare}
-              className={`flex items-center gap-2 mt-3 text-[14px] font-medium font-secondary justify-center w-full cursor-pointer ${
+              className={`flex items-center gap-1.5 mt-2 text-[13px] font-medium font-secondary justify-center w-full cursor-pointer py-1.5 rounded-[8px] transition-colors hover:bg-[#F5F7FB] ${
                 isAlreadyCompared ? 'text-[#2d8934]' : 'text-primary-100'
               }`}
             >
@@ -642,12 +610,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                 </>
               ) : (
                 <>
-                  <Image
-                    src="/images/icons/tabler_plus.svg"
-                    alt=""
-                    width={20}
-                    height={20}
-                  />{' '}
+                  <Image src="/images/icons/tabler_plus.svg" alt="" width={18} height={18} />
                   Vergleichen
                 </>
               )}
@@ -655,74 +618,64 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
           )}
         </div>
       </div>
-      <div className="p-card-foot   px-4 pb-3 ">
+
+      {/* ---------- Cheapest offers ---------- */}
+      <div className="p-card-foot px-4 pb-4">
         {Array.isArray(offers) && offers.length > 0 && (
-          <>
-            <div className="divider !h-[1px] !mt-3 !mb-1 !bg-[#F0F0F2]"></div>
-            <div className="mt-auto">
-              <h4 className="font-primary font-normal text-[14px] mb-[6px] text-left text-[#404042] leading-[140%]">
-                Direkt zum günstigsten Angebot
-              </h4>
-              <ul className="competitor-product-lists flex flex-col">
-                {[...offers]
-                  .sort(
-                    (a, b) =>
-                      Number(
-                        (a as { in_stock?: boolean }).in_stock === false
-                      ) -
-                        Number(
-                          (b as { in_stock?: boolean }).in_stock === false
-                        ) ||
-                      (toMoneyNumber(a.price) ?? 0) -
-                        (toMoneyNumber(b.price) ?? 0)
-                  )
-                  .slice(0, 3)
-                  .map(item => {
-                    return (
-                      <li
-                        key={item.vendor_id}
-                        className="competitor-lists-item flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-2">
-                          <a
-                            href={buildVendorExitUrl({
-                              token: item.affiliate_product_cloak_url,
-                              productId: _id,
-                              uuid,
-                              from: 'product-card',
-                              vendor: item.vendor,
-                              vendorId: item.vendor_id,
-                              brand: brand_name,
-                              instruction: 'Direkt zum Angebot',
-                            })}
-                            target="_blank"
-                            rel="nofollow sponsored noopener"
-                            onClick={() => {
-                              onVendorExitClick({
-                                productId: _id,
-                                productName: product_name,
-                                brandName: brand_name,
-                                vendor: item.vendor,
-                                vendorId: item.vendor_id,
-                                source: 'product-card',
-                                instruction: 'Direkt zum Angebot',
-                                vendorPrice: toMoneyNumber(item.price) ?? undefined,
-                              });
-                            }}
-                            className="font-secondary py-[4px] px-[6px] font-normal text-[14px] text-left text-primary-100 underline leading-[140%]"
-                          >
-                            {item.vendor}
-                          </a>
-                        </div>
-                        <span className="font-secondary font-normal text-[14px] text-left text-[#404042] leading-[140%]">
-                          <span>{formatEuro(item.price)}</span>
-                        </span>
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
-          </>
+          <div className="mt-3 rounded-[12px] bg-[#F7F8FB] p-2.5">
+            <h4 className="font-secondary font-semibold text-[12px] mb-1.5 text-left text-[#6B6E76] leading-[140%]">
+              Direkt zum günstigsten Angebot
+            </h4>
+            <ul className="competitor-product-lists flex flex-col gap-1">
+              {[...offers]
+                .sort(
+                  (a, b) =>
+                    Number((a as { in_stock?: boolean }).in_stock === false) -
+                      Number((b as { in_stock?: boolean }).in_stock === false) ||
+                    (toMoneyNumber(a.price) ?? 0) - (toMoneyNumber(b.price) ?? 0)
+                )
+                .slice(0, 3)
+                .map(item => (
+                  <li
+                    key={item.vendor_id}
+                    className="competitor-lists-item flex items-center justify-between rounded-[8px] bg-mono-0 px-2 py-1.5"
+                  >
+                    <a
+                      href={buildVendorExitUrl({
+                        token: item.affiliate_product_cloak_url,
+                        productId: _id,
+                        uuid,
+                        from: 'product-card',
+                        vendor: item.vendor,
+                        vendorId: item.vendor_id,
+                        brand: brand_name,
+                        instruction: 'Direkt zum Angebot',
+                      })}
+                      target="_blank"
+                      rel="nofollow sponsored noopener"
+                      onClick={() => {
+                        onVendorExitClick({
+                          productId: _id,
+                          productName: product_name,
+                          brandName: brand_name,
+                          vendor: item.vendor,
+                          vendorId: item.vendor_id,
+                          source: 'product-card',
+                          instruction: 'Direkt zum Angebot',
+                          vendorPrice: toMoneyNumber(item.price) ?? undefined,
+                        });
+                      }}
+                      className="font-secondary font-medium text-[13px] text-left text-primary-100 hover:underline leading-[140%] truncate"
+                    >
+                      {item.vendor}
+                    </a>
+                    <span className="shrink-0 font-secondary font-semibold text-[13px] text-[#16171A] tabular-nums">
+                      {formatEuro(item.price)}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>
