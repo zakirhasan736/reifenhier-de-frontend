@@ -27,10 +27,16 @@ const BannerSection = ({ season }: BannerSectionProps) => {
   const [kategorie, setKategorie] = useState<string>(startSeason);
   // Keep the last chosen season's background when a tab is deselected.
   const [bgSeason, setBgSeason] = useState<HeroSeason>(startSeason);
+  // Only download a season's photo once it is needed: the first one on load
+  // (it is the LCP image), the others when the visitor switches to them.
+  const [loaded, setLoaded] = useState<HeroSeason[]>([startSeason]);
 
   const handleKategorie = (value: string) => {
     setKategorie(value);
-    if (isHeroSeason(value)) setBgSeason(value);
+    if (isHeroSeason(value)) {
+      setBgSeason(value);
+      setLoaded(prev => (prev.includes(value) ? prev : [...prev, value]));
+    }
   };
 
   return (
@@ -40,7 +46,7 @@ const BannerSection = ({ season }: BannerSectionProps) => {
     >
       {/* one layer per season, cross-faded */}
       <div className="absolute inset-0 overflow-hidden z-[98]">
-        {(Object.keys(SEASON_HERO) as HeroSeason[]).map(key => {
+        {loaded.map(key => {
           const cfg = SEASON_HERO[key];
           const active = key === bgSeason;
           const first = key === startSeason;

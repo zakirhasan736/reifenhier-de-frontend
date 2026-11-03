@@ -20,7 +20,21 @@ export async function seasonMetadata(slug: SeasonSlug): Promise<Metadata> {
     description,
     alternates: { canonical: url },
     robots: { index: total > 0, follow: true },
-    openGraph: { type: 'website', locale: 'de_DE', url, siteName: 'Reifexa.de', title, description },
+    openGraph: {
+      type: 'website',
+      locale: 'de_DE',
+      url,
+      siteName: 'Reifexa.de',
+      title,
+      description,
+      images: [{ url: `${SITE_URL}/images/banner-og-image.png`, width: 1230, height: 613, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [`${SITE_URL}/images/banner-og-image.png`],
+    },
   };
 }
 

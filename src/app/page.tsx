@@ -88,41 +88,10 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      {/* JSON-LD: Organization + WebSite (homepage) */}
-      <JsonLd id="ld-org-website" data={{
+      {/* JSON-LD: homepage WebPage (Organization + WebSite come from the layout) */}
+      <JsonLd id="ld-home-webpage" data={{
             '@context': 'https://schema.org',
             '@graph': [
-              {
-                '@type': 'Organization',
-                '@id': `${SITE_URL}/#org`,
-                name: 'Reifexa.de',
-                url: `${SITE_URL}/`,
-                logo: {
-                  '@type': 'ImageObject',
-                  url: `${SITE_URL}/images/logo.png`,
-                },
-                sameAs: [
-                  'https://www.facebook.com/reifexa.de',
-                  'https://www.instagram.com/reifexa.de',
-                  'https://www.tiktok.com/@reifexa',
-                ],
-              },
-              {
-                '@type': 'WebSite',
-                '@id': `${SITE_URL}/#website`,
-                url: `${SITE_URL}/`,
-                name: 'Reifexa.de',
-                inLanguage: 'de-DE',
-                publisher: { '@id': `${SITE_URL}/#org` },
-                potentialAction: {
-                  '@type': 'SearchAction',
-                  target: {
-                    '@type': 'EntryPoint',
-                    urlTemplate: `${SITE_URL}/produkte?q={search_term_string}`,
-                  },
-                  'query-input': 'required name=search_term_string',
-                },
-              },
               {
                 '@type': 'WebPage',
                 '@id': `${SITE_URL}/#webpage`,

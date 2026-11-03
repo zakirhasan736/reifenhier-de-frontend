@@ -41,8 +41,8 @@ const ProductList: React.FC<ProductListProps> = ({ products, loading }) => {
         </div>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-1 gap-x-4 gap-y-6 product-listing-grid-wrapper">
-          {products.map(p => (
-            <ProductCard key={p._id} {...p} />
+          {products.map((p, i) => (
+            <ProductCard key={p._id} {...p} isPriority={i === 0} />
           ))}
         </div>
       )}

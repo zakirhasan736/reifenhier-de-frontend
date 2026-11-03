@@ -1,5 +1,18 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { HTML_LIMITED_BOT_UA_RE_STRING } = require('next/dist/shared/lib/router/utils/is-bot');
+
+/**
+ * Next streams <title>, description, canonical and OpenGraph tags into the
+ * body for user agents it believes run JavaScript — including Googlebot.
+ * Search and AI crawlers get the full <head> in the first HTML instead,
+ * so indexing never depends on rendering.
+ */
+const SEO_BOTS =
+  'Googlebot|GoogleOther|Storebot-Google|AdsBot-Google|Mediapartners-Google|bingbot|msnbot|PerplexityBot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|SeznamBot|ecosia|Applebot';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  htmlLimitedBots: new RegExp(`${HTML_LIMITED_BOT_UA_RE_STRING}|${SEO_BOTS}`, 'i'),
   images: {
     remotePatterns: [
       {
