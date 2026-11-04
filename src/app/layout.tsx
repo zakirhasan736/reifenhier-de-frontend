@@ -214,6 +214,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     'https://www.facebook.com/reifexa.de',
                     'https://www.instagram.com/reifexa.de',
                     'https://www.tiktok.com/@reifexa',
+                    'https://www.youtube.com/@ReifexaDE',
                   ],
                   contactPoint: {
                     '@type': 'ContactPoint',

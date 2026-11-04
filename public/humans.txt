@@ -16,6 +16,7 @@ Doctype: HTML5
 Facebook: https://www.facebook.com/reifexa.de
 Instagram: https://www.instagram.com/reifexa.de
 TikTok: https://www.tiktok.com/@reifexa
+YouTube: https://www.youtube.com/@ReifexaDE
 
 /* THANKS */
 Built for transparent tire price comparison in Germany.
