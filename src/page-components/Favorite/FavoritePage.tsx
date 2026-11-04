@@ -2,7 +2,7 @@
 
 import { useGetWishlistQuery } from '@/store/api/wishlistApi';
 import ProductCard from '@/components/elements/cards/ProductCard';
-import Loading from '@/app/loading';
+import Loading from '@/components/elements/PageLoading';
 
 interface RelatedCheaperItem {
   _id: string;

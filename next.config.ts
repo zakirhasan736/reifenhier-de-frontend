@@ -13,11 +13,6 @@ const SEO_BOTS =
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   htmlLimitedBots: new RegExp(`${HTML_LIMITED_BOT_UA_RE_STRING}|${SEO_BOTS}`, 'i'),
-  experimental: {
-    // Inline the (small) Tailwind CSS into the HTML: no render-blocking
-    // CSS requests before first paint.
-    inlineCss: true,
-  },
   images: {
     // Extra widths so a 1280–1600px wide screen doesn't download the 1920px
     // hero.
