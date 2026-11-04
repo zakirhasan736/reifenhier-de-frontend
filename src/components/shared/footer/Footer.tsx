@@ -239,11 +239,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                       <li>
                         <Link
                           className="h-8 w-8"
-                          href="https://www.youtube.com/channel/UCPkFChI-2PUeV32VHdS7XFg"
+                          href="https://www.youtube.com/@ReifexaDE"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Reifexa auf YouTube"
                         >
                           <Image
                             src={'/images/youtube.webp'}
-                            alt="reifexa icon"
+                            alt="Reifexa YouTube-Kanal"
                             width={36}
                             height={36}
                           />
