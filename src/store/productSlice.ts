@@ -75,6 +75,7 @@ interface ProductState {
   minPriceLimit: number;
   maxPriceLimit: number;
   initialPriceRange: { minPrice: number; maxPrice: number };
+  priceHistogram?: { min: number; max: number; bins: number[] };
 }
 
 type QueryParamValue =
@@ -114,6 +115,7 @@ interface ApiResponse {
   total: number;
   minPrices?: number;
   maxPrices?: number;
+  priceHistogram?: { min: number; max: number; bins: number[] };
   filterGroups?: FilterProducts;
 }
 
@@ -181,6 +183,9 @@ export const fetchProducts = createAsyncThunk<
     sort: sortField,
     order: sortOrder,
     ...filters,
+    // 0 / 99999 mean "no limit" – don't send them
+    minPrice: filters.minPrice > 0 ? filters.minPrice : undefined,
+    maxPrice: filters.maxPrice > 0 && filters.maxPrice < 99999 ? filters.maxPrice : undefined,
     includeFilters: page === 1 ? true : undefined,
   };
 
@@ -259,14 +264,29 @@ const productSlice = createSlice({
         state.total = data.total ?? 0;
 
         // Update UI price limits; do NOT overwrite user's current min/max.
+        // The API returns bounds without the price range applied. Older API
+        // versions returned bounds *within* the price range; with a price
+        // filter active, only ever widen the bounds so the slider can't shrink.
         if (data.minPrices !== undefined && data.maxPrices !== undefined) {
-          state.minPriceLimit = data.minPrices;
-          state.maxPriceLimit = data.maxPrices;
+          const priceActive =
+            state.filters.minPrice > 0 ||
+            (state.filters.maxPrice > 0 && state.filters.maxPrice < 99999);
+          const prevValid =
+            state.maxPriceLimit > state.minPriceLimit && state.maxPriceLimit < 99999;
+          const hasHistogram = !!data.priceHistogram;
+          if (priceActive && prevValid && !hasHistogram) {
+            state.minPriceLimit = Math.min(state.minPriceLimit, data.minPrices);
+            state.maxPriceLimit = Math.max(state.maxPriceLimit, data.maxPrices);
+          } else {
+            state.minPriceLimit = data.minPrices;
+            state.maxPriceLimit = data.maxPrices;
+          }
           state.initialPriceRange = {
             minPrice: data.minPrices,
             maxPrice: data.maxPrices,
           };
         }
+        if (data.priceHistogram) state.priceHistogram = data.priceHistogram;
         if (data.filterGroups) {
           state.filterProducts = data.filterGroups;
         }

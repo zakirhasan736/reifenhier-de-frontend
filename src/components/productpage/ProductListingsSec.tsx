@@ -153,6 +153,22 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
     [filters]
   );
 
+  // "Preis: 50 € – 100 €" chip when a price limit is set
+  const hasMinPrice = mergedFilters.minPrice > 0;
+  const hasMaxPrice = mergedFilters.maxPrice > 0 && mergedFilters.maxPrice < 99999;
+  const fmtEur = (n: number) => `${Math.round(n).toLocaleString('de-DE')} €`;
+  const priceChip = hasMinPrice && hasMaxPrice
+    ? `${fmtEur(mergedFilters.minPrice)} – ${fmtEur(mergedFilters.maxPrice)}`
+    : hasMinPrice
+    ? `ab ${fmtEur(mergedFilters.minPrice)}`
+    : hasMaxPrice
+    ? `bis ${fmtEur(mergedFilters.maxPrice)}`
+    : '';
+  const clearPrice = () => {
+    dispatch(setFilters({ minPrice: 0, maxPrice: 99999 }));
+    dispatch(setPage(1));
+  };
+
   // ---- URL helpers
   const buildSearchParamsFromFilters = (f: Filters) => {
     const params = new URLSearchParams();
@@ -161,10 +177,10 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
         if (v != null && String(v).trim() !== '') params.append(key, String(v));
       });
     });
-    if (typeof f.minPrice === 'number')
-      params.set('minPrice', String(f.minPrice));
-    if (typeof f.maxPrice === 'number')
-      params.set('maxPrice', String(f.maxPrice));
+    if (typeof f.minPrice === 'number' && f.minPrice > 0)
+      params.set('minPrice', String(Math.round(f.minPrice)));
+    if (typeof f.maxPrice === 'number' && f.maxPrice > 0 && f.maxPrice < 99999)
+      params.set('maxPrice', String(Math.round(f.maxPrice)));
     if (sortField) params.set('sortField', String(sortField));
     if (sortOrder) params.set('sortOrder', String(sortOrder));
     if (page) params.set('page', String(page));
@@ -197,8 +213,10 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
     // Numeric filters
     const qsMin = searchParams.get('minPrice');
     const qsMax = searchParams.get('maxPrice');
-    newFilters.minPrice = qsMin ? Number(qsMin) : DEFAULT_FILTERS.minPrice;
-    newFilters.maxPrice = qsMax ? Number(qsMax) : DEFAULT_FILTERS.maxPrice;
+    const nMin = Number(qsMin);
+    const nMax = Number(qsMax);
+    newFilters.minPrice = qsMin && Number.isFinite(nMin) && nMin > 0 ? nMin : DEFAULT_FILTERS.minPrice;
+    newFilters.maxPrice = qsMax && Number.isFinite(nMax) && nMax > 0 ? nMax : DEFAULT_FILTERS.maxPrice;
 
     // Sorting + pagination
     const qsSortField = searchParams.get('sortField');
@@ -383,6 +401,18 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
 
               {/* Desktop chips */}
               <div className="product-selected-category-lists hidden lg:flex flex-wrap items-center gap-2">
+                {priceChip ? (
+                  <span className="selected-filter px-4 py-1 h-9 bg-[#F5F5F7] rounded-full text-[14px] font-normal font-secondary leading-[100%] text-[#404042] flex items-center">
+                    <strong className="mr-1">Preis:</strong> {priceChip}
+                    <button
+                      onClick={clearPrice}
+                      className="ml-1 text-primary-100 cursor-pointer"
+                      title="Preisfilter entfernen"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ) : null}
                 {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) => {
                   const selectedValues = mergedFilters[key];
                   if (!selectedValues || selectedValues.length === 0)
