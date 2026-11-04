@@ -5,7 +5,7 @@ import axios from 'axios';
 import ProductSinglepage from '@/components/productpage/ProductDetailsSec';
 import RelatedProducts from '@/components/productpage/RelatedProducts';
 import HowItWorks from '@/components/homepage/HowItWorks';
-import Loading from '@/app/loading';
+import Loading from '@/components/elements/PageLoading';
 
 const API = (
   process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de'

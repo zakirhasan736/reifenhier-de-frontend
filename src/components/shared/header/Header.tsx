@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import axios from 'axios';
 import { useGetWishlistCountQuery } from '@/store/api/wishlistApi';
 import { FaRegSnowflake } from 'react-icons/fa';
 import { IoMdSunny } from 'react-icons/io';
@@ -15,20 +14,10 @@ import { FiPlus } from 'react-icons/fi';
 import { AiOutlineMinus } from 'react-icons/ai';
 import GlobalSearch from '@/components/elements/search/globalSearch';
 
-const WP_API =
-  process.env.NEXT_PUBLIC_WP_API_URL || 'https://wp.reifexa.de/wp-json/wp/v2';
 
 /* ------------------------------------------
    TYPES
 -------------------------------------------*/
-
-// WordPress API category type
-interface WPCategory {
-  id: number;
-  name: string;
-  slug: string;
-  parent: number;
-}
 
 // Local blog category structure
 interface BlogCategoryItem {
@@ -94,40 +83,31 @@ export default function Header() {
   );
   const [catLoading, setCatLoading] = useState(true);
 
+  // Blog categories come from our own API route (server-side, cached), so
+  // the browser never calls wp.reifexa.de directly (CORS errors) and the
+  // request waits until the page is idle instead of competing with the LCP.
   useEffect(() => {
-    async function loadCategories() {
-      try {
-        const parents = await axios.get<WPCategory[]>(
-          `${WP_API}/categories?parent=0&per_page=50&orderby=name&order=asc`
-        );
-
-        const structure: BlogCategoryStructure = {};
-
-        for (const parent of parents.data) {
-          const subs = await axios.get<WPCategory[]>(
-            `${WP_API}/categories?parent=${parent.id}&per_page=100`
-          );
-
-          structure[parent.slug] = {
-            name: parent.name,
-            slug: parent.slug,
-            sub: subs.data.map(s => ({
-              id: s.id,
-              name: s.name,
-              slug: s.slug,
-            })),
-          };
-        }
-
-        setBlogCategories(structure);
-      } catch (err) {
-        console.error('WordPress category fetch failed:', err);
-      }
-
-      setCatLoading(false);
-    }
-
-    loadCategories();
+    let cancelled = false;
+    const load = () =>
+      fetch('/api/blog-categories')
+        .then(r => (r.ok ? r.json() : {}))
+        .then((data: BlogCategoryStructure) => {
+          if (!cancelled) setBlogCategories(data || {});
+        })
+        .catch(() => {})
+        .finally(() => {
+          if (!cancelled) setCatLoading(false);
+        });
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+    };
+    const id = w.requestIdleCallback
+      ? w.requestIdleCallback(load, { timeout: 3000 })
+      : window.setTimeout(load, 1500);
+    return () => {
+      cancelled = true;
+      if (!w.requestIdleCallback) window.clearTimeout(id);
+    };
   }, []);
 
   const COLUMN_SIZE = 7;
@@ -162,21 +142,15 @@ export default function Header() {
           {/* LOGO + PRODUCT CATEGORY NAV */}
           <div className="logo-section flex items-center gap-8 max-sm:justify-center max-sm:pt-1">
             <Link href="/" className="text-2xl font-bold text-mono-100">
+              {/* LCP candidate: preloaded, small file, real aspect ratio (480×183) */}
               <Image
-                loading="lazy"
-                width="156"
-                height="51"
-                className="max-sm:hidden"
-                src="/images/reifexa_de_logo.png"
+                priority
+                width={480}
+                height={183}
+                sizes="155px"
+                className="h-[59px] w-auto"
+                src="/images/reifexa_de_logo_sm.png"
                 alt="reifexa de brand logo"
-              />
-              <Image
-                loading="lazy"
-                width="156"
-                height="36"
-                className="sm:hidden"
-                src="/images/reifexa_de_logo.png"
-                alt="reifexa de brand logo mobile"
               />
             </Link>
 
@@ -232,6 +206,9 @@ export default function Header() {
                 {/* MOBILE NAV TRIGGER */}
                 <li className="lg:hidden">
                   <button
+                    type="button"
+                    aria-label="Menü öffnen"
+                    aria-expanded={mobileOpen}
                     onClick={() => setMobileOpen(true)}
                     className="flex items-center justify-center h-10 w-10 border border-secondary-100/40 rounded-full"
                   >

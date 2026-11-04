@@ -14,6 +14,10 @@ const SEO_BOTS =
 const nextConfig = {
   htmlLimitedBots: new RegExp(`${HTML_LIMITED_BOT_UA_RE_STRING}|${SEO_BOTS}`, 'i'),
   images: {
+    // Extra widths so a 1280–1600px wide screen doesn't download the 1920px
+    // hero.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1366, 1600, 1920, 2048, 3840],
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       {
         protocol: 'https',

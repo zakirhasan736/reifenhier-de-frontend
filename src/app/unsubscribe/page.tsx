@@ -1,8 +1,8 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
-export default function UnsubscribePage() {
+function UnsubscribeContent() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token') || ''; // optional chaining prevents TS warning
   const [message, setMessage] = useState('Wird verarbeitet...');
@@ -42,5 +42,13 @@ export default function UnsubscribePage() {
       <h1 className="text-2xl font-bold mb-4">Newsletter Abmeldung</h1>
       <p className="text-gray-700">{message}</p>
     </div>
+  );
+}
+
+export default function UnsubscribePage() {
+  return (
+    <Suspense fallback={null}>
+      <UnsubscribeContent />
+    </Suspense>
   );
 }

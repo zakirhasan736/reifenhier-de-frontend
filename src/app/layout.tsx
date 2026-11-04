@@ -234,11 +234,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             }} />
 
         {/* Silktide Cookie Manager */}
-        <link
-          rel="stylesheet"
-          href="/cookie-banner/silktide-consent-manager.min.css?v=1.0.1"
-          id="silktide-consent-manager-css"
-        />
+        {/* Banner CSS is loaded by the init script below (not render-blocking). */}
         <Script
           src="/cookie-banner/silktide-consent-manager.min.js?v=1.0.1"
           strategy="afterInteractive"
@@ -249,7 +245,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <Script id="silktide-init" strategy="afterInteractive">
           {`
             (function initSilktide() {
+              var cssReady = false;
+              if (!document.getElementById('silktide-consent-manager-css')) {
+                var l = document.createElement('link');
+                l.rel = 'stylesheet';
+                l.id = 'silktide-consent-manager-css';
+                l.href = '/cookie-banner/silktide-consent-manager.min.css?v=1.0.1';
+                l.onload = l.onerror = function () { cssReady = true; };
+                document.head.appendChild(l);
+              } else {
+                cssReady = true;
+              }
               function setupSilktide() {
+                if (!cssReady) return false;
                 if (typeof window.silktideCookieBannerManager === 'undefined') {
                   return false;
                 }
