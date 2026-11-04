@@ -5,7 +5,7 @@ import { currentTyreSeason } from '@/libs/season';
 import { useRouter } from 'next/navigation';
 import { useGetTyreFiltersQuery } from '@/store/api/filterApi';
 import CustomSelect from '@/components/elements/inputs/CustomCategorySelect';
-import Image from 'next/image';
+import TyreSizeGuideModal from './TyreSizeGuideModal';
 import {
   ArrowRight,
   ChevronDown,
@@ -147,99 +147,6 @@ const FilterForm = ({ kategorie: kategorieProp, onKategorieChange }: FilterFormP
     if (noise) params.set('noise', noise);
 
     router.push(`/produkte?${params.toString()}`);
-  };
-
-  // speed + load helpers (unchanged)
-  const SPEED_INDEXES: { code: string; kmh: number | string }[] = [
-    { code: 'A8', kmh: 40 },
-    { code: 'B', kmh: 50 },
-    { code: 'C', kmh: 60 },
-    { code: 'D', kmh: 65 },
-    { code: 'E', kmh: 70 },
-    { code: 'F', kmh: 80 },
-    { code: 'G', kmh: 90 },
-    { code: 'J', kmh: 100 },
-    { code: 'K', kmh: 110 },
-    { code: 'L', kmh: 120 },
-    { code: 'M', kmh: 130 },
-    { code: 'N', kmh: 140 },
-    { code: 'P', kmh: 150 },
-    { code: 'Q', kmh: 160 },
-    { code: 'R', kmh: 170 },
-    { code: 'S', kmh: 180 },
-    { code: 'T', kmh: 190 },
-    { code: 'U', kmh: 200 },
-    { code: 'H', kmh: 210 },
-    { code: '(V)', kmh: '>210' },
-    { code: 'V', kmh: 240 },
-    { code: '(W)', kmh: '>240' },
-    { code: 'W', kmh: 270 },
-    { code: 'Y', kmh: 300 },
-    { code: '(Y)', kmh: '>300' },
-    { code: 'ZR', kmh: '>240' },
-  ];
-
-  const LOAD_INDEX_KG: Record<number, number> = {
-    70: 335,
-    71: 345,
-    72: 355,
-    73: 365,
-    74: 375,
-    75: 387,
-    76: 400,
-    77: 412,
-    78: 425,
-    79: 437,
-    80: 450,
-    81: 462,
-    82: 475,
-    83: 487,
-    84: 500,
-    85: 515,
-    86: 530,
-    87: 545,
-    88: 560,
-    89: 580,
-    90: 600,
-    91: 615,
-    92: 630,
-    93: 650,
-    94: 670,
-    95: 690,
-    96: 710,
-    97: 730,
-    98: 750,
-    99: 775,
-    100: 800,
-    101: 825,
-    102: 850,
-    103: 875,
-    104: 900,
-    105: 925,
-    106: 950,
-    107: 975,
-    108: 1000,
-    109: 1030,
-    110: 1060,
-    111: 1090,
-    112: 1120,
-    113: 1150,
-    114: 1180,
-    115: 1215,
-    116: 1250,
-    117: 1285,
-    118: 1320,
-    119: 1360,
-    120: 1400,
-    121: 1450,
-    122: 1500,
-  };
-
-  const getLoadKg = (li?: string) => {
-    const n = Number(li);
-    return Number.isFinite(n) && LOAD_INDEX_KG[n as keyof typeof LOAD_INDEX_KG]
-      ? LOAD_INDEX_KG[n as keyof typeof LOAD_INDEX_KG]
-      : undefined;
   };
 
   const openDialogById = (id: string) => {
@@ -420,150 +327,13 @@ const FilterForm = ({ kategorie: kategorieProp, onKategorieChange }: FilterFormP
           )}
         </div>
 
-        <dialog id="tyre_size_modal" className="modal">
-          <div className="modal-box max-w-3xl bg-white">
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle w-full max-w-10 min-w-10 h-full min-h-10 !border !border-1-[#16171a] max-h-10 btn-ghost absolute right-2 top-2">
-                ✕
-              </button>
-            </form>
-
-            {/* Title */}
-            <h3 className="font-bold text-lg mb-3" style={{ color: '#16171a' }}>
-              Welche Reifengröße passt zu meinem Fahrzeug?
-            </h3>
-            <p className="first-text-desc text-sm">
-              Die richtige Reifengröße für Ihren Reifenkauf bei reifen.com
-              können Sie ganz einfach selbst ermitteln. Auf den an Ihrem
-              Fahrzeug montierten Reifen stehen alle notwendigen Informationen,
-              die Sie benötigen.
-            </p>
-            <Image
-              src="/images/details-about-tyres-varient.jpg"
-              alt="model image"
-              width={981}
-              height={597}
-            />
-            {/* Current dynamic selection */}
-            <div className="mb-4 mt-6">
-              <div className="text-sm mb-1" style={{ color: '#89898b' }}>
-                Aktuelle Auswahl
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className="px-2 py-1 rounded bg-mono-100 text-sm font-medium"
-                  style={{ color: '#ffffff' }}
-                >
-                  {width || '*'} / {height || '*'}{' '}
-                  {diameter ? `R${diameter}` : 'R*'}
-                </span>
-                {lastIndex && (
-                  <span
-                    className="px-2 py-1 rounded bg-mono-100 text-sm font-medium"
-                    style={{ color: '#ffffff' }}
-                  >
-                    LI {lastIndex}
-                    {getLoadKg(lastIndex)
-                      ? ` (${getLoadKg(lastIndex)} kg)`
-                      : ''}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Paragraph */}
-            <p
-              className="text-sm leading-relaxed mb-4"
-              style={{ color: '#89898b' }}
-            >
-              Die vollständige Reifengröße steht seitlich auf dem Reifen,
-              z.&nbsp;B.{' '}
-              <strong style={{ color: '#16171a' }}>205/55 R16 91H</strong>:
-              <br />
-              <span className="inline-block mt-1">
-                <strong style={{ color: '#16171a' }}>205</strong> = Breite (mm)
-                · <strong style={{ color: '#16171a' }}>55</strong> = Verhältnis
-                Höhe/Breite (%) ·{' '}
-                <strong style={{ color: '#16171a' }}>R16</strong> =
-                Felgendurchmesser (Zoll) ·
-                <strong style={{ color: '#16171a' }}> 91</strong> = Lastindex ·{' '}
-                <strong style={{ color: '#16171a' }}>H</strong> =
-                Geschwindigkeitsindex
-              </span>
-            </p>
-
-            {/* Speed index list */}
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2" style={{ color: '#16171a' }}>
-                Geschwindigkeitsindex (max. km/h)
-              </h4>
-              <div
-                className="grid grid-cols-4 md:grid-cols-6 gap-2 text-sm"
-                style={{ color: '#89898b' }}
-              >
-                {SPEED_INDEXES.map(({ code, kmh }) => (
-                  <div
-                    key={code}
-                    className="border rounded px-2 py-1 flex items-center justify-between"
-                    title={`Max. Geschwindigkeit: ${kmh} km/h`}
-                  >
-                    <span className="font-medium" style={{ color: '#16171a' }}>
-                      {code}
-                    </span>
-                    <span className="opacity-70">{kmh}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs mt-2" style={{ color: '#89898b' }}>
-                Hinweis: Ein <em>höherer</em> Geschwindigkeitsindex als in den
-                Fahrzeugpapieren angegeben ist zulässig.
-              </p>
-            </div>
-
-            {/* Load index list with highlight */}
-            <div className="mb-2">
-              <h4 className="font-semibold mb-2" style={{ color: '#16171a' }}>
-                Lastindex (zulässige Tragfähigkeit pro Reifen)
-              </h4>
-              <div
-                className="grid grid-cols-3 md:grid-cols-6 gap-2 text-sm"
-                style={{ color: '#89898b' }}
-              >
-                {Object.entries(LOAD_INDEX_KG).map(([idx, kg]) => {
-                  const isActive = Number(lastIndex) === Number(idx);
-                  return (
-                    <div
-                      key={idx}
-                      className={`border rounded px-2 py-1 text-center ${
-                        isActive
-                          ? 'bg-primary-100 text-white border-primary-100'
-                          : ''
-                      }`}
-                      style={!isActive ? { color: '#89898b' } : undefined}
-                    >
-                      <div
-                        className="font-medium"
-                        style={!isActive ? { color: '#16171a' } : undefined}
-                      >
-                        LI {idx}
-                      </div>
-                      <div className="opacity-80">{kg} kg</div>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="text-xs mt-2" style={{ color: '#89898b' }}>
-                Hinweis: Ein <em>höherer</em> Lastindex als gefordert ist
-                ebenfalls zulässig.
-              </p>
-            </div>
-
-            <div className="mt-4 text-xs" style={{ color: '#89898b' }}>
-              Tipp: Sommer- und Winterreifen können unterschiedliche Größen
-              haben. Prüfe die Reifenseitenwand der jeweiligen Saison.
-            </div>
-          </div>
-        </dialog>
+        <TyreSizeGuideModal
+          width={width}
+          height={height}
+          diameter={diameter}
+          lastIndex={lastIndex}
+          onSearch={handleSearch}
+        />
       </div>
     </div>
   );
