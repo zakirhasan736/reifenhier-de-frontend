@@ -377,11 +377,11 @@ export default function PriceHistoryChart({
                     focus === r.key ? 'font-semibold' : ''
                   }`}
                 >
-                  <span className="flex items-center gap-1.5 text-[#404042]">
+                  <span className="flex min-w-0 items-center gap-1.5 truncate text-[#404042]">
                     <span className="h-2 w-2 rounded-full" style={{ background: r.color }} />
                     {r.name}
                   </span>
-                  <span className="font-semibold tabular-nums text-[#16171A]">{eur(r.v!)} €</span>
+                  <span className="whitespace-nowrap font-semibold tabular-nums text-[#16171A]">{eur(r.v!)} €</span>
                 </div>
               ))}
             </div>
