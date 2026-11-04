@@ -52,6 +52,9 @@ export default function PriceHistoryChart({
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [hover, setHover] = useState<string | null>(null);
+  // Line in focus (legend / price-row / line hover): 'best' or a shop key.
+  // The focused line is drawn thick and on top, all others fade out.
+  const [focus, setFocus] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   // Draw at the real pixel width so axis text stays readable on phones
@@ -152,8 +155,8 @@ export default function PriceHistoryChart({
 
   const hoverRows = hover
     ? [
-        ...(bestTrend ? [{ name: 'Bester Preis', color: BEST_COLOR, v: priceAt(bestTrend.series, hover) }] : []),
-        ...shops.filter(s => !hidden.has(s.key)).map(s => ({ name: s.vendor, color: s.color, v: priceAt(s.trend.series, hover) })),
+        ...(bestTrend ? [{ key: 'best', name: 'Bester Preis', color: BEST_COLOR, v: priceAt(bestTrend.series, hover) }] : []),
+        ...shops.filter(s => !hidden.has(s.key)).map(s => ({ key: s.key, name: s.vendor, color: s.color, v: priceAt(s.trend.series, hover) })),
       ].filter(r => r.v)
     : [];
 
@@ -169,6 +172,17 @@ export default function PriceHistoryChart({
   const young = !bestTrend?.meaningful;
   const priceList = (Array.isArray(data?.current?.offers) ? data.current.offers : []).slice().sort((a, b) => a.price - b.price);
   const maxPrice = priceList.length ? priceList[priceList.length - 1].price : 0;
+
+  const dim = (key: string) => focus !== null && focus !== key;
+  const focusHandlers = (key: string) => ({
+    onPointerEnter: (e: React.PointerEvent) => e.pointerType === 'mouse' && setFocus(key),
+    onPointerLeave: (e: React.PointerEvent) => e.pointerType === 'mouse' && setFocus(f => (f === key ? null : f)),
+    onFocus: () => setFocus(key),
+    onBlur: () => setFocus(f => (f === key ? null : f)),
+  });
+  const shopByVendor = new Map(shops.map(s => [s.vendor.toLowerCase(), s]));
+  const visibleShops = shops.filter(s => !hidden.has(s.key));
+  const focusedShop = visibleShops.find(s => s.key === focus);
 
   // No history API yet (e.g. backend not deployed) and no trend on the product: show nothing
   if (state === 'error' && !bestTrend) return null;
@@ -255,23 +269,87 @@ export default function PriceHistoryChart({
                   {shortDate(d).slice(0, 5)}
                 </text>
               ))}
-              {shops
-                .filter(s => !hidden.has(s.key))
+              {visibleShops
+                .filter(s => s.key !== focus)
                 .map(s => (
-                  <path key={s.key} d={step(s.trend.series)} fill="none" stroke={s.color} strokeWidth="1.5" strokeOpacity={s.inStock ? 0.9 : 0.4} strokeDasharray={s.inStock ? undefined : '4 3'} />
+                  <path
+                    key={s.key}
+                    d={step(s.trend.series)}
+                    fill="none"
+                    stroke={s.color}
+                    strokeWidth="1.5"
+                    strokeOpacity={dim(s.key) ? 0.12 : s.inStock ? 0.9 : 0.4}
+                    strokeDasharray={s.inStock ? undefined : '4 3'}
+                    className="transition-[stroke-opacity] duration-200"
+                  />
                 ))}
               <path
                 d={`${step(bestTrend.series)}V${Y(lo)}H${X(bestTrend.series[0][0])}Z`}
                 fill={BEST_COLOR}
-                fillOpacity="0.08"
+                fillOpacity={focus === 'best' ? 0.14 : dim('best') ? 0.03 : 0.08}
+                className="transition-[fill-opacity] duration-200"
               />
-              <path d={step(bestTrend.series)} fill="none" stroke={BEST_COLOR} strokeWidth="2.6" strokeLinejoin="round" />
-              <circle cx={X(today)} cy={Y(bestTrend.last)} r="4" fill={BEST_COLOR} stroke="#fff" strokeWidth="2" />
+              <path
+                d={step(bestTrend.series)}
+                fill="none"
+                stroke={BEST_COLOR}
+                strokeWidth={focus === 'best' ? 3.4 : 2.6}
+                strokeOpacity={dim('best') ? 0.18 : 1}
+                strokeLinejoin="round"
+                className="transition-[stroke-opacity] duration-200"
+              />
+              <circle cx={X(today)} cy={Y(bestTrend.last)} r="4" fill={BEST_COLOR} stroke="#fff" strokeWidth="2" opacity={dim('best') ? 0.25 : 1} />
+              {/* focused shop: on top of everything, thicker, with today's dot */}
+              {focusedShop ? (
+                <g>
+                  <path
+                    d={step(focusedShop.trend.series)}
+                    fill="none"
+                    stroke={focusedShop.color}
+                    strokeWidth="3"
+                    strokeLinejoin="round"
+                    strokeDasharray={focusedShop.inStock ? undefined : '6 4'}
+                  />
+                  <circle
+                    cx={X(today)}
+                    cy={Y(focusedShop.trend.last)}
+                    r="4"
+                    fill={focusedShop.color}
+                    stroke="#fff"
+                    strokeWidth="2"
+                  />
+                </g>
+              ) : null}
+              {/* wide invisible hit areas: hovering a line highlights it */}
+              {[
+                ...visibleShops.map(s => ({ key: s.key, d: step(s.trend.series) })),
+                { key: 'best', d: step(bestTrend.series) },
+              ].map(h => (
+                <path
+                  key={`hit-${h.key}`}
+                  d={h.d}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth="12"
+                  pointerEvents="stroke"
+                  onPointerEnter={e => e.pointerType === 'mouse' && setFocus(h.key)}
+                  onPointerLeave={e => e.pointerType === 'mouse' && setFocus(f => (f === h.key ? null : f))}
+                />
+              ))}
               {hover ? (
                 <g>
                   <line x1={X(hover)} x2={X(hover)} y1={M.t} y2={H - M.b} stroke="#16171A" strokeOpacity="0.25" strokeDasharray="3 3" />
                   {hoverRows.map(r => (
-                    <circle key={r.name} cx={X(hover)} cy={Y(r.v!)} r="3.5" fill={r.color} stroke="#fff" strokeWidth="1.5" />
+                    <circle
+                      key={r.name}
+                      cx={X(hover)}
+                      cy={Y(r.v!)}
+                      r={focus === r.key ? 5 : 3.5}
+                      fill={r.color}
+                      stroke="#fff"
+                      strokeWidth="1.5"
+                      opacity={dim(r.key) ? 0.2 : 1}
+                    />
                   ))}
                 </g>
               ) : null}
@@ -293,7 +371,12 @@ export default function PriceHistoryChart({
             >
               <div className="mb-1 font-semibold text-[#16171A]">{shortDate(hover)}</div>
               {hoverRows.map(r => (
-                <div key={r.name} className="flex items-center justify-between gap-4">
+                <div
+                  key={r.name}
+                  className={`flex items-center justify-between gap-4 transition-opacity ${dim(r.key) ? 'opacity-35' : ''} ${
+                    focus === r.key ? 'font-semibold' : ''
+                  }`}
+                >
                   <span className="flex items-center gap-1.5 text-[#404042]">
                     <span className="h-2 w-2 rounded-full" style={{ background: r.color }} />
                     {r.name}
@@ -306,7 +389,13 @@ export default function PriceHistoryChart({
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2" aria-label="Linien ein- und ausblenden">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E4E5EA] px-3 py-1 text-[13px] font-medium text-[#16171A]">
+          <span
+            tabIndex={0}
+            {...focusHandlers('best')}
+            className={`inline-flex cursor-default items-center gap-1.5 rounded-full border px-3 py-1 text-[13px] font-medium text-[#16171A] outline-none transition ${
+              focus === 'best' ? 'border-[#3A64F6] bg-[#EEF2FF]' : 'border-[#E4E5EA]'
+            } ${dim('best') ? 'opacity-40' : ''}`}
+          >
             <span className="h-[3px] w-4 rounded" style={{ background: BEST_COLOR }} /> Bester Preis
           </span>
           {shops.map(s => (
@@ -315,9 +404,15 @@ export default function PriceHistoryChart({
               type="button"
               aria-pressed={!hidden.has(s.key)}
               onClick={() => toggle(s.key)}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[13px] ${
-                hidden.has(s.key) ? 'border-[#E4E5EA] text-[#9AA0A8] line-through' : 'border-[#E4E5EA] text-[#16171A]'
-              }`}
+              {...(hidden.has(s.key) ? {} : focusHandlers(s.key))}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[13px] transition ${
+                hidden.has(s.key)
+                  ? 'border-[#E4E5EA] text-[#9AA0A8] line-through'
+                  : focus === s.key
+                  ? 'text-[#16171A]'
+                  : 'border-[#E4E5EA] text-[#16171A]'
+              } ${dim(s.key) && !hidden.has(s.key) ? 'opacity-40' : ''}`}
+              style={focus === s.key ? { borderColor: s.color, background: `${s.color}14` } : undefined}
             >
               <span className="h-[3px] w-4 rounded" style={{ background: s.color, opacity: hidden.has(s.key) ? 0.3 : 1 }} />
               {s.vendor}
@@ -336,15 +431,35 @@ export default function PriceHistoryChart({
           <div className="mt-6">
             <h3 className="text-[15px] font-semibold text-[#16171A]">Preise heute im Vergleich</h3>
             <ul className="mt-2 space-y-1.5">
-              {priceList.map((o, i) => (
-                <li key={`${o.vendor}-${i}`} className="grid grid-cols-[minmax(90px,140px)_1fr_auto] items-center gap-3 text-[13px]">
-                  <span className="truncate text-[#404042]">{o.vendor}</span>
+              {priceList.map((o, i) => {
+                const line = shopByVendor.get(String(o.vendor || '').toLowerCase());
+                const lineKey = line && !hidden.has(line.key) ? line.key : null;
+                return (
+                <li
+                  key={`${o.vendor}-${i}`}
+                  {...(lineKey
+                    ? {
+                        onPointerEnter: (e: React.PointerEvent) => e.pointerType === 'mouse' && setFocus(lineKey),
+                        onPointerLeave: (e: React.PointerEvent) =>
+                          e.pointerType === 'mouse' && setFocus(f => (f === lineKey ? null : f)),
+                        // phones have no hover: tap a shop to highlight its line, tap again to clear
+                        onClick: () => setFocus(f => (f === lineKey ? null : lineKey)),
+                      }
+                    : {})}
+                  className={`grid grid-cols-[minmax(90px,140px)_1fr_auto] items-center gap-3 rounded-lg px-1 text-[13px] transition-opacity ${
+                    lineKey ? 'cursor-pointer hover:bg-[#F7F8FB]' : ''
+                  } ${focus && focus !== 'best' && lineKey !== focus ? 'opacity-45' : ''}`}
+                >
+                  <span className="flex min-w-0 items-center gap-1.5 truncate text-[#404042]">
+                    {line ? <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: line.color }} /> : null}
+                    <span className="truncate">{o.vendor}</span>
+                  </span>
                   <span className="h-2.5 rounded-full bg-[#F2F4F8]">
                     <span
                       className="block h-2.5 rounded-full"
                       style={{
                         width: `${Math.max(8, (o.price / maxPrice) * 100)}%`,
-                        background: i === 0 ? BEST_COLOR : '#C9CED8',
+                        background: lineKey && focus === lineKey ? line!.color : i === 0 ? BEST_COLOR : '#C9CED8',
                         opacity: o.in_stock ? 1 : 0.5,
                       }}
                     />
@@ -353,7 +468,8 @@ export default function PriceHistoryChart({
                     {eur(o.price)} €{i > 0 ? <span className="ml-1 text-[#9AA0A8]">+{eur(o.price - priceList[0].price)}</span> : null}
                   </span>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
         ) : null}

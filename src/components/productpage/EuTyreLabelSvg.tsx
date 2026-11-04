@@ -141,8 +141,9 @@ export default function EuTyreLabelSvg({
       <rect x="10" y="10" width="36" height="24" fill="#003399" />
       {Array.from({ length: 12 }).map((_, i) => {
         const a = (i / 12) * Math.PI * 2 - Math.PI / 2
-        const cx = 28 + Math.cos(a) * 7.2
-        const cy = 22 + Math.sin(a) * 7.2
+        // rounded: server and browser Math.sin/cos can differ in the last digit (hydration warning)
+        const cx = Math.round((28 + Math.cos(a) * 7.2) * 1000) / 1000
+        const cy = Math.round((22 + Math.sin(a) * 7.2) * 1000) / 1000
         return <circle key={i} cx={cx} cy={cy} r="1.15" fill="#FFCC00" />
       })}
 
