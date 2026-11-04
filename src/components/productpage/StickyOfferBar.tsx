@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MdAddShoppingCart } from 'react-icons/md';
 
 /**
@@ -25,24 +25,55 @@ export default function StickyOfferBar({
   offerCount: number;
 }) {
   const [show, setShow] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
 
+  // Publish the bar's height as --pdp-sticky-h so other bottom-fixed UI
+  // (compare tray, …) can sit above it instead of underneath.
+  useEffect(() => {
+    const root = document.documentElement;
+    const el = barRef.current;
+    const update = () =>
+      root.style.setProperty('--pdp-sticky-h', show && el ? `${el.offsetHeight}px` : '0px');
+    update();
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [show, price]);
+  useEffect(() => () => document.documentElement.style.setProperty('--pdp-sticky-h', '0px'), []);
+
+  // Show once the main button has scrolled above the viewport. A scroll check
+  // (one measurement per frame) instead of an IntersectionObserver: jumps past
+  // the button (anchor links, restored scroll, fast flicks) never make it
+  // intersect, so an observer would never fire and the bar stayed hidden.
   useEffect(() => {
     const el = document.getElementById(watchId);
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    const io = new IntersectionObserver(
-      ([entry]) => setShow(!entry.isIntersecting && entry.boundingClientRect.top < 0),
-      { threshold: 0 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    if (!el) return;
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      setShow(el.getBoundingClientRect().bottom < 0);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [watchId]);
 
   if (!price) return null;
 
   return (
     <div
+      ref={barRef}
       aria-hidden={!show}
-      className={`pdp-sticky-bar fixed inset-x-0 bottom-0 z-[900] border-t border-[#E9ECF3] bg-white/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(16,24,40,0.25)] transition-transform duration-300 ${
+      className={`pdp-sticky-bar fixed inset-x-0 bottom-0 z-[70] border-t border-[#E9ECF3] bg-white/95 backdrop-blur-md shadow-[0_-8px_24px_-12px_rgba(16,24,40,0.25)] transition-transform duration-300 ${
         show ? 'translate-y-0' : 'translate-y-full pointer-events-none'
       }`}
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}

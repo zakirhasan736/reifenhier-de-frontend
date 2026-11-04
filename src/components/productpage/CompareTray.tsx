@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import OptimizedImage from '@/components/elements/OptimizedImage';
@@ -19,8 +20,29 @@ export default function CompareTray() {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: RootState) => state.compare.products);
   const isOpen = useSelector((state: RootState) => state.compare.isOpen);
+  const visible = products.length > 0 && !isOpen;
+  const trayRef = useRef<HTMLDivElement>(null);
 
-  if (products.length === 0 || isOpen) return null;
+  // Publish the tray height as --compare-tray-h so toasts can sit above it.
+  useEffect(() => {
+    const root = document.documentElement;
+    const el = trayRef.current;
+    if (!visible || !el) {
+      root.style.setProperty('--compare-tray-h', '0px');
+      return;
+    }
+    const update = () => root.style.setProperty('--compare-tray-h', `${el.offsetHeight + 12}px`);
+    update();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.setProperty('--compare-tray-h', '0px');
+    };
+  }, [visible, products.length]);
+
+  if (!visible) return null;
 
   const slots = Array.from({ length: SLOTS }, (_, i) => products[i] || null);
 
@@ -28,10 +50,13 @@ export default function CompareTray() {
     <AnimatePresence>
       <motion.div
         key="compare-tray"
+        ref={trayRef}
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 80, opacity: 0 }}
-        className="fixed bottom-4 left-1/2 z-[80] w-[min(960px,calc(100%-1.5rem))] -translate-x-1/2"
+        className="fixed left-1/2 z-[80] w-[min(960px,calc(100%-1.5rem))] -translate-x-1/2 transition-[bottom] duration-300"
+        // sit above the product page's sticky price bar when it is visible
+        style={{ bottom: 'calc(1rem + var(--pdp-sticky-h, 0px))' }}
       >
         <div className="rounded-2xl border border-[#E4E5EA] bg-white/95 shadow-[0_12px_40px_rgba(22,23,26,0.16)] backdrop-blur-md px-3 py-3 md:px-4">
           <div className="flex flex-wrap items-center gap-3">
