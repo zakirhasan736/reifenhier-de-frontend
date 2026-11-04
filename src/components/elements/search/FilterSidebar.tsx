@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { debounce } from 'lodash';
 
 import {
   setFilters,
   setPage,
-  setSort,
   // fetchProducts,
 } from '@/store/productSlice';
 import { RootState } from '@/store/store';
@@ -78,13 +76,16 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const [brandSearch, setBrandSearch] = useState('');
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
+  const priceHistogram = useSelector((state: RootState) => state.products.priceHistogram);
+  const total = useSelector((state: RootState) => state.products.total);
+  const loading = useSelector((state: RootState) => state.products.loading);
 
     const [showAllBrands, setShowAllBrands] = useState(false);
 
   // treat price as "selected" if active range differs from full range
   const hasPriceActive =
-    (typeof filters.minPrice === 'number' ? filters.minPrice : min) > min ||
-    (typeof filters.maxPrice === 'number' ? filters.maxPrice : max) < max;
+    (typeof filters.minPrice === 'number' && filters.minPrice > 0 && filters.minPrice > min) ||
+    (typeof filters.maxPrice === 'number' && filters.maxPrice < 99999 && filters.maxPrice < max);
 
   const [openSections, setOpenSections] = useState({
     kategorie: true,
@@ -100,20 +101,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     lastIndex: false,
   });
 
-  // debounced backend commit for price changes
-  const debouncedCommitPrice = useRef(
-    debounce((lo: number, hi: number) => {
-      // merge only changed fields
-      dispatch(setFilters({ minPrice: lo, maxPrice: hi }));
-      // force price ascending
-      dispatch(setSort({ field: 'price', order: 'asc' }));
-      // start from first page
-      dispatch(setPage(1));
-      // // silent refresh (no overlay)
-      // dispatch(fetchProducts({ silent: true }));
-    }, 180)
-  ).current;
-
   const handleFilterChange = (key: keyof SelectedFilters, value: string) => {
     const currentValues = (filters as SelectedFilters)[key] || [];
     const updated = currentValues.includes(value)
@@ -124,10 +111,11 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
     dispatch(setPage(1));
   };
 
-  const handlePriceChange = (minPrice: number, maxPrice: number) => {
-    // update quickly in store for URL/sync, but main fetch is debounced
-    dispatch(setFilters({ minPrice, maxPrice }));
-    debouncedCommitPrice(minPrice, maxPrice);
+  // One commit per interaction (release / Enter / quick range) – the slider
+  // never fetches while dragging. null = no limit on that side.
+  const handlePriceCommit = (lo: number | null, hi: number | null) => {
+    dispatch(setFilters({ minPrice: lo ?? 0, maxPrice: hi ?? 99999 }));
+    dispatch(setPage(1));
   };
 
   const toggleSection = (section: keyof typeof openSections) => {
@@ -538,7 +526,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               max={max}
               minPrice={filters.minPrice}
               maxPrice={filters.maxPrice}
-              onChange={handlePriceChange}
+              histogram={priceHistogram}
+              total={total}
+              loading={loading}
+              onCommit={handlePriceCommit}
             />
           </div>
         )}
