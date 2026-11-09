@@ -5,6 +5,7 @@ import JsonLd from '@/components/seo/JsonLd';
 import { brandPath, seasonForCategory, sizePath } from '@/libs/seo/landing';
 import Link from 'next/link';
 import type { Product } from '@/types/product';
+import { stripInternalLinks } from '@/libs/seo/stripInternalLinks';
 
 interface Props {
   searchParams: Promise<{
@@ -133,7 +134,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       { next: { revalidate: 300 } }
     );
     const data = await res.json();
-    initialProducts = data.products || [];
+    initialProducts = stripInternalLinks(data.products || []);
     total = data.total || 0;
   } catch (err) {
     console.error('Failed to fetch SSR products', err);

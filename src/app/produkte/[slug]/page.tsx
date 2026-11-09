@@ -17,6 +17,7 @@ import {
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
 import PriceHistoryChart from '@/components/productpage/PriceHistoryChart';
+import { stripInternalLinks } from '@/libs/seo/stripInternalLinks';
 
 // ---- Config ----
 const API = (
@@ -150,7 +151,7 @@ async function fetchProductData(slug: string): Promise<ProductDetailsResponse> {
       { next: { revalidate: 1800 } }
     );
     if (!res.ok) return { product: undefined, relatedProducts: [], indexVariants: [] };
-    return res.json();
+    return stripInternalLinks((await res.json()) as ProductDetailsResponse);
   } catch {
     return { product: undefined, relatedProducts: [], indexVariants: [] };
   }
