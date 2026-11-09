@@ -136,6 +136,7 @@ interface Product {
   awin_image_url?: string;
   merchant_thumb_url?: string;
   merchant_image_url?: string;
+  gallery_images?: string[];
   dimensions: string;
   search_price: number | string;
   fuel_class: string;
@@ -934,6 +935,7 @@ const shareImage = !rawShareImage
                       awinImageUrl={product.awin_image_url}
                       merchantThumbUrl={product.merchant_thumb_url}
                       merchantImageUrl={product.merchant_image_url}
+                      galleryImages={product.gallery_images}
                       alt={productName}
                       header={
                         <div className="product-slide-top-cont flex items-center justify-between">
