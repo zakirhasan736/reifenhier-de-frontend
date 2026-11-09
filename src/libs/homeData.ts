@@ -1,4 +1,5 @@
 import type { Product } from '@/types/product';
+import { stripInternalLinks } from '@/libs/seo/stripInternalLinks';
 
 const API = (
   process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de'
@@ -22,7 +23,7 @@ async function fetchJson<T>(path: string): Promise<T | null> {
       next: { revalidate: 300 },
     });
     if (!res.ok) return null;
-    return (await res.json()) as T;
+    return stripInternalLinks((await res.json()) as T);
   } catch {
     return null;
   }

@@ -1,3 +1,5 @@
+import { stripInternalLinks } from '@/libs/seo/stripInternalLinks';
+
 const API = (
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
@@ -88,7 +90,7 @@ export async function fetchLandingProducts(
     const j = await res.json();
     return {
       total: Number(j.total) || 0,
-      products: Array.isArray(j.products) ? j.products : [],
+      products: Array.isArray(j.products) ? stripInternalLinks(j.products) : [],
       minPrice: Number(j.minPrices) || 0,
       maxPrice: Number(j.maxPrices) || 0,
     };
