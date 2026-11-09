@@ -303,14 +303,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                           });
                           dataLayer.push({ event: 'consent_accepted_advertising' });
                         }
-                        // AWIN publisher MasterTag only after advertising consent.
-                        // (Not needed for sale tracking — our /to links are already
-                        // AWIN click links — so loading it later costs no commission.)
+                        // AWIN publisher MasterTag (incl. Convert-a-Link) only after
+                        // advertising consent. (Not needed for sale tracking — our /to
+                        // links are already AWIN click links.) Loaded from AWIN's own
+                        // server so the advertiser list Convert-a-Link uses stays current;
+                        // the bundled copy is only a fallback if dwin2.com is unreachable.
                         if (!document.getElementById('awin-mastertag')) {
                           var aw = document.createElement('script');
                           aw.id = 'awin-mastertag';
                           aw.async = true;
-                          aw.src = '/pub.2985775.min.js';
+                          aw.src = 'https://www.dwin2.com/pub.2985775.min.js';
+                          aw.onerror = function() {
+                            var fb = document.createElement('script');
+                            fb.id = 'awin-mastertag-fallback';
+                            fb.async = true;
+                            fb.src = '/pub.2985775.min.js';
+                            document.body.appendChild(fb);
+                          };
                           document.body.appendChild(aw);
                         }
                       },
