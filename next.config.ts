@@ -106,6 +106,30 @@ const nextConfig = {
       },
     ],
   },
+  /**
+   * Product images downloaded by the backend's daily AWIN job land in
+   * public/images/product-image, but `next start` only serves public files
+   * that existed at build time — every image added since the last deploy
+   * 404'd and products showed the placeholder wheel. Fallback rewrites run
+   * only after a public file wasn't found, so build-time images are still
+   * served by Next and newer ones are fetched from the API, which reads the
+   * same folder on disk. The URL Google and visitors see stays on www.
+   */
+  async rewrites() {
+    const api = (process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de')
+      .replace(/\/$/, '')
+      .replace(/\/api$/, '');
+    return {
+      beforeFiles: [],
+      afterFiles: [],
+      fallback: [
+        {
+          source: '/images/product-image/:path*',
+          destination: `${api}/images/product-image/:path*`,
+        },
+      ],
+    };
+  },
   async redirects() {
     return [
       {

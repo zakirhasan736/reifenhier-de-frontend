@@ -17,6 +17,7 @@ export default function ProductImageGallery({
   awinImageUrl,
   merchantThumbUrl,
   merchantImageUrl,
+  galleryImages,
   alt,
   header,
 }: {
@@ -24,13 +25,15 @@ export default function ProductImageGallery({
   awinImageUrl?: string | null;
   merchantThumbUrl?: string | null;
   merchantImageUrl?: string | null;
+  /** Every other image AWIN sent for this product — tried before the placeholder. */
+  galleryImages?: Array<string | null | undefined> | null;
   alt: string;
   header?: ReactNode;
 }) {
   const list = useMemo(() => normalizeImages(images), [images]);
   const extras = useMemo(
-    () => [merchantThumbUrl, merchantImageUrl],
-    [merchantThumbUrl, merchantImageUrl]
+    () => [merchantImageUrl, ...(galleryImages || []), merchantThumbUrl],
+    [merchantThumbUrl, merchantImageUrl, galleryImages]
   );
   const [active, setActive] = useState(0);
   const current = list[Math.min(active, Math.max(list.length - 1, 0))];
