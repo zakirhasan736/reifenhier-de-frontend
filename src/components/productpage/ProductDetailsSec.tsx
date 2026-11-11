@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import SizeAlternatives, { type SizeAlternative } from '@/components/productpage/SizeAlternatives';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -178,6 +179,8 @@ interface ProductProps {
   product: Product;
   loading: boolean;
   indexVariants?: IndexVariant[];
+  /** Same size, other brands — shown as a compact list in the buy box. */
+  alternatives?: SizeAlternative[];
   /** Page h1 (brand, model, size) — built on the server. */
   title?: string;
   /** Short server-built product summary shown under "Beschreibung". */
@@ -328,6 +331,7 @@ const ProductSinglepage: React.FC<ProductProps> = ({
   product,
   loading,
   indexVariants = [],
+  alternatives = [],
   title,
   summary,
   fromPrice,
@@ -1322,6 +1326,27 @@ const shareImage = !rawShareImage
                       </div>
                     </a>
                   </div>
+
+                  {/* Same size, other brands (desktop: right column · mobile: directly under the buy box) */}
+                  <SizeAlternatives
+                    items={alternatives}
+                    currentBrand={product.brand_name}
+                    currentPrice={fromPrice ?? (parseMoneyEU(product.cheapest_offer) || null)}
+                    sizeLabel={
+                      product.dimensions ||
+                      (product.width ? `${product.width}/${product.height} R${product.diameter}` : undefined)
+                    }
+                    allHref={
+                      product.width || product.dimensions
+                        ? buildProductFilterUrl({
+                            kategorie: product.merchant_product_third_category,
+                            width: product.width,
+                            height: product.height,
+                            diameter: product.diameter,
+                          })
+                        : undefined
+                    }
+                  />
 
                 </div>
               </div>

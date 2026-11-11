@@ -207,6 +207,7 @@ export default async function ProductPage({
           product={product}
           loading={false}
           indexVariants={indexVariants ?? []}
+          alternatives={relatedProducts ?? []}
           title={[product.brand_name, product.product_name, product.dimensions].filter(Boolean).join(' ')}
           summary={buildProductDescription(product)}
           fromPrice={lowPrice}

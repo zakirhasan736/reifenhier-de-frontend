@@ -34,6 +34,10 @@ export type MongoBlog = {
   tags?: string[]
   metaDescription?: string
   contentBlocks?: ContentBlock[][]
+  /** Total article views (counted once per browser session) */
+  views?: number
+  /** Total seconds readers had the article open and visible */
+  readSeconds?: number
   createdAt: string
   updatedAt?: string
 }
