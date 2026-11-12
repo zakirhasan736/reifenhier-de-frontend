@@ -30,6 +30,17 @@ export function readingMinutes(text: string): number {
   return Math.max(1, Math.round(words / 200))
 }
 
+/** Total time readers spent on an article: 4500 → "1 Std. 15 Min." */
+export function formatReadTotal(seconds?: number): string {
+  const totalMinutes = Math.floor((Number(seconds) || 0) / 60)
+  if (totalMinutes < 1) return ''
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  if (hours < 1) return `${minutes} Min.`
+  const h = hours.toLocaleString('de-DE')
+  return minutes ? `${h} Std. ${minutes} Min.` : `${h} Std.`
+}
+
 export function blocksText(groups?: ContentBlock[][]): string {
   return (groups || [])
     .flat()

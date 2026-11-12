@@ -5,6 +5,7 @@ import {
   berlinToday,
   buildTrend,
   dayMinus,
+  daysBetween,
   eur,
   pct,
   shortDate,
@@ -20,10 +21,45 @@ type Series = { key: string; vendor: string; points: PricePoint[] };
 type HistoryResponse = {
   from: string;
   to: string;
+  /** first day a price was ever recorded for this tyre (newer backends only) */
+  since?: string | null;
   best: Series;
   vendors: Series[];
   current: { best: number; offers: { vendor: string; vendor_id?: string; price: number; in_stock: boolean }[] };
 };
+
+const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+/** "2026-03-14" → "März 2026" */
+const monthYear = (day: string) => {
+  const [y, m] = day.split('-');
+  return `${MONTHS[Number(m) - 1] || ''} ${y}`.trim();
+};
+
+/**
+ * What the best-price line says in plain numbers: when the lowest and highest
+ * price occurred, the average over the period (weighted by how long each price
+ * was valid) and how often the price changed.
+ */
+function describeSeries(series: PricePoint[], today: string) {
+  if (!series.length) return null;
+  let low = series[0];
+  let high = series[0];
+  let changes = 0;
+  let weighted = 0;
+  let span = 0;
+  series.forEach((pt, i) => {
+    // latest occurrence wins, so "Tiefster Preis am …" names the most recent low
+    if (pt[1] <= low[1]) low = pt;
+    if (pt[1] > high[1]) high = pt;
+    if (i > 0 && Math.abs(pt[1] - series[i - 1][1]) >= 0.01) changes += 1;
+    const until = series[i + 1]?.[0] ?? today;
+    const d = Math.max(0, daysBetween(pt[0], until));
+    weighted += pt[1] * d;
+    span += d;
+  });
+  const last = series[series.length - 1][1];
+  return { low, high, changes, average: span > 0 ? weighted / span : last };
+}
 
 /** price on `day` for a step series (last point on or before that day) */
 function priceAt(points: PricePoint[], day: string) {
@@ -169,6 +205,8 @@ export default function PriceHistoryChart({
     });
 
   const recordingSince = (data?.best?.points?.[0]?.[0] || initialTrend?.[0]?.[0]) ?? today;
+  const facts = useMemo(() => (bestTrend ? describeSeries(bestTrend.series, today) : null), [bestTrend, today]);
+  const rangeLabel = days === 365 ? '12 Monate' : `${days} Tage`;
   const young = !bestTrend?.meaningful;
   const priceList = (Array.isArray(data?.current?.offers) ? data.current.offers : []).slice().sort((a, b) => a.price - b.price);
   const maxPrice = priceList.length ? priceList[priceList.length - 1].price : 0;
@@ -218,8 +256,16 @@ export default function PriceHistoryChart({
           <dl className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
               { k: 'Bester Preis heute', v: `${eur(bestTrend.last)} €` },
-              { k: `Tiefster Preis (${days === 365 ? '1 Jahr' : `${days} T.`})`, v: `${eur(bestTrend.lowest)} €` },
-              { k: `Höchster Preis (${days === 365 ? '1 Jahr' : `${days} T.`})`, v: `${eur(bestTrend.highest)} €` },
+              {
+                k: `Tiefster Preis (${days === 365 ? '1 Jahr' : `${days} T.`})`,
+                v: `${eur(bestTrend.lowest)} €`,
+                sub: facts && !young && bestTrend.lowest !== bestTrend.highest ? `zuletzt am ${shortDate(facts.low[0])}` : undefined,
+              },
+              {
+                k: `Höchster Preis (${days === 365 ? '1 Jahr' : `${days} T.`})`,
+                v: `${eur(bestTrend.highest)} €`,
+                sub: facts && !young && bestTrend.lowest !== bestTrend.highest ? `am ${shortDate(facts.high[0])}` : undefined,
+              },
               {
                 k: 'Veränderung',
                 v: young ? '–' : bestTrend.direction === 'flat' ? 'stabil' : `${bestTrend.direction === 'down' ? '↓' : '↑'} ${pct(bestTrend.changePct)}`,
@@ -229,6 +275,7 @@ export default function PriceHistoryChart({
               <div key={s.k} className="rounded-2xl bg-[#F7F8FB] px-4 py-3">
                 <dt className="text-[12px] text-[#5A5B61]">{s.k}</dt>
                 <dd className="text-[18px] font-semibold tabular-nums" style={{ color: s.c || '#16171A' }}>{s.v}</dd>
+                {'sub' in s && s.sub ? <dd className="text-[11px] text-[#7A7E89]">{s.sub}</dd> : null}
               </div>
             ))}
           </dl>
@@ -237,6 +284,29 @@ export default function PriceHistoryChart({
         {bestTrend && bestTrend.lowest === bestTrend.last && !young ? (
           <p className="mt-3 inline-flex rounded-full bg-[#EEFAE5] px-3 py-1 text-[13px] font-medium text-[#1F7A33]">
             Aktuell der günstigste Preis der letzten {days === 365 ? '12 Monate' : `${days} Tage`}
+          </p>
+        ) : null}
+
+        {/* Plain-language reading of the chart: how today's price compares */}
+        {bestTrend && facts && !young && bestTrend.lowest !== bestTrend.highest ? (
+          <p className="mt-3 text-[14px] leading-relaxed text-[#404042]">
+            {bestTrend.last > bestTrend.lowest ? (
+              <>
+                Heute <strong className="font-semibold text-[#16171A]">{eur(bestTrend.last - bestTrend.lowest)} €</strong> (
+                {pct(((bestTrend.last - bestTrend.lowest) / bestTrend.lowest) * 100)}) über dem Tiefstpreis vom {shortDate(facts.low[0])}.{' '}
+              </>
+            ) : null}
+            Durchschnitt der letzten {rangeLabel}:{' '}
+            <strong className="font-semibold text-[#16171A]">{eur(facts.average)} €</strong>
+            {Math.abs(bestTrend.last - facts.average) >= 0.01 ? (
+              <>
+                {' '}– heute{' '}
+                <span style={{ color: bestTrend.last < facts.average ? '#1F7A33' : '#B4541A' }} className="font-semibold">
+                  {pct(((bestTrend.last - facts.average) / facts.average) * 100)} {bestTrend.last < facts.average ? 'darunter' : 'darüber'}
+                </span>
+              </>
+            ) : null}
+            .
           </p>
         ) : null}
 
@@ -299,6 +369,34 @@ export default function PriceHistoryChart({
                 className="transition-[stroke-opacity] duration-200"
               />
               <circle cx={X(today)} cy={Y(bestTrend.last)} r="4" fill={BEST_COLOR} stroke="#fff" strokeWidth="2" opacity={dim('best') ? 0.25 : 1} />
+              {/* lowest / highest price of the period, labelled on the line */}
+              {facts && !young && bestTrend.lowest !== bestTrend.highest
+                ? ([
+                    { pt: facts.high, color: '#B4541A', dy: -9 },
+                    { pt: facts.low, color: '#1F7A33', dy: 17 },
+                  ] as const).map(m => {
+                    const x = X(m.pt[0]);
+                    const anchor = x < M.l + 44 ? 'start' : x > W - M.r - 44 ? 'end' : 'middle';
+                    return (
+                      <g key={m.dy} opacity={dim('best') ? 0.2 : 1} pointerEvents="none">
+                        <circle cx={x} cy={Y(m.pt[1])} r="4" fill={m.color} stroke="#fff" strokeWidth="2" />
+                        <text
+                          x={x}
+                          y={Y(m.pt[1]) + m.dy}
+                          textAnchor={anchor}
+                          fontSize="11"
+                          fontWeight="600"
+                          fill={m.color}
+                          stroke="#fff"
+                          strokeWidth="3"
+                          paintOrder="stroke"
+                        >
+                          {eur(m.pt[1])} €
+                        </text>
+                      </g>
+                    );
+                  })
+                : null}
               {/* focused shop: on top of everything, thicker, with today's dot */}
               {focusedShop ? (
                 <g>
@@ -424,6 +522,20 @@ export default function PriceHistoryChart({
         {young ? (
           <p className="mt-3 text-[13px] text-[#5A5B61]">
             Wir zeichnen den Preis dieses Reifens seit dem {shortDate(recordingSince)} auf. Der Verlauf füllt sich mit jeder Preisänderung der Händler.
+          </p>
+        ) : null}
+
+        {bestTrend && facts && !young ? (
+          <p className="mt-3 text-[13px] text-[#5A5B61]">
+            {data?.since ? (
+              <>
+                Preis aufgezeichnet seit <strong className="font-semibold text-[#16171A]">{monthYear(data.since)}</strong> ·{' '}
+              </>
+            ) : null}
+            {facts.changes === 0
+              ? `Keine Preisänderung in den letzten ${days === 365 ? '12 Monaten' : `${days} Tagen`}`
+              : `${facts.changes} ${facts.changes === 1 ? 'Preisänderung' : 'Preisänderungen'} vom ${shortDate(bestTrend.series[0][0])} bis ${shortDate(today)}`}
+            .
           </p>
         ) : null}
 

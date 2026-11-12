@@ -2,6 +2,7 @@ import Link from 'next/link'
 import ContentBlocks from '@/components/blogpage/ContentBlocks'
 import BlogTyreCalculator from '@/components/blogpage/BlogTyreCalculator'
 import ArticleLayout from '@/components/blogpage/ArticleLayout'
+import BlogStatsTracker from '@/components/blogpage/BlogStatsTracker'
 import { blocksText, readingMinutes, tocFromBlocks } from '@/libs/blogs/format'
 import {
   blogCoverSrc,
@@ -93,6 +94,8 @@ export default function MongoBlogArticle({
         published={blog.createdAt}
         updated={blog.updatedAt}
         minutes={readingMinutes(blocksText(blog.contentBlocks))}
+        views={blog.views}
+        readSeconds={blog.readSeconds}
         tags={tags}
         cover={featured}
         toc={tocFromBlocks(blog.contentBlocks)}
@@ -128,6 +131,7 @@ export default function MongoBlogArticle({
         )}
       </ArticleLayout>
 
+      <BlogStatsTracker slug={blog.slug} />
       <JsonLd id="blog-jsonld" data={jsonLd} />
       <JsonLd id="blog-breadcrumb-jsonld" data={breadcrumbLd} />
     </>

@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { ArrowRight, CalendarDays, ChevronRight, Clock, ListOrdered, RefreshCw } from 'lucide-react'
+import { ArrowRight, BookOpen, CalendarDays, ChevronRight, Clock, Eye, ListOrdered, RefreshCw } from 'lucide-react'
 import BlogCoverImage from '@/components/blogpage/BlogCoverImage'
 import { ArticleCard, type ArticleCardData } from '@/components/blogpage/ArticleCard'
-import { formatBlogDate, stripHtml } from '@/libs/blogs/format'
+import { formatBlogDate, formatReadTotal, stripHtml } from '@/libs/blogs/format'
 
 type Crumb = { name: string; href?: string }
 
@@ -13,6 +13,8 @@ export default function ArticleLayout({
   published,
   updated,
   minutes,
+  views,
+  readSeconds,
   tags = [],
   cover,
   crumbs = [],
@@ -25,6 +27,10 @@ export default function ArticleLayout({
   published?: string
   updated?: string
   minutes?: number
+  /** Total views of this article */
+  views?: number
+  /** Total seconds all readers spent on this article */
+  readSeconds?: number
   tags?: string[]
   cover?: string
   crumbs?: Crumb[]
@@ -35,6 +41,7 @@ export default function ArticleLayout({
   const plainTitle = stripHtml(titleHtml)
   const showUpdated =
     updated && published && formatBlogDate(updated) !== formatBlogDate(published)
+  const readTotal = formatReadTotal(readSeconds)
 
   return (
     <>
@@ -97,6 +104,16 @@ export default function ArticleLayout({
                 {minutes ? (
                   <span className="inline-flex items-center gap-1.5">
                     <Clock size={14} /> {minutes} Min. Lesezeit
+                  </span>
+                ) : null}
+                {views && views > 0 ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Eye size={14} /> {views.toLocaleString('de-DE')} {views === 1 ? 'Aufruf' : 'Aufrufe'}
+                  </span>
+                ) : null}
+                {readTotal ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <BookOpen size={14} /> {readTotal} insgesamt gelesen
                   </span>
                 ) : null}
               </div>
