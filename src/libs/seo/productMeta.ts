@@ -9,6 +9,7 @@ import {
   euro,
   seasonForCategory,
   sizeFromText,
+  isValidSize,
   sizeLabel,
   sizePath,
   sizeUrl,
@@ -55,7 +56,7 @@ export interface SeoProduct {
 // ---------------------------------------------------------------- helpers
 
 export function productSize(p: SeoProduct) {
-  if (p.width && p.height && p.diameter) {
+  if (p.width && p.height && p.diameter && isValidSize(p.width, p.height, p.diameter)) {
     return {
       width: String(p.width),
       height: String(p.height),
@@ -142,7 +143,7 @@ export function modelName(p: SeoProduct) {
   if (brand) name = name.replace(new RegExp(`^${escapeRegExp(brand)}\\s*`, 'i'), '');
   return name
     // every size occurrence ("225/45 ZR18 … 225/45 R18", "215/65 R16C")
-    .replace(/\b\d{3}\s*\/\s*\d{2}\s*Z?R?F?\s*\d{2}C?\b/gi, '')
+    .replace(/\b(?:HL|LT|P)?\d{3}\s*\/\s*\d{2}\s*Z?R?F?\s*\d{2}C?\b/gi, '')
     // load/speed index anywhere ("95(Y)", "106H/104H", "91H") — the title adds it once
     .replace(/(^|\s)\d{2,3}\(?[A-Z]{1,2}\)?(\/\d{2,3}\(?[A-Z]{1,2}\)?)?(?=\s|$)/g, ' ')
     .replace(/\s{2,}/g, ' ')

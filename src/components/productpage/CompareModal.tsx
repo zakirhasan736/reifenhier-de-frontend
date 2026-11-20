@@ -243,7 +243,7 @@ export default function CompareModal() {
                         instruction: 'Zum Angebot',
                       })}
                       target="_blank"
-                      rel="nofollow sponsored noopener"
+                      rel="sponsored noopener"
                       onClick={() =>
                         onVendorExitClick({
                           productId: p._id,

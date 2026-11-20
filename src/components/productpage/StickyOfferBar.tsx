@@ -99,7 +99,7 @@ export default function StickyOfferBar({
         <a
           href={href}
           target="_blank"
-          rel="nofollow sponsored noopener"
+          rel="sponsored noopener"
           onClick={onExit}
           tabIndex={show ? 0 : -1}
           className="inline-flex h-12 md:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 md:px-6 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"

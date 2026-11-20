@@ -66,8 +66,15 @@ export function sizeLabel({ width, height, diameter }: TyreSize) {
 
 /** "205/55 R16 91V" / dimensions "205/55R16" → size, if any */
 export function sizeFromText(text?: string | null): TyreSize | null {
-  const m = String(text || '').match(/\b(\d{3})\s*\/\s*(\d{2})\s*Z?R?F?\s*(\d{2})C?\b/i);
-  return m ? { width: m[1], height: m[2], diameter: m[3] } : null;
+  // optional HL / LT / P prefix ("HL285/35 R21"), C suffix for van tyres ("R16C")
+  const m = String(text || '').match(/\b(?:HL|LT|P)?(\d{3})\s*\/\s*(\d{2})\s*Z?R?F?\s*(\d{2})C?\b/i);
+  return m && isValidSize(m[1], m[2], m[3]) ? { width: m[1], height: m[2], diameter: m[3] } : null;
+}
+
+/** Plausible passenger/SUV/van metric size (filters feed glitches like 31/10 R50). */
+export function isValidSize(width: string | number, height: string | number, diameter: string | number) {
+  const w = Number(width), h = Number(height), d = Number(diameter);
+  return w >= 115 && w <= 355 && h >= 25 && h <= 95 && d >= 10 && d <= 24;
 }
 
 export function brandSlug(name: string) {

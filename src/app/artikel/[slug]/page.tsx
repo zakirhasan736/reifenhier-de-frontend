@@ -225,9 +225,11 @@ export default async function BlogDetailPage({
   const mongoBlog = await fetchMongoBlogBySlug(slug);
 
   if (mongoBlog) {
-    const { blogs: relatedAll } = await fetchMongoBlogs({ page: 1, limit: 12 });
-    const related = relatedAll.filter(b => b.slug !== slug).slice(0, 8);
-    return <MongoBlogArticle blog={mongoBlog} related={related} />;
+    const { blogs: all, total } = await fetchMongoBlogs({ page: 1, limit: 200 });
+    const related = all.filter(b => b.slug !== slug).slice(0, 8);
+    // only filter links when the full list was loaded (never hide links on a partial list)
+    const knownSlugs = all.length && all.length >= total ? [slug, ...all.map(b => b.slug)] : undefined;
+    return <MongoBlogArticle blog={mongoBlog} related={related} knownSlugs={knownSlugs} />;
   }
 
   const blog = await fetchBlog(slug);

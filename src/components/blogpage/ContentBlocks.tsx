@@ -9,7 +9,7 @@ import { headingId, normalizeBlockHeadings } from '@/libs/blogs/format'
  * Only internal paths ("/…") become links — no HTML is ever injected, so
  * blog text stays XSS-safe while articles can link to landing pages.
  */
-function RichText({ text }: { text?: string }) {
+function RichText({ text, known }: { text?: string; known?: Set<string> }) {
   const value = text || ''
   const parts: ReactNode[] = []
   const rx = /\[([^\]]+)\]\((\/[^)\s]*)\)/g
@@ -17,6 +17,13 @@ function RichText({ text }: { text?: string }) {
   let m: RegExpExecArray | null
   while ((m = rx.exec(value))) {
     if (m.index > last) parts.push(value.slice(last, m.index))
+    const art = /^\/artikel\/([^/?#]+)/.exec(m[2])
+    if (art && known && known.size > 0 && !known.has(art[1])) {
+      // linked article not published (yet): plain text instead of a 404 link
+      parts.push(m[1])
+      last = m.index + m[0].length
+      continue
+    }
     parts.push(
       <Link key={m.index} href={m[2]} className="text-primary-100 underline underline-offset-2">
         {m[1]}
@@ -53,7 +60,7 @@ function Heading({
   }
 }
 
-function Block({ block }: { block: ContentBlock }) {
+function Block({ block, known }: { block: ContentBlock; known?: Set<string> }) {
   if (block.type === 'heading') {
     return <Heading level={block.level} text={block.text} />
   }
@@ -74,7 +81,7 @@ function Block({ block }: { block: ContentBlock }) {
       <ListTag className={listClass}>
         {items.map((item, i) => (
           <li key={i}>
-            <RichText text={item} />
+            <RichText text={item} known={known} />
           </li>
         ))}
       </ListTag>
@@ -83,16 +90,20 @@ function Block({ block }: { block: ContentBlock }) {
 
   return (
     <p className="article-p">
-      <RichText text={block.text} />
+      <RichText text={block.text} known={known} />
     </p>
   )
 }
 
 export default function ContentBlocks({
   groups,
+  knownArticleSlugs,
 }: {
   groups?: ContentBlock[][]
+  /** Published article slugs — /artikel links to anything else render as text. */
+  knownArticleSlugs?: string[]
 }) {
+  const known = knownArticleSlugs ? new Set(knownArticleSlugs) : undefined
   if (!Array.isArray(groups) || groups.length === 0) return null
 
   return (
@@ -100,7 +111,7 @@ export default function ContentBlocks({
       {normalizeBlockHeadings(groups).map((group, gi) => (
         <div key={gi} className="mb-2">
           {(group || []).map((block, bi) => (
-            <Block key={bi} block={block} />
+            <Block key={bi} block={block} known={known} />
           ))}
         </div>
       ))}

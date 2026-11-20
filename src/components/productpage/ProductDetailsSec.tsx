@@ -1141,7 +1141,7 @@ const shareImage = !rawShareImage
                             instruction: 'Zum Angebot',
                           })}
                           target="_blank"
-                          rel="nofollow sponsored noopener"
+                          rel="sponsored noopener"
                           onClick={() => {
                             onVendorExitClick({
                               productId: product._id,
@@ -1189,7 +1189,7 @@ const shareImage = !rawShareImage
                           instruction: 'Zum Angebot',
                         })}
                         target="_blank"
-                        rel="nofollow sponsored noopener"
+                        rel="sponsored noopener"
                         onClick={() => {
                           onVendorExitClick({
                             productId: product._id,
@@ -1488,7 +1488,7 @@ const shareImage = !rawShareImage
                           <div className="offer-product-card-inner grid grid-cols-2 md:grid-cols-12 items-center gap-x-4 gap-y-3">
                             {/* Vendor */}
                             <div className="vendor-box col-span-1 md:col-span-2">
-                              <a href={outHref} target="_blank" rel="nofollow sponsored noopener" onClick={onOfferExit} className="inline-flex">
+                              <a href={outHref} target="_blank" rel="sponsored noopener" onClick={onOfferExit} className="inline-flex">
                                 <OfferVendorLogo
                                   vendor={offer.vendor}
                                   vendorLogo={offer.vendor_logo}
@@ -1552,7 +1552,7 @@ const shareImage = !rawShareImage
                               <a
                                 href={outHref}
                                 target="_blank"
-                                rel="nofollow sponsored noopener"
+                                rel="sponsored noopener"
                                 onClick={onOfferExit}
                                 className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 text-[14px] font-semibold text-white transition hover:opacity-90"
                               >
@@ -1561,7 +1561,7 @@ const shareImage = !rawShareImage
                               <a
                                 href={outHref}
                                 target="_blank"
-                                rel="nofollow sponsored noopener"
+                                rel="sponsored noopener"
                                 onClick={onOfferExit}
                                 className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
                               >
