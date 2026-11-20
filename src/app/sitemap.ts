@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { SITE_URL } from '@/libs/seo/site'
-import { brandPath, MIN_LANDING_PRODUCTS, SEASONS, sizePath } from '@/libs/seo/landing'
+import { brandPath, MIN_COMBO_PRODUCTS, MIN_LANDING_PRODUCTS, SEASONS, sizeBrandPath, sizePath } from '@/libs/seo/landing'
 import { fetchLandings } from '@/libs/seo/landingData'
 
 export const revalidate = 3600
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/AGB', changeFrequency: 'monthly', priority: 0.3 },
   ]
 
-  const { sizes, brands } = await fetchLandings()
+  const { sizes, brands, brandSizes } = await fetchLandings()
   const landing: MetadataRoute.Sitemap = [
     ...sizes
       .filter(s => s.count >= MIN_LANDING_PRODUCTS)
@@ -41,6 +41,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...(b.updatedAt ? { lastModified: new Date(b.updatedAt) } : {}),
         changeFrequency: 'daily' as const,
         priority: 0.7,
+      })),
+    // size × brand ("Michelin 195/65 R15") – the long-tail queries that already bring impressions
+    ...brandSizes
+      .filter(b => b.count >= MIN_COMBO_PRODUCTS)
+      .slice(0, 2000)
+      .map(b => ({
+        url: `${SITE_URL}${sizeBrandPath(b, b.brand)}`,
+        changeFrequency: 'daily' as const,
+        priority: 0.6,
       })),
   ]
 

@@ -14,6 +14,9 @@ import {
   sizeLabel,
   sizePath,
   sizeSlug,
+  sizeBrandPath,
+  sizeSeasonPath,
+  displayBrand,
 } from '@/libs/seo/landing';
 import { fetchLandingProducts, fetchLandings } from '@/libs/seo/landingData';
 import { sizeFaqs, sizeIntro } from '@/libs/seo/landingCopy';
@@ -105,11 +108,15 @@ export default async function SizePage({ params }: Params) {
       linkGroups={[
         {
           title: `Marken in ${label}`,
-          links: brandsHere.slice(0, 20).map(b => ({ href: brandPath(b.brand), label: `${b.brand} Reifen`, note: String(b.count) })),
+          links: brandsHere.slice(0, 24).map(b => ({ href: sizeBrandPath(size, b.brand), label: `${displayBrand(b.brand)} ${label}`, note: String(b.count) })),
         },
         {
           title: `${label} nach Saison`,
-          links: SEASONS.map(s => ({ href: `/${s.slug}`, label: s.label })),
+          links: SEASONS.map(s => ({ href: sizeSeasonPath(size, s.slug), label: `${s.label} ${label}` })),
+        },
+        {
+          title: 'Reifenmarken',
+          links: brandsHere.slice(0, 12).map(b => ({ href: brandPath(b.brand), label: `${displayBrand(b.brand)} Reifen` })),
         },
         {
           title: `Weitere ${size.diameter}-Zoll-Größen`,

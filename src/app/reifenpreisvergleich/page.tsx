@@ -40,7 +40,7 @@ export default function ReifenpreisvergleichPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-12">
       <nav aria-label="Breadcrumb" className="mb-6 text-sm"><Link href="/" className="underline">Startseite</Link> / Reifenpreisvergleich</nav>
-      <h1 className="text-3xl font-bold">Reifenpreisvergleich: passende Reifen und Angebote finden</h1>
+      <h1 className="text-3xl font-bold">Reifenpreisvergleich: das Vergleichsportal für Reifen in Deutschland</h1>
       <p className="mt-5 text-lg">Reifexa.de hilft Ihnen, Reifenangebote unterschiedlicher Händler zu vergleichen. Suchen Sie nach Größe, Saison und Marke, prüfen Sie das EU-Reifenlabel und berücksichtigen Sie mögliche Versandkosten. Die Angebote stammen von Händlern; Preis und Verfügbarkeit können sich ändern.</p>
       <Link href="/produkte" className="mt-6 inline-block rounded bg-black px-6 py-3 text-white">Jetzt Reifenangebote vergleichen</Link>
       <h2 className="mb-4 mt-12 text-2xl font-semibold">So funktioniert der Reifenpreisvergleich</h2>
