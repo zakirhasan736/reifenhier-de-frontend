@@ -10,7 +10,7 @@ import { fetchLandings } from '@/libs/seo/landingData';
 export const revalidate = 1800;
 
 export const metadata: Metadata = {
-  title: { absolute: 'Reifenmarken A–Z: Continental, Michelin & mehr vergleichen | Reifexa' },
+  title: { absolute: 'Reifenmarken A–Z: Continental, Michelin & mehr | Reifexa' },
   description:
     'Alle Reifenmarken im Preisvergleich – Premium-, Qualitäts- und Budgetreifen. Marke wählen und Sommer-, Winter- oder Ganzjahresreifen günstig kaufen.',
   alternates: { canonical: `${SITE_URL}/marken` },

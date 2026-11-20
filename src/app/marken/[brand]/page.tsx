@@ -1,3 +1,4 @@
+import { fitTitle } from '@/libs/seo/title';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { brandKeywords } from '@/libs/seo/keywords';
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { brand } = await resolveBrand(slug);
   if (!brand) return { robots: { index: false } };
   const url = `${SITE_URL}${brandPath(brand.name)}`;
-  const title = `${brand.name} Reifen günstig${brand.minPrice ? ` ab ${euro(brand.minPrice)} €` : ''} – Preisvergleich | Reifexa`;
+  const title = fitTitle(`${brand.name} Reifen günstig${brand.minPrice ? ` ab ${euro(brand.minPrice)} €` : ''} – Preisvergleich`);
   const description = `${brand.count.toLocaleString('de-DE')} ${brand.name} Reifen im Preisvergleich: Sommer-, Winter- und Ganzjahresreifen${
     brand.minPrice ? ` ab ${euro(brand.minPrice)} €` : ''
   }. EU-Label vergleichen und beim günstigsten Shop kaufen.`;

@@ -46,23 +46,24 @@ export default function Header() {
   // const activeCategory = searchParams?.get('kategorie');
 
   const isActive = (cat: string) =>
-    pathname === '/produkte' && activeCategory === cat;
+    pathname === `/${cat.toLowerCase()}` ||
+    (pathname === '/produkte' && activeCategory === cat);
 
   /* PRODUCT CATEGORIES */
   const shopCategories = [
     {
       name: 'Sommerreifen',
-      href: '/produkte?kategorie=Sommerreifen',
+      href: '/sommerreifen',
       icon: <IoMdSunny className="!fill-[#e9d435] text-lg" />,
     },
     {
       name: 'Winterreifen',
-      href: '/produkte?kategorie=Winterreifen',
+      href: '/winterreifen',
       icon: <FaRegSnowflake className="!fill-[#88cdff] text-lg" />,
     },
     {
       name: 'Ganzjahresreifen',
-      href: '/produkte?kategorie=Ganzjahresreifen',
+      href: '/ganzjahresreifen',
       icon: (
         <Image
           src={'/images/icons/icon-reifen-com-ico-season-allyear-color.svg'}

@@ -11,7 +11,7 @@ export const revalidate = 1800;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { absolute: 'Reifenpreisvergleich: Reifen günstig vergleichen & kaufen | Reifexa' },
+  title: { absolute: 'Reifenpreisvergleich: Reifen günstig vergleichen | Reifexa' },
   description:
     'Reifenpreisvergleich für Deutschland: Sommer-, Winter- und Ganzjahresreifen nach Größe und Marke vergleichen – Händlerpreise inkl. Versand, Preisverlauf und Preisalarm.',
   alternates: { canonical: `${SITE_URL}/` },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     locale: 'de_DE',
     url: `${SITE_URL}/`,
     siteName: 'Reifexa.de',
-    title: 'Reifenpreisvergleich – Reifen günstig vergleichen & kaufen | Reifexa.de',
+    title: 'Reifenpreisvergleich: Reifen günstig vergleichen | Reifexa',
     description:
       'Händlerpreise inkl. Versand, Preisverlauf und Preisalarm: Sommer-, Winter- und Ganzjahresreifen im unabhängigen Reifenpreisvergleich.',
     images: [
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Reifenpreisvergleich – Reifen günstig vergleichen & kaufen | Reifexa.de',
+    title: 'Reifenpreisvergleich: Reifen günstig vergleichen | Reifexa',
     description:
       'Markenreifen im Preisvergleich. Sommerreifen, Winterreifen und Ganzjahresreifen günstig kaufen.',
     images: [`${SITE_URL}/images/product-detailspage.png`],
@@ -86,7 +86,7 @@ export default function Home() {
                 '@type': 'WebPage',
                 '@id': `${SITE_URL}/#webpage`,
                 url: `${SITE_URL}/`,
-                name: 'Reifenpreisvergleich: Reifen günstig vergleichen & kaufen | Reifexa',
+                name: 'Reifenpreisvergleich: Reifen günstig vergleichen | Reifexa',
                 isPartOf: { '@id': `${SITE_URL}/#website` },
                 about: { '@id': `${SITE_URL}/#org` },
                 inLanguage: 'de-DE',

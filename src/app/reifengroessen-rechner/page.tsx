@@ -12,7 +12,7 @@ import { SIZE_TOOL_KEYWORDS, uniqKeywords } from '@/libs/seo/keywords';
 export const revalidate = 86400;
 
 const PAGE_URL = `${SITE_URL}/reifengroessen-rechner`;
-const TITLE = 'Reifengrößenrechner: Reifengrößen nebeneinander vergleichen | Reifexa';
+const TITLE = 'Reifengrößenrechner: Reifengrößen vergleichen | Reifexa';
 const DESCRIPTION =
   'Zwei Reifengrößen nebeneinander vergleichen: Durchmesser, Abrollumfang, Flankenhöhe und Tachoabweichung – mit maßstabsgetreuer Grafik. Kostenlos, ohne Anmeldung.';
 

@@ -1,3 +1,4 @@
+import { fitTitle } from '@/libs/seo/title';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { sizeKeywords } from '@/libs/seo/keywords';
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   }, 1);
   const min = products[0]?.cheapest_offer;
   const url = `${SITE_URL}${sizePath(size)}`;
-  const title = `${label} Reifen günstig${min ? ` ab ${euro(min)} €` : ''} – Preisvergleich | Reifexa`;
+  const title = fitTitle(`${label} Reifen günstig${min ? ` ab ${euro(min)} €` : ''} – Preisvergleich`);
   const description = `${label} Reifen im Preisvergleich: ${total.toLocaleString('de-DE')} Sommer-, Winter- und Ganzjahresreifen${
     min ? ` ab ${euro(min)} €` : ''
   }. Preise mehrerer Shops vergleichen und günstig kaufen.`;

@@ -5,10 +5,11 @@ import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import { ARTICLE_LIST_KEYWORDS } from '@/libs/seo/keywords';
 import { blogCoverSrc, BLOGS_PER_PAGE, fetchMongoBlogs } from '@/libs/blogs/mongo';
 import JsonLd from '@/components/seo/JsonLd';
+import Link from 'next/link';
 
 const WP_API = 'https://wp.reifexa.de/wp-json/wp/v2';
 
-const BASE_TITLE = 'Reifen-Ratgeber & Tests 2026 | Reifexa';
+const BASE_TITLE = 'Reifen-Ratgeber 2026: Tests, Reifencheck & Tipps | Reifexa';
 const BASE_DESCRIPTION =
   'Aktuelle Ratgeber, Tests und Tipps zu Sommerreifen, Winterreifen, Ganzjahresreifen und Reifenkauf auf Reifexa.de.';
 
@@ -53,7 +54,7 @@ export async function generateMetadata({
 
 const staticMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { absolute: 'Reifen-Ratgeber 2026: Tests, Reifencheck & Kaufberatung | Reifexa' },
+  title: { absolute: 'Reifen-Ratgeber 2026: Tests, Reifencheck & Tipps | Reifexa' },
   description:
     'Aktuelle Ratgeber, Tests und Tipps zu Sommerreifen, Winterreifen, Ganzjahresreifen und Reifenkauf auf Reifexa.de.',
   alternates: { canonical: `${SITE_URL}/artikel` },
@@ -226,7 +227,63 @@ async function ServerContent({
         subSlug={subSlug}
       />
 
+      {page === 1 && !parentSlug && !subSlug ? <RatgeberOverview /> : null}
+
       <JsonLd id="ld-artikel" data={jsonLd} />
     </>
+  );
+}
+
+const TOPICS: Array<{ title: string; text: string; links: Array<[string, string]> }> = [
+  {
+    title: 'Winterreifen & Winterreifenpflicht',
+    text: 'In Deutschland gilt die situative Winterreifenpflicht: Bei Glätte, Schnee oder Eis sind Reifen mit Alpine-Symbol (Schneeflocke im Berg) vorgeschrieben. Unsere Ratgeber erklären Bußgelder, Mindestprofil und worauf es bei Winterreifen-Tests ankommt.',
+    links: [['Winterreifen günstig vergleichen', '/winterreifen'], ['Ganzjahresreifen als Alternative', '/ganzjahresreifen']],
+  },
+  {
+    title: 'Sommerreifen & Reifentests',
+    text: 'Sommerreifen spielen ihre Stärken bei Wärme aus: kürzere Bremswege auf nasser und trockener Straße und weniger Verschleiß. Wir fassen Testergebnisse, EU-Reifenlabel und Preis-Leistung verständlich zusammen.',
+    links: [['Sommerreifen im Preisvergleich', '/sommerreifen'], ['Reifenmarken vergleichen', '/marken']],
+  },
+  {
+    title: 'Reifencheck, Größe & Sicherheit',
+    text: 'Profiltiefe, Reifenalter (DOT-Nummer), Reifendruck und die richtige Reifengröße entscheiden über Sicherheit und Kosten. Mit Checklisten und dem Reifengrößenrechner prüfen Sie Ihre Reifen in wenigen Minuten selbst.',
+    links: [['Reifengrößenrechner', '/reifengroessen-rechner'], ['Reifen nach Größe finden', '/reifen']],
+  },
+  {
+    title: 'Reifen günstig kaufen',
+    text: 'Der niedrigste Stückpreis ist nicht immer das beste Angebot. Entscheidend ist der Gesamtpreis für vier Reifen inklusive Versand. Preisverlauf und Preisalarm zeigen, wann sich der Kauf lohnt.',
+    links: [['So funktioniert der Reifenpreisvergleich', '/reifenpreisvergleich'], ['Alle Reifenangebote', '/produkte']],
+  },
+];
+
+/** Server-rendered topic overview: crawlable text + landing links for the article hub. */
+function RatgeberOverview() {
+  return (
+    <section className="custom-container pb-16" aria-labelledby="ratgeber-themen">
+      <h2 id="ratgeber-themen" className="text-[24px] md:text-[30px] font-semibold text-[#16171A] mb-2">
+        Reifen-Ratgeber: die wichtigsten Themen
+      </h2>
+      <p className="max-w-3xl text-[15px] md:text-[16px] leading-[165%] text-[#404042] mb-6">
+        Im Reifexa-Ratgeber finden Sie unabhängige Kaufberatung rund um Autoreifen für den deutschen Markt –
+        von Reifentests und dem EU-Reifenlabel über die Winterreifenpflicht bis zum Reifencheck in Eigenregie.
+        Jeder Artikel verlinkt direkt auf passende Reifengrößen und Angebote im Preisvergleich.
+      </p>
+      <div className="grid gap-4 md:grid-cols-2">
+        {TOPICS.map(t => (
+          <div key={t.title} className="rounded-[16px] border border-[#E9ECF3] bg-mono-0 p-5">
+            <h3 className="text-[18px] font-semibold text-[#16171A] mb-1">{t.title}</h3>
+            <p className="text-[15px] leading-[160%] text-[#4B4F58]">{t.text}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {t.links.map(([label, href]) => (
+                <Link key={href} href={href} className="rounded-full border border-[#E1E5EE] px-3 py-1.5 text-[14px] hover:border-primary-100 hover:text-primary-100">
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
