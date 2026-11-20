@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { ContentBlock } from '@/libs/blogs/mongo'
 import TyrePriceCalculator from '@/components/blogpage/TyrePriceCalculator'
-import { headingId } from '@/libs/blogs/format'
+import { headingId, normalizeBlockHeadings } from '@/libs/blogs/format'
 
 /**
  * Inline links in blog text: "[205/55 R16 Reifen](/reifen/205-55-r16)".
@@ -38,13 +38,10 @@ function Heading({
   const value = text || ''
   const className = 'text-[#16171A] font-semibold leading-[1.3] scroll-mt-28'
   switch (level) {
-    case 'h1':
-      // the page title is the h1 — an h1 inside the article renders as h2
-      return <h2 id={headingId(value)} className={`${className} text-[24px] md:text-[28px] mt-10 mb-3`}>{value}</h2>
     case 'h2':
       return <h2 id={headingId(value)} className={`${className} text-[22px] md:text-[26px] mt-10 mb-3`}>{value}</h2>
     case 'h3':
-      return <h3 className={`${className} text-[19px] md:text-[21px] mt-8 mb-2`}>{value}</h3>
+      return <h3 id={headingId(value)} className={`${className} text-[19px] md:text-[21px] mt-8 mb-2`}>{value}</h3>
     case 'h4':
       return <h4 className={`${className} text-[18px] mt-6 mb-2`}>{value}</h4>
     case 'h5':
@@ -100,7 +97,7 @@ export default function ContentBlocks({
 
   return (
     <div className="blog-details-content-block">
-      {groups.map((group, gi) => (
+      {normalizeBlockHeadings(groups).map((group, gi) => (
         <div key={gi} className="mb-2">
           {(group || []).map((block, bi) => (
             <Block key={bi} block={block} />

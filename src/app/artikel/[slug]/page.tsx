@@ -5,7 +5,7 @@ import BlogRelated from '@/page-components/blogs/RelatedBlogsSectiob';
 import LatestBlogs from '@/components/homepage/Blogs';
 import MongoBlogArticle from '@/components/blogpage/MongoBlogArticle';
 import ArticleLayout from '@/components/blogpage/ArticleLayout';
-import { headingId, readingMinutes, stripHtml } from '@/libs/blogs/format';
+import { headingId, normalizeHtmlHeadings, readingMinutes, stripHtml } from '@/libs/blogs/format';
 import {
   blogCoverSrc,
   fetchMongoBlogBySlug,
@@ -324,7 +324,7 @@ export default async function BlogDetailPage({
   };
   // Anchor ids on h2s → table of contents
   const toc: { id: string; text: string }[] = [];
-  const contentHtml = String(blog.content.rendered || '').replace(
+  const contentHtml = normalizeHtmlHeadings(String(blog.content.rendered || '')).replace(
     /<h2([^>]*)>([\s\S]*?)<\/h2>/gi,
     (full, attrs: string, inner: string) => {
       const text = stripHtml(inner);
