@@ -93,6 +93,15 @@ export const SITE_KEYWORDS = [
   'ganzjahresreifen test 2026',
   'autoreifen günstig',
   'reifensuche',
+  'reifen vergleichsportal',
+  'reifenpreise vergleichen',
+  'reifen preisvergleich online',
+  'reifencheck',
+  'reifen check',
+  'reifen prüfen',
+  'reifen preisverlauf',
+  'reifen preisalarm',
+  'reifen händlerpreise',
 ] as const
 
 export async function fetchProductSitemapMeta(): Promise<{

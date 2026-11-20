@@ -10,9 +10,9 @@ export const revalidate = 1800;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Reifen günstig vergleichen & kaufen | Reifexa',
+  title: { absolute: 'Reifenpreisvergleich: Reifen günstig vergleichen & kaufen | Reifexa' },
   description:
-    'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
+    'Reifenpreisvergleich für Deutschland: Sommer-, Winter- und Ganzjahresreifen nach Größe und Marke vergleichen – Händlerpreise inkl. Versand, Preisverlauf und Preisalarm.',
   alternates: { canonical: `${SITE_URL}/` },
   keywords: [
     ...SITE_KEYWORDS,
@@ -31,15 +31,17 @@ export const metadata: Metadata = {
     'Winterreifenpflicht Deutschland',
     'Reifen für SUV',
     'Kompletträder Angebote',
+    'Reifen Vergleichsportal',
+    'Reifencheck',
   ],
   openGraph: {
     type: 'website',
     locale: 'de_DE',
     url: `${SITE_URL}/`,
     siteName: 'Reifexa.de',
-    title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
+    title: 'Reifenpreisvergleich – Reifen günstig vergleichen & kaufen | Reifexa.de',
     description:
-      'Stöbern Sie durch unsere Produktübersicht und finden Sie Top-Angebote für Sommer-, Winter- und Ganzjahresreifen.',
+      'Händlerpreise inkl. Versand, Preisverlauf und Preisalarm: Sommer-, Winter- und Ganzjahresreifen im unabhängigen Reifenpreisvergleich.',
     images: [
       {
         url: `${SITE_URL}/images/product-detailspage.png`,
@@ -51,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Reifenangebote – Reifen günstig vergleichen & kaufen',
+    title: 'Reifenpreisvergleich – Reifen günstig vergleichen & kaufen | Reifexa.de',
     description:
       'Markenreifen im Preisvergleich. Sommerreifen, Winterreifen und Ganzjahresreifen günstig kaufen.',
     images: [`${SITE_URL}/images/product-detailspage.png`],
@@ -81,6 +83,12 @@ export default function Home() {
           <div className="flex-1">
             <h2 id="vergleich-ratgeber-title" className="text-[20px] md:text-[24px] font-semibold text-[#16171A] mb-2">Reifenpreise vergleichen: transparent und einfach</h2>
             <p className="md:!text-[16px] !text-[14px] text-[#6B6E76]">Vergleichen Sie verfügbare Angebote nach Reifengröße, Marke und Saison. Prüfen Sie vor dem Kauf auch Versandkosten, Lieferzeit und das EU-Reifenlabel. Der Kauf erfolgt beim jeweiligen Händler; Preise und Verfügbarkeit können sich ändern.</p>
+            <p className="mt-3 md:!text-[15px] !text-[14px] text-[#6B6E76]">
+              Ratgeber:{' '}
+              <Link href="/artikel/reifenpreisvergleich-reifen-vergleichsportal-2026" className="text-primary-100 underline underline-offset-2">Das beste Reifen-Vergleichsportal finden</Link>
+              {' · '}
+              <Link href="/artikel/reifencheck-2026-reifen-selbst-pruefen-checkliste" className="text-primary-100 underline underline-offset-2">Reifencheck: Reifen in 5 Minuten selbst prüfen</Link>
+            </p>
           </div>
           <Link href="/reifenpreisvergleich" className="inline-flex shrink-0 items-center gap-2 self-start md:self-auto rounded-[10px] bg-primary-100 px-5 py-3 text-[14px] font-semibold text-mono-0 hover:opacity-90 transition">
             So funktioniert der Reifenpreisvergleich
@@ -96,12 +104,12 @@ export default function Home() {
                 '@type': 'WebPage',
                 '@id': `${SITE_URL}/#webpage`,
                 url: `${SITE_URL}/`,
-                name: 'Reifen günstig vergleichen & kaufen | Reifexa',
+                name: 'Reifenpreisvergleich: Reifen günstig vergleichen & kaufen | Reifexa',
                 isPartOf: { '@id': `${SITE_URL}/#website` },
                 about: { '@id': `${SITE_URL}/#org` },
                 inLanguage: 'de-DE',
                 description:
-                  'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommerreifen, Winterreifen und Ganzjahresreifen nach Größe, Marke und Preis.',
+                  'Reifenpreisvergleich für Deutschland: Sommer-, Winter- und Ganzjahresreifen nach Größe und Marke vergleichen – Händlerpreise inkl. Versand, Preisverlauf und Preisalarm.',
               },
             ],
           }} />
