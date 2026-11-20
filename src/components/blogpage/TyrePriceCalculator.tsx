@@ -143,7 +143,7 @@ export default function TyrePriceCalculator() {
           instruction: label,
         })}
         target="_blank"
-        rel="nofollow sponsored noopener"
+        rel="sponsored noopener"
         onClick={() =>
           onVendorExitClick({
             productId: o._id,

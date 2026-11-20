@@ -201,9 +201,9 @@ export default function TyreSizeGuideModal({
             <Ruler size={22} />
           </span>
           <div className="min-w-0 flex-1">
-            <h3 id="tyre-size-guide-title" className="text-[19px] md:text-[22px] font-semibold leading-tight">
+            <h2 id="tyre-size-guide-title" className="text-[19px] md:text-[22px] font-semibold leading-tight">
               Wo finde ich meine Reifengröße?
-            </h3>
+            </h2>
             <p className="mt-1 hidden sm:block !text-[13px] md:!text-[14px] text-[#5A5B61]">
               So lesen Sie die Angaben auf Ihrem Reifen – mit Ihrer gewählten Größe erklärt.
             </p>
@@ -362,7 +362,7 @@ export default function TyreSizeGuideModal({
           ) : null}
 
           {/* where to find it */}
-          <h4 className="mt-7 text-[16px] md:text-[18px] font-semibold">Wo steht die Größe?</h4>
+          <h3 className="mt-7 text-[16px] md:text-[18px] font-semibold">Wo steht die Größe?</h3>
           <div className="mt-3 grid gap-2.5 md:grid-cols-3 md:gap-3">
             {[
               { icon: CircleDot, t: 'Auf der Reifenflanke', d: 'Auf jedem Reifen seitlich eingeprägt – genau wie im Bild oben.' },
@@ -383,7 +383,7 @@ export default function TyreSizeGuideModal({
 
           {/* index tables */}
           <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
-            <h4 className="text-[16px] md:text-[18px] font-semibold">Index wählen und Werte sehen</h4>
+            <h3 className="text-[16px] md:text-[18px] font-semibold">Index wählen und Werte sehen</h3>
             <div role="tablist" className="flex gap-1 rounded-full bg-[#F2F4F8] p-1">
               {(
                 [

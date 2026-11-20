@@ -20,9 +20,11 @@ const CALCULATOR_SLUG =
 export default function MongoBlogArticle({
   blog,
   related,
+  knownSlugs,
 }: {
   blog: MongoBlog
   related: MongoBlog[]
+  knownSlugs?: string[]
 }) {
   const featured = blogCoverSrc(blog.coverImage)
   const showCalculator =
@@ -113,7 +115,7 @@ export default function MongoBlogArticle({
       >
         {showCalculator && <BlogTyreCalculator />}
 
-        <ContentBlocks groups={blog.contentBlocks} />
+        <ContentBlocks groups={blog.contentBlocks} knownArticleSlugs={knownSlugs} />
 
         <RelatedSearches
           contained={false}

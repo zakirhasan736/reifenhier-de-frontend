@@ -623,9 +623,9 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
       <div className="p-card-foot px-4 pb-4">
         {Array.isArray(offers) && offers.length > 0 && (
           <div className="mt-3 rounded-[12px] bg-[#F7F8FB] p-2.5">
-            <h4 className="font-secondary font-semibold text-[12px] mb-1.5 text-left text-[#6B6E76] leading-[140%]">
+            <p className="font-secondary font-semibold !text-[12px] mb-1.5 text-left !text-[#6B6E76] leading-[140%]">
               Direkt zum günstigsten Angebot
-            </h4>
+            </p>
             <ul className="competitor-product-lists flex flex-col gap-1">
               {[...offers]
                 .sort(
@@ -652,7 +652,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                         instruction: 'Direkt zum Angebot',
                       })}
                       target="_blank"
-                      rel="nofollow sponsored noopener"
+                      rel="sponsored noopener"
                       onClick={() => {
                         onVendorExitClick({
                           productId: _id,
