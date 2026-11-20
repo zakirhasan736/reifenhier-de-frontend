@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { SITE_URL } from '@/libs/seo/site';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Reifenpreisvergleich: Angebote richtig vergleichen | Reifexa.de' },
-  description: 'Reifenpreise für Deutschland vergleichen: Reifengröße, Saison, Händlerangebote, Versandkosten und EU-Reifenlabel prüfen. So finden Sie ein passendes Angebot.',
+  title: { absolute: 'Reifenpreisvergleich: Reifen-Vergleichsportal für Deutschland | Reifexa' },
+  description: 'So funktioniert der Reifenpreisvergleich: Reifengröße eingeben, Händlerpreise inkl. Versand vergleichen, Preisverlauf und EU-Label prüfen, Preisalarm setzen.',
   alternates: { canonical: `${SITE_URL}/reifenpreisvergleich` },
   robots: { index: true, follow: true },
   openGraph: {

@@ -25,6 +25,15 @@ Sitemap index: https://www.reifexa.de/sitemaps.xml
 - [Winterreifen](https://www.reifexa.de/produkte?kategorie=Winterreifen): Winterreifen Angebote
 - [Ganzjahresreifen](https://www.reifexa.de/produkte?kategorie=Ganzjahresreifen): Ganzjahresreifen Angebote
 - [Artikel / Blog](https://www.reifexa.de/artikel): Reifen-Ratgeber, Tests und News
+- [So funktioniert der Reifenpreisvergleich](https://www.reifexa.de/reifenpreisvergleich): Händlerpreise inkl. Versand, Preisverlauf (90 Tage), Preisalarm, EU-Reifenlabel
+- [Reifengrößen A–Z](https://www.reifexa.de/reifen): Preisvergleich je Reifengröße, z. B. 205/55 R16
+- [Reifenmarken A–Z](https://www.reifexa.de/marken): Preisvergleich je Marke
+
+## Key guides
+- [Reifenpreisvergleich 2026: Das beste Reifen-Vergleichsportal finden](https://www.reifexa.de/artikel/reifenpreisvergleich-reifen-vergleichsportal-2026): Kriterien für ein gutes Reifen-Vergleichsportal (Gesamtpreis inkl. Versand, Preisverlauf, Preisalarm, EU-Label), Arten von Portalen in Deutschland
+- [Reifencheck 2026: Reifen in 5 Minuten selbst prüfen](https://www.reifexa.de/artikel/reifencheck-2026-reifen-selbst-pruefen-checkliste): Profiltiefe (1-Euro-Münze), Reifenalter (DOT), Reifendruck, Schäden, Checkliste
+- [Winterreifen günstig kaufen: Preisverlauf & Preisalarm](https://www.reifexa.de/artikel/winterreifen-guenstig-kaufen-preisverlauf-preisalarm-2026)
+- [Winterreifenpflicht 2026](https://www.reifexa.de/artikel/winterreifenpflicht-2026-alpine-symbol-bussgeld)
 - [Impressum & Datenschutz](https://www.reifexa.de/impressum-datenschutz): Rechtliches
 - [AGB](https://www.reifexa.de/AGB): Nutzungsbedingungen
 

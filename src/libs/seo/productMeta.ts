@@ -171,6 +171,8 @@ export function buildProductTitle(p: SeoProduct): string {
     .trim();
   const { low } = priceRange(p);
   const price = low ? ` ab ${euro(low)} €` : ' Preisvergleich';
+  const withCompare = `${base}${price} – Preisvergleich | Reifexa`;
+  if (low && withCompare.length <= 72) return withCompare;
   const full = `${base}${price} | Reifexa`;
   return full.length <= 72 ? full : `${base}${price}`;
 }
@@ -203,7 +205,7 @@ export function buildProductDescription(p: SeoProduct): string {
   const parts = [
     `${name}${season ? ` (${season})` : ''}: ${priceText}`,
     label.length ? `EU-Label: ${label.join(', ')}.` : '',
-    'Jetzt günstigsten Händler finden.',
+    count > 1 ? 'Preisverlauf & Preisalarm.' : 'Jetzt günstigsten Händler finden.',
   ].filter(Boolean);
 
   let text = parts.join(' ');
