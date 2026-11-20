@@ -1,5 +1,6 @@
 'use client';
 
+import { brandPath, isValidSize, sizeFromText, sizePath } from '@/libs/seo/landing';
 import React, { useState, useMemo, useEffect } from 'react';
 import SizeAlternatives, { type SizeAlternative } from '@/components/productpage/SizeAlternatives';
 import toast from 'react-hot-toast';
@@ -216,6 +217,15 @@ const formatEUR = (n: number) => {
   if (!Number.isFinite(n)) return '';
   // German format: 52,43 €
   return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+};
+
+/** Indexable size landing (/reifen/205-55-r16) when the size is plausible. */
+const landingSizeHref = (p: { width?: string | number; height?: string | number; diameter?: string | number; dimensions?: string; product_name?: string }) => {
+  const s =
+    p.width && p.height && p.diameter && isValidSize(p.width, p.height, p.diameter)
+      ? { width: String(p.width), height: String(p.height), diameter: String(p.diameter) }
+      : sizeFromText(p.dimensions) || sizeFromText(p.product_name);
+  return s ? sizePath(s) : '';
 };
 
 const buildProductFilterUrl = (filters: Record<string, string | undefined>) => {
@@ -1069,7 +1079,7 @@ const shareImage = !rawShareImage
                         <span className="font-semibold text-[#9AA0A8]">Mehr:</span>
                         {(product.width || product.dimensions) && (
                           <Link
-                            href={buildProductFilterUrl({
+                            href={landingSizeHref(product) || buildProductFilterUrl({
                               kategorie: product.merchant_product_third_category,
                               width: product.width,
                               height: product.height,
@@ -1082,7 +1092,7 @@ const shareImage = !rawShareImage
                         )}
                         {product.brand_name && (
                           <Link
-                            href={buildProductFilterUrl({ brand: product.brand_name })}
+                            href={brandPath(product.brand_name)}
                             className="font-semibold text-primary-100 underline-offset-2 hover:underline"
                           >
                             Marke {product.brand_name}
@@ -1120,6 +1130,7 @@ const shareImage = !rawShareImage
                           </p>
                         )}
                           <a href="#preisverlauf-title" className="inline-flex shrink-0 rounded-[10px] bg-white px-2 py-1 border border-[#E9ECF3] hover:border-[#C9D6FC]" aria-label="Zur Preisentwicklung">
+                        <span className="sr-only">Zur Preisentwicklung</span>
                         <PriceSparkline points={product.price_trend?.points} current={cheapPrice || undefined} width={88} height={24} />
                       </a>
                         </div>
