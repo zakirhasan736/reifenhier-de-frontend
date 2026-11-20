@@ -170,3 +170,53 @@ export const SEASON_COPY: Record<
     ],
   },
 };
+
+/** Size × brand / size × season copy. `subject` = "Michelin" or "Winterreifen". */
+export function comboIntro(opts: {
+  size: TyreSize;
+  subject: string;
+  kind: 'brand' | 'season';
+  total: number;
+  minPrice: number;
+  models: string[];
+  indexes: string[];
+  seasons: string[];
+}) {
+  const label = sizeLabel(opts.size);
+  const what = opts.kind === 'brand' ? `${opts.subject} Reifen in ${label}` : `${opts.subject} in ${label}`;
+  const p1 = `${what} im Preisvergleich: Reifexa zeigt ${opts.total.toLocaleString('de-DE')} ${
+    opts.total === 1 ? 'Angebot' : 'Modelle'
+  }${opts.minPrice ? ` ab ${euro(opts.minPrice)} € pro Reifen` : ''} und vergleicht die Preise mehrerer Online-Händler inklusive Versand.${
+    opts.models.length ? ` Verfügbar sind unter anderem ${listDe(opts.models.slice(0, 4))}.` : ''
+  }`;
+  const p2 = [
+    opts.indexes.length ? `Last- und Geschwindigkeitsindex in dieser Größe: ${listDe(opts.indexes.slice(0, 6))} – mindestens die Werte aus Ihren Fahrzeugpapieren wählen.` : '',
+    opts.kind === 'brand' && opts.seasons.length ? `${opts.subject} bietet ${label} als ${listDe(opts.seasons)} an.` : '',
+    opts.kind === 'season' && /ganzjahr/i.test(opts.subject) ? 'Ganzjahresreifen werden auch Allwetterreifen oder All-Season-Reifen genannt; für den Winter brauchen sie das Alpine-Symbol (3PMSF).' : '',
+    'Preisverlauf und Preisalarm zeigen, wann sich der Kauf lohnt.',
+  ].filter(Boolean).join(' ');
+  return [p1, p2];
+}
+
+export function comboFaqs(opts: { size: TyreSize; subject: string; kind: 'brand' | 'season'; total: number; minPrice: number; cheapestName?: string }): Faq[] {
+  const label = sizeLabel(opts.size);
+  const what = opts.kind === 'brand' ? `${opts.subject} ${label}` : `${opts.subject} ${label}`;
+  return [
+    {
+      q: `Was kostet ein ${what} Reifen?`,
+      a: opts.minPrice
+        ? `Der günstigste ${what} Reifen kostet bei Reifexa derzeit ${euro(opts.minPrice)} € pro Stück${
+            opts.cheapestName ? ` (${opts.cheapestName})` : ''
+          }. Für einen Satz mit vier Reifen sind das rund ${euro(opts.minPrice * 4)} € zzgl. eventueller Versandkosten.`
+        : `Wir vergleichen ${opts.total.toLocaleString('de-DE')} Angebote für ${what}; die Preise werden mehrmals täglich aktualisiert.`,
+    },
+    {
+      q: `Wo kann ich ${what} günstig kaufen?`,
+      a: `Reifexa vergleicht die Preise mehrerer Online-Reifenhändler. Über „Zum Angebot“ kaufen Sie direkt beim Händler; achten Sie auf den Gesamtpreis inklusive Versand und Montage.`,
+    },
+    {
+      q: `Passt ${label} auf mein Auto?`,
+      a: `Zulässige Größen stehen in der Zulassungsbescheinigung Teil I (Feld 15) bzw. im CoC-Papier. Alternative Größen können Sie mit dem Reifengrößenrechner vergleichen.`,
+    },
+  ];
+}

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { brandKeywords } from '@/libs/seo/keywords';
 import LandingPage from '@/components/seo/LandingPage';
 import { SITE_URL } from '@/libs/seo/site';
-import { brandPath, brandSlug, euro, MIN_LANDING_PRODUCTS, SEASONS, seasonForCategory, sizeLabel, sizePath } from '@/libs/seo/landing';
+import { brandPath, brandSlug, displayBrand, euro, MIN_LANDING_PRODUCTS, SEASONS, seasonForCategory, sizeBrandPath, sizeLabel } from '@/libs/seo/landing';
 import { fetchLandingProducts, fetchLandings } from '@/libs/seo/landingData';
 import { brandFaqs, brandIntro } from '@/libs/seo/landingCopy';
 
@@ -85,7 +85,7 @@ export default async function BrandPage({ params }: Params) {
       linkGroups={[
         {
           title: `${brand.name} Reifen nach Größe`,
-          links: sizes.slice(0, 30).map(s => ({ href: sizePath(s), label: sizeLabel(s), note: String(s.count) })),
+          links: sizes.slice(0, 30).map(s => ({ href: sizeBrandPath(s, brand.name), label: `${displayBrand(brand.name)} ${sizeLabel(s)}`, note: String(s.count) })),
         },
         { title: 'Nach Saison', links: SEASONS.map(s => ({ href: `/${s.slug}`, label: s.label })) },
         { title: 'Weitere Reifenmarken', links: otherBrands.map(b => ({ href: brandPath(b.name), label: b.name })) },

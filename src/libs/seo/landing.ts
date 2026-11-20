@@ -9,6 +9,8 @@ import { SITE_URL } from '@/libs/seo/site';
 
 /** Landing pages need at least this many products to be indexed. */
 export const MIN_LANDING_PRODUCTS = 3;
+/** Size × brand / size × season pages ("Michelin 195/65 R15") are indexed from 2 products. */
+export const MIN_COMBO_PRODUCTS = 2;
 
 export type TyreSize = { width: string; height: string; diameter: string };
 
@@ -103,4 +105,16 @@ export function euro(n?: number | null) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+/** "/reifen/195-65-r15/michelin" – size × brand landing. */
+export const sizeBrandPath = (s: TyreSize, brand: string) => `${sizePath(s)}/${brandSlug(brand)}`;
+/** "/reifen/205-55-r16/winterreifen" – size × season landing. */
+export const sizeSeasonPath = (s: TyreSize, slug: SeasonSlug) => `${sizePath(s)}/${slug}`;
+
+/** "MICHELIN" → "Michelin", "BARUM" → "Barum"; keeps mixed case and short acronyms (BFG). */
+export function displayBrand(name: string) {
+  const n = String(name || '').trim();
+  if (n.length <= 3 || n !== n.toUpperCase()) return n;
+  return n.toLowerCase().replace(/(^|[\s-])([a-zäöü])/g, (_m, a: string, b: string) => a + b.toUpperCase());
 }
