@@ -5,6 +5,7 @@ import BlogRelated from '@/page-components/blogs/RelatedBlogsSectiob';
 import LatestBlogs from '@/components/homepage/Blogs';
 import MongoBlogArticle from '@/components/blogpage/MongoBlogArticle';
 import ArticleLayout from '@/components/blogpage/ArticleLayout';
+import { fitTitle } from '@/libs/seo/title';
 import { headingId, normalizeHtmlHeadings, readingMinutes, stripHtml } from '@/libs/blogs/format';
 import {
   blogCoverSrc,
@@ -89,7 +90,7 @@ export async function generateMetadata({
   const mongoBlog = await fetchMongoBlogBySlug(slug);
 
   if (mongoBlog) {
-    const title = `${mongoBlog.title} | Reifexa`;
+    const title = fitTitle(mongoBlog.title);
     const description = (mongoBlog.metaDescription || mongoBlog.title).slice(
       0,
       155
@@ -163,9 +164,9 @@ function getCategories(blog: WPBlog): string[] {
     tags: [...wpTags, ...wpCats],
   });
 
-  const title =
-    blog.acf?.meta_title ||
-    `${blog.title.rendered.replace(/<[^>]+>/g, '')} | Reifexa`;
+  const title = fitTitle(
+    String(blog.acf?.meta_title || blog.title.rendered || '').replace(/\s*\|\s*Reifexa(\.de)?\s*$/i, '')
+  );
 
   const excerpt =
     blog.acf?.meta_description ||

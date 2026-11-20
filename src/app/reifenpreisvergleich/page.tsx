@@ -5,7 +5,7 @@ import { COMPARISON_KEYWORDS, SIZE_TOOL_KEYWORDS, uniqKeywords } from '@/libs/se
 import JsonLd from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Reifenpreisvergleich: Reifen-Vergleichsportal für Deutschland | Reifexa' },
+  title: { absolute: 'Reifenpreisvergleich: das Reifen-Vergleichsportal | Reifexa' },
   description: 'So funktioniert der Reifenpreisvergleich: Reifengröße eingeben, Händlerpreise inkl. Versand vergleichen, Preisverlauf und EU-Label prüfen, Preisalarm setzen.',
   alternates: { canonical: `${SITE_URL}/reifenpreisvergleich` },
   keywords: uniqKeywords([...COMPARISON_KEYWORDS, 'Reifen Leistung vergleichen', 'Reifentest Vergleich', 'EU-Reifenlabel vergleichen', 'Kompletträder vergleichen', ...SIZE_TOOL_KEYWORDS.slice(0, 4), 'Reifen Preisverlauf', 'Reifen Preisalarm', 'Reifexa']),

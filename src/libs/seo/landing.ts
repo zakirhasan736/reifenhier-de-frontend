@@ -66,7 +66,7 @@ export function sizeLabel({ width, height, diameter }: TyreSize) {
 
 /** "205/55 R16 91V" / dimensions "205/55R16" → size, if any */
 export function sizeFromText(text?: string | null): TyreSize | null {
-  const m = String(text || '').match(/\b(\d{3})\s*\/\s*(\d{2})\s*Z?R?F?\s*(\d{2})\b/i);
+  const m = String(text || '').match(/\b(\d{3})\s*\/\s*(\d{2})\s*Z?R?F?\s*(\d{2})C?\b/i);
   return m ? { width: m[1], height: m[2], diameter: m[3] } : null;
 }
 

@@ -1,3 +1,4 @@
+import { fitTitle } from '@/libs/seo/title';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import LandingPage from '@/components/seo/LandingPage';
@@ -12,7 +13,7 @@ export async function seasonMetadata(slug: SeasonSlug): Promise<Metadata> {
   const { total, products } = await fetchLandingProducts({ kategorie: season.category }, 1);
   const min = products[0]?.cheapest_offer;
   const url = `${SITE_URL}/${slug}`;
-  const title = `${season.label} günstig kaufen${min ? ` ab ${euro(min)} €` : ''} – Preisvergleich | Reifexa`;
+  const title = fitTitle(`${season.label} günstig kaufen${min ? ` ab ${euro(min)} €` : ''} – Preisvergleich`);
   const description = `${total.toLocaleString('de-DE')} ${season.label} im Preisvergleich${
     min ? ` ab ${euro(min)} €` : ''
   }: Marken- und Budgetreifen, EU-Label und Preise mehrerer Online-Shops vergleichen.`;

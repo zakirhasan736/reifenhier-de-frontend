@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { safeSeoImageUrl, SITE_URL, productCanonicalUrl } from '@/libs/seo/site';
 import { toMoneyNumber } from '@/libs/money';
 import { sizeSpellings, uniqKeywords } from '@/libs/seo/keywords';
+import { cutWords, TITLE_HARD_MAX, TITLE_MAX } from '@/libs/seo/title';
 import {
   brandPath,
   brandUrl,
@@ -140,8 +141,10 @@ export function modelName(p: SeoProduct) {
   const brand = String(p.brand_name || '').trim();
   if (brand) name = name.replace(new RegExp(`^${escapeRegExp(brand)}\\s*`, 'i'), '');
   return name
-    .replace(/\b\d{3}\s*\/\s*\d{2}\s*Z?R?F?\s*\d{2}\b/i, '')
-    .replace(/\b\d{2,3}[A-Z]{1,2}\b\s*$/, '')
+    // every size occurrence ("225/45 ZR18 … 225/45 R18", "215/65 R16C")
+    .replace(/\b\d{3}\s*\/\s*\d{2}\s*Z?R?F?\s*\d{2}C?\b/gi, '')
+    // load/speed index anywhere ("95(Y)", "106H/104H", "91H") — the title adds it once
+    .replace(/(^|\s)\d{2,3}\(?[A-Z]{1,2}\)?(\/\d{2,3}\(?[A-Z]{1,2}\)?)?(?=\s|$)/g, ' ')
     .replace(/\s{2,}/g, ' ')
     .trim();
 }
@@ -149,9 +152,9 @@ export function modelName(p: SeoProduct) {
 export function loadSpeed(p: SeoProduct) {
   if (p.lastIndex && p.speedIndex) return `${p.lastIndex}${p.speedIndex}`;
   const m = String(p.product_name || '').match(
-    /\bR\s?\d{2}\s+(\d{2,3}[A-Z]{1,2})\b/i
+    /(?:^|[\s\d/])Z?R\s?\d{2}C?\s+(\d{2,3}\(?[A-Z]{1,2}\)?)/i
   );
-  return m ? m[1].toUpperCase() : '';
+  return m ? m[1].toUpperCase().replace(/[()]/g, '') : '';
 }
 
 /** Nothing worth indexing (no name or no price). */
@@ -167,17 +170,22 @@ export function isThinProduct(p: SeoProduct): boolean {
  */
 export function buildProductTitle(p: SeoProduct): string {
   const size = extractSize(p);
-  const base = [p.brand_name, modelName(p), size, loadSpeed(p)]
-    .filter(Boolean)
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
   const { low } = priceRange(p);
   const price = low ? ` ab ${euro(low)} €` : ' Preisvergleich';
-  const withCompare = `${base}${price} – Preisvergleich | Reifexa`;
-  if (low && withCompare.length <= 72) return withCompare;
-  const full = `${base}${price} | Reifexa`;
-  return full.length <= 72 ? full : `${base}${price}`;
+  const build = (model: string) =>
+    [p.brand_name, model, size, loadSpeed(p)].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+  let words = modelName(p).split(' ').filter(Boolean);
+  let base = build(words.join(' '));
+  if (low && `${base}${price} – Preisvergleich | Reifexa`.length <= TITLE_MAX) return `${base}${price} – Preisvergleich | Reifexa`;
+  if (`${base}${price} | Reifexa`.length <= TITLE_MAX) return `${base}${price} | Reifexa`;
+  if (`${base}${price}`.length <= TITLE_HARD_MAX) return `${base}${price}`;
+  // Long feed names ("Ventus S1 evo3 K127 XL FSL"): drop trailing model tokens until it fits.
+  while (words.length > 1 && `${base}${price}`.length > TITLE_HARD_MAX) {
+    words = words.slice(0, -1);
+    base = build(words.join(' '));
+  }
+  const t = `${base}${price}`;
+  return t.length <= TITLE_HARD_MAX ? t : cutWords(base, TITLE_MAX);
 }
 
 /** ≤ ~160 chars, German, numbers + call to action. */
