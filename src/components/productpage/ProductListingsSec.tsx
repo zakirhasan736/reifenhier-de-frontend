@@ -118,6 +118,7 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
+  const searchQs = searchParams?.toString() ?? '';
   const router = useRouter();
   const pathname = usePathname();
 
@@ -241,7 +242,10 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
 
     // Mark ready once first sync happens
     if (!isReady) setIsReady(true);
-  }, [searchParams?.toString()]);
+    // Re-sync only when the query string changes; dispatch is stable and isReady is a
+    // one-time flag (adding them would re-run the sync and refetch on first render).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQs]);
 
   // Single debounced fetch (leading-only so it fires immediately, and never twice)
   const debouncedFetch = useRef(
@@ -282,6 +286,9 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
 
     const href = qs ? `${pathname}?${qs}` : pathname; // pathname is narrowed to string
     router.replace(href, { scroll: false });
+    // mergedHash stands in for mergedFilters (object identity changes every render);
+    // buildSearchParamsFromFilters is a pure helper.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, mergedHash, pathname, router, sortField, sortOrder, page]);
 
   const handleRemoveFilter = (filterType: ArrayFilterKey, value: string) => {
