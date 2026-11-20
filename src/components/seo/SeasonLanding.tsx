@@ -5,6 +5,7 @@ import { SITE_URL } from '@/libs/seo/site';
 import { brandPath, euro, SEASONS, seasonBySlug, sizeLabel, sizePath, type SeasonSlug } from '@/libs/seo/landing';
 import { fetchLandingProducts, fetchLandings } from '@/libs/seo/landingData';
 import { SEASON_COPY } from '@/libs/seo/landingCopy';
+import { seasonKeywords } from '@/libs/seo/keywords';
 
 export async function seasonMetadata(slug: SeasonSlug): Promise<Metadata> {
   const season = seasonBySlug(slug)!;
@@ -19,6 +20,7 @@ export async function seasonMetadata(slug: SeasonSlug): Promise<Metadata> {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
+    keywords: seasonKeywords(season.label, season.short),
     robots: { index: total > 0, follow: true },
     openGraph: {
       type: 'website',

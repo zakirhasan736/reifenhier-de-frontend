@@ -2,6 +2,7 @@ import { use } from 'react';
 import type { Metadata } from 'next';
 import BlogPage, { type BlogCard } from '@/components/blogpage/BlogPage';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
+import { ARTICLE_LIST_KEYWORDS } from '@/libs/seo/keywords';
 import { blogCoverSrc, BLOGS_PER_PAGE, fetchMongoBlogs } from '@/libs/blogs/mongo';
 import JsonLd from '@/components/seo/JsonLd';
 
@@ -52,22 +53,11 @@ export async function generateMetadata({
 
 const staticMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { absolute: 'Reifen-Ratgeber & Tests 2026 | Reifexa' },
+  title: { absolute: 'Reifen-Ratgeber 2026: Tests, Reifencheck & Kaufberatung | Reifexa' },
   description:
     'Aktuelle Ratgeber, Tests und Tipps zu Sommerreifen, Winterreifen, Ganzjahresreifen und Reifenkauf auf Reifexa.de.',
   alternates: { canonical: `${SITE_URL}/artikel` },
-  keywords: [
-    ...CORE_KEYWORDS,
-    'Reifen Artikel',
-    'Reifen Blogs',
-    'Reifen Ratgeber',
-    'Autoreifen Tipps',
-    'Winterreifen Sommerreifen Artikel',
-    'Reifenpflege und Sicherheit',
-    'EU Reifenlabel erklärt',
-    'Reifenrechner',
-    'Reifen Preisvergleich',
-  ],
+  keywords: [...ARTICLE_LIST_KEYWORDS, ...CORE_KEYWORDS.slice(0, 8)],
   openGraph: {
     type: 'website',
     locale: 'de_DE',

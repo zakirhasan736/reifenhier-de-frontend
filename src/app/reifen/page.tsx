@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL } from '@/libs/seo/site';
+import { SIZES_INDEX_KEYWORDS } from '@/libs/seo/keywords';
 import { euro, sizeLabel, sizePath } from '@/libs/seo/landing';
 import { fetchLandings } from '@/libs/seo/landingData';
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description:
     'Alle Reifengrößen im Preisvergleich – von 13 bis 22 Zoll. Größe wählen und Sommer-, Winter- oder Ganzjahresreifen beim günstigsten Händler kaufen.',
   alternates: { canonical: `${SITE_URL}/reifen` },
+  keywords: SIZES_INDEX_KEYWORDS,
 };
 
 export default async function SizesIndex() {

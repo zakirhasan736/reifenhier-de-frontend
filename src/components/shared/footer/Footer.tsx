@@ -190,6 +190,16 @@ const handleSubmit = async (e: React.FormEvent) => {
                           Reifenmarken
                         </Link>
                       </li>
+                      <li>
+                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/reifengroessen-rechner">
+                          Reifengrößenrechner
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/reifenpreisvergleich">
+                          Reifenpreisvergleich
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                   <div className="quick-link-cont">

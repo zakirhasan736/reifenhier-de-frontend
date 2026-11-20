@@ -11,6 +11,8 @@ import {
 import { SITE_URL } from '@/libs/seo/site'
 import { buildArticleKeywords } from '@/libs/seo/blogKeywords'
 import JsonLd from '@/components/seo/JsonLd';
+import RelatedSearches from '@/components/seo/RelatedSearches'
+import { articleRelatedLinks } from '@/libs/seo/keywords'
 
 const CALCULATOR_SLUG =
   'reifenrechner-2026-preise-vergleichen-modelle-pruefen-und-die-richtige-reifengroesse-finden'
@@ -113,6 +115,13 @@ export default function MongoBlogArticle({
 
         <ContentBlocks groups={blog.contentBlocks} />
 
+        <RelatedSearches
+          contained={false}
+          className="mt-10 rounded-[16px] border border-[#E9ECF3] bg-[#F6F8FC] p-5 md:p-6"
+          title="Passend zum Thema"
+          links={articleRelatedLinks({ title: blog.title, tags })}
+        />
+
         {showCalculator && (
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <Link
@@ -122,7 +131,7 @@ export default function MongoBlogArticle({
               Zum Reifenrechner auf der Startseite
             </Link>
             <Link
-              href="/produkte?kategorie=Sommerreifen&width=205&height=55&diameter=16"
+              href="/reifen/205-55-r16"
               className="text-center rounded-[10px] border border-primary-100 text-primary-100 font-semibold px-6 py-3 hover:bg-primary-100 hover:text-white transition"
             >
               Beispiel: 205/55 R16 vergleichen
