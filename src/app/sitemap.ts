@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/reifenpreisvergleich', changeFrequency: 'weekly', priority: 0.85 },
     ...SEASONS.map(s => ({ path: `/${s.slug}`, changeFrequency: 'daily' as const, priority: 0.9 })),
     { path: '/reifen', changeFrequency: 'daily', priority: 0.8 },
+    { path: '/reifengroessen-rechner', changeFrequency: 'monthly', priority: 0.75 },
     { path: '/marken', changeFrequency: 'weekly', priority: 0.7 },
     { path: '/artikel', changeFrequency: 'daily', priority: 0.8 },
     { path: '/impressum-datenschutz', changeFrequency: 'monthly', priority: 0.3 },

@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 import { safeSeoImageUrl, SITE_URL, productCanonicalUrl } from '@/libs/seo/site';
 import { toMoneyNumber } from '@/libs/money';
+import { sizeSpellings, uniqKeywords } from '@/libs/seo/keywords';
 import {
+  brandPath,
   brandUrl,
   euro,
   seasonForCategory,
   sizeFromText,
   sizeLabel,
+  sizePath,
   sizeUrl,
 } from '@/libs/seo/landing';
 
@@ -213,25 +216,87 @@ export function buildProductDescription(p: SeoProduct): string {
   return text.replace(/\s+/g, ' ').trim();
 }
 
-/** Google ignores meta keywords; keep a short, honest list for other engines. */
+/**
+ * 10–20 product long-tails, built from the product's own data so every page
+ * gets a unique set: model + size + index, size spellings people type
+ * ("205/55R16"), season + size, "Test", "Preisvergleich", EU-label terms,
+ * EAN — plus a few defaults. Google ignores meta keywords; the same phrases
+ * are shown as visible links/copy (productRelatedSearches, productSeoText).
+ */
 export function buildProductKeywords(p: SeoProduct): string[] {
-  const size = extractSize(p);
-  const season = normalizeSeason(p);
+  const sz = productSize(p);
+  const size = sz ? sizeLabel(sz) : '';
+  const season = normalizeSeason(p) || '';
   const brand = (p.brand_name || '').trim();
   const model = modelName(p);
-  return Array.from(
-    new Set(
-      [
-        [brand, model].filter(Boolean).join(' '),
-        [brand, model, size].filter(Boolean).join(' '),
-        size && `${size} ${season || 'Reifen'}`,
-        size && `${size} Preisvergleich`,
-        brand && `${brand} Reifen`,
-        brand && season && `${brand} ${season}`,
-        p.ean && `EAN ${p.ean}`,
-      ].filter(Boolean) as string[]
-    )
+  const bm = [brand, model].filter(Boolean).join(' ');
+  const li = loadSpeed(p);
+  const spellings = sz ? sizeSpellings(sz) : [];
+  return uniqKeywords(
+    [
+      bm,
+      size && `${bm} ${size}`,
+      size && li && `${bm} ${size} ${li}`,
+      model && `${bm} Test`,
+      model && `${bm} Preisvergleich`,
+      model && `${bm} günstig kaufen`,
+      season && size && `${season} ${size}`,
+      season && size && `${season} ${size} günstig`,
+      size && `${size} Preisvergleich`,
+      size && li && `${size} ${li}`,
+      ...spellings.slice(1),
+      brand && season && size && `${brand} ${season} ${size}`,
+      brand && season && `${brand} ${season}`,
+      brand && `${brand} Reifen`,
+      sz && `${sz.diameter} Zoll ${season || 'Reifen'}`,
+      p.wet_grip && season && `${season} Nasshaftung ${p.wet_grip}`,
+      p.ean && `EAN ${p.ean}`,
+      'Reifenpreisvergleich',
+      'Reifen vergleichen',
+      'Reifen Preisverlauf',
+      'Reifexa',
+    ],
+    24
   );
+}
+
+export type SearchLink = { label: string; href: string };
+
+/**
+ * Visible "Ähnliche Suchanfragen" links — keyword anchors that point only to
+ * indexable landing pages (filter URLs are blocked in robots.txt).
+ */
+export function productRelatedSearches(p: SeoProduct): SearchLink[] {
+  const sz = productSize(p);
+  const season = seasonForCategory(p.merchant_product_third_category);
+  const brand = (p.brand_name || '').trim();
+  const links: SearchLink[] = [];
+  if (sz && season) links.push({ label: `${season.label} ${sizeLabel(sz)}`, href: sizePath(sz) });
+  else if (sz) links.push({ label: `${sizeLabel(sz)} Reifen`, href: sizePath(sz) });
+  if (brand) links.push({ label: `${brand} Reifen günstig`, href: brandPath(brand) });
+  if (season) links.push({ label: `${season.label} günstig kaufen`, href: `/${season.slug}` });
+  links.push({ label: 'Reifengrößen vergleichen', href: '/reifengroessen-rechner' });
+  links.push({ label: 'Reifenpreisvergleich: so funktioniert’s', href: '/reifenpreisvergleich' });
+  if (sz) links.push({ label: 'Alle Reifengrößen', href: '/reifen' });
+  links.push({ label: 'Reifenmarken vergleichen', href: '/marken' });
+  return links;
+}
+
+/** One natural German sentence pair with the product's long-tails (visible copy). */
+export function productSeoText(p: SeoProduct): string {
+  const size = extractSize(p);
+  const season = normalizeSeason(p);
+  const li = loadSpeed(p);
+  const bm = [p.brand_name, modelName(p)].filter(Boolean).join(' ');
+  const { low, count } = priceRange(p);
+  const what = [bm, size, li].filter(Boolean).join(' ');
+  const first = `Sie suchen den ${what}${season ? ` als ${season}` : ''}? Im Reifenpreisvergleich von Reifexa sehen Sie ${
+    count > 1 ? `die Preise von ${count} Händlern` : 'den aktuellen Händlerpreis'
+  }${low ? ` ab ${euro(low)} € pro Reifen` : ''}, inklusive Versandkosten, Lieferzeit und EU-Reifenlabel.`;
+  const second = `Der Preisverlauf zeigt, ob jetzt ein guter Kaufzeitpunkt ist – mit dem Preisalarm werden Sie benachrichtigt, sobald der ${bm || 'Reifen'}${
+    size ? ` in ${size}` : ''
+  } günstiger wird.`;
+  return `${first} ${second}`.replace(/\s+/g, ' ').trim();
 }
 
 export function buildProductMetadata(p: SeoProduct): Metadata {

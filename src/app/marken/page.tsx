@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL } from '@/libs/seo/site';
+import { BRANDS_INDEX_KEYWORDS } from '@/libs/seo/keywords';
 import { brandPath, euro } from '@/libs/seo/landing';
 import { fetchLandings } from '@/libs/seo/landingData';
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description:
     'Alle Reifenmarken im Preisvergleich – Premium-, Qualitäts- und Budgetreifen. Marke wählen und Sommer-, Winter- oder Ganzjahresreifen günstig kaufen.',
   alternates: { canonical: `${SITE_URL}/marken` },
+  keywords: BRANDS_INDEX_KEYWORDS,
 };
 
 export default async function BrandsIndex() {

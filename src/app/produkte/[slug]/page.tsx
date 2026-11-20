@@ -13,7 +13,11 @@ import {
   buildProductTitle,
   productOgTags,
   productPriceRange,
+  modelName,
+  productRelatedSearches,
+  productSeoText,
 } from '@/libs/seo/productMeta';
+import RelatedSearches from '@/components/seo/RelatedSearches';
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
 import PriceHistoryChart from '@/components/productpage/PriceHistoryChart';
@@ -217,6 +221,12 @@ export default async function ProductPage({
           productName={[product.brand_name, product.product_name].filter(Boolean).join(' ')}
           initialTrend={product.price_trend?.points}
           currentBest={Number(product.cheapest_offer) || undefined}
+        />
+        <RelatedSearches
+          className="py-10 md:py-14 bg-[#F6F8FC]"
+          title={`${[product.brand_name, modelName(product)].filter(Boolean).join(' ')} – Preisvergleich & ähnliche Suchanfragen`}
+          text={productSeoText(product)}
+          links={productRelatedSearches(product)}
         />
         <HowItWorks />
         <RelatedProducts

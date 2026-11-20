@@ -1,6 +1,7 @@
 import HomePageMain from "@/page-components/Home/HomePage";
 import { Metadata } from "next";
 import { SITE_KEYWORDS, SITE_URL } from "@/libs/seo/site";
+import { HOME_KEYWORDS } from "@/libs/seo/keywords";
 import JsonLd from '@/components/seo/JsonLd';
 import PopularLinks from '@/components/seo/PopularLinks';
 import { ArrowRight, Scale } from 'lucide-react';
@@ -14,26 +15,7 @@ export const metadata: Metadata = {
   description:
     'Reifenpreisvergleich für Deutschland: Sommer-, Winter- und Ganzjahresreifen nach Größe und Marke vergleichen – Händlerpreise inkl. Versand, Preisverlauf und Preisalarm.',
   alternates: { canonical: `${SITE_URL}/` },
-  keywords: [
-    ...SITE_KEYWORDS,
-    'Winterreifen 205/55 R16',
-    'Sommerreifen 225/45 R17',
-    'Ganzjahresreifen 205/55 R16',
-    'Reifen Händler vergleichen',
-    'günstigste Reifen Angebote 2026',
-    'Reifen Test 2026',
-    'EU Reifenlabel erklärt',
-    'Markenreifen online vergleichen',
-    'Reifen Angebote Deutschland',
-    'Billige Winterreifen',
-    'Billige Sommerreifen',
-    'Billige Ganzjahresreifen',
-    'Winterreifenpflicht Deutschland',
-    'Reifen für SUV',
-    'Kompletträder Angebote',
-    'Reifen Vergleichsportal',
-    'Reifencheck',
-  ],
+  keywords: [...HOME_KEYWORDS, ...SITE_KEYWORDS.slice(0, 20)],
   openGraph: {
     type: 'website',
     locale: 'de_DE',

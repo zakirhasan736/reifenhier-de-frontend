@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import ProductListingsSec from '@/components/productpage/ProductListingsSec';
 import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
+import { listingKeywords } from '@/libs/seo/keywords';
 import JsonLd from '@/components/seo/JsonLd';
 import { brandPath, seasonForCategory, sizePath } from '@/libs/seo/landing';
 import Link from 'next/link';
@@ -28,21 +29,21 @@ export async function generateMetadata({
   const page = Number(resolvedParams.page) || 1;
 
   const titles: Record<string, string> = {
-    Sommerreifen: 'Sommerreifen Angebote | Reifexa',
-    Winterreifen: 'Winterreifen Angebote | Reifexa',
-    Ganzjahresreifen: 'Ganzjahresreifen Angebote | Reifexa',
+    Sommerreifen: 'Sommerreifen günstig: Angebote im Preisvergleich | Reifexa',
+    Winterreifen: 'Winterreifen günstig: Angebote im Preisvergleich | Reifexa',
+    Ganzjahresreifen: 'Ganzjahresreifen günstig: Angebote im Preisvergleich | Reifexa',
   };
 
   const descriptions: Record<string, string> = {
     Sommerreifen:
-      'Finden Sie günstige Sommerreifen-Angebote auf Reifexa.de.',
+      'Sommerreifen günstig kaufen: Angebote aller Größen und Marken im Preisvergleich – Händlerpreise inkl. Versand, EU-Label und Preisverlauf.',
     Winterreifen:
-      'Finden Sie günstige Winterreifen-Angebote auf Reifexa.de.',
+      'Winterreifen günstig kaufen: Angebote aller Größen und Marken im Preisvergleich – Händlerpreise inkl. Versand, EU-Label und Preisverlauf.',
     Ganzjahresreifen:
-      'Finden Sie günstige Ganzjahresreifen-Angebote auf Reifexa.de.',
+      'Ganzjahresreifen günstig kaufen: Allwetterreifen aller Größen und Marken im Preisvergleich – Händlerpreise inkl. Versand und EU-Label.',
   };
 
-  const title = titles[category] || 'Reifen online kaufen & Preise vergleichen | Reifexa';
+  const title = titles[category] || 'Reifen günstig kaufen: alle Angebote im Reifenvergleich | Reifexa';
   const description =
     descriptions[category] ||
     'Finden Sie günstige Reifenangebote auf Reifexa.de. Vergleichen Sie Sommer-, Winter- und Ganzjahresreifen nach Marke und Preis.';
@@ -75,11 +76,7 @@ export async function generateMetadata({
     title: { absolute: title },
     description,
     alternates: { canonical },
-    keywords: [
-      ...CORE_KEYWORDS,
-      'reifenangebote',
-      ...(category ? [category, `${category} günstig`, `${category} Angebote`] : []),
-    ],
+    keywords: [...listingKeywords(category || undefined), ...CORE_KEYWORDS.slice(0, 8)],
     openGraph: {
       type: 'website',
       locale: 'de_DE',

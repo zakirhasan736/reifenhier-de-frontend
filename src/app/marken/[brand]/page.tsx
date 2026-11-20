@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { brandKeywords } from '@/libs/seo/keywords';
 import LandingPage from '@/components/seo/LandingPage';
 import { SITE_URL } from '@/libs/seo/site';
 import { brandPath, brandSlug, euro, MIN_LANDING_PRODUCTS, SEASONS, seasonForCategory, sizeLabel, sizePath } from '@/libs/seo/landing';
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
+    keywords: brandKeywords(brand.name),
     robots: { index: brand.count >= MIN_LANDING_PRODUCTS, follow: true },
     openGraph: {
       type: 'website',

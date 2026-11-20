@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
+import { sizeKeywords } from '@/libs/seo/keywords';
 import LandingPage from '@/components/seo/LandingPage';
 import { SITE_URL } from '@/libs/seo/site';
 import {
@@ -40,6 +41,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: { absolute: title },
     description,
     alternates: { canonical: url },
+    keywords: sizeKeywords(size),
     robots: { index: total >= MIN_LANDING_PRODUCTS, follow: true },
     openGraph: {
       type: 'website',
