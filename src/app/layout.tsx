@@ -234,6 +234,61 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               ],
             }} />
 
+        {/*
+          Microsoft Clarity — defined here, loaded only from the Silktide "analytics"
+          onAccept handler (DSGVO: no tracking before consent). Adds a page-type tag
+          and events for key interactions: shop click, price alert, favourite,
+          compare, filter, search.
+        */}
+        <Script id="clarity-loader" strategy="afterInteractive">
+          {`
+            (function () {
+              var CLARITY_ID = 'zgojt1gxib';
+              function pageType(p) {
+                if (p === '/') return 'home';
+                var parts = p.split('/'), m = parts[1] || '', deep = parts.length > 2 && parts[2];
+                return ({ produkte: deep ? 'product' : 'listing', reifen: deep ? 'size' : 'sizes', marken: deep ? 'brand' : 'brands',
+                  artikel: deep ? 'article' : 'blog', sommerreifen: 'season', winterreifen: 'season',
+                  ganzjahresreifen: 'season', reifenpreisvergleich: 'comparison', 'reifengroessen-rechner': 'size-tool',
+                  favoriten: 'favorites' })[m] || m || 'other';
+              }
+              function tagPage() {
+                if (typeof window.clarity === 'function') window.clarity('set', 'page_type', pageType(location.pathname));
+              }
+              function track(name) { if (typeof window.clarity === 'function') window.clarity('event', name); }
+              window.reifexaLoadClarity = function () {
+                if (window.__reifexaClarity) return;
+                window.__reifexaClarity = true;
+                (function (c, l, a, r, i, t, y) {
+                  c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+                  t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+                  y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+                })(window, document, 'clarity', 'script', CLARITY_ID);
+                window.clarity('consentv2', { ad_Storage: 'denied', analytics_Storage: 'granted' });
+                tagPage();
+                var push = history.pushState;
+                history.pushState = function () { var r = push.apply(this, arguments); setTimeout(tagPage, 0); return r; };
+                window.addEventListener('popstate', function () { setTimeout(tagPage, 0); });
+                document.addEventListener('click', function (e) {
+                  var el = e.target && e.target.closest ? e.target.closest('a,button') : null;
+                  if (!el) return;
+                  var href = el.getAttribute('href') || '';
+                  var label = ((el.getAttribute('aria-label') || '') + ' ' + (el.textContent || '')).toLowerCase();
+                  if (href.indexOf('/to?') === 0 || href.indexOf('/to/') === 0) track('shop_click');
+                  else if (label.indexOf('preisalarm') > -1) track('price_alert_click');
+                  else if (label.indexOf('favorit') > -1 || label.indexOf('merken') > -1) track('favorite_click');
+                  else if (label.indexOf('vergleich') > -1 && el.tagName === 'BUTTON') track('compare_click');
+                  else if (label.indexOf('filter') > -1) track('filter_click');
+                }, true);
+                document.addEventListener('submit', function (e) {
+                  var f = e.target;
+                  if (f && f.querySelector && f.querySelector('input[type="search"],input[name="q"],input[name="search"]')) track('search_submit');
+                }, true);
+              };
+            })();
+          `}
+        </Script>
+
         {/* Silktide Cookie Manager */}
         {/* Banner CSS is loaded by the init script below (not render-blocking). */}
         <Script
@@ -283,10 +338,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                           gtag('consent', 'update', { analytics_storage: 'granted' });
                           dataLayer.push({ event: 'consent_accepted_analytics' });
                         }
+                        // Microsoft Clarity (heatmaps, session recordings) — only after analytics consent
+                        if (typeof window.reifexaLoadClarity === 'function') window.reifexaLoadClarity();
                       },
                       onReject: function() {
                         if (typeof gtag === 'function') {
                           gtag('consent', 'update', { analytics_storage: 'denied' });
+                        }
+                        if (typeof window.clarity === 'function') {
+                          window.clarity('consentv2', { ad_Storage: 'denied', analytics_Storage: 'denied' });
+                          window.clarity('consent', false);
                         }
                       }
                     },

@@ -296,6 +296,20 @@ const PrivacyPolicy: React.FC = () => {
             Standortdaten abgeleitet. Opt‑Out‑Optionen bietet Google u. a. über
             Browser‑Add‑on.
           </p>
+          <h3 className="mt-4 font-medium text-xl text-secondary-100">Microsoft Clarity</h3>
+          <p className="mt-2 text-sm">
+            Dienstanbieter: Microsoft Ireland Operations Limited, One Microsoft Place, South
+            County Business Park, Leopardstown, Dublin 18, Irland. Clarity erfasst, wie
+            Besucher die Website nutzen (z. B. Mausbewegungen, Klicks, Scrollverhalten) und
+            erstellt daraus Heatmaps und pseudonyme Sitzungsaufzeichnungen, damit wir die
+            Bedienung verbessern können. Eingaben in Formularfelder werden maskiert. Clarity
+            wird nur geladen, wenn Sie in den Cookie-Einstellungen der Kategorie „Analyse“
+            zustimmen (Art. 6 Abs. 1 lit. a DSGVO); die Einwilligung können Sie jederzeit über
+            das Cookie-Symbol widerrufen. Weitere Informationen:{' '}
+            <a className="underline" href="https://privacy.microsoft.com/de-de/privacystatement" target="_blank" rel="noopener noreferrer">
+              Datenschutzerklärung von Microsoft
+            </a>.
+          </p>
         </section>
 
         {/* Onlinemarketing */}
