@@ -56,7 +56,7 @@ export default function ReifenpreisvergleichPage() {
         {faqs.map(f => <div key={f.q}><h3 className="text-lg leading-snug font-semibold">{f.q}</h3><p>{f.a}</p></div>)}
       </section>
       <JsonLd id="ld-faq" data={{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }} />
-      <div className="mt-10"><Link href="/sommerreifen" className="mr-5 underline">Sommerreifen</Link><Link href="/winterreifen" className="mr-5 underline">Winterreifen</Link><Link href="/ganzjahresreifen" className="underline">Ganzjahresreifen</Link></div>
+      <div className="mt-10 flex flex-wrap gap-x-5 gap-y-2"><Link href="/sommerreifen" className="underline">Sommerreifen</Link><Link href="/winterreifen" className="underline">Winterreifen</Link><Link href="/ganzjahresreifen" className="underline">Ganzjahresreifen</Link></div>
     </main>
   );
 }
