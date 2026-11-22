@@ -1,3 +1,4 @@
+import VehicleFitment from '@/components/searchlight/VehicleFitment';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductSinglepage from '@/components/productpage/ProductDetailsSec';
@@ -216,6 +217,7 @@ export default async function ProductPage({
           summary={buildProductDescription(product)}
           fromPrice={lowPrice}
         />
+        <VehicleFitment size={product.width && product.height && product.diameter ? `${product.width}/${product.height} R${product.diameter}` : undefined} />
         <PriceHistoryChart
           slug={product.slug}
           productName={[product.brand_name, product.product_name].filter(Boolean).join(' ')}
