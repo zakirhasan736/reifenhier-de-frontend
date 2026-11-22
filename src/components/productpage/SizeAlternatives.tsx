@@ -6,6 +6,8 @@ export type SizeAlternative = {
   brand_name?: string;
   product_name?: string;
   dimensions?: string;
+  lastIndex?: string;
+  speedIndex?: string;
   cheapest_offer?: number | string;
   search_price?: number | string;
 };
@@ -97,6 +99,7 @@ export default function SizeAlternatives({
                   </span>
                   <span className="block truncate text-[12px] text-[#6B6E76]">
                     {modelName(p.product_name, p.brand_name)}
+                    {(p.lastIndex || p.speedIndex) && ` · ${p.lastIndex || ''}${p.speedIndex || ''}`}
                   </span>
                 </span>
                 <span className="shrink-0 text-right">

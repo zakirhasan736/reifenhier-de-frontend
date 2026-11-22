@@ -159,7 +159,9 @@ export default function CompareModal() {
             <div className="mb-4 rounded-xl border border-[#DCEBFF] bg-[#F5F9FF] px-4 py-3 text-[13px] text-[#1B4F8A]">
               Vergleich für Größe <strong>{parseTyreSize(base).label}</strong>
               {base.merchant_product_third_category
-                ? ` · ${base.merchant_product_third_category}`
+                ? <> · <Link href={listingUrlForSize(base)} className="font-semibold underline underline-offset-2" onClick={() => dispatch(closeModal())}>
+                  {base.merchant_product_third_category}
+                </Link></>
                 : ''}
               . Last- und Geschwindigkeitsindex dürfen gleich oder höher sein.
             </div>
@@ -199,6 +201,7 @@ export default function CompareModal() {
                     </div>
                     <Link
                       href={`/produkte/${p.slug}`}
+                      onClick={() => dispatch(closeModal())}
                       className="block text-[14px] font-semibold leading-snug text-[#16171A] hover:text-primary-100"
                     >
                       {displayName(p)}
@@ -394,9 +397,13 @@ export default function CompareModal() {
                       className="h-12 w-12 object-contain"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-medium text-[#16171A]">
+                      <Link href={`/produkte/${prod.slug}`} onClick={() => dispatch(closeModal())}
+                        className="block truncate text-[13px] font-medium text-[#16171A] underline underline-offset-2 hover:text-primary-100">
                         {displayName(prod)}
-                      </p>
+                      </Link>
+                      {(prod.lastIndex || prod.speedIndex) && (
+                        <p className="text-xs text-[#5A5B61]">Index {prod.lastIndex}{prod.speedIndex}</p>
+                      )}
                       <p className="text-[13px] text-primary-100">
                         {formatEuro(comparePrice(prod))}
                       </p>
