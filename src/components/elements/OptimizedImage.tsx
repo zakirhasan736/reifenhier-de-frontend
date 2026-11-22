@@ -51,9 +51,10 @@ export default function OptimizedImage({
 
   const [idx, setIdx] = useState(0);
 
+  const chainKey = chain.join('|');
   useEffect(() => {
     setIdx(0);
-  }, [chain.join('|')]);
+  }, [chainKey]);
 
   const current = chain[Math.min(idx, chain.length - 1)];
   const goNext = () => setIdx(i => (i < chain.length - 1 ? i + 1 : i));
