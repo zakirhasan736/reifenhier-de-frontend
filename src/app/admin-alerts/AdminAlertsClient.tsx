@@ -265,6 +265,9 @@ export default function AdminAlertsClient() {
         <div>
           <h1 className="text-2xl font-semibold">Verkaufs-Alarme</h1>
           <p className="text-sm opacity-70">Klicks (unser Server) vs. Verkäufe (AWIN) – aktualisiert jede Minute.</p>
+          <a href="/admin-alerts/quellen" className="text-sm underline text-primary-100">
+            → Besucherquellen: ChatGPT, Google, Bing &amp; Co.
+          </a>
         </div>
         <select value={days} onChange={e => setDays(Number(e.target.value))} className="border rounded px-2 py-1">
           {[1, 7, 30, 90].map(d => (
