@@ -14,7 +14,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
   loading = false,
 }) => {
   return (
-    <section className="featured-product lg:py-[70px] py-[50px]">
+    <section id="aehnliche-produkte" className="featured-product scroll-mt-28 lg:py-[70px] py-[50px]">
       <CompareSuggestionsSync products={relatedProductData} />
       <div className="custom-container">
         <div className="featured-product-content flex justify-between items-end mb-9">

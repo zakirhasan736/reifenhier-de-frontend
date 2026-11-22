@@ -6,6 +6,7 @@ import SizeAlternatives, { type SizeAlternative } from '@/components/productpage
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
+import { listingUrlForSize } from '@/libs/compare';
 import { useVisitorUuid } from '@/utils/uuidContext';
 import { MdAddShoppingCart } from 'react-icons/md';
 
@@ -352,6 +353,8 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     product,
     `${SiteUrl}/produkte/${product.slug}`,
   );
+  const season = product.merchant_product_third_category;
+  const seasonResultsHref = listingUrlForSize(product);
   const fuelMeta = getFuelEfficiencyMeta(euLabel.fuel || undefined);
   const wetMeta = getWetGripMeta(euLabel.wet || undefined);
   const uuidCookie = useVisitorUuid();
@@ -995,7 +998,9 @@ const shareImage = !rawShareImage
                       {specRows.map(([label, value]) => (
                         <div key={label} className="flex items-center justify-between gap-4 px-5 md:px-6 py-2.5 odd:bg-[#F9FAFC]">
                           <dt className="text-[#6B6E76]">{label}</dt>
-                          <dd className="text-right font-semibold text-[#16171A]">{value}</dd>
+                          <dd className="text-right font-semibold text-[#16171A]">{label === 'Reifentyp' && season ? (
+                            <Link href={seasonResultsHref} className="text-primary-100 underline underline-offset-2">{value}</Link>
+                          ) : value}</dd>
                         </div>
                       ))}
                     </dl>
@@ -1013,9 +1018,11 @@ const shareImage = !rawShareImage
                         <span className={`h-2 w-2 rounded-full ${product.in_stock === 'true' ? 'bg-[#22C55E]' : 'bg-[#EF4444]'}`} />
                         {product.in_stock === 'true' ? 'Auf Lager' : 'Nicht Verfügbar'}
                       </span>
-                      <span className="product-category rounded-full bg-[#F2F4F8] px-2.5 py-1 text-[12px] md:text-[13px] font-medium text-[#404042]">
-                        {product.merchant_product_third_category || 'N/A'}
-                      </span>
+                      {season && (
+                        <Link href={seasonResultsHref} className="product-category inline-flex min-h-9 items-center rounded-full bg-[#F2F4F8] px-3 text-[13px] font-semibold text-primary-100 underline underline-offset-2 hover:bg-[#E8EEFC]">
+                          {season}
+                        </Link>
+                      )}
                       <div className="socials-sheare-button ml-auto flex items-center gap-2">
                         <span className="text-[13px] text-[#6B6E76]">Teilen:</span>
                         <SocialShareButtons url={productUrl} title={productTitle} image={shareImage} />
@@ -1025,6 +1032,20 @@ const shareImage = !rawShareImage
                     <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em] text-[#16171A]">
                       {headingTitle}
                     </h1>
+                    {(alternatives.length > 0 || indexVariants.length > 0) && (
+                      <nav aria-label="Weitere Reifen" className="mt-2 flex flex-wrap gap-2">
+                        {alternatives.length > 0 && (
+                          <a href="#aehnliche-produkte" className="inline-flex min-h-10 items-center rounded-lg border border-[#DCE3FB] px-3 text-sm font-semibold text-primary-100 hover:bg-[#F5F8FF]">
+                            Ähnliche Reifen
+                          </a>
+                        )}
+                        {indexVariants.length > 0 && (
+                          <a href="#index-varianten" className="inline-flex min-h-10 items-center rounded-lg border border-[#DCE3FB] px-3 text-sm font-semibold text-primary-100 hover:bg-[#F5F8FF]">
+                            Andere Last- / Geschwindigkeitsindizes
+                          </a>
+                        )}
+                      </nav>
+                    )}
 
                     <p className="review-stars mt-2 flex items-center gap-2 text-[13px] md:text-[14px] text-[#5B5D63]">
                       <span className="inline-flex items-center gap-1 font-semibold text-[#16171A]">
@@ -1038,7 +1059,7 @@ const shareImage = !rawShareImage
 
                   {/* Same tyre, other load/speed index — and size/brand links (compact) */}
                   {(indexVariants.length > 0 || product.width || product.dimensions || product.brand_name) && (
-                    <div className="pdp-variants mt-3">
+                    <div id="index-varianten" className="pdp-variants mt-3 scroll-mt-28">
                       {indexVariants.length > 0 && (
                         <>
                           <p className="mb-1.5 !text-[12px] md:!text-[13px] font-semibold text-[#5B5D63]">
@@ -1347,16 +1368,7 @@ const shareImage = !rawShareImage
                       product.dimensions ||
                       (product.width ? `${product.width}/${product.height} R${product.diameter}` : undefined)
                     }
-                    allHref={
-                      product.width || product.dimensions
-                        ? buildProductFilterUrl({
-                            kategorie: product.merchant_product_third_category,
-                            width: product.width,
-                            height: product.height,
-                            diameter: product.diameter,
-                          })
-                        : undefined
-                    }
+                    allHref={seasonResultsHref}
                   />
 
                 </div>

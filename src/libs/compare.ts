@@ -19,7 +19,9 @@ const SPEED_ORDER = [
   'Z',
 ];
 
-export function parseTyreSize(p: CompareProduct) {
+type TyreListingInput = Pick<CompareProduct, 'width' | 'height' | 'diameter' | 'dimensions' | 'merchant_product_third_category'>;
+
+export function parseTyreSize(p: TyreListingInput) {
   const width = String(p.width || '').trim();
   const height = String(p.height || '').trim();
   const diameter = String(p.diameter || '').trim();
@@ -134,7 +136,7 @@ export function pickWinners(products: CompareProduct[]) {
   };
 }
 
-export function listingUrlForSize(p: CompareProduct) {
+export function listingUrlForSize(p: TyreListingInput) {
   const size = parseTyreSize(p);
   const params = new URLSearchParams();
   if (p.merchant_product_third_category) {
