@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
+import ReviewSummary from '@/components/reviews/ReviewSummary';
 import Link from 'next/link';
 import toast  from 'react-hot-toast';
 
@@ -266,6 +267,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
                 </div>
               </div>
+              <div className="py-4"><ReviewSummary /></div>
               <div className="footer-bottom-area w-full pt-[13px] pb-[20px] border-t border-t-border-100 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
                 <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
                   <div className="foot-left-content">
@@ -282,6 +284,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                         Impressum & Datenschutz
                       </Link>
                     </li>
+                    <li><Link href="/auto-api">Auto-API</Link></li>
                     <li className="foot-middle-item">
                       <Link
                         className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"

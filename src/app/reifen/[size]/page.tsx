@@ -1,3 +1,4 @@
+import VehicleFitment from '@/components/searchlight/VehicleFitment';
 import { fitTitle } from '@/libs/seo/title';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
@@ -92,6 +93,7 @@ export default async function SizePage({ params }: Params) {
   const popular = landings.sizes.filter(s => sizeSlug(s) !== sizeSlug(size)).slice(0, 12);
 
   return (
+    <>
     <LandingPage
       path={sizePath(size)}
       h1={`${label} Reifen im Preisvergleich`}
@@ -128,5 +130,7 @@ export default async function SizePage({ params }: Params) {
         },
       ]}
     />
+    <VehicleFitment size={label} />
+    </>
   );
 }

@@ -139,7 +139,7 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
   const hasHydrated = useRef(false);
 
   useEffect(() => {
-    if (hasHydrated.current || !initialProducts?.length) return;
+    if (hasHydrated.current) return;
     dispatch(
       setInitialProducts({
         products: initialProducts,
@@ -297,9 +297,10 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
     dispatch(setPage(1));
   };
 
-  const totalPages = Math.ceil(storeTotal / productsPerPage);
+  const visibleTotal = isReady ? storeTotal : total;
+  const totalPages = Math.ceil(visibleTotal / productsPerPage);
   const startIndex = (page - 1) * productsPerPage;
-  const endIndex = Math.min(page * productsPerPage, storeTotal || total);
+  const endIndex = Math.min(page * productsPerPage, visibleTotal);
 
   return (
     <div className="product-listings-sec bg-mono-0 pt-12 pb-9 max-sm:pt-12 max-sm:pb-5">
@@ -483,7 +484,7 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
 
             <div className="products-list-main-right-cont w-full max-md:w-full">
               <ProductList
-                products={products.length ? products : initialProducts}
+                products={isReady ? products : initialProducts}
                 loading={loading}
               />
 
@@ -501,7 +502,7 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
                     {total === 0 ? 0 : startIndex + 1} bis {endIndex} von{' '}
                   </span>
                   <span className="caption-bold">
-                    {storeTotal || total} Produkte
+                    {visibleTotal} Produkte
                   </span>
                 </div>
               </div>

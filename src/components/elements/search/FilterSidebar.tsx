@@ -10,6 +10,7 @@ import {
 } from '@/store/productSlice';
 import { RootState } from '@/store/store';
 
+import VehicleSizePicker from './VehicleSizePicker';
 import PriceRangeSlider from '@/components/elements/search/PriceFilter';
 import {
   Car,
@@ -73,6 +74,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   max,
 }) => {
 
+  const [finderMode, setFinderMode] = useState<'size' | 'car'>('size');
   const [brandSearch, setBrandSearch] = useState('');
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.products.filters);
@@ -445,32 +447,44 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-1 rounded-[12px] bg-[#F2F4F8] p-1 mb-4">
-          <button
-            type="button"
-            className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[9px] bg-white py-2 text-[13px] font-semibold text-primary-100 shadow-[0_1px_3px_rgba(16,24,40,0.08)] cursor-default"
-          >
-            <Ruler size={15} /> Nach Größe
-          </button>
-          <button
-            type="button"
-            disabled
-            title="Demnächst verfügbar"
-            aria-label="Nach Auto (demnächst verfügbar)"
-            className="flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[9px] py-2 text-[13px] font-semibold text-[#B4B9C2] cursor-not-allowed"
-          >
-            <Car size={15} /> Nach Auto
-          </button>
+        <div className="grid grid-cols-2 gap-1 rounded-[12px] bg-[#F2F4F8] p-1 mb-4" role="group" aria-label="Reifen-Finder">
+          {([
+            { mode: 'size', label: 'Nach Größe', Icon: Ruler },
+            { mode: 'car', label: 'Nach Auto', Icon: Car },
+          ] as const).map(({ mode, label, Icon }) => (
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={finderMode === mode}
+              onClick={() => setFinderMode(mode)}
+              className={`flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[9px] py-2 text-[13px] font-semibold ${
+                finderMode === mode ? 'bg-white text-primary-100 shadow-sm' : 'text-[#585D68]'
+              }`}
+            >
+              <Icon size={15} /> {label}
+            </button>
+          ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          {renderSizeSelect('width', 'Breite', availableProducts.widths, byNumber)}
-          {renderSizeSelect('height', 'Höhe', availableProducts.heights, byNumber)}
-          {renderSizeSelect('diameter', 'Zoll', availableProducts.diameters, byNumber)}
+        <div hidden={finderMode !== 'size'}>
+          <div className="grid grid-cols-3 gap-2">
+            {renderSizeSelect('width', 'Breite', availableProducts.widths, byNumber)}
+            {renderSizeSelect('height', 'Höhe', availableProducts.heights, byNumber)}
+            {renderSizeSelect('diameter', 'Zoll', availableProducts.diameters, byNumber)}
+          </div>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            {renderSizeSelect('lastIndex', 'Lastindex', availableProducts.lastIndexes, byNumber)}
+            {renderSizeSelect('speedIndex', 'Geschw.-Index', availableProducts.speedIndexes, byText)}
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          {renderSizeSelect('lastIndex', 'Lastindex', availableProducts.lastIndexes, byNumber)}
-          {renderSizeSelect('speedIndex', 'Geschw.-Index', availableProducts.speedIndexes, byText)}
+        <div hidden={finderMode !== 'car'}>
+          <VehicleSizePicker
+            selectedSize={sizeLabel}
+            onSize={({ width, height, diameter }) => {
+              dispatch(setFilters({ width: [width], height: [height], diameter: [diameter] }));
+              dispatch(setPage(1));
+            }}
+          />
         </div>
       </div>
 

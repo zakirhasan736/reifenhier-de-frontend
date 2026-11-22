@@ -121,6 +121,19 @@ export function isPriceAlertsEnabledLocally() {
   }
 }
 
+/** Save an explicit product watch while keeping this device subscribed. */
+export async function setProductPriceAlert(productId: string, notifyEnabled: boolean) {
+  const uuid = getOrCreateUuid()
+  if (!API || !uuid || uuid === 'guest') throw new Error('Price alert unavailable')
+  const response = await fetch(`${API}/api/push/interest`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ uuid, productId, source: 'price_alert', notifyEnabled }),
+  })
+  if (!response.ok) throw new Error('Price alert could not be saved')
+}
+
 /** Record product interest for later price alerts (view / click / purchase). */
 export function trackProductInterest(payload: {
   productId: string

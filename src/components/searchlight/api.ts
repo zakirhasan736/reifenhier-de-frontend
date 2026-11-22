@@ -52,7 +52,7 @@ export type ProductCheck = {
 };
 
 export type CarSize = { width: string; height: string; diameter: string; loadIndex?: string; speedIndex?: string; original?: boolean };
-export type CarResult = { source?: 'wheel-size' | 'ai'; generation?: string; sizes?: CarSize[]; note?: string; error?: string };
+export type CarResult = { source?: 'wheel-size' | 'reifexa' | 'ai'; generation?: string; sizes?: CarSize[]; note?: string; error?: string };
 export type PhotoResult = {
   ok?: boolean;
   width?: string;
@@ -68,9 +68,10 @@ export type PhotoResult = {
   error?: string;
 };
 
-async function post<T>(path: string, body: unknown): Promise<T> {
+async function post<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
   const r = await fetch(`${API}/api/searchlight${path}`, {
     method: 'POST',
+    signal,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
@@ -81,7 +82,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 
 export const recommend = (body: Criteria & { text?: string }) => post<RecommendResult>('/recommend', body);
 export const productCheck = (slug: string) => post<ProductCheck>('/product-check', { slug });
-export const carSizes = (body: { make: string; model: string; year?: string }) => post<CarResult>('/car', body);
+export const carSizes = (body: { make: string; model: string; year?: string }, signal?: AbortSignal) => post<CarResult>('/car', body, signal);
 export const readPhoto = (image: string) => post<PhotoResult>('/photo', { image });
 
 /** Downscale a photo in the browser before upload (≤ 1280 px, JPEG). */

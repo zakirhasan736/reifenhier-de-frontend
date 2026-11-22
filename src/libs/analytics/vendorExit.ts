@@ -96,7 +96,6 @@ export function onVendorExitClick(opts: {
       vendor: opts.vendor,
       vendorId: opts.vendorId,
       vendorPrice: opts.vendorPrice,
-      notifyEnabled: true,
     })
   }
 }
