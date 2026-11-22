@@ -1,4 +1,5 @@
 'use client';
+import SearchlightTrigger from '@/components/searchlight/SearchlightTrigger';
 
 import React, { useState } from 'react';
 import { currentTyreSeason } from '@/libs/season';
@@ -267,6 +268,7 @@ const FilterForm = ({ kategorie: kategorieProp, onKategorieChange }: FilterFormP
 
         {/* ---- More filters ---- */}
         <div className="mt-4 md:mt-5 pt-4 border-t border-[#EEF0F4]">
+          <div className="flex flex-wrap items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => setShowMoreFilters(prev => !prev)}
@@ -288,6 +290,8 @@ const FilterForm = ({ kategorie: kategorieProp, onKategorieChange }: FilterFormP
               }`}
             />
           </button>
+            <SearchlightTrigger variant="banner" />
+          </div>
 
           {showMoreFilters && (
             <div className="tyre-type-bottom-filter-area relative z-140 w-full gap-3 mt-4 grid grid-cols-2 md:grid-cols-4">
