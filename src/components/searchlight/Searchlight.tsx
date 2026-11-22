@@ -189,7 +189,7 @@ function OptionCard({ icon, tone, title, sub, onClick }: { icon: React.ReactNode
         <span className="block text-[14.5px] font-semibold text-[#16171A]">{title}</span>
         {sub ? <span className="block text-[12.5px] text-[#5A6072]">{sub}</span> : null}
       </span>
-      <ArrowRight size={16} className="text-[#A0A6B8]" />
+      <ArrowRight size={16} color="#A0A6B8" />
     </button>
   );
 }
@@ -254,14 +254,14 @@ function PickCard({ p, rank }: { p: Pick; rank?: number }) {
           {p.noiseDb ? (
             <div className="flex items-center gap-2 text-[11.5px] text-[#5A6072]">
               <span className="w-[86px] shrink-0">Rollgeräusch</span>
-              <Volume1 size={14} className="text-[#64748B]" />
+              <Volume1 size={14} color="#64748B" />
               <span className="font-semibold text-[#2B3040]">{p.noiseDb} dB</span>
             </div>
           ) : null}
         </div>
         {p.reason ? (
           <div className="mt-3 flex gap-2 rounded-[12px] bg-[#F1F3FF] px-3 py-2 text-[13px] leading-[145%] text-[#2B2F55]">
-            <Sparkles size={14} className="mt-0.5 shrink-0 text-[#6366F1]" />
+            <Sparkles size={14} color="#6366F1" className="mt-0.5 shrink-0"  />
             <span>{p.reason}</span>
           </div>
         ) : null}
@@ -318,21 +318,21 @@ function SizeVisual({ w, h, d }: { w?: string; h?: string; d?: string }) {
 
 function SidewallGuide() {
   return (
-    <svg viewBox="0 0 320 120" className="w-full" role="img" aria-label="Beispiel: Beschriftung auf der Reifenflanke">
+    <svg viewBox="0 0 320 165" className="w-full" role="img" aria-label="Beispiel: Beschriftung auf der Reifenflanke">
       <defs>
         <linearGradient id="sl-tyre" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0" stopColor="#2A2D35" />
           <stop offset="1" stopColor="#14161B" />
         </linearGradient>
       </defs>
-      <path d="M10 118 A150 150 0 0 1 310 118 L270 118 A110 110 0 0 0 50 118 Z" fill="url(#sl-tyre)" />
-      <path id="sl-arc" d="M40 112 A120 120 0 0 1 280 112" fill="none" />
+      <path d="M20 162 A140 140 0 0 1 300 162 L262 162 A102 102 0 0 0 58 162 Z" fill="url(#sl-tyre)" />
+      <path id="sl-arc" d="M43 162 A117 117 0 0 1 277 162" fill="none" />
       <text fontSize="15" fontWeight="700" fill="#E5E7EB" letterSpacing="1">
         <textPath href="#sl-arc" startOffset="50%" textAnchor="middle">
           205/55 R16 91H
         </textPath>
       </text>
-      <rect x="96" y="14" width="128" height="30" rx="8" fill="none" stroke="#818CF8" strokeWidth="2" strokeDasharray="5 4" />
+      <rect x="92" y="26" width="136" height="28" rx="8" fill="none" stroke="#818CF8" strokeWidth="2" strokeDasharray="5 4" />
     </svg>
   );
 }
@@ -359,11 +359,19 @@ export default function Searchlight() {
   const [used, setUsed] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
 
   const say = useCallback((...m: Msg[]) => setMsgs(prev => [...prev, ...m]), []);
 
   useEffect(() => {
-    scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: 'smooth' });
+    const el = scroller.current;
+    if (!el) return;
+    // results: show the summary + first card, not the bottom of the list
+    if ((step === 'results' || step === 'product') && answerRef.current) {
+      el.scrollTo({ top: Math.max(0, answerRef.current.offsetTop - 90), behavior: 'smooth' });
+      return;
+    }
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [msgs, step, carRes, busy]);
 
   useEffect(() => {
@@ -636,7 +644,7 @@ export default function Searchlight() {
                 <div className="flex-1">
                   <p className="text-[17px] font-bold leading-tight">Searchlight</p>
                   <p className="flex items-center gap-1.5 text-[12.5px] opacity-90">
-                    <span className="h-2 w-2 rounded-full bg-[#4ADE80]" /> KI-Reifenassistent · antwortet in Sekunden
+                    <span className="h-2 w-2 rounded-full bg-[#4ADE80]" /> KI-Reifenassistent · online
                   </p>
                 </div>
                 <button type="button" onClick={reset} aria-label="Neu starten" className="rounded-full p-2 hover:bg-white/15 cursor-pointer">
@@ -659,7 +667,7 @@ export default function Searchlight() {
             </div>
 
             {/* Conversation */}
-            <div ref={scroller} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+            <div ref={scroller} className="relative flex-1 space-y-3 overflow-y-auto px-4 py-4">
               {msgs.map((m, i) => (
                 <Bubble key={i} m={m} />
               ))}
@@ -669,13 +677,13 @@ export default function Searchlight() {
               {step === 'start' && (
                 <div className="space-y-3 pl-9">
                   <div className="grid grid-cols-2 gap-2.5">
-                    <Tile icon={<ListChecks size={20} className="text-[#4F46E5]" />} tone="bg-[#EEF2FF]" title="Schnell-Check" sub="4 Fragen, ohne Tippen" onClick={startQuick} />
-                    <Tile icon={<Camera size={20} className="text-[#059669]" />} tone="bg-[#ECFDF5]" title="Foto vom Reifen" sub="Ich lese die Größe ab" onClick={() => { say({ role: 'user', text: 'Foto vom Reifen' }, { role: 'bot', text: 'Fotografiere die Beschriftung auf der Seite deines Reifens. Das Foto wird nur gelesen, nicht gespeichert.' }); setStep('photo'); }} />
-                    <Tile icon={<Car size={20} className="text-[#D97706]" />} tone="bg-[#FFFBEB]" title="Mein Auto" sub="Größe über das Modell" onClick={() => { say({ role: 'user', text: 'Mein Auto angeben' }, { role: 'bot', text: 'Welches Auto fährst du?' }); setStep('car'); }} />
+                    <Tile icon={<ListChecks size={20} color="#4F46E5" />} tone="bg-[#EEF2FF]" title="Schnell-Check" sub="4 Fragen, ohne Tippen" onClick={startQuick} />
+                    <Tile icon={<Camera size={20} color="#059669" />} tone="bg-[#ECFDF5]" title="Foto vom Reifen" sub="Ich lese die Größe ab" onClick={() => { say({ role: 'user', text: 'Foto vom Reifen' }, { role: 'bot', text: 'Fotografiere die Beschriftung auf der Seite deines Reifens. Das Foto wird nur gelesen, nicht gespeichert.' }); setStep('photo'); }} />
+                    <Tile icon={<Car size={20} color="#D97706" />} tone="bg-[#FFFBEB]" title="Mein Auto" sub="Größe über das Modell" onClick={() => { say({ role: 'user', text: 'Mein Auto angeben' }, { role: 'bot', text: 'Welches Auto fährst du?' }); setStep('car'); }} />
                     {productSlug ? (
-                      <Tile icon={<ShieldCheck size={20} className="text-[#E11D48]" />} tone="bg-[#FFF1F2]" title="Diesen Reifen prüfen" sub="Preis & Alternativen" onClick={() => { say({ role: 'user', text: 'Lohnt sich dieser Reifen?' }); runProductCheck(productSlug); }} />
+                      <Tile icon={<ShieldCheck size={20} color="#E11D48" />} tone="bg-[#FFF1F2]" title="Diesen Reifen prüfen" sub="Preis & Alternativen" onClick={() => { say({ role: 'user', text: 'Lohnt sich dieser Reifen?' }); runProductCheck(productSlug); }} />
                     ) : (
-                      <Tile icon={<BadgeEuro size={20} className="text-[#E11D48]" />} tone="bg-[#FFF1F2]" title="Nur günstig" sub="Billigste solide Reifen" onClick={() => { setCrit(c => ({ ...c, priority: 'cheap' })); startQuick(); }} />
+                      <Tile icon={<BadgeEuro size={20} color="#E11D48" />} tone="bg-[#FFF1F2]" title="Nur günstig" sub="Billigste solide Reifen" onClick={() => { setCrit(c => ({ ...c, priority: 'cheap' })); startQuick(); }} />
                     )}
                   </div>
                   <div>
@@ -728,28 +736,28 @@ export default function Searchlight() {
 
               {step === 'season' && (
                 <div className="space-y-2 pl-9">
-                  <OptionCard icon={<Snowflake size={22} className="text-[#2563EB]" />} tone="bg-[#EFF6FF]" title="Winterreifen" sub="Pflicht bei Schnee, Eis und Glätte" onClick={() => chooseSeason('winter')} />
-                  <OptionCard icon={<Sun size={22} className="text-[#D97706]" />} tone="bg-[#FFFBEB]" title="Sommerreifen" sub="Kürzere Bremswege bei Wärme" onClick={() => chooseSeason('sommer')} />
-                  <OptionCard icon={<CloudSun size={22} className="text-[#059669]" />} tone="bg-[#ECFDF5]" title="Ganzjahresreifen" sub="Ein Satz fürs ganze Jahr" onClick={() => chooseSeason('ganzjahr')} />
+                  <OptionCard icon={<Snowflake size={22} color="#2563EB" />} tone="bg-[#EFF6FF]" title="Winterreifen" sub="Pflicht bei Schnee, Eis und Glätte" onClick={() => chooseSeason('winter')} />
+                  <OptionCard icon={<Sun size={22} color="#D97706" />} tone="bg-[#FFFBEB]" title="Sommerreifen" sub="Kürzere Bremswege bei Wärme" onClick={() => chooseSeason('sommer')} />
+                  <OptionCard icon={<CloudSun size={22} color="#059669" />} tone="bg-[#ECFDF5]" title="Ganzjahresreifen" sub="Ein Satz fürs ganze Jahr" onClick={() => chooseSeason('ganzjahr')} />
                 </div>
               )}
 
               {step === 'drive' && (
                 <div className="grid grid-cols-2 gap-2.5 pl-9">
-                  <Tile icon={<Building2 size={20} className="text-[#4F46E5]" />} tone="bg-[#EEF2FF]" title="Viel Stadt" sub="Kurze Strecken" onClick={() => chooseDrive('Viel Stadt')} />
-                  <Tile icon={<Route size={20} className="text-[#2563EB]" />} tone="bg-[#EFF6FF]" title="Viel Autobahn" sub="Lange Strecken, schnell" onClick={() => chooseDrive('Viel Autobahn', 'safety')} />
-                  <Tile icon={<Shuffle size={20} className="text-[#059669]" />} tone="bg-[#ECFDF5]" title="Gemischt" sub="Von allem etwas" onClick={() => chooseDrive('Gemischt')} />
-                  <Tile icon={<ParkingCircle size={20} className="text-[#D97706]" />} tone="bg-[#FFFBEB]" title="Wenig" sub="Unter 8.000 km im Jahr" onClick={() => chooseDrive('Wenig', 'cheap')} />
+                  <Tile icon={<Building2 size={20} color="#4F46E5" />} tone="bg-[#EEF2FF]" title="Viel Stadt" sub="Kurze Strecken" onClick={() => chooseDrive('Viel Stadt')} />
+                  <Tile icon={<Route size={20} color="#2563EB" />} tone="bg-[#EFF6FF]" title="Viel Autobahn" sub="Lange Strecken, schnell" onClick={() => chooseDrive('Viel Autobahn', 'safety')} />
+                  <Tile icon={<Shuffle size={20} color="#059669" />} tone="bg-[#ECFDF5]" title="Gemischt" sub="Von allem etwas" onClick={() => chooseDrive('Gemischt')} />
+                  <Tile icon={<ParkingCircle size={20} color="#D97706" />} tone="bg-[#FFFBEB]" title="Wenig" sub="Unter 8.000 km im Jahr" onClick={() => chooseDrive('Wenig', 'cheap')} />
                 </div>
               )}
 
               {step === 'priority' && (
                 <div className="space-y-3 pl-9">
                   <div className="grid grid-cols-2 gap-2.5">
-                    <Tile icon={<BadgeEuro size={20} className="text-[#059669]" />} tone="bg-[#ECFDF5]" title="Möglichst günstig" sub="Solide, kleiner Preis" onClick={() => choosePriority('cheap')} />
-                    <Tile icon={<Crown size={20} className="text-[#4F46E5]" />} tone="bg-[#EEF2FF]" title="Preis-Leistung" sub="Die beste Balance" onClick={() => choosePriority('balanced')} />
-                    <Tile icon={<ShieldCheck size={20} className="text-[#E11D48]" />} tone="bg-[#FFF1F2]" title="Sicherheit" sub="Kurzer Bremsweg nass" onClick={() => choosePriority('safety')} />
-                    <Tile icon={<Volume1 size={20} className="text-[#0891B2]" />} tone="bg-[#ECFEFF]" title="Leise & sparsam" sub="Weniger Lärm, Verbrauch" onClick={() => choosePriority('quiet')} />
+                    <Tile icon={<BadgeEuro size={20} color="#059669" />} tone="bg-[#ECFDF5]" title="Möglichst günstig" sub="Solide, kleiner Preis" onClick={() => choosePriority('cheap')} />
+                    <Tile icon={<Crown size={20} color="#4F46E5" />} tone="bg-[#EEF2FF]" title="Preis-Leistung" sub="Die beste Balance" onClick={() => choosePriority('balanced')} />
+                    <Tile icon={<ShieldCheck size={20} color="#E11D48" />} tone="bg-[#FFF1F2]" title="Sicherheit" sub="Kurzer Bremsweg nass" onClick={() => choosePriority('safety')} />
+                    <Tile icon={<Volume1 size={20} color="#0891B2" />} tone="bg-[#ECFEFF]" title="Leise & sparsam" sub="Weniger Lärm, Verbrauch" onClick={() => choosePriority('quiet')} />
                   </div>
                   <div className="rounded-[14px] bg-white p-3 ring-1 ring-[#E8EBF3]">
                     <div className="flex items-center justify-between text-[12.5px]">
@@ -777,7 +785,7 @@ export default function Searchlight() {
                     <ul className="mt-2 space-y-1 text-[12.5px] text-[#2B3040]">
                       {['Gut beleuchtet, ohne Blitz-Spiegelung', 'Beschriftung scharf und ganz im Bild', 'Ganz nah an die Größe heran'].map(t => (
                         <li key={t} className="flex items-center gap-1.5">
-                          <CheckCircle2 size={14} className="text-[#16A34A]" /> {t}
+                          <CheckCircle2 size={14} color="#16A34A" /> {t}
                         </li>
                       ))}
                     </ul>
@@ -884,7 +892,7 @@ export default function Searchlight() {
               )}
 
               {step === 'results' && result && (
-                <div className="space-y-3 pl-9">
+                <div ref={answerRef} className="space-y-3 pl-9">
                   <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
                     {result.criteria?.width ? (
                       <span className="rounded-full bg-white px-2.5 py-1 font-semibold ring-1 ring-[#E8EBF3]">
@@ -915,7 +923,7 @@ export default function Searchlight() {
               )}
 
               {step === 'product' && check && (
-                <div className="space-y-3 pl-9">
+                <div ref={answerRef} className="space-y-3 pl-9">
                   <div className="rounded-[16px] bg-white p-3.5 ring-1 ring-[#E8EBF3]">
                     <p className="text-[12px] font-medium text-[#5A6072]">Preis im Vergleich zu {check.sameSizeCount} Reifen in {check.product.size}</p>
                     <div className="relative mt-3 h-2.5 rounded-full bg-gradient-to-r from-[#16A34A] via-[#EAB308] to-[#DC2626]">
@@ -971,8 +979,8 @@ export default function Searchlight() {
                       sendText();
                     }
                   }}
-                  placeholder="Frag mich, z. B. „Winterreifen für Golf 7, max. 400 €“"
-                  className="max-h-28 flex-1 resize-none bg-transparent px-1 py-2 text-[14.5px] text-[#16171A] placeholder:text-[#8A90A2] focus:outline-none"
+                  placeholder="z. B. „Winterreifen für Golf 7, bis 400 €“"
+                  className="max-h-28 flex-1 resize-none truncate !border-0 bg-transparent !shadow-none !outline-none px-1 py-2 text-[14.5px] text-[#16171A] placeholder:text-[#8A90A2] focus:outline-none"
                 />
                 <button
                   type="button"
