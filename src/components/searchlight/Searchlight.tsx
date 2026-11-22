@@ -29,6 +29,7 @@ import {
   ShieldCheck,
   Shuffle,
   Snowflake,
+  CircleDot,
   Sparkles,
   Sun,
   TrendingDown,
@@ -616,14 +617,14 @@ export default function Searchlight() {
             type="button"
             onClick={() => openWith({ mode: productSlug ? 'product' : 'start' })}
             aria-label={`Searchlight: ${floatingLabel}`}
-            className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#5B3DF5] via-[#4F46E5] to-[#3A64F6] py-3 pl-3 pr-4 text-[14px] font-semibold shadow-[0_12px_32px_rgba(79,70,229,0.45)] transition-transform hover:-translate-y-0.5 cursor-pointer"
+            className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#5B3DF5] via-[#4F46E5] to-[#3A64F6] p-2.5 sm:py-3 sm:pl-3 sm:pr-4 text-[14px] font-semibold shadow-[0_12px_32px_rgba(79,70,229,0.45)] transition-transform hover:-translate-y-0.5 cursor-pointer"
           >
             {!used ? <span className="absolute inset-0 rounded-full bg-[#6366F1] opacity-50 motion-safe:animate-ping" aria-hidden /> : null}
             <span className="sl-white relative inline-flex items-center gap-2">
               <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20">
-                <Sparkles size={16} />
+                <CircleDot size={20} aria-hidden />
               </span>
-              <span className={productSlug ? '' : 'max-sm:hidden'}>{floatingLabel}</span>
+              <span className="hidden sm:inline">{floatingLabel}</span>
             </span>
           </button>
         </div>

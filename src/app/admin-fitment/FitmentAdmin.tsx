@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 
 type Vehicle = {
@@ -53,6 +54,7 @@ export default function FitmentAdmin({ api }: { api: string }) {
 
   return <main className="mx-auto max-w-5xl space-y-5 px-6 py-16">
     <h1 className="text-3xl font-bold">Auto-API Verwaltung</h1>
+    <Link className="inline-block text-primary-100 underline" href="/admin-reviews">Feedback verwalten</Link>
     <form className="flex flex-wrap items-end gap-4" onSubmit={event => {
       event.preventDefault();
       void run(async () => {

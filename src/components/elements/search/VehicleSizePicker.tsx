@@ -93,10 +93,10 @@ export default function VehicleSizePicker({ onSize, selectedSize }: {
       </li>)}
     </ul> : <p className="text-xs" role="status">Kein Modell gefunden.</p>)}
     <label className="block text-[13px] font-semibold">
-      Baujahr (optional)
+      Baujahr
       <input
         className="mt-1 w-full rounded-[9px] border border-[#E4E7EE] p-2 text-[14px] font-normal"
-        inputMode="numeric" pattern="[0-9]{4}" maxLength={4} placeholder="z. B. 2020" value={year}
+        inputMode="numeric" pattern="[0-9]{4}" maxLength={4} required placeholder="z. B. 2020" value={year}
         onChange={event => {
           clearResult();
           setYear(event.target.value);

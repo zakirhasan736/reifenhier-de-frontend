@@ -7,6 +7,7 @@ import Header from '@/components/shared/header/Header';
 import Footer from '@/components/shared/footer/Footer';
 import { SITE_KEYWORDS, SITE_URL, SOCIAL_PROFILES } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
+import FloatingReview from '@/components/reviews/FloatingReview';
 import Searchlight from '@/components/searchlight/Searchlight';
 import TrafficSource from '@/components/analytics/TrafficSource';
 
@@ -446,6 +447,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {children}
             <Footer />
             <Searchlight />
+            <FloatingReview />
             {/* </Suspense> */}
           </ClientProviders>
         </main>
