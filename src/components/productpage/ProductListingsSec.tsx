@@ -20,6 +20,7 @@ import SortingSearch from '@elements/search/SortingSearch';
 import Pagination from '@elements/Pagination';
 import ProductList from './ProductList';
 import FilterSidebar from '@elements/search/FilterSidebar';
+import SearchlightTrigger from '@/components/searchlight/SearchlightTrigger';
 import { AppDispatch, RootState } from '@/store/store';
 
 const productsPerPage = 12;
@@ -338,6 +339,9 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
                       </div>
 
                       <div className="filter-body-product-info px-6">
+                        <div className="pt-4">
+                          <SearchlightTrigger variant="sidebar" />
+                        </div>
                         <div className="cart-add-product-item-wrapper pt-4">
                           <div className="product-selected-category-lists flex flex-wrap items-center gap-2">
                             {ARRAY_FILTER_KEYS.map((key: ArrayFilterKey) => {
@@ -461,6 +465,7 @@ const ProductListingsSec: React.FC<ProductListingProps> = ({
               {/* <h4 className="filter-sidebar-title px-2 text-[18px] text-left font-medium font-secondary leading-[100%] text-[#404042] pb-2">
                 Filtern nach
               </h4> */}
+              <SearchlightTrigger variant="sidebar" />
               <FilterSidebar
                 availableProducts={filterProducts}
                 selectedFilters={mergedFilters}
