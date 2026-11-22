@@ -2354,3 +2354,10 @@ flex-direction: column;
 .sl-white * {
   color: #fff !important;
 }
+
+@media (max-width: 767px) {
+  #silktide-wrapper #silktide-cookie-icon {
+    left: max(10px, env(safe-area-inset-left));
+    right: auto;
+  }
+}
