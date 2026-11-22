@@ -1,0 +1,18 @@
+.heartbeat {
+  border-color: #be185d;
+  background: linear-gradient(120deg, #9d174d, #be185d 60%, #a21caf);
+  box-shadow: 0 4px 14px rgb(190 24 93 / 30%);
+}
+.heartbeat:hover {
+  filter: brightness(1.1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .heartbeat {
+    animation: price-heartbeat 3s ease-out 3;
+  }
+}
+@keyframes price-heartbeat {
+  0%, 30%, 100% { transform: scale(1); }
+  8%, 19% { transform: scale(1.045); box-shadow: 0 0 16px rgb(236 72 153 / 50%); }
+  13% { transform: scale(1); }
+}

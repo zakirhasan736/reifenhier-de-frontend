@@ -366,7 +366,6 @@ const ProductSinglepage: React.FC<ProductProps> = ({
     trackProductInterest({
       productId: product._id,
       source: 'view',
-      notifyEnabled: true,
     });
   }, [product?._id]);
   const handleCompareClick = () => {
@@ -1246,7 +1245,7 @@ const shareImage = !rawShareImage
                     </div>
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                      <PriceAlertToggle productId={product._id} />
+                      <PriceAlertToggle key={product._id} productId={product._id} productName={headingTitle} price={fromPriceLabel} />
                       {offerCount > 1 && (
                         <a href="#angebote" className="inline-flex min-h-11 items-center gap-1 text-[14px] md:text-[13px] font-semibold text-primary-100 hover:underline">
                           Weitere Angebote anzeigen ({offerCount}) <ChevronDown size={15} />

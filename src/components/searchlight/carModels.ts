@@ -847,7 +847,9 @@ export const CAR_MODELS: Record<string, string[]> = {
   ],
   "Leapmotor": [
     "T03",
-    "C10"
+    "C10",
+    "B10",
+    "C11"
   ],
   "Dodge": [
     "Journey",
@@ -901,10 +903,100 @@ export const CAR_MODELS: Record<string, string[]> = {
     "Kyron",
     "Rodius",
     "Musso"
+  ],
+  "GWM": [
+    "Ora 03",
+    "Ora 07",
+    "Wey 03",
+    "Wey 05"
+  ],
+  "XPeng": [
+    "G6",
+    "G9",
+    "P7"
+  ],
+  "Alpine": [
+    "A110",
+    "A290"
+  ],
+  "Cadillac": [
+    "ATS",
+    "BLS",
+    "CTS",
+    "Escalade",
+    "SRX",
+    "XT4",
+    "XT5",
+    "Lyriq"
+  ],
+  "Maserati": [
+    "Ghibli",
+    "Levante",
+    "Grecale",
+    "Quattroporte",
+    "GranTurismo",
+    "GranCabrio",
+    "MC20"
+  ],
+  "Bentley": [
+    "Bentayga",
+    "Continental GT",
+    "Flying Spur",
+    "Mulsanne"
+  ],
+  "Ineos": [
+    "Grenadier",
+    "Quartermaster"
+  ],
+  "Lynk & Co": [
+    "01",
+    "02"
+  ],
+  "Nio": [
+    "ET5",
+    "ET5 Touring",
+    "ET7",
+    "EL6",
+    "EL7",
+    "EL8"
+  ],
+  "Lotus": [
+    "Elise",
+    "Exige",
+    "Evora",
+    "Emira",
+    "Eletre",
+    "Emeya"
+  ],
+  "Aston Martin": [
+    "DB9",
+    "DB11",
+    "DB12",
+    "DBS",
+    "Vantage",
+    "DBX",
+    "Rapide"
+  ],
+  "Ferrari": [
+    "California",
+    "Portofino",
+    "Roma",
+    "296",
+    "488",
+    "F8 Tributo",
+    "Purosangue",
+    "812 Superfast"
+  ],
+  "Lamborghini": [
+    "Gallardo",
+    "Huracan",
+    "Urus",
+    "Aventador",
+    "Revuelto"
   ]
 };
 
-export const POPULAR_MAKES = ['VW', 'Mercedes', 'BMW', 'Audi', 'Opel', 'Ford', 'Skoda', 'Toyota', 'Hyundai', 'Seat', 'Renault', 'Kia'];
+export const POPULAR_MAKES = ["VW", "Mercedes", "Opel", "BMW", "Audi", "Ford", "Skoda", "Seat", "Renault", "Hyundai", "Toyota", "Fiat"];
 export const ALL_MAKES = Object.keys(CAR_MODELS).sort((a, b) => a.localeCompare(b, 'de'));
 
 export const YEARS = Array.from({ length: 20 }, (_, i) => String(new Date().getFullYear() - i));
