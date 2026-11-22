@@ -8,6 +8,7 @@ import Footer from '@/components/shared/footer/Footer';
 import { SITE_KEYWORDS, SITE_URL, SOCIAL_PROFILES } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
 import Searchlight from '@/components/searchlight/Searchlight';
+import TrafficSource from '@/components/analytics/TrafficSource';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -157,6 +158,8 @@ export default function RootLayout({
           }}
         />
         {/* Google Tag Manager — as high in <head> as possible */}
+        {/* Plain <script> on purpose: must run in <head> before hydration (next/script cannot guarantee that). */}
+        {/* eslint-disable-next-line @next/next/next-script-for-ga */}
         <script
           id="gtm-init"
           dangerouslySetInnerHTML={{
@@ -182,6 +185,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <meta name="referrer" content="strict-origin-when-cross-origin" />
 
         {/* Google tag (gtag.js) — must be in <head> for Search Console GA verification */}
+        {/* eslint-disable-next-line @next/next/next-script-for-ga */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-PMPVT55453"
@@ -437,6 +441,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {/* <Suspense
               fallback={<Loading />}
             > */}
+            <TrafficSource />
             <Header />
             {children}
             <Footer />

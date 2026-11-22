@@ -31,6 +31,55 @@ type Tx = {
   createdAt?: string;
   source?: string;
 };
+type CheckVendor = {
+  vendor: string;
+  vendorId: string;
+  offers: number;
+  offersWithoutToken: number;
+  linksChecked: number;
+  linksOk: number;
+  problems: Record<string, number>;
+  exampleProblemUrl?: string;
+  clicks: number;
+  sales: number;
+  declined: number;
+  salesWithOurClickRef: number;
+  commission: number;
+  lastSale: string | null;
+  conversionPct: number | null;
+  status: 'ok' | 'warning' | 'error';
+};
+type TrackingCheck = {
+  days: number;
+  checkedAt: string;
+  config: {
+    publisherId: string | null;
+    cloakSecretSet: boolean;
+    webhookConfigured: boolean;
+    pollerConfigured: boolean;
+    lastTransactionStoredAt: string | null;
+    lastTransactionSource: string | null;
+  };
+  configProblems: string[];
+  totals: { vendors: number; vendorsOk: number; linksChecked: number; linksOk: number; clicks: number; sales: number };
+  vendors: CheckVendor[];
+  otherSales: { merchantId: string; sales: number }[];
+};
+
+const PROBLEM_TEXT: Record<string, string> = {
+  token_not_decodable: 'Link-Token ungültig (AWIN_CLOAK_SECRET geändert?)',
+  invalid_url: 'Ungültige URL',
+  not_awin_link: 'Kein AWIN-Link',
+  publisher_id_missing: 'Publisher-ID fehlt',
+  advertiser_id_missing: 'Advertiser-ID (m) fehlt',
+  clickref_missing: 'clickref fehlt',
+  target_missing: 'Zielprodukt fehlt',
+};
+const problemLabel = (k: string) =>
+  PROBLEM_TEXT[k] ||
+  (k.startsWith('publisher_id_wrong:') ? `Falsche Publisher-ID ${k.split(':')[1]}` : '') ||
+  (k.startsWith('advertiser_id_mismatch:') ? `m=${k.split(':')[1]} passt nicht zum Shop` : k);
+
 type Summary = {
   days: number;
   devices: number;
@@ -77,6 +126,8 @@ export default function AdminAlertsClient() {
   const [subscribed, setSubscribed] = useState(false);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [days, setDays] = useState(7);
+  const [check, setCheck] = useState<TrackingCheck | null>(null);
+  const [checking, setChecking] = useState(false);
   const supported =
     typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
@@ -113,6 +164,17 @@ export default function AdminAlertsClient() {
     }
     if (res.ok) setSummary(await res.json());
   }, [authed, key, days]);
+
+  async function runCheck() {
+    setChecking(true);
+    try {
+      const res = await authed('/tracking-check?days=30');
+      if (res.ok) setCheck(await res.json());
+      else setStatus(`Tracking-Check fehlgeschlagen (${res.status}).`);
+    } finally {
+      setChecking(false);
+    }
+  }
 
   useEffect(() => {
     loadSummary();
@@ -203,6 +265,9 @@ export default function AdminAlertsClient() {
         <div>
           <h1 className="text-2xl font-semibold">Verkaufs-Alarme</h1>
           <p className="text-sm opacity-70">Klicks (unser Server) vs. Verkäufe (AWIN) – aktualisiert jede Minute.</p>
+          <a href="/admin-alerts/quellen" className="text-sm underline text-primary-100">
+            → Besucherquellen: ChatGPT, Google, Bing &amp; Co.
+          </a>
         </div>
         <select value={days} onChange={e => setDays(Number(e.target.value))} className="border rounded px-2 py-1">
           {[1, 7, 30, 90].map(d => (
@@ -331,6 +396,108 @@ export default function AdminAlertsClient() {
           </div>
         </div>
       )}
+
+      {/* End-to-end tracking check */}
+      <div>
+        <div className="flex flex-wrap items-center gap-3 mb-2">
+          <h2 className="font-semibold">Tracking-Check (alle Shops, 30 Tage)</h2>
+          <button
+            type="button"
+            onClick={runCheck}
+            disabled={checking}
+            className="px-3 py-1.5 rounded-md border text-sm hover:bg-black/5 disabled:opacity-50"
+          >
+            {checking ? 'Prüfe …' : check ? 'Erneut prüfen' : 'Jetzt prüfen'}
+          </button>
+          {check && <span className="text-xs opacity-60">geprüft {when(check.checkedAt)}</span>}
+        </div>
+        <p className="text-sm opacity-70 mb-3">
+          Prüft je Shop bis zu 25 gespeicherte Angebots-Links genau so, wie der Klick auf „Zum Angebot“ sie
+          baut: AWIN-Link, Ihre Publisher-ID, Advertiser-ID des Shops und clickref – und stellt Klicks den
+          AWIN-Verkäufen gegenüber. Es wird kein Klick gezählt.
+        </p>
+        {check && (
+          <>
+            <div className="grid sm:grid-cols-4 gap-3 mb-3 text-sm">
+              <div className="border rounded-lg p-3">
+                <div className="opacity-60">Shops OK</div>
+                <div className="text-xl font-semibold">{check.totals.vendorsOk} / {check.totals.vendors}</div>
+              </div>
+              <div className="border rounded-lg p-3">
+                <div className="opacity-60">Links korrekt</div>
+                <div className="text-xl font-semibold">{check.totals.linksOk} / {check.totals.linksChecked}</div>
+              </div>
+              <div className="border rounded-lg p-3">
+                <div className="opacity-60">Publisher-ID</div>
+                <div className="text-xl font-semibold">{check.config.publisherId || '–'}</div>
+              </div>
+              <div className="border rounded-lg p-3">
+                <div className="opacity-60">Verkaufs-Import</div>
+                <div className="font-semibold">
+                  {check.config.webhookConfigured ? 'Webhook ✓' : 'Webhook ✗'} · {check.config.pollerConfigured ? 'API ✓' : 'API ✗'}
+                </div>
+                <div className="text-xs opacity-60">
+                  letzter Verkauf gespeichert: {check.config.lastTransactionStoredAt ? when(check.config.lastTransactionStoredAt) : '–'}
+                </div>
+              </div>
+            </div>
+            {check.configProblems.length > 0 && (
+              <div className="mb-3 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">
+                {check.configProblems.map(p => <div key={p}>❌ {p}</div>)}
+              </div>
+            )}
+            <div className="overflow-x-auto border rounded-lg">
+              <table className="w-full text-sm">
+                <thead className="text-left opacity-60">
+                  <tr>
+                    <th className="p-2">Status</th>
+                    <th className="p-2">Shop</th>
+                    <th className="p-2">m=</th>
+                    <th className="p-2 text-right">Angebote</th>
+                    <th className="p-2 text-right">Links OK</th>
+                    <th className="p-2 text-right">Klicks</th>
+                    <th className="p-2 text-right">Verkäufe</th>
+                    <th className="p-2 text-right">Quote</th>
+                    <th className="p-2">Letzter Verkauf</th>
+                    <th className="p-2">Hinweis</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {check.vendors.map(v => (
+                    <tr key={`${v.vendorId}-${v.vendor}`} className="border-t align-top">
+                      <td className="p-2">{v.status === 'ok' ? '✅' : v.status === 'warning' ? '🟡' : '❌'}</td>
+                      <td className="p-2">{v.vendor}</td>
+                      <td className="p-2 tabular-nums">{v.vendorId || '–'}</td>
+                      <td className="p-2 text-right tabular-nums">{v.offers}</td>
+                      <td className="p-2 text-right tabular-nums">{v.linksOk} / {v.linksChecked}</td>
+                      <td className="p-2 text-right tabular-nums">{v.clicks}</td>
+                      <td className="p-2 text-right tabular-nums">{v.sales}{v.declined ? ` (${v.declined} storn.)` : ''}</td>
+                      <td className="p-2 text-right tabular-nums">{v.conversionPct == null ? '–' : `${v.conversionPct.toLocaleString('de-DE')} %`}</td>
+                      <td className="p-2">{v.lastSale ? when(v.lastSale) : '–'}</td>
+                      <td className="p-2 text-xs">
+                        {Object.entries(v.problems).map(([k, n]) => (
+                          <div key={k}>⚠️ {problemLabel(k)} ({n}×)</div>
+                        ))}
+                        {v.offersWithoutToken > 0 && <div>⚠️ {v.offersWithoutToken} Angebote ohne Link</div>}
+                        {v.status === 'warning' && <div>Viele Klicks, noch kein Verkauf – AWIN-Programm/Shop-Tracking prüfen</div>}
+                        {v.status === 'ok' && v.sales > 0 && v.salesWithOurClickRef < v.sales && (
+                          <div className="opacity-70">{v.sales - v.salesWithOurClickRef} Verkauf/Verkäufe ohne Reifexa-clickref</div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {check.otherSales.length > 0 && (
+              <p className="text-xs opacity-70 mt-2">
+                Verkäufe von Advertisern ohne aktuelle Angebote:{' '}
+                {check.otherSales.map(o => `m=${o.merchantId} (${o.sales})`).join(', ')}
+              </p>
+            )}
+          </>
+        )}
+      </div>
 
       {/* Transactions */}
       {summary && (

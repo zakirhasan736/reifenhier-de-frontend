@@ -85,7 +85,7 @@ const BannerSection = ({ season }: BannerSectionProps) => {
         })}
       </div>
 
-      <div className="custom-container relative z-999 h-full">
+      <div className="custom-container relative z-[100] h-full">
         <div className="banner-content w-full lg:pt-[72px] md:pt-14 pt-10 lg:pb-[72px] md:pb-12 pb-8">
           <div className="text-center mx-auto max-w-[820px] lg:mb-10 md:mb-8 mb-6">
             <span className="hero-v2-eyebrow inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 md:mb-5 text-[12px] md:text-[13px] font-medium tracking-wide text-white">

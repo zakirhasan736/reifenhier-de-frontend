@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import OptimizedImage from '@/components/elements/OptimizedImage';
-import { productImageSrc } from '@/libs/productImage';
+import type { ComponentProps } from 'react';
+import ProductCard from '@/components/elements/cards/ProductCard';
 import { productCanonicalUrl, SITE_URL } from '@/libs/seo/site';
-import { euro } from '@/libs/seo/landing';
 import type { ListProduct } from '@/libs/seo/landingData';
 import Breadcrumbs from '@/components/seo/Breadcrumbs';
 import JsonLd from '@/components/seo/JsonLd';
@@ -65,59 +64,17 @@ export default function LandingPage({
             </Link>
           ) : null}
         </div>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products.map(p => {
-            const img = productImageSrc(p.product_image, p.awin_image_url);
-            const label = productLabel(p);
-            return (
-              <li
-                key={p._id}
-                className="rounded-2xl border border-[#E4E5EA] bg-white p-4 flex flex-col"
-              >
-                <Link href={`/produkte/${p.slug}`} className="flex flex-col h-full group">
-                  <div className="flex h-36 items-center justify-center rounded-xl bg-[#F7F7F7] mb-3">
-                    <OptimizedImage
-                      src={img.src}
-                      fallbacks={img.fallbacks}
-                      alt={label}
-                      width={140}
-                      height={140}
-                      className="h-32 w-32 object-contain"
-                    />
-                  </div>
-                  <h3 className="text-[15px] font-semibold leading-snug text-[#16171A] group-hover:text-primary-100">
-                    {label}
-                  </h3>
-                  <p className="mt-1 text-[13px] text-[#5A5B61]">
-                    {[p.merchant_product_third_category, p.lastIndex && p.speedIndex ? `${p.lastIndex}${p.speedIndex}` : '']
-                      .filter(Boolean)
-                      .join(' · ')}
-                  </p>
-                  {p.fuel_class || p.wet_grip || p.noise_class ? (
-                    <p className="mt-1 text-[12px] text-[#5A5B61]">
-                      EU-Label:{' '}
-                      {[p.fuel_class && `Rollw. ${p.fuel_class}`, p.wet_grip && `Nass ${p.wet_grip}`, p.noise_class && `Geräusch ${p.noise_class}`]
-                        .filter(Boolean)
-                        .join(' · ')}
-                    </p>
-                  ) : null}
-                  <div className="mt-auto pt-3">
-                    <span className="text-[20px] font-semibold text-[#16171A]">
-                      ab {euro(p.cheapest_offer)} €
-                    </span>
-                    <span className="block text-[12px] text-[#5A5B61]">
-                      {p.total_offers && p.total_offers > 1
-                        ? `${p.total_offers} Shops im Vergleich`
-                        : p.vendor_name
-                          ? `bei ${p.vendor_name}`
-                          : 'Preis inkl. MwSt.'}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        {/* Same card as the product listing (/produkte): EU label, price trend,
+            cheapest shops, compare + favourite. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6 product-listing-grid-wrapper">
+          {products.map((p, i) => (
+            <ProductCard
+              key={p._id}
+              {...(p as unknown as ComponentProps<typeof ProductCard>)}
+              isPriority={i === 0}
+            />
+          ))}
+        </div>
         {moreHref && total > products.length ? (
           <div className="mt-6 text-center">
             <Link

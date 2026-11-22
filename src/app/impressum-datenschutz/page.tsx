@@ -296,6 +296,15 @@ const PrivacyPolicy: React.FC = () => {
             Standortdaten abgeleitet. Opt‑Out‑Optionen bietet Google u. a. über
             Browser‑Add‑on.
           </p>
+          <h3 className="mt-4 font-medium text-xl text-secondary-100">Besucherquellen (ohne Cookies)</h3>
+          <p className="mt-2 text-sm">
+            Beim ersten Seitenaufruf einer Sitzung übermitteln wir an unseren Server, von welcher Website
+            Sie kommen (nur der Domainname, z. B. google.de oder chatgpt.com), eventuelle UTM-Kampagnenparameter,
+            die aufgerufene Seite und den Gerätetyp. Es werden keine Cookies gesetzt und keine IP-Adressen
+            oder Kennungen gespeichert; die Zuordnung gilt nur für die aktuelle Browser-Sitzung
+            (sessionStorage). Zweck ist die Auswertung, über welche Kanäle unsere Website gefunden wird
+            (Art. 6 Abs. 1 lit. f DSGVO). Die Daten werden nach 13 Monaten gelöscht.
+          </p>
           <h3 className="mt-4 font-medium text-xl text-secondary-100">Microsoft Clarity</h3>
           <p className="mt-2 text-sm">
             Dienstanbieter: Microsoft Ireland Operations Limited, One Microsoft Place, South
