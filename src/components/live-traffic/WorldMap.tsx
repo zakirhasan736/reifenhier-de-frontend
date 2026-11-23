@@ -4,35 +4,9 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { City } from './types';
-import { countryCenter } from './countryCenters';
-import stateLabels from './stateLabels.json';
+import { countryCenter, placeLabel } from './countryCenters';
 
-type StateLabel = [string, number, number, number];
-const STATES = stateLabels as StateLabel[];
-
-function stateIcon(name: string) {
-  const safe = name.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  return L.divIcon({
-    className: 'leaflet-div-icon rx-map-state',
-    html: `<span>${safe}</span>`,
-    iconSize: [148, 18],
-    iconAnchor: [74, 9],
-  });
-}
-
-function paintStates(map: L.Map, layer: L.LayerGroup) {
-  layer.clearLayers();
-  const zoom = map.getZoom();
-  const bounds = map.getBounds().pad(0.2);
-  for (const [name, lat, lng, minZoom] of STATES) {
-    if (zoom + 2 < minZoom) continue;
-    const point = L.latLng(lat, lng);
-    if (!bounds.contains(point)) continue;
-    L.marker(point, { icon: stateIcon(name), interactive: false, keyboard: false, zIndexOffset: 40 }).addTo(layer);
-  }
-}
-
-const GERMANY: L.LatLngExpression = [51.1, 10.4];
+const GERMANY: L.LatLngExpression = [51.2, 10.4];
 
 function spot(city: City): [number, number] | null {
   if (city.count <= 0) return null;
@@ -47,20 +21,28 @@ function placed(cities: City[]) {
   });
 }
 
+function nearGermany(city: { country: string; point: [number, number] }) {
+  if (city.country === 'DE') return true;
+  const [lat, lng] = city.point;
+  return Math.abs(lat - 51.2) < 8 && Math.abs(lng - 10.4) < 12;
+}
+
 function focus(map: L.Map, cities: City[]) {
-  const points = placed(cities).map((city) => L.latLng(city.point![0], city.point![1]));
-  if (points.length === 0) {
-    map.setView(GERMANY, 5);
+  const spots = placed(cities);
+  const germany = spots.filter(nearGermany);
+  const target = germany.length ? germany : spots;
+  if (target.length === 0) {
+    map.flyTo(GERMANY, 6, { duration: 0.7 });
     return;
   }
-  if (points.length === 1) {
-    map.setView(points[0], 6);
+  if (target.length === 1) {
+    map.flyTo(target[0].point, 6, { duration: 0.8 });
     return;
   }
-  map.fitBounds(L.latLngBounds(points).pad(0.4), {
-    animate: true,
+  map.flyToBounds(L.latLngBounds(target.map((city) => city.point)), {
+    duration: 0.8,
     maxZoom: 6,
-    padding: [56, 56],
+    padding: [64, 64],
   });
 }
 
@@ -81,7 +63,7 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       zoomSnap: 0.25,
       maxBounds: [[-86, -200], [86, 200]],
     });
-    map.setView(GERMANY, 5);
+    map.setView(GERMANY, 6);
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 16,
       attribution: '© Esri',
@@ -91,10 +73,6 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       pane: 'overlayPane',
     }).addTo(map);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
-    const states = L.layerGroup().addTo(map);
-    const drawStates = () => paintStates(map, states);
-    map.on('zoomend moveend', drawStates);
-    drawStates();
     markers.current = L.layerGroup().addTo(map);
     mapRef.current = map;
     const observer = new ResizeObserver(() => map.invalidateSize());
@@ -123,8 +101,7 @@ export default function WorldMap({ cities }: { cities: City[] }) {
         iconAnchor: [size / 2, size / 2],
       });
       const tip = document.createElement('span');
-      const placeName = city.label || countryCenter(city.country)?.name || city.country;
-      tip.textContent = `${placeName} · ${city.count} aktiv`;
+      tip.textContent = `${placeLabel(city.country, city.label, city.point)} · ${city.count} active`;
       const marker = L.marker(city.point!, { icon, keyboard: false, zIndexOffset: 500 });
       marker.bindTooltip(tip, {
         permanent: true,
@@ -137,6 +114,7 @@ export default function WorldMap({ cities }: { cities: City[] }) {
     const signature = spots.map((city) => city.point!.join(',')).sort().join('|');
     if (signature !== seen.current) {
       seen.current = signature;
+      map.invalidateSize();
       focus(map, cities);
     }
   }, [cities]);

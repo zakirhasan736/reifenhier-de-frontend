@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import type { Activity, Traffic } from './types';
-import { countryCenter } from './countryCenters';
+import { placeLabel } from './countryCenters';
 
 const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de').replace(/\/$/, '');
 
@@ -75,7 +75,7 @@ function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
   );
 }
 
-function VisitorStats({ last30, last5, minutes }: { last30: number; last5: number; minutes: number[] }) {
+function VisitorStats({ last30, last5 }: { last30: number; last5: number }) {
   return (
     <aside className="w-full max-w-[340px] rounded-2xl border border-[#E7EAF2] bg-white p-4">
       <div className="grid grid-cols-2 gap-3">
@@ -90,28 +90,7 @@ function VisitorStats({ last30, last5, minutes }: { last30: number; last5: numbe
           <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
         </div>
       </div>
-      <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">Pro Minute</p>
-      <MinuteBars minutes={minutes} />
     </aside>
-  );
-}
-
-function MinuteBars({ minutes }: { minutes: number[] }) {
-  const peak = Math.max(1, ...minutes);
-  return (
-    <div className="mt-3 flex h-14 items-end gap-[3px]" aria-label="Aktive Nutzer pro Minute">
-      {minutes.map((count, index) => (
-        <div
-          key={index}
-          title={`Vor ${29 - index} Min.: ${count}`}
-          className="min-w-0 flex-1 rounded-t-[3px]"
-          style={{
-            height: `${Math.max(count ? 12 : 4, (100 * count) / peak)}%`,
-            background: count ? '#3A64F6' : '#E4E9F5',
-          }}
-        />
-      ))}
-    </div>
   );
 }
 
@@ -156,7 +135,7 @@ export default function LiveTraffic() {
   }, []);
 
   const cities = data?.cities.slice(0, 5).map((city) => ({
-    label: city.label || countryCenter(city.country)?.name || city.country,
+    label: placeLabel(city.country, city.label, city.point),
     count: city.count,
   })) ?? null;
 
@@ -169,7 +148,7 @@ export default function LiveTraffic() {
             <h2 id="traffic-heading" className="text-[22px] font-semibold text-[#16171A] md:text-[26px]">Reifexa live visitors</h2>
           </div>
           <div className="flex flex-1 justify-center">
-            {data ? <VisitorStats last30={data.last30} last5={data.last5} minutes={data.minutes} /> : null}
+            {data ? <VisitorStats last30={data.last30} last5={data.last5} /> : null}
           </div>
           <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#FFF8E6] px-3 py-1 text-[12px] font-semibold text-[#8A6500] md:self-center">
             <span className="h-2 w-2 rounded-full bg-[#f5b602] motion-safe:animate-pulse" />
