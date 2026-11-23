@@ -4,9 +4,9 @@ import { CORE_KEYWORDS, SITE_URL } from '@/libs/seo/site';
 import { listingKeywords } from '@/libs/seo/keywords';
 import JsonLd from '@/components/seo/JsonLd';
 import { brandPath, seasonForCategory, sizePath } from '@/libs/seo/landing';
-import Link from 'next/link';
 import type { Product } from '@/types/product';
 import { stripInternalLinks } from '@/libs/seo/stripInternalLinks';
+import ListingShowcase from '@/components/productpage/ListingShowcase';
 
 interface Props {
   searchParams: Promise<{
@@ -123,19 +123,37 @@ export default async function ProductsPage({ searchParams }: Props) {
   params.append('limit', limit.toString());
 
   let initialProducts: Product[] = [];
+  let showcaseProducts: Array<Record<string, unknown>> = [];
   let total = 0;
 
-  try {
-    const res = await fetch(
-      `${apiUrl}/api/products/product-lists?${params.toString()}`,
-      { next: { revalidate: 300 } }
-    );
-    const data = await res.json();
-    initialProducts = stripInternalLinks(data.products || []);
-    total = data.total || 0;
-  } catch (err) {
-    console.error('Failed to fetch SSR products', err);
+  const showcaseParams = new URLSearchParams();
+  if (category) showcaseParams.set('kategorie', category);
+  showcaseParams.set('limit', '12');
+
+  const [listResult, showcaseResult] = await Promise.all([
+    fetch(`${apiUrl}/api/products/product-lists?${params.toString()}`, {
+      next: { revalidate: 300 },
+    })
+      .then((res) => res.json())
+      .catch((err) => {
+        console.error('Failed to fetch SSR products', err);
+        return null;
+      }),
+    fetch(`${apiUrl}/api/products/listing-showcase?${showcaseParams.toString()}`, {
+      next: { revalidate: 300 },
+    })
+      .then((res) => res.json())
+      .catch((err) => {
+        console.error('Failed to fetch listing showcase', err);
+        return null;
+      }),
+  ]);
+
+  if (listResult) {
+    initialProducts = stripInternalLinks(listResult.products || []);
+    total = listResult.total || 0;
   }
+  showcaseProducts = Array.isArray(showcaseResult?.products) ? showcaseResult.products : [];
 
   const pageUrl = category
     ? `${SITE_URL}/produkte?kategorie=${encodeURIComponent(category)}`
@@ -175,18 +193,9 @@ export default async function ProductsPage({ searchParams }: Props) {
       <section className="mx-auto max-w-6xl px-4 pt-8" aria-labelledby="server-reifen-title">
         <h1 id="server-reifen-title" className="mb-4 text-2xl font-semibold">{category || 'Reifenangebote'} im Preisvergleich</h1>
         <p className="mb-4">Aktuelle Reifenangebote nach Modell, Größe und Händler vergleichen. Preise können sich beim Anbieter ändern.</p>
-        {initialProducts.length > 0 && (
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {initialProducts.filter(p => p.slug).map(p => (
-              <li key={p._id || p.slug} className="rounded border p-3">
-                <Link className="font-medium underline" href={`/produkte/${encodeURIComponent(p.slug!)}`}>
-                  {[p.brand_name, p.product_name, p.dimensions].filter(Boolean).join(' ')}
-                </Link>
-                {Number(p.cheapest_offer ?? p.search_price) > 0 && <p>Ab {Number(p.cheapest_offer ?? p.search_price).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}</p>}
-              </li>
-            ))}
-          </ul>
-        )}
+        <ListingShowcase
+          products={showcaseProducts.length ? showcaseProducts : (initialProducts as unknown as Array<Record<string, unknown>>)}
+        />
       </section>
       <ProductListingsSec
         initialProducts={initialProducts}

@@ -1,7 +1,7 @@
 'use client';
 
 import Image, { ImageProps } from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 const DEFAULT_FALLBACK = '/images/realistic-complete-set-car-wheels-2.png';
 
@@ -57,7 +57,14 @@ export default function OptimizedImage({
   }, [chainKey]);
 
   const current = chain[Math.min(idx, chain.length - 1)];
+  const imgRef = useRef<HTMLImageElement>(null);
   const goNext = () => setIdx(i => (i < chain.length - 1 ? i + 1 : i));
+
+  // A 404 that finishes before hydration never fires onError. Advance then too.
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) goNext();
+  }, [current]);
 
   if (skipOptimizer(current) && !fill) {
     return (
@@ -65,6 +72,7 @@ export default function OptimizedImage({
       // and keeps the uploaded/AWIN URL in the listing HTML.
       // eslint-disable-next-line @next/next/no-img-element
       <img
+        ref={imgRef}
         src={current}
         alt={alt}
         className={className}
