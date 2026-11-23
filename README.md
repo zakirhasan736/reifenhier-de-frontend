@@ -159,13 +159,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ### Homepage live traffic
 
-Enable the Google Analytics Data API in your Google Cloud project and grant
-the server service account Viewer access to the Reifexa GA4 property. Set
-`GA4_PROPERTY_ID` to the numeric property ID in the Next.js server environment.
-For properties with multiple streams, set `GA4_STREAM_ID` to the numeric ID
-of the Reifexa web stream. On a VPS set `GOOGLE_APPLICATION_CREDENTIALS` to
-the absolute path of a service-account credential file readable by the app
-user and kept outside the repository and web root. Restart the frontend.
-The public read-only endpoint is `/api/live-traffic`. Verify it returns HTTP
-200 and compare the active-user totals with GA4 Realtime for the same stream
-and time. It returns 503 when no recent snapshot is available.
+The map reads anonymous aggregate reports from the Express backend at
+`NEXT_PUBLIC_API_URL/api/live-traffic`. Configure GA4 on the backend.

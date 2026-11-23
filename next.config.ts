@@ -12,7 +12,6 @@ const SEO_BOTS =
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['all-the-cities'],
   htmlLimitedBots: new RegExp(`${HTML_LIMITED_BOT_UA_RE_STRING}|${SEO_BOTS}`, 'i'),
   images: {
     // Extra widths so a 1280–1600px wide screen doesn't download the 1920px
