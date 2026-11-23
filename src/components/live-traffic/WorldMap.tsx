@@ -3,9 +3,6 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { feature } from 'topojson-client';
-import countries from 'world-atlas/countries-110m.json';
-import type { GeometryCollection, Topology } from 'topojson-specification';
 import type { City } from './types';
 import { countryCenter } from './countryCenters';
 
@@ -54,22 +51,16 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       scrollWheelZoom: false,
       zoomControl: false,
       minZoom: 2,
-      maxZoom: 7,
+      maxZoom: 12,
       zoomSnap: 0.25,
       maxBounds: [[-86, -200], [86, 200]],
     });
     map.setView(GERMANY, 5);
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-    const topo = countries as unknown as Topology<{ countries: GeometryCollection }>;
-    L.geoJSON(feature(topo, topo.objects.countries), {
-      style: { fillColor: '#E4E9F2', fillOpacity: 1, color: '#F4F7FB', weight: 1.1 },
-      onEachFeature: (shape, layer) => {
-        const name = document.createElement('span');
-        name.textContent = String(shape.properties?.name ?? '');
-        layer.bindTooltip(name, { sticky: true });
-      },
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
-    map.attributionControl.addAttribution('Natural Earth');
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
     markers.current = L.layerGroup().addTo(map);
     mapRef.current = map;
     const observer = new ResizeObserver(() => map.invalidateSize());
@@ -101,7 +92,13 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       const placeName = city.label || countryCenter(city.country)?.name || city.country;
       tip.textContent = `${placeName} · ${city.count} aktiv`;
       const marker = L.marker(city.point!, { icon, keyboard: false, zIndexOffset: 500 });
-      marker.bindTooltip(tip, { direction: 'top' }).addTo(layer);
+      marker.bindTooltip(tip, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -Math.round(size / 2)],
+        className: 'rx-live-label',
+        opacity: 1,
+      }).addTo(layer);
     }
     const signature = spots.map((city) => city.point!.join(',')).sort().join('|');
     if (signature !== seen.current) {
