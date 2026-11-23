@@ -11,9 +11,10 @@ export default function FingerHand({ className }: { className?: string }) {
     if (!node) return
     let cancelled = false
     let animation: { destroy: () => void } | null = null
-    import('lottie-web').then((mod) => {
+    import('lottie-web/build/player/lottie_light').then((mod) => {
       if (cancelled || !node) return
-      animation = mod.default.loadAnimation({
+      const lottie = mod.default ?? mod
+      animation = lottie.loadAnimation({
         container: node,
         renderer: 'svg',
         loop: true,
