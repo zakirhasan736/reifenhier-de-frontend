@@ -2447,10 +2447,13 @@ a.offer-pulse .finger-hand * {
   padding-right: 2.75rem;
 }
 #silktide-wrapper #silktide-banner button.accept-all .offer-hand {
-  right: -4px;
+  right: 2px;
   left: auto;
   top: 50%;
-  margin-top: -28px;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  z-index: 6;
 }
 .offer-ping {
   position: absolute;
@@ -2480,6 +2483,11 @@ a.offer-pulse .finger-hand * {
   height: 100%;
   background: #eef2f6;
   font-family: inherit;
+}
+.leaflet-marker-icon.rx-live-pin {
+  overflow: visible !important;
+  background: none !important;
+  border: 0 !important;
 }
 .rx-live-pin {
   background: transparent;

@@ -2,9 +2,74 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import type { Activity, Traffic } from './types';
+import { countryCenter } from './countryCenters';
 
 const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de').replace(/\/$/, '');
-const WorldMap = dynamic(() => import('./WorldMap'), { ssr: false, loading: () => <div className="absolute inset-0 bg-[#eef2f6]" /> });
+
+function Bone({ className }: { className: string }) {
+  return <span className={`block animate-pulse rounded-md bg-[#E7ECF4] ${className}`} />;
+}
+
+function MapSkeleton() {
+  return (
+    <div className="absolute inset-0 bg-[#eef2f6]" aria-hidden>
+      <span className="absolute left-[12%] top-[28%] h-20 w-36 animate-pulse rounded-[40%] bg-[#E4E9F2]" />
+      <span className="absolute left-[34%] top-[22%] h-28 w-52 animate-pulse rounded-[46%] bg-[#E4E9F2]" />
+      <span className="absolute right-[16%] top-[36%] h-16 w-28 animate-pulse rounded-[40%] bg-[#E4E9F2]" />
+      <span className="absolute left-[46%] top-[46%] h-8 w-8 animate-ping rounded-full bg-[#3A64F6]/30" />
+      <span className="absolute left-[47.2%] top-[48%] h-4 w-4 rounded-full bg-[#3A64F6]/70" />
+      <span className="absolute left-[58%] top-[40%] h-6 w-6 animate-ping rounded-full bg-[#3A64F6]/25" />
+      <span className="absolute left-[59%] top-[41.5%] h-3 w-3 rounded-full bg-[#3A64F6]/60" />
+    </div>
+  );
+}
+
+function LiveSkeleton() {
+  return (
+    <div role="status" aria-label="Live-Karte wird geladen">
+      <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
+        <MapSkeleton />
+        <aside className="absolute left-3 top-3 w-[min(100%-1.5rem,340px)] rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)]">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Bone className="h-3 w-20" />
+              <Bone className="mt-2 h-8 w-12" />
+              <Bone className="mt-2 h-3 w-24" />
+            </div>
+            <div>
+              <Bone className="h-3 w-16" />
+              <Bone className="mt-2 h-8 w-10" />
+              <Bone className="mt-2 h-3 w-24" />
+            </div>
+          </div>
+          <Bone className="mt-4 h-3 w-20" />
+          <div className="mt-3 flex h-14 items-end gap-[3px]">
+            {Array.from({ length: 30 }, (_, index) => (
+              <span key={index} className="flex min-w-0 flex-1 items-end" style={{ height: `${30 + ((index * 17) % 70)}%` }}>
+                <Bone className="h-full min-w-0 flex-1 rounded-t-[3px]" />
+              </span>
+            ))}
+          </div>
+        </aside>
+      </div>
+      <div className="mt-4 grid border-t border-[#EEF0F4] md:grid-cols-3 md:divide-x md:divide-[#EEF0F4]">
+        {Array.from({ length: 3 }, (_, column) => (
+          <div key={column} className="space-y-3 bg-white p-4 md:p-5">
+            <Bone className="h-4 w-28" />
+            {Array.from({ length: 4 }, (_, row) => (
+              <div key={row}>
+                <Bone className="h-3 w-full" />
+                <Bone className="mt-1 h-1 w-2/3" />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const WorldMap = dynamic(() => import('./WorldMap'), { ssr: false, loading: () => <MapSkeleton /> });
 
 function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
   const top = Math.max(1, ...(rows || []).map((row) => row.count));
@@ -92,7 +157,7 @@ export default function LiveTraffic() {
   }, []);
 
   const cities = data?.cities.slice(0, 5).map((city) => ({
-    label: [city.label, city.country].filter(Boolean).join(', '),
+    label: city.label || countryCenter(city.country)?.name || city.country,
     count: city.count,
   })) ?? null;
 
@@ -111,9 +176,11 @@ export default function LiveTraffic() {
         </div>
 
         {!data ? (
-          <p role="status" className="px-4 py-10 text-[14px] text-[#6B6E76] md:px-6">
-            {failed ? 'Die Live-Karte ist derzeit nicht verfügbar.' : 'Live-Karte wird geladen …'}
-          </p>
+          failed ? (
+            <p role="status" className="px-4 py-10 text-[14px] text-[#6B6E76] md:px-6">Die Live-Karte ist derzeit nicht verfügbar.</p>
+          ) : (
+            <LiveSkeleton />
+          )
         ) : (
           <>
             <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">

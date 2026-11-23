@@ -7,11 +7,21 @@ import { feature } from 'topojson-client';
 import countries from 'world-atlas/countries-110m.json';
 import type { GeometryCollection, Topology } from 'topojson-specification';
 import type { City } from './types';
+import { countryCenter } from './countryCenters';
 
 const GERMANY: L.LatLngExpression = [51.1, 10.4];
 
+function spot(city: City): [number, number] | null {
+  if (city.count <= 0) return null;
+  if (city.point) return city.point;
+  return countryCenter(city.country)?.point ?? null;
+}
+
 function placed(cities: City[]) {
-  return cities.filter((city) => city.point && city.count > 0);
+  return cities.flatMap((city) => {
+    const point = spot(city);
+    return point ? [{ ...city, point }] : [];
+  });
 }
 
 function focus(map: L.Map, cities: City[]) {
@@ -88,8 +98,10 @@ export default function WorldMap({ cities }: { cities: City[] }) {
         iconAnchor: [size / 2, size / 2],
       });
       const tip = document.createElement('span');
-      tip.textContent = `${city.label}, ${city.country} · ${city.count} aktiv`;
-      L.marker(city.point!, { icon, keyboard: false }).bindTooltip(tip, { direction: 'top' }).addTo(layer);
+      const placeName = city.label || countryCenter(city.country)?.name || city.country;
+      tip.textContent = `${placeName} · ${city.count} aktiv`;
+      const marker = L.marker(city.point!, { icon, keyboard: false, zIndexOffset: 500 });
+      marker.bindTooltip(tip, { direction: 'top' }).addTo(layer);
     }
     const signature = spots.map((city) => city.point!.join(',')).sort().join('|');
     if (signature !== seen.current) {
