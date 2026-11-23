@@ -3,6 +3,9 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { feature } from 'topojson-client';
+import countries from 'world-atlas/countries-110m.json';
+import type { GeometryCollection, Topology } from 'topojson-specification';
 import type { City } from './types';
 
 const GERMANY: L.LatLngExpression = [51.1, 10.4];
@@ -21,7 +24,7 @@ function focus(map: L.Map, cities: City[]) {
     map.setView(points[0], 6);
     return;
   }
-  map.fitBounds(L.latLngBounds(points).pad(0.45), {
+  map.fitBounds(L.latLngBounds(points).pad(0.4), {
     animate: true,
     maxZoom: 6,
     padding: [56, 56],
@@ -40,17 +43,23 @@ export default function WorldMap({ cities }: { cities: City[] }) {
     const map = L.map(container, {
       scrollWheelZoom: false,
       zoomControl: false,
-      minZoom: 3,
-      maxZoom: 12,
+      minZoom: 2,
+      maxZoom: 7,
       zoomSnap: 0.25,
+      maxBounds: [[-86, -200], [86, 200]],
     });
     map.setView(GERMANY, 5);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
+    const topo = countries as unknown as Topology<{ countries: GeometryCollection }>;
+    L.geoJSON(feature(topo, topo.objects.countries), {
+      style: { fillColor: '#E4E9F2', fillOpacity: 1, color: '#F4F7FB', weight: 1.1 },
+      onEachFeature: (shape, layer) => {
+        const name = document.createElement('span');
+        name.textContent = String(shape.properties?.name ?? '');
+        layer.bindTooltip(name, { sticky: true });
+      },
     }).addTo(map);
+    map.attributionControl.addAttribution('Natural Earth');
     markers.current = L.layerGroup().addTo(map);
     mapRef.current = map;
     const observer = new ResizeObserver(() => map.invalidateSize());
@@ -68,8 +77,9 @@ export default function WorldMap({ cities }: { cities: City[] }) {
     const layer = markers.current;
     if (!map || !layer) return;
     layer.clearLayers();
-    const max = Math.max(1, ...placed(cities).map((city) => city.count));
-    for (const city of placed(cities)) {
+    const spots = placed(cities);
+    const max = Math.max(1, ...spots.map((city) => city.count));
+    for (const city of spots) {
       const size = Math.round(22 + 30 * Math.sqrt(city.count / max));
       const icon = L.divIcon({
         className: 'rx-live-pin',
@@ -79,9 +89,9 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       });
       const tip = document.createElement('span');
       tip.textContent = `${city.label}, ${city.country} · ${city.count} aktiv`;
-      L.marker(city.point!, { icon, keyboard: false }).bindTooltip(tip).addTo(layer);
+      L.marker(city.point!, { icon, keyboard: false }).bindTooltip(tip, { direction: 'top' }).addTo(layer);
     }
-    const signature = placed(cities).map((city) => city.point!.join(',')).sort().join('|');
+    const signature = spots.map((city) => city.point!.join(',')).sort().join('|');
     if (signature !== seen.current) {
       seen.current = signature;
       focus(map, cities);
