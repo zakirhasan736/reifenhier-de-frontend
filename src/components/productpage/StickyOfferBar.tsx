@@ -101,7 +101,8 @@ export default function StickyOfferBar({
           href={href}
           onExit={onExit}
           tabIndex={show ? 0 : -1}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 md:px-6 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
+          hand
+          className="inline-flex h-12 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-primary-100 px-5 pr-10 md:px-6 md:pr-12 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
         >
           <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
         </VendorExitLink>

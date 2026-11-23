@@ -2355,6 +2355,17 @@ flex-direction: column;
   color: #fff !important;
 }
 
+/* Zum Angebot label stays white and on one line. The finger uses its own fill. */
+a.offer-pulse,
+a.offer-pulse * {
+  color: #fff !important;
+  white-space: nowrap;
+}
+a.offer-pulse .finger-hand,
+a.offer-pulse .finger-hand * {
+  white-space: normal;
+}
+
 @media (max-width: 767px) {
   #silktide-wrapper #silktide-cookie-icon {
     left: max(1rem, env(safe-area-inset-left));
@@ -2409,9 +2420,22 @@ flex-direction: column;
   pointer-events: none;
   z-index: 2;
 }
-.offer-hand svg {
+.offer-hand svg,
+.offer-hand .finger-hand {
   width: 46px !important;
   height: 46px !important;
+  display: block;
+  transform-origin: 30% 20%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .offer-hand .finger-hand {
+    animation: finger-tap 1.15s ease-in-out infinite;
+  }
+}
+@keyframes finger-tap {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(-2px, 5px) rotate(-10deg); }
+  55% { transform: translate(0, 1px) rotate(-2deg); }
 }
 #silktide-wrapper #silktide-banner button.accept-all {
   position: relative;

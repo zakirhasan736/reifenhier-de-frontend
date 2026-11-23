@@ -422,6 +422,11 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
             </button>
           </div>
 
+          <ProductProof
+            productId={_id}
+            slug={slug}
+            className="absolute top-11 left-2 z-40"
+          />
           <span className="product-sku pointer-events-none absolute bottom-2 left-2 z-40 rounded-[6px] bg-[#16171A]/85 px-2 py-1 text-[12px] font-semibold font-secondary leading-none text-mono-0 tabular-nums">
             {dimensions}
           </span>
@@ -471,7 +476,6 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
             {[brand_name, product_name].filter(Boolean).join(' ')}
           </Link>
         </h3>
-        <ProductProof productId={_id} slug={slug} compact />
 
         <p className="tyres-category text-left capitalize text-[#6B6E76] text-[13px] font-secondary mb-3">
           {merchant_product_third_category}

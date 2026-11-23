@@ -1,13 +1,11 @@
 'use client'
 
 import { useEffect } from 'react'
-import FingerHand from '@/components/elements/FingerHand'
-import { createRoot, type Root } from 'react-dom/client'
+import { HAND_SVG } from '@/components/elements/FingerHand'
 
 /** Finger and pulse once, only on the cookie "Alle akzeptieren" button. */
 export default function ConsentFinger() {
   useEffect(() => {
-    let root: Root | null = null
     let host: HTMLSpanElement | null = null
     let done = false
     let tries = 0
@@ -28,9 +26,10 @@ export default function ConsentFinger() {
         button.prepend(ping)
       }
       host = document.createElement('span')
+      host.className = 'offer-hand'
+      host.setAttribute('aria-hidden', 'true')
+      host.innerHTML = HAND_SVG
       button.appendChild(host)
-      root = createRoot(host)
-      root.render(<FingerHand className="offer-hand" />)
     }
 
     attach()
@@ -42,7 +41,6 @@ export default function ConsentFinger() {
 
     return () => {
       window.clearInterval(timer)
-      root?.unmount()
       host?.remove()
     }
   }, [])

@@ -1033,7 +1033,7 @@ const shareImage = !rawShareImage
                     <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em] text-[#16171A]">
                       {headingTitle}
                     </h1>
-                    <ProductProof productId={product._id} slug={product.slug} />
+                    <ProductProof productId={product._id} slug={product.slug} className="mt-3" />
                     {(alternatives.length > 0 || indexVariants.length > 0) && (
                       <nav aria-label="Weitere Reifen" className="mt-2 flex flex-wrap gap-2">
                         {alternatives.length > 0 && (
@@ -1234,7 +1234,7 @@ const shareImage = !rawShareImage
                         }}
                         id="pdp-main-cta"
                         hand
-                        className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 pr-10 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
+                        className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-primary-100 px-5 pr-10 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
                       >
                         <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
                       </VendorExitLink>

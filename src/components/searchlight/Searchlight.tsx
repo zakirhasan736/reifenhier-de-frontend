@@ -8,6 +8,7 @@
  * priced picks from our catalogue (backend /api/searchlight).
  */
 import Link from 'next/link';
+import FingerHand from '@/components/elements/FingerHand';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -292,16 +293,19 @@ function PickCard({ p, rank }: { p: Pick; rank?: number }) {
                 vendorPrice: p.price,
               })
             }
-            className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
+            hand
+            className="sl-white mt-3 flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 pr-10 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
           >
             Zum Angebot{p.vendor ? ` bei ${p.vendor}` : ''} <ArrowRight size={16} />
           </VendorExitLink>
         ) : (
           <Link
             href={href}
-            className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
+            className="vendor-exit-cue offer-pulse sl-white relative mt-3 flex items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 pr-10 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
           >
+            <span className="offer-ping" aria-hidden />
             Zum Angebot{p.vendor ? ` bei ${p.vendor}` : ''} <ArrowRight size={16} />
+            <FingerHand className="offer-hand" />
           </Link>
         )}
         <Link href={`/produkte/${p.slug}`} className="mt-2 block text-center text-[12.5px] font-medium text-[#4F46E5] hover:underline">
