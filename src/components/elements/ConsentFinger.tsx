@@ -7,16 +7,12 @@ import { HAND_SVG } from '@/components/elements/FingerHand'
 export default function ConsentFinger() {
   useEffect(() => {
     let host: HTMLSpanElement | null = null
-    let done = false
     let tries = 0
     let timer = 0
 
     const attach = () => {
-      if (done) return
       const button = document.querySelector<HTMLButtonElement>('#silktide-banner button.accept-all')
       if (!button || button.dataset.hand === '1') return
-      done = true
-      window.clearInterval(timer)
       button.dataset.hand = '1'
       button.classList.add('offer-pulse')
       if (!button.querySelector('.offer-ping')) {
@@ -25,6 +21,7 @@ export default function ConsentFinger() {
         ping.setAttribute('aria-hidden', 'true')
         button.prepend(ping)
       }
+      host?.remove()
       host = document.createElement('span')
       host.className = 'offer-hand'
       host.setAttribute('aria-hidden', 'true')
@@ -36,7 +33,7 @@ export default function ConsentFinger() {
     timer = window.setInterval(() => {
       tries += 1
       attach()
-      if (done || tries >= 40) window.clearInterval(timer)
+      if (tries >= 40) window.clearInterval(timer)
     }, 300)
 
     return () => {

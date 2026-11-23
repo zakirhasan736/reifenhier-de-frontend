@@ -128,6 +128,14 @@ export default function AdminAlertsClient() {
   const [days, setDays] = useState(7);
   const [check, setCheck] = useState<TrackingCheck | null>(null);
   const [checking, setChecking] = useState(false);
+  const [ga, setGa] = useState<{
+    measurementId: string;
+    propertyId: string;
+    serviceAccountEmail: string;
+    connected: boolean;
+    urls: { analytics: string; propertySettings: string; propertyAccess: string; dataApi: string };
+  } | null>(null);
+  const [propertyInput, setPropertyInput] = useState('');
   const supported =
     typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
@@ -181,6 +189,24 @@ export default function AdminAlertsClient() {
     const t = setInterval(loadSummary, 60000);
     return () => clearInterval(t);
   }, [loadSummary]);
+
+  useEffect(() => {
+    if (!key) return;
+    authed('/analytics').then(async res => {
+      if (!res.ok) return;
+      const body = await res.json();
+      setGa(body);
+      setPropertyInput(body.propertyId || '');
+    }).catch(() => undefined);
+  }, [authed, key]);
+
+  async function saveProperty() {
+    const res = await authed('/analytics', { method: 'POST', body: JSON.stringify({ propertyId: propertyInput.trim() }) });
+    if (!res.ok) return setStatus('Property-ID muss eine Zahl sein, nicht die G- Nummer.');
+    const body = await res.json();
+    setGa(body);
+    setStatus('Google Analytics Property-ID gespeichert.');
+  }
 
   async function enable() {
     if (!supported) return setStatus('Dieser Browser unterstützt keine Push-Benachrichtigungen.');
@@ -277,6 +303,37 @@ export default function AdminAlertsClient() {
           ))}
         </select>
       </header>
+
+      <div className="border rounded-lg p-5 space-y-3">
+        <h2 className="font-semibold">Google Analytics</h2>
+        <p className="text-sm">
+          Die Website misst bereits mit <strong>{ga?.measurementId || 'G-PMPVT55453'}</strong>. Die Weltkarte braucht die numerische Property-ID und Lesezugriff für das Dienstkonto.
+        </p>
+        <ol className="text-sm list-decimal pl-5 space-y-1">
+          <li>
+            <a className="underline text-primary-100" href={ga?.urls.dataApi || 'https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com?project=233189692291'} target="_blank" rel="noreferrer">Google Analytics Data API einschalten</a>
+          </li>
+          <li>
+            <a className="underline text-primary-100" href={ga?.urls.propertyAccess || 'https://analytics.google.com/analytics/web/#/a0p0/admin/property/access-management'} target="_blank" rel="noreferrer">Property-Zugriff öffnen</a>
+            {' '}und <strong>{ga?.serviceAccountEmail || 'das Dienstkonto'}</strong> als Betrachter hinzufügen.
+          </li>
+          <li>
+            <a className="underline text-primary-100" href={ga?.urls.propertySettings || 'https://analytics.google.com/analytics/web/#/a0p0/admin/property/settings'} target="_blank" rel="noreferrer">Property-Einstellungen</a>
+            {' '}öffnen und die numerische Property-ID kopieren.
+          </li>
+        </ol>
+        <form className="flex flex-wrap gap-2" onSubmit={e => { e.preventDefault(); void saveProperty(); }}>
+          <input
+            value={propertyInput}
+            onChange={e => setPropertyInput(e.target.value)}
+            inputMode="numeric"
+            placeholder="Property-ID, z. B. 123456789"
+            className="flex-1 min-w-[16rem] border rounded px-3 py-2"
+          />
+          <button className="bg-black text-white rounded px-4 py-2">Speichern</button>
+        </form>
+        <p className="text-sm">{ga?.connected ? 'Property-ID ist gespeichert.' : 'Noch keine Property-ID gespeichert.'}</p>
+      </div>
 
       {/* Push setup */}
       <div className="border rounded-lg p-5 space-y-3">
