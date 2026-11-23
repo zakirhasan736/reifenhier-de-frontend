@@ -29,28 +29,6 @@ function LiveSkeleton() {
     <div role="status" aria-label="Live-Karte wird geladen">
       <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
         <MapSkeleton />
-        <aside className="absolute left-1/2 top-3 w-[min(100%-1.5rem,340px)] -translate-x-1/2 rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)]">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Bone className="h-3 w-20" />
-              <Bone className="mt-2 h-8 w-12" />
-              <Bone className="mt-2 h-3 w-24" />
-            </div>
-            <div>
-              <Bone className="h-3 w-16" />
-              <Bone className="mt-2 h-8 w-10" />
-              <Bone className="mt-2 h-3 w-24" />
-            </div>
-          </div>
-          <Bone className="mt-4 h-3 w-20" />
-          <div className="mt-3 flex h-14 items-end gap-[3px]">
-            {Array.from({ length: 30 }, (_, index) => (
-              <span key={index} className="flex min-w-0 flex-1 items-end" style={{ height: `${30 + ((index * 17) % 70)}%` }}>
-                <Bone className="h-full min-w-0 flex-1 rounded-t-[3px]" />
-              </span>
-            ))}
-          </div>
-        </aside>
       </div>
       <div className="mt-4 grid border-t border-[#EEF0F4] md:grid-cols-3 md:divide-x md:divide-[#EEF0F4]">
         {Array.from({ length: 3 }, (_, column) => (
@@ -94,6 +72,27 @@ function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
         <p className="mt-3 text-[13px] text-[#6B6E76]">{rows ? 'Keine Aktivität im Zeitraum.' : 'Daten derzeit nicht verfügbar.'}</p>
       )}
     </div>
+  );
+}
+
+function VisitorStats({ last30, last5, minutes }: { last30: number; last5: number; minutes: number[] }) {
+  return (
+    <aside className="w-full max-w-[340px] rounded-2xl border border-[#E7EAF2] bg-white p-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">30 Minuten</p>
+          <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-[#3A64F6]">{last30}</p>
+          <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
+        </div>
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">5 Minuten</p>
+          <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-[#C49200]">{last5}</p>
+          <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
+        </div>
+      </div>
+      <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">Pro Minute</p>
+      <MinuteBars minutes={minutes} />
+    </aside>
   );
 }
 
@@ -164,12 +163,15 @@ export default function LiveTraffic() {
   return (
     <section ref={section} className="custom-container pb-12" aria-labelledby="traffic-heading">
       <div className="overflow-hidden rounded-[24px] border border-[#E4E7EE] bg-white shadow-[0_16px_40px_-28px_rgba(22,23,26,0.45)]">
-        <div className="flex flex-wrap items-end justify-between gap-3 px-4 pt-4 md:px-6 md:pt-5">
-          <div>
+        <div className="flex flex-col gap-4 px-4 pt-4 md:flex-row md:items-center md:px-6 md:pt-5">
+          <div className="shrink-0">
             <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3A64F6]">Echtzeit</p>
             <h2 id="traffic-heading" className="text-[22px] font-semibold text-[#16171A] md:text-[26px]">Reifexa live visitors</h2>
           </div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF8E6] px-3 py-1 text-[12px] font-semibold text-[#8A6500]">
+          <div className="flex flex-1 justify-center">
+            {data ? <VisitorStats last30={data.last30} last5={data.last5} minutes={data.minutes} /> : null}
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#FFF8E6] px-3 py-1 text-[12px] font-semibold text-[#8A6500] md:self-center">
             <span className="h-2 w-2 rounded-full bg-[#f5b602] motion-safe:animate-pulse" />
             {data ? `Stand ${new Date(data.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}` : 'Live'}
           </span>
@@ -185,22 +187,6 @@ export default function LiveTraffic() {
           <>
             <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
               <WorldMap cities={data.cities} />
-              <aside className="pointer-events-none absolute left-1/2 top-3 z-[500] w-[min(100%-1.5rem,340px)] -translate-x-1/2 rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)] backdrop-blur-sm">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">30 Minuten</p>
-                    <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-[#3A64F6]">{data.last30}</p>
-                    <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">5 Minuten</p>
-                    <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-[#C49200]">{data.last5}</p>
-                    <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
-                  </div>
-                </div>
-                <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">Pro Minute</p>
-                <MinuteBars minutes={data.minutes} />
-              </aside>
             </div>
             <p className="px-4 pt-2 text-[11px] text-[#8B909A] md:px-6">Ungefähre Stadtpositionen · Google Analytics</p>
             <div className="mt-4 grid border-t border-[#EEF0F4] md:grid-cols-3 md:divide-x md:divide-[#EEF0F4]">
