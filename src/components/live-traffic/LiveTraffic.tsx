@@ -29,7 +29,7 @@ function LiveSkeleton() {
     <div role="status" aria-label="Live-Karte wird geladen">
       <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
         <MapSkeleton />
-        <aside className="absolute left-3 top-3 w-[min(100%-1.5rem,340px)] rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)]">
+        <aside className="absolute left-1/2 top-3 w-[min(100%-1.5rem,340px)] -translate-x-1/2 rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)]">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Bone className="h-3 w-20" />
@@ -167,7 +167,7 @@ export default function LiveTraffic() {
         <div className="flex flex-wrap items-end justify-between gap-3 px-4 pt-4 md:px-6 md:pt-5">
           <div>
             <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3A64F6]">Echtzeit</p>
-            <h2 id="traffic-heading" className="text-[22px] font-semibold text-[#16171A] md:text-[26px]">Reifexa live</h2>
+            <h2 id="traffic-heading" className="text-[22px] font-semibold text-[#16171A] md:text-[26px]">Reifexa live visitors</h2>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF8E6] px-3 py-1 text-[12px] font-semibold text-[#8A6500]">
             <span className="h-2 w-2 rounded-full bg-[#f5b602] motion-safe:animate-pulse" />
@@ -185,7 +185,7 @@ export default function LiveTraffic() {
           <>
             <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
               <WorldMap cities={data.cities} />
-              <aside className="pointer-events-none absolute left-3 top-3 z-[500] w-[min(100%-1.5rem,340px)] rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)] backdrop-blur-sm">
+              <aside className="pointer-events-none absolute left-1/2 top-3 z-[500] w-[min(100%-1.5rem,340px)] -translate-x-1/2 rounded-2xl bg-white/95 p-4 shadow-[0_12px_32px_-16px_rgba(22,23,26,0.45)] backdrop-blur-sm">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">30 Minuten</p>

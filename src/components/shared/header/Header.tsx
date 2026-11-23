@@ -10,8 +10,6 @@ import { FaRegSnowflake } from 'react-icons/fa';
 import { IoMdSunny } from 'react-icons/io';
 import { FaBars } from 'react-icons/fa';
 import { RiCloseLargeLine } from 'react-icons/ri';
-import { FiPlus } from 'react-icons/fi';
-import { AiOutlineMinus } from 'react-icons/ai';
 import GlobalSearch from '@/components/elements/search/globalSearch';
 
 
@@ -118,8 +116,21 @@ export default function Header() {
   -------------------------------------------*/
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [openMegaDesktop, setOpenMegaDesktop] = useState<string | null>(null);
+
+  const mobilePages = [
+    { name: 'Blog', href: '/artikel' },
+    { name: 'Reifenpreisvergleich', href: '/reifenpreisvergleich' },
+    { name: 'Reifengrößenrechner', href: '/reifengroessen-rechner' },
+    { name: 'Auto-API', href: '/auto-api' },
+  ];
+
+  const socials = [
+    { href: 'https://facebook.com/reifexa.de', src: '/images/facebook-icon.png', label: 'Facebook' },
+    { href: 'https://www.instagram.com/reifexa.de', src: '/images/instagram-icon.png', label: 'Instagram' },
+    { href: 'https://www.tiktok.com/@reifexa', src: '/images/tiktok.webp', label: 'TikTok' },
+    { href: 'https://www.youtube.com/@ReifexaDE', src: '/images/youtube.webp', label: 'YouTube' },
+  ];
 
   /* ------------------------------------------
      RENDER
@@ -303,94 +314,64 @@ export default function Header() {
           />
 
           {/* RIGHT PANEL */}
-          <div className="absolute right-0 top-0 w-[90%] max-w-[360px] h-full bg-white shadow-xl p-6 overflow-y-auto animate-slideLeft">
-            {/* PANEL HEADER */}
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-semibold">Menü</h3>
-              <button onClick={() => setMobileOpen(false)}>
-                <RiCloseLargeLine size={20} />
-              </button>
-            </div>
+          <div className="absolute right-0 top-0 flex h-full w-[90%] max-w-[360px] flex-col bg-white shadow-xl animate-slideLeft">
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-xl font-semibold">Menü</h3>
+                <button type="button" aria-label="Menü schließen" onClick={() => setMobileOpen(false)}>
+                  <RiCloseLargeLine size={20} />
+                </button>
+              </div>
 
-            {/* SEARCH */}
-            <div className="mb-6 block lg:hidden">
-              <GlobalSearch />
-            </div>
+              <div className="mb-6 block lg:hidden">
+                <GlobalSearch />
+              </div>
 
-            {/* PRODUCT CATEGORIES */}
-            <div className="mb-6">
-              <h4 className="text-[16px] font-semibold mb-3">
-                Produkte Kategorien
-              </h4>
+              <div className="mb-6">
+                <h4 className="mb-3 text-[16px] font-semibold">
+                  Produkte Kategorien
+                </h4>
+                <ul className="flex flex-col gap-2">
+                  {shopCategories.map(cat => (
+                    <li key={cat.name} className="border-b border-gray-300 py-2">
+                      <Link
+                        href={cat.href}
+                        className="flex items-center gap-2 text-[15px] text-gray-700"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {cat.icon}
+                        {cat.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               <ul className="flex flex-col gap-2">
-                {shopCategories.map(cat => (
-                  <li key={cat.name} className="border-b border-gray-300 py-2">
+                {mobilePages.map(page => (
+                  <li key={page.href} className="border-b border-gray-300 py-2">
                     <Link
-                      href={cat.href}
-                      className="flex items-center gap-2 text-gray-700 text-[15px]"
+                      href={page.href}
+                      className="block text-[15px] text-gray-700"
                       onClick={() => setMobileOpen(false)}
                     >
-                      {cat.icon}
-                      {cat.name}
+                      {page.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* BLOG CATEGORIES ACCORDION */}
-            <div>
-              <h4 className="text-[16px] font-semibold mb-3">
-                Blog Kategorien
-              </h4>
-
-              {Object.keys(blogCategories).map(parentSlug => {
-                const parent = blogCategories[parentSlug];
-
-                return (
-                  <div
-                    key={parentSlug}
-                    className="mb-4 border-b border-gray-400 pb-4"
-                  >
-                    <button
-                      className="flex justify-between items-center w-full text-[16px] font-medium"
-                      onClick={() =>
-                        setOpenAccordion(prev =>
-                          prev === parentSlug ? null : parentSlug
-                        )
-                      }
-                    >
-                      {parent.name}
-
-                      {openAccordion === parentSlug ? (
-                        <AiOutlineMinus size={20} />
-                      ) : (
-                        <FiPlus size={20} />
-                      )}
-                    </button>
-
-                    {openAccordion === parentSlug && (
-                      <ul className="mt-3">
-                        {parent.sub.map(item => (
-                          <li
-                            key={item.slug}
-                            className="py-2 border-b border-gray-300"
-                          >
-                            <Link
-                              href={`/artikel?kategorie=${parent.slug}&subkategorie=${item.slug}`}
-                              onClick={() => setMobileOpen(false)}
-                              className="text-gray-700 text-[14px]"
-                            >
-                              {item.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                );
-              })}
+            <div className="border-t border-gray-200 px-6 py-4">
+              <ul className="flex items-center gap-4">
+                {socials.map(item => (
+                  <li key={item.href}>
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" aria-label={item.label} className="block h-8 w-8">
+                      <Image src={item.src} alt="" width={32} height={32} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

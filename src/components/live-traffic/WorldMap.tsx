@@ -5,6 +5,32 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { City } from './types';
 import { countryCenter } from './countryCenters';
+import stateLabels from './stateLabels.json';
+
+type StateLabel = [string, number, number, number];
+const STATES = stateLabels as StateLabel[];
+
+function stateIcon(name: string) {
+  const safe = name.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  return L.divIcon({
+    className: 'leaflet-div-icon rx-map-state',
+    html: `<span>${safe}</span>`,
+    iconSize: [148, 18],
+    iconAnchor: [74, 9],
+  });
+}
+
+function paintStates(map: L.Map, layer: L.LayerGroup) {
+  layer.clearLayers();
+  const zoom = map.getZoom();
+  const bounds = map.getBounds().pad(0.2);
+  for (const [name, lat, lng, minZoom] of STATES) {
+    if (zoom + 2 < minZoom) continue;
+    const point = L.latLng(lat, lng);
+    if (!bounds.contains(point)) continue;
+    L.marker(point, { icon: stateIcon(name), interactive: false, keyboard: false, zIndexOffset: 40 }).addTo(layer);
+  }
+}
 
 const GERMANY: L.LatLngExpression = [51.1, 10.4];
 
@@ -56,11 +82,19 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       maxBounds: [[-86, -200], [86, 200]],
     });
     map.setView(GERMANY, 5);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16,
+      attribution: '© Esri',
+    }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16,
+      pane: 'overlayPane',
     }).addTo(map);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
+    const states = L.layerGroup().addTo(map);
+    const drawStates = () => paintStates(map, states);
+    map.on('zoomend moveend', drawStates);
+    drawStates();
     markers.current = L.layerGroup().addTo(map);
     mapRef.current = map;
     const observer = new ResizeObserver(() => map.invalidateSize());
