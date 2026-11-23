@@ -9,6 +9,7 @@ import { SITE_KEYWORDS, SITE_URL, SOCIAL_PROFILES } from '@/libs/seo/site';
 import JsonLd from '@/components/seo/JsonLd';
 import FloatingReview from '@/components/reviews/FloatingReview';
 import Searchlight from '@/components/searchlight/Searchlight';
+import ConsentFinger from '@/components/elements/ConsentFinger';
 import TrafficSource from '@/components/analytics/TrafficSource';
 
 const poppins = Poppins({
@@ -447,6 +448,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {children}
             <Footer />
             <Searchlight />
+            <ConsentFinger />
             <FloatingReview />
             {/* </Suspense> */}
           </ClientProviders>

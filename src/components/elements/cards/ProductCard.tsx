@@ -670,7 +670,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                           vendorPrice: toMoneyNumber(item.price) ?? undefined,
                         });
                       }}
-                      className="inline-flex max-w-full items-center pl-6 font-secondary font-medium text-[13px] text-left text-primary-100 hover:underline leading-[140%] truncate"
+                      className="inline-flex max-w-full items-center font-secondary font-medium text-[13px] text-left text-primary-100 underline underline-offset-2 leading-[140%] truncate"
                     >
                       {item.vendor}
                     </VendorExitLink>

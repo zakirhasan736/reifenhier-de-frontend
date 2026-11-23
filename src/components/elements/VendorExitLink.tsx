@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, type ReactNode } from 'react'
+import FingerHand from '@/components/elements/FingerHand'
 
 type Props = {
   href: string
@@ -8,6 +9,8 @@ type Props = {
   id?: string
   title?: string
   tabIndex?: number
+  /** Pulsing finger, only for the product-page Zum Angebot buttons. */
+  hand?: boolean
   onExit?: () => void
   children: ReactNode
 }
@@ -16,7 +19,7 @@ type Props = {
  * Shop exit link. The href is the navigation — tracking and the spinner never
  * call preventDefault, so a click cannot drop the target URL or block other buttons.
  */
-export default function VendorExitLink({ href, className, id, title, tabIndex, onExit, children }: Props) {
+export default function VendorExitLink({ href, className, id, title, tabIndex, hand = false, onExit, children }: Props) {
   const [pending, setPending] = useState(false)
   const timer = useRef(0)
 
@@ -37,7 +40,7 @@ export default function VendorExitLink({ href, className, id, title, tabIndex, o
       referrerPolicy="strict-origin-when-cross-origin"
       data-pending={pending ? '1' : '0'}
       aria-busy={pending}
-      className={`vendor-exit-cue ${className || ''}`}
+      className={`vendor-exit-cue ${hand ? 'offer-pulse' : ''} ${className || ''}`}
       onClick={() => {
         arm()
         try {
@@ -47,19 +50,10 @@ export default function VendorExitLink({ href, className, id, title, tabIndex, o
         }
       }}
     >
+      {hand ? <span className="offer-ping" aria-hidden /> : null}
       <span className="vendor-exit-spinner" aria-hidden />
       {children}
-      <span className="vendor-exit-cursor" aria-hidden>
-        <svg width="18" height="18" viewBox="0 0 24 24" focusable="false">
-          <path
-            d="M5.2 2.8 18.4 12l-5.3 1.1 2.4 6.3-2.2 1-2.4-6.4-4.2 2.6V2.8Z"
-            fill="#16171A"
-            stroke="#fff"
-            strokeWidth="1.4"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </span>
+      {hand ? <FingerHand className="offer-hand" /> : null}
     </a>
   )
 }

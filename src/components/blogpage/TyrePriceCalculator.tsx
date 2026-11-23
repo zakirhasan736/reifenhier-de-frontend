@@ -155,7 +155,7 @@ export default function TyrePriceCalculator() {
             vendorPrice: o.cheapest_offer,
           })
         }
-        className="inline-flex items-center justify-center rounded-full bg-primary-100 px-4 pr-8 py-2 text-[14px] font-semibold text-white hover:opacity-90"
+        className="inline-flex items-center justify-center rounded-full bg-primary-100 px-4 py-2 text-[14px] font-semibold text-white hover:opacity-90"
       >
         {label}
       </VendorExitLink>

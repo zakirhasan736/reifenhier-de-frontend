@@ -258,7 +258,7 @@ export default function CompareModal() {
                           vendorPrice: comparePrice(p) || undefined,
                         })
                       }
-                      className="mt-2 inline-flex items-center justify-center rounded-full bg-primary-100 px-3 pr-7 py-1.5 text-[12px] font-semibold text-white hover:opacity-90"
+                      className="mt-2 inline-flex items-center justify-center rounded-full bg-primary-100 px-3 py-1.5 text-[12px] font-semibold text-white hover:opacity-90"
                     >
                       Zum Angebot
                     </VendorExitLink>

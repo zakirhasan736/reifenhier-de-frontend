@@ -292,7 +292,7 @@ function PickCard({ p, rank }: { p: Pick; rank?: number }) {
                 vendorPrice: p.price,
               })
             }
-            className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 pr-8 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
+            className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
           >
             Zum Angebot{p.vendor ? ` bei ${p.vendor}` : ''} <ArrowRight size={16} />
           </VendorExitLink>

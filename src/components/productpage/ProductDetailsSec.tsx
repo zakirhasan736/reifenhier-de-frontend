@@ -1186,7 +1186,7 @@ const shareImage = !rawShareImage
                               vendorPrice: cheapestOffer?.price,
                             });
                           }}
-                          className="inline-flex max-w-[160px] items-center rounded-[10px] border border-[#E4E5EA] bg-white px-2.5 py-1.5 pl-7 text-[#3A64F6] hover:border-primary-100"
+                          className="inline-flex max-w-[160px] items-center rounded-[10px] border border-[#E4E5EA] bg-white px-2.5 py-1.5 hover:border-primary-100"
                           title={`Zum Angebot bei ${cheapestOffer?.vendor || 'Anbieter'}`}
                         >
                           <OfferVendorLogo vendor={cheapestOffer?.vendor} vendorLogo={cheapestOffer?.vendor_logo} className="h-[26px] w-auto max-w-[120px] object-contain" />
@@ -1232,7 +1232,9 @@ const shareImage = !rawShareImage
                             vendorPrice: cheapestOffer?.price,
                           });
                         }}
-                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 pr-8 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
+                        id="pdp-main-cta"
+                        hand
+                        className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 pr-10 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
                       >
                         <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
                       </VendorExitLink>
@@ -1509,7 +1511,7 @@ const shareImage = !rawShareImage
                           <div className="offer-product-card-inner grid grid-cols-2 md:grid-cols-12 items-center gap-x-4 gap-y-3">
                             {/* Vendor */}
                             <div className="vendor-box col-span-1 md:col-span-2">
-                              <VendorExitLink href={outHref} onExit={onOfferExit} className="inline-flex items-center pl-6 text-[#3A64F6]">
+                              <VendorExitLink href={outHref} onExit={onOfferExit} className="inline-flex items-center text-[#3A64F6]">
                                 <OfferVendorLogo
                                   vendor={offer.vendor}
                                   vendorLogo={offer.vendor_logo}
@@ -1573,14 +1575,15 @@ const shareImage = !rawShareImage
                               <VendorExitLink
                                 href={outHref}
                                 onExit={onOfferExit}
-                                className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 pr-7 text-[14px] font-semibold text-white transition hover:opacity-90"
+                                hand
+                                className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 pr-9 text-[14px] font-semibold text-white transition hover:opacity-90"
                               >
                                 <MdAddShoppingCart className="text-[18px]" /> Zum Angebot
                               </VendorExitLink>
                               <VendorExitLink
                                 href={outHref}
                                 onExit={onOfferExit}
-                                className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 pl-7 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
+                                className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
                               >
                                 Shop Informationen
                               </VendorExitLink>
