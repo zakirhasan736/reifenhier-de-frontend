@@ -41,11 +41,12 @@ async function fetchVapidPublicKey(): Promise<string | null> {
   }
 }
 
-/** Request permission, subscribe, and store on backend. */
-export async function enablePriceAlerts(): Promise<{
+/** Ask the browser once, then store this product only under the visitor uuid. */
+export async function enablePriceAlerts(productId: string): Promise<{
   ok: boolean
   reason?: string
 }> {
+  if (!productId) return { ok: false, reason: 'no_product' }
   if (!pushSupported()) return { ok: false, reason: 'unsupported' }
   if (!API) return { ok: false, reason: 'no_api' }
 
@@ -76,6 +77,7 @@ export async function enablePriceAlerts(): Promise<{
     credentials: 'include',
     body: JSON.stringify({
       uuid,
+      productId,
       subscription: subscription.toJSON(),
     }),
   })
@@ -110,6 +112,22 @@ export async function disablePriceAlerts(): Promise<void> {
     localStorage.removeItem('reifexa_push_enabled')
   } catch {
     // ignore
+  }
+}
+
+export async function fetchProductAlertEnabled(productId: string): Promise<boolean> {
+  const uuid = getOrCreateUuid()
+  if (!API || !uuid || uuid === 'guest' || !productId) return false
+  try {
+    const res = await fetch(
+      `${API}/api/push/status?uuid=${encodeURIComponent(uuid)}&productId=${encodeURIComponent(productId)}`,
+      { credentials: 'include', cache: 'no-store' }
+    )
+    if (!res.ok) return false
+    const data = await res.json()
+    return Boolean(data.productSubscribed)
+  } catch {
+    return false
   }
 }
 

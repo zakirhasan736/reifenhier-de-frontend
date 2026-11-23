@@ -5,7 +5,7 @@ import { Bell, Check, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import {
   enablePriceAlerts,
-  isPriceAlertsEnabledLocally,
+  fetchProductAlertEnabled,
   pushSupported,
   setProductPriceAlert,
 } from '@/libs/push/priceAlerts'
@@ -36,9 +36,21 @@ export default function PriceAlertToggle({ productId, productName, price }: Prop
   useEffect(() => {
     const available = pushSupported()
     setSupported(available)
-    setEnabled(available && isPriceAlertsEnabledLocally() && Notification.permission === 'granted' &&
-      read('localStorage', watchKey) === '1')
-  }, [watchKey])
+    const localOn = available && Notification.permission === 'granted' && read('localStorage', watchKey) === '1'
+    setEnabled(localOn)
+    if (!available || !productId) return
+    let cancelled = false
+    fetchProductAlertEnabled(productId).then((on) => {
+      if (cancelled) return
+      const active = on && Notification.permission === 'granted'
+      setEnabled(active)
+      try {
+        if (active) localStorage.setItem(watchKey, '1')
+        else localStorage.removeItem(watchKey)
+      } catch { /* The button still follows the server answer for this product. */ }
+    })
+    return () => { cancelled = true }
+  }, [watchKey, productId])
 
   useEffect(() => {
     if (!supported || enabled || !productId || Notification.permission === 'denied') return
@@ -71,8 +83,8 @@ export default function PriceAlertToggle({ productId, productName, price }: Prop
     markPromptSeen()
     setBusy(true)
     try {
-      if (!enabled && (!isPriceAlertsEnabledLocally() || Notification.permission !== 'granted')) {
-        const result = await enablePriceAlerts()
+      if (!enabled) {
+        const result = await enablePriceAlerts(productId)
         if (!result.ok) {
           toast.error(result.reason === 'denied'
             ? 'Benachrichtigungen sind in Ihrem Browser blockiert.'
@@ -109,7 +121,7 @@ export default function PriceAlertToggle({ productId, productName, price }: Prop
       </div>
       <p className="mt-2 font-semibold">{productName}</p>
       {price && <p className="text-sm">Aktuell ab {price} pro Reifen</p>}
-      <p className="mt-3 text-sm">Erhalten Sie eine Browser-Benachrichtigung, wenn der beobachtete Preis für diesen Reifen sinkt.</p>
+      <p className="mt-3 text-sm">Die Erlaubnis gilt nur für diesen Reifen. Weitere Reifen können Sie einzeln auf deren Seite aktivieren.</p>
       <div className="mt-5 flex flex-wrap gap-3">
         <button type="button" disabled={busy} className="rounded-full bg-[#BE185D] px-4 py-2 font-semibold !text-white" onClick={() => void onToggle()}>Preisalarm aktivieren</button>
         <button type="button" className="rounded-full border px-4 py-2" onClick={() => dialog.current?.close()}>Vielleicht später</button>
