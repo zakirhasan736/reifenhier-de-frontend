@@ -1,3 +1,4 @@
+import LiveTraffic from '@/components/live-traffic/LiveTraffic';
 import HomePageMain from "@/page-components/Home/HomePage";
 import { Metadata } from "next";
 import { SITE_KEYWORDS, SITE_URL } from "@/libs/seo/site";
@@ -78,6 +79,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      <LiveTraffic />
       {/* JSON-LD: homepage WebPage (Organization + WebSite come from the layout) */}
       <JsonLd id="ld-home-webpage" data={{
             '@context': 'https://schema.org',
