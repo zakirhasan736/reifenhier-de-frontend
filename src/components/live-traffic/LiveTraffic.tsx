@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import type { Activity, Traffic } from './types';
 
+const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de').replace(/\/$/, '');
 const WorldMap = dynamic(() => import('./WorldMap'), { ssr: false, loading: () => <div className="h-80 rounded-xl bg-slate-100" /> });
 
 function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
@@ -25,7 +26,7 @@ export default function LiveTraffic() {
       if (!visible || busy || document.hidden) return;
       busy = true;
       try {
-        const response = await fetch('/api/live-traffic', { signal: controller.signal });
+        const response = await fetch(`${apiOrigin}/api/live-traffic`, { signal: controller.signal });
         if (!response.ok) throw Error();
         const result = await response.json() as Traffic;
         if (!controller.signal.aborted) { setData(result); setFailed(false); }
