@@ -114,6 +114,9 @@ export default function PriceAlertToggle({ productId, productName, price }: Prop
       {enabled ? 'Preisalarm aktiv' : 'Preisalarm aktivieren'}
     </button>
     <dialog ref={dialog} aria-labelledby="product-price-alert-title"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) event.currentTarget.close()
+      }}
       className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl bg-white p-6 text-[#16171A] shadow-xl backdrop:bg-slate-950/50">
       <div className="flex items-center justify-between gap-3">
         <h2 id="product-price-alert-title" className="text-xl font-bold">Preisalarm für diesen Reifen</h2>

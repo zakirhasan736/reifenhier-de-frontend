@@ -50,6 +50,8 @@ import {
 import { trackProductInterest } from '@/libs/push/priceAlerts';
 import { toMoneyNumber } from '@/libs/money';
 import PriceAlertToggle from '@/components/productpage/PriceAlertToggle';
+import VendorExitLink from '@/components/elements/VendorExitLink';
+import ProductProof from '@/components/elements/ProductProof';
 import EuTyreLabelSection from '@/components/productpage/EuTyreLabelSection';
 import ProductImageGallery from '@/components/productpage/ProductImageGallery';
 import StickyOfferBar from '@/components/productpage/StickyOfferBar';
@@ -1031,6 +1033,7 @@ const shareImage = !rawShareImage
                     <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em] text-[#16171A]">
                       {headingTitle}
                     </h1>
+                    <ProductProof productId={product._id} slug={product.slug} />
                     {(alternatives.length > 0 || indexVariants.length > 0) && (
                       <nav aria-label="Weitere Reifen" className="mt-2 flex flex-wrap gap-2">
                         {alternatives.length > 0 && (
@@ -1160,7 +1163,7 @@ const shareImage = !rawShareImage
                     <div className="best-price-vendor mt-4 flex flex-wrap items-center gap-2 border-t border-[#E9ECF3] pt-4">
                       <span className="text-[13px] font-medium text-[#5A5B61]">bei</span>
                       {cheapestOffer?.affiliate_product_cloak_url ? (
-                        <a
+                        <VendorExitLink
                           href={buildVendorExitUrl({
                             token: cheapestOffer?.affiliate_product_cloak_url || '',
                             productId: product._id,
@@ -1171,9 +1174,7 @@ const shareImage = !rawShareImage
                             brand: product.brand_name,
                             instruction: 'Zum Angebot',
                           })}
-                          target="_blank"
-                          rel="sponsored noopener"
-                          onClick={() => {
+                          onExit={() => {
                             onVendorExitClick({
                               productId: product._id,
                               productName: product.product_name,
@@ -1185,11 +1186,11 @@ const shareImage = !rawShareImage
                               vendorPrice: cheapestOffer?.price,
                             });
                           }}
-                          className="inline-flex max-w-[160px] items-center rounded-[10px] border border-[#E4E5EA] bg-white px-2.5 py-1.5 hover:border-primary-100"
+                          className="inline-flex max-w-[160px] items-center rounded-[10px] border border-[#E4E5EA] bg-white px-2.5 py-1.5 pl-7 text-[#3A64F6] hover:border-primary-100"
                           title={`Zum Angebot bei ${cheapestOffer?.vendor || 'Anbieter'}`}
                         >
                           <OfferVendorLogo vendor={cheapestOffer?.vendor} vendorLogo={cheapestOffer?.vendor_logo} className="h-[26px] w-auto max-w-[120px] object-contain" />
-                        </a>
+                        </VendorExitLink>
                       ) : (
                         <OfferVendorLogo vendor={cheapestOffer?.vendor} vendorLogo={cheapestOffer?.vendor_logo} className="h-[26px] w-auto max-w-[120px] object-contain" />
                       )}
@@ -1208,7 +1209,7 @@ const shareImage = !rawShareImage
 
                     {/* CTAs */}
                     <div className="product-cta-box mt-4 flex flex-wrap sm:flex-nowrap items-stretch gap-2">
-                      <a
+                      <VendorExitLink
                         href={buildVendorExitUrl({
                           token: cheapestOffer?.affiliate_product_cloak_url || '',
                           productId: product._id,
@@ -1219,9 +1220,7 @@ const shareImage = !rawShareImage
                           brand: product.brand_name,
                           instruction: 'Zum Angebot',
                         })}
-                        target="_blank"
-                        rel="sponsored noopener"
-                        onClick={() => {
+                        onExit={() => {
                           onVendorExitClick({
                             productId: product._id,
                             productName: product.product_name,
@@ -1233,10 +1232,10 @@ const shareImage = !rawShareImage
                             vendorPrice: cheapestOffer?.price,
                           });
                         }}
-                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
+                        id="pdp-main-cta" className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 rounded-[12px] bg-primary-100 px-5 pr-8 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
                       >
                         <MdAddShoppingCart className="text-[20px]" /> Zum Angebot
-                      </a>
+                      </VendorExitLink>
                       <button
                         type="button"
                         onClick={handleCompareClick}
@@ -1510,13 +1509,13 @@ const shareImage = !rawShareImage
                           <div className="offer-product-card-inner grid grid-cols-2 md:grid-cols-12 items-center gap-x-4 gap-y-3">
                             {/* Vendor */}
                             <div className="vendor-box col-span-1 md:col-span-2">
-                              <a href={outHref} target="_blank" rel="sponsored noopener" onClick={onOfferExit} className="inline-flex">
+                              <VendorExitLink href={outHref} onExit={onOfferExit} className="inline-flex items-center pl-6 text-[#3A64F6]">
                                 <OfferVendorLogo
                                   vendor={offer.vendor}
                                   vendorLogo={offer.vendor_logo}
                                   className="h-[32px] md:h-[36px] w-[110px] md:w-[130px] object-contain object-left transition-transform hover:scale-105"
                                 />
-                              </a>
+                              </VendorExitLink>
                               {outOfStock && <span className="mt-1 block text-[11px] font-semibold text-[#B42318]">Nicht auf Lager</span>}
                             </div>
 
@@ -1571,24 +1570,20 @@ const shareImage = !rawShareImage
 
                             {/* CTAs */}
                             <div className="offer-product-card-footer col-span-2 md:col-span-2 flex max-md:flex-col md:flex-col items-stretch md:items-center gap-1">
-                              <a
+                              <VendorExitLink
                                 href={outHref}
-                                target="_blank"
-                                rel="sponsored noopener"
-                                onClick={onOfferExit}
-                                className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 text-[14px] font-semibold text-white transition hover:opacity-90"
+                                onExit={onOfferExit}
+                                className="cta-button-shop primary-button-state w-full inline-flex h-12 md:h-10 items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-primary-100 px-4 pr-7 text-[14px] font-semibold text-white transition hover:opacity-90"
                               >
                                 <MdAddShoppingCart className="text-[18px]" /> Zum Angebot
-                              </a>
-                              <a
+                              </VendorExitLink>
+                              <VendorExitLink
                                 href={outHref}
-                                target="_blank"
-                                rel="sponsored noopener"
-                                onClick={onOfferExit}
-                                className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
+                                onExit={onOfferExit}
+                                className="shop-info-btn inline-flex min-h-12 md:min-h-0 items-center justify-center px-3 py-1 pl-7 text-[14px] md:text-[13px] font-medium text-primary-100 hover:underline"
                               >
                                 Shop Informationen
-                              </a>
+                              </VendorExitLink>
                             </div>
                           </div>
                         </div>

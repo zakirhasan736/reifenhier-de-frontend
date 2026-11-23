@@ -39,7 +39,8 @@ import {
 } from 'lucide-react';
 import OptimizedImage from '@/components/elements/OptimizedImage';
 import { productImageSrc } from '@/libs/productImage';
-import { buildVendorExitUrl } from '@/libs/analytics/vendorExit';
+import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
+import VendorExitLink from '@/components/elements/VendorExitLink';
 import { CAR_MODELS, POPULAR_MAKES, ALL_MAKES, YEARS } from './carModels';
 import {
   carSizes,
@@ -276,14 +277,33 @@ function PickCard({ p, rank }: { p: Pick; rank?: number }) {
           </div>
           {p.offerCount > 1 ? <span className="rounded-full bg-[#EEF2FF] px-2.5 py-1 text-[11.5px] font-semibold text-[#4F46E5]">{p.offerCount} Shops</span> : null}
         </div>
-        <a
-          href={href}
-          target={p.token ? '_blank' : undefined}
-          rel={p.token ? 'sponsored noopener' : undefined}
-          className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
-        >
-          Zum Angebot{p.vendor ? ` bei ${p.vendor}` : ''} <ArrowRight size={16} />
-        </a>
+        {p.token ? (
+          <VendorExitLink
+            href={href}
+            onExit={() =>
+              onVendorExitClick({
+                productId: p.id,
+                productName: p.name,
+                brandName: p.brand,
+                vendor: p.vendor,
+                vendorId: p.vendorId,
+                source: 'searchlight',
+                instruction: 'Zum Angebot',
+                vendorPrice: p.price,
+              })
+            }
+            className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 pr-8 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
+          >
+            Zum Angebot{p.vendor ? ` bei ${p.vendor}` : ''} <ArrowRight size={16} />
+          </VendorExitLink>
+        ) : (
+          <Link
+            href={href}
+            className="sl-white mt-3 flex items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] py-3 text-[14.5px] font-semibold shadow-[0_8px_20px_rgba(58,100,246,0.30)] transition-transform hover:-translate-y-0.5"
+          >
+            Zum Angebot{p.vendor ? ` bei ${p.vendor}` : ''} <ArrowRight size={16} />
+          </Link>
+        )}
         <Link href={`/produkte/${p.slug}`} className="mt-2 block text-center text-[12.5px] font-medium text-[#4F46E5] hover:underline">
           Details{p.offerCount > 1 ? ` & alle ${p.offerCount} Angebote` : ''}
         </Link>
@@ -361,6 +381,7 @@ export default function Searchlight() {
   const scroller = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const answerRef = useRef<HTMLDivElement>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
 
   const say = useCallback((...m: Msg[]) => setMsgs(prev => [...prev, ...m]), []);
 
@@ -481,6 +502,18 @@ export default function Searchlight() {
     }
   }, [pathname, productSlug, open, used]);
 
+  // A tap anywhere outside the small hint closes it and still reaches the control under the finger.
+  useEffect(() => {
+    if (!bubble) return;
+    const onPointerDown = (event: PointerEvent) => {
+      const dock = dockRef.current;
+      if (dock && event.target instanceof Node && dock.contains(event.target)) return;
+      setBubble('');
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [bubble]);
+
   /* ------------ flow actions */
   const startQuick = () => {
     say({ role: 'user', text: 'Schnell-Check' }, { role: 'bot', text: 'Super! Welche Reifengröße hast du? Sie steht auf der Reifenflanke.' });
@@ -589,15 +622,19 @@ export default function Searchlight() {
     <>
       {/* Floating, pulsing button + help bubble */}
       {!open && (
-        <div className="fixed z-[900] bottom-24 right-4 md:bottom-6 md:right-6 flex flex-col items-end gap-2 print:hidden">
+        <div
+          ref={dockRef}
+          className="fixed right-3 z-[65] flex w-max max-w-[calc(100vw-4.5rem)] flex-col items-end gap-1 print:hidden pointer-events-none"
+          style={{ bottom: 'calc(0.5rem + var(--pdp-sticky-h, 0px) + var(--compare-tray-h, 0px))' }}
+        >
           {bubble ? (
-            <div className="relative max-w-[270px] rounded-[16px] bg-white p-3.5 text-[13.5px] leading-[145%] text-[#16171A] shadow-[0_12px_40px_rgba(16,24,40,0.18)] ring-1 ring-[#E8EBF3]">
-              <div className="flex gap-2">
-                <BotAvatar size={24} />
-                <p>{bubble}</p>
+            <div className="pointer-events-auto relative w-[min(188px,calc(100vw-5rem))] rounded-xl bg-white px-2 py-1.5 text-[11px] leading-snug text-[#16171A] shadow-[0_8px_20px_rgba(16,24,40,0.16)] ring-1 ring-[#E8EBF3]">
+              <div className="flex items-start gap-1.5">
+                <BotAvatar size={16} />
+                <p className="line-clamp-3">{bubble}</p>
               </div>
-              <div className="mt-2.5 flex gap-2 pl-8">
-                <button type="button" onClick={() => openWith({ mode: productSlug ? 'product' : 'start' })} className="sl-white rounded-full bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] px-3.5 py-1.5 text-[12.5px] font-semibold cursor-pointer">
+              <div className="mt-1 flex gap-1 pl-5">
+                <button type="button" onClick={() => openWith({ mode: productSlug ? 'product' : 'start' })} className="sl-white rounded-full bg-gradient-to-r from-[#4F46E5] to-[#3A64F6] px-2 py-0.5 text-[11px] font-semibold leading-5 cursor-pointer">
                   Ja, hilf mir
                 </button>
                 <button
@@ -606,7 +643,7 @@ export default function Searchlight() {
                     setBubble('');
                     safeSet('local', DISMISS_KEY, String(Date.now() + 7 * 864e5));
                   }}
-                  className="rounded-full px-3 py-1.5 text-[12.5px] text-[#5A6072] hover:bg-[#F2F3F5] cursor-pointer"
+                  className="rounded-full px-2 py-0.5 text-[11px] leading-5 text-[#5A6072] hover:bg-[#F2F3F5] cursor-pointer"
                 >
                   Nein danke
                 </button>
@@ -617,12 +654,12 @@ export default function Searchlight() {
             type="button"
             onClick={() => openWith({ mode: productSlug ? 'product' : 'start' })}
             aria-label={`Searchlight: ${floatingLabel}`}
-            className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#5B3DF5] via-[#4F46E5] to-[#3A64F6] p-2.5 sm:py-3 sm:pl-3 sm:pr-4 text-[14px] font-semibold shadow-[0_12px_32px_rgba(79,70,229,0.45)] transition-transform hover:-translate-y-0.5 cursor-pointer"
+            className="pointer-events-auto group relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-[#5B3DF5] via-[#4F46E5] to-[#3A64F6] text-[13px] font-semibold shadow-[0_8px_18px_rgba(79,70,229,0.4)] transition-transform hover:-translate-y-0.5 cursor-pointer sm:h-10 sm:w-auto sm:gap-1.5 sm:px-2.5"
           >
             {!used ? <span className="absolute inset-0 rounded-full bg-[#6366F1] opacity-50 motion-safe:animate-ping" aria-hidden /> : null}
-            <span className="sl-white relative inline-flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/20">
-                <CircleDot size={20} aria-hidden />
+            <span className="sl-white relative inline-flex items-center gap-1.5">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
+                <CircleDot size={14} aria-hidden />
               </span>
               <span className="hidden sm:inline">{floatingLabel}</span>
             </span>

@@ -28,6 +28,7 @@ import {
 } from '@/libs/compare';
 import { getFuelEfficiencyMeta, getWetGripMeta } from '@/utils/euLabelMapping';
 import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
+import VendorExitLink from '@/components/elements/VendorExitLink';
 
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
 
@@ -235,7 +236,7 @@ export default function CompareModal() {
                     </span>
                   ) : null}
                   {p.best_vendor_token ? (
-                    <a
+                    <VendorExitLink
                       href={buildVendorExitUrl({
                         token: p.best_vendor_token,
                         productId: p._id,
@@ -245,9 +246,7 @@ export default function CompareModal() {
                         brand: p.brand_name,
                         instruction: 'Zum Angebot',
                       })}
-                      target="_blank"
-                      rel="sponsored noopener"
-                      onClick={() =>
+                      onExit={() =>
                         onVendorExitClick({
                           productId: p._id,
                           productName: p.product_name,
@@ -259,10 +258,10 @@ export default function CompareModal() {
                           vendorPrice: comparePrice(p) || undefined,
                         })
                       }
-                      className="mt-2 inline-flex items-center justify-center rounded-full bg-primary-100 px-3 py-1.5 text-[12px] font-semibold text-white hover:opacity-90"
+                      className="mt-2 inline-flex items-center justify-center rounded-full bg-primary-100 px-3 pr-7 py-1.5 text-[12px] font-semibold text-white hover:opacity-90"
                     >
                       Zum Angebot
-                    </a>
+                    </VendorExitLink>
                   ) : null}
                 </Cell>
                 );

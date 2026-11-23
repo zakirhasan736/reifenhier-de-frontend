@@ -29,6 +29,8 @@ import {
   buildVendorExitUrl,
   onVendorExitClick,
 } from '@/libs/analytics/vendorExit';
+import VendorExitLink from '@/components/elements/VendorExitLink';
+import ProductProof from '@/components/elements/ProductProof';
 import { formatEuro, toMoneyNumber } from '@/libs/money';
 import PriceSparkline from '@/components/elements/PriceSparkline';
 import { productImageSrc } from '@/libs/productImage';
@@ -364,20 +366,24 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
       {/* ---------- Image stage ---------- */}
       <div className="p-card-header p-2.5 relative">
         <div className="card-header-image relative w-full h-[170px] bg-[#F5F7FB] flex items-center justify-center rounded-[12px] overflow-hidden">
-          <Link href={`/produkte/${slug}`} prefetch passHref>
-            <OptimizedImage
-              className="w-auto h-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.04]"
-              width={320}
-              height={159}
-              src={mainImage}
-              alt={`${brand_name} ${product_name}`}
-              fetchPriority={isPriority ? 'high' : 'auto'}
-              priority={isPriority}
-              sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
-              fallbacks={imageFallbacks}
-              fallback="/images/realistic-complete-set-car-wheels-2.png"
-            />
-          </Link>
+          <Link
+            href={`/produkte/${slug}`}
+            prefetch
+            aria-label={`${brand_name} ${product_name} ansehen`}
+            className="absolute inset-0 z-10"
+          />
+          <OptimizedImage
+            className="w-auto h-[150px] object-contain transition-transform duration-300 group-hover:scale-[1.04] pointer-events-none"
+            width={320}
+            height={159}
+            src={mainImage}
+            alt=""
+            fetchPriority={isPriority ? 'high' : 'auto'}
+            priority={isPriority}
+            sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
+            fallbacks={imageFallbacks}
+            fallback="/images/realistic-complete-set-car-wheels-2.png"
+          />
 
           <div className="status-area absolute top-2 left-2 right-2 z-50 flex items-start justify-between pointer-events-none">
             <p className="review-rating pointer-events-auto inline-flex items-center gap-1 rounded-full bg-mono-0/95 px-2 py-1 text-[12px] font-medium font-secondary leading-none text-[#16171A] shadow-[0_1px_3px_rgba(16,24,40,0.08)]">
@@ -416,7 +422,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
             </button>
           </div>
 
-          <span className="product-sku absolute bottom-2 left-2 z-40 rounded-[6px] bg-[#16171A]/85 px-2 py-1 text-[12px] font-semibold font-secondary leading-none text-mono-0 tabular-nums">
+          <span className="product-sku pointer-events-none absolute bottom-2 left-2 z-40 rounded-[6px] bg-[#16171A]/85 px-2 py-1 text-[12px] font-semibold font-secondary leading-none text-mono-0 tabular-nums">
             {dimensions}
           </span>
           {savingsLabel ? (
@@ -461,10 +467,11 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
         </div>
 
         <h3 className="h6 text-[15px] text-[#16171A] min-h-[38px] font-semibold font-primary leading-[1.3] line-clamp-2 mb-1">
-          <Link href={`/produkte/${slug}`} passHref className="hover:text-primary-100 transition-colors">
+          <Link href={`/produkte/${slug}`} className="underline decoration-[#C5CAD6] underline-offset-[3px] hover:text-primary-100 hover:decoration-primary-100 transition-colors">
             {[brand_name, product_name].filter(Boolean).join(' ')}
           </Link>
         </h3>
+        <ProductProof productId={_id} slug={slug} compact />
 
         <p className="tyres-category text-left capitalize text-[#6B6E76] text-[13px] font-secondary mb-3">
           {merchant_product_third_category}
@@ -640,7 +647,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                     key={item.vendor_id}
                     className="competitor-lists-item flex items-center justify-between rounded-[8px] bg-mono-0 px-2 py-1.5"
                   >
-                    <a
+                    <VendorExitLink
                       href={buildVendorExitUrl({
                         token: item.affiliate_product_cloak_url,
                         productId: _id,
@@ -651,9 +658,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                         brand: brand_name,
                         instruction: 'Direkt zum Angebot',
                       })}
-                      target="_blank"
-                      rel="sponsored noopener"
-                      onClick={() => {
+                      onExit={() => {
                         onVendorExitClick({
                           productId: _id,
                           productName: product_name,
@@ -665,10 +670,10 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                           vendorPrice: toMoneyNumber(item.price) ?? undefined,
                         });
                       }}
-                      className="font-secondary font-medium text-[13px] text-left text-primary-100 hover:underline leading-[140%] truncate"
+                      className="inline-flex max-w-full items-center pl-6 font-secondary font-medium text-[13px] text-left text-primary-100 hover:underline leading-[140%] truncate"
                     >
                       {item.vendor}
-                    </a>
+                    </VendorExitLink>
                     <span className="shrink-0 font-secondary font-semibold text-[13px] text-[#16171A] tabular-nums">
                       {formatEuro(item.price)}
                     </span>

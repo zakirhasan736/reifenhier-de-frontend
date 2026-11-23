@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { CAR_TYRE_SIZES, parseSizeLabel } from '@/libs/carTyreSizes';
 import { currentTyreSeason } from '@/libs/season';
 import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
+import VendorExitLink from '@/components/elements/VendorExitLink';
 
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
 
@@ -132,7 +133,7 @@ export default function TyrePriceCalculator() {
       );
     }
     return (
-      <a
+      <VendorExitLink
         href={buildVendorExitUrl({
           token: v.affiliate_product_cloak_url,
           productId: o._id,
@@ -142,9 +143,7 @@ export default function TyrePriceCalculator() {
           brand: o.brand_name,
           instruction: label,
         })}
-        target="_blank"
-        rel="sponsored noopener"
-        onClick={() =>
+        onExit={() =>
           onVendorExitClick({
             productId: o._id,
             productName: o.product_name,
@@ -156,10 +155,10 @@ export default function TyrePriceCalculator() {
             vendorPrice: o.cheapest_offer,
           })
         }
-        className="inline-flex items-center justify-center rounded-full bg-primary-100 px-4 py-2 text-[14px] font-semibold text-white hover:opacity-90"
+        className="inline-flex items-center justify-center rounded-full bg-primary-100 px-4 pr-8 py-2 text-[14px] font-semibold text-white hover:opacity-90"
       >
         {label}
-      </a>
+      </VendorExitLink>
     );
   };
 

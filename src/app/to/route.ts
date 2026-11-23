@@ -71,6 +71,10 @@ async function bounce(req: NextRequest, method: 'GET' | 'POST') {
   }
 
   try {
+    // Wait for the API. It returns the AWIN URL (publisher id, merchant id,
+    // clickref) and we redirect the browser straight there from reifexa.de.
+    // Do not abort: a cut-off response drops that AWIN click, and the sale
+    // cannot be attributed.
     const res = await fetch(upstream, {
       method: 'GET',
       redirect: 'manual',
