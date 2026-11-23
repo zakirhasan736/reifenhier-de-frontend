@@ -418,10 +418,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 return true;
               }
 
-              // Check every 100ms until script is ready
-              const interval = setInterval(() => {
-                if (setupSilktide()) clearInterval(interval);
-              }, 100);
+              var tries = 0;
+              var interval = setInterval(function () {
+                tries += 1;
+                if (setupSilktide() || tries >= 50) clearInterval(interval);
+              }, 200);
             })();
           `}
         </Script>
