@@ -26,8 +26,8 @@ function MapSkeleton() {
 
 function LiveSkeleton() {
   return (
-    <div role="status" aria-label="Live-Karte wird geladen">
-      <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
+    <div role="status" aria-label="Loading live map">
+      <div className="relative mx-3 mt-4 h-[480px] overflow-hidden rounded-[20px] border border-[#E7EAF2] md:mx-5 md:h-[600px]">
         <MapSkeleton />
       </div>
       <div className="mt-4 grid border-t border-[#EEF0F4] md:grid-cols-3 md:divide-x md:divide-[#EEF0F4]">
@@ -49,6 +49,14 @@ function LiveSkeleton() {
 
 const WorldMap = dynamic(() => import('./WorldMap'), { ssr: false, loading: () => <MapSkeleton /> });
 
+const regionNames = (() => {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'region' });
+  } catch {
+    return null;
+  }
+})();
+
 function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
   const top = Math.max(1, ...(rows || []).map((row) => row.count));
   return (
@@ -69,28 +77,9 @@ function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-[13px] text-[#6B6E76]">{rows ? 'Keine Aktivität im Zeitraum.' : 'Daten derzeit nicht verfügbar.'}</p>
+        <p className="mt-3 text-[13px] text-[#6B6E76]">{rows ? 'No activity in this period.' : 'Data currently unavailable.'}</p>
       )}
     </div>
-  );
-}
-
-function VisitorStats({ last30, last5 }: { last30: number; last5: number }) {
-  return (
-    <aside className="w-full max-w-[340px] rounded-2xl border border-[#E7EAF2] bg-white p-4">
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">30 Minuten</p>
-          <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-[#3A64F6]">{last30}</p>
-          <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#6B6E76]">5 Minuten</p>
-          <p className="mt-1 text-[32px] font-semibold leading-none tabular-nums text-[#C49200]">{last5}</p>
-          <p className="mt-1 text-[12px] text-[#6B6E76]">aktive Nutzer</p>
-        </div>
-      </div>
-    </aside>
   );
 }
 
@@ -134,44 +123,54 @@ export default function LiveTraffic() {
     return () => { stopped = true; controller.abort(); observer.disconnect(); clearTimeout(timer); document.removeEventListener('visibilitychange', refresh); };
   }, []);
 
-  const cities = data?.cities.slice(0, 5).map((city) => ({
-    label: placeLabel(city.country, city.label, city.point),
-    count: city.count,
-  })) ?? null;
+  const cities = data?.cities.slice(0, 6).map((city) => {
+    const name = placeLabel(city.country, city.label, city.point);
+    let country = city.country;
+    try {
+      country = regionNames?.of(city.country) || city.country;
+    } catch {
+      /* unknown code */
+    }
+    const sub = [city.region, name === country ? '' : country].filter(Boolean).join(', ');
+    return { label: sub ? `${name} · ${sub}` : name, count: city.count };
+  }) ?? null;
 
   return (
     <section ref={section} className="custom-container pb-12" aria-labelledby="traffic-heading">
-      <div className="overflow-hidden rounded-[24px] border border-[#E4E7EE] bg-white shadow-[0_16px_40px_-28px_rgba(22,23,26,0.45)]">
-        <div className="flex flex-col gap-4 px-4 pt-4 md:flex-row md:items-center md:px-6 md:pt-5">
-          <div className="shrink-0">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3A64F6]">Echtzeit</p>
-            <h2 id="traffic-heading" className="text-[22px] font-semibold text-[#16171A] md:text-[26px]">Reifexa live visitors</h2>
+      <div className="overflow-hidden rounded-[28px] border border-[#E4E7EE] bg-white shadow-[0_24px_60px_-36px_rgba(22,23,26,0.55)]">
+        <div className="flex flex-col gap-3 px-4 pt-5 md:flex-row md:items-end md:justify-between md:px-6 md:pt-6">
+          <div>
+            <p className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#3A64F6]">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-60 motion-safe:animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#22C55E]" />
+              </span>
+              Real time
+            </p>
+            <h2 id="traffic-heading" className="mt-1 text-[24px] font-bold text-[#16171A] md:text-[30px]">Reifexa live visitors</h2>
+            <p className="mt-1 text-[14px] text-[#5A6072]">Where people are comparing tyres right now – updated every 30 seconds.</p>
           </div>
-          <div className="flex flex-1 justify-center">
-            {data ? <VisitorStats last30={data.last30} last5={data.last5} /> : null}
-          </div>
-          <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#FFF8E6] px-3 py-1 text-[12px] font-semibold text-[#8A6500] md:self-center">
-            <span className="h-2 w-2 rounded-full bg-[#f5b602] motion-safe:animate-pulse" />
-            {data ? `Stand ${new Date(data.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}` : 'Live'}
+          <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#F1F4FF] px-3 py-1.5 text-[12px] font-semibold text-[#3A64F6] md:self-auto">
+            {data ? `Updated ${new Date(data.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : 'Live'}
           </span>
         </div>
 
         {!data ? (
           failed ? (
-            <p role="status" className="px-4 py-10 text-[14px] text-[#6B6E76] md:px-6">Die Live-Karte ist derzeit nicht verfügbar.</p>
+            <p role="status" className="px-4 py-10 text-[14px] text-[#6B6E76] md:px-6">The live map is currently unavailable.</p>
           ) : (
             <LiveSkeleton />
           )
         ) : (
           <>
-            <div className="relative mx-4 mt-4 h-[460px] overflow-hidden rounded-[18px] border border-[#E7EAF2] md:mx-6 md:h-[540px]">
-              <WorldMap cities={data.cities} />
+            <div className="relative mx-3 mt-4 h-[480px] overflow-hidden rounded-[20px] border border-[#E7EAF2] md:mx-5 md:h-[600px]">
+              <WorldMap cities={data.cities} last30={data.last30} last5={data.last5} minutes={data.minutes} />
             </div>
-            <p className="px-4 pt-2 text-[11px] text-[#8B909A] md:px-6">Ungefähre Stadtpositionen · Google Analytics</p>
+            <p className="px-4 pt-2 text-[11px] text-[#8B909A] md:px-6">Approximate city positions · Google Analytics · no personal data</p>
             <div className="mt-4 grid border-t border-[#EEF0F4] md:grid-cols-3 md:divide-x md:divide-[#EEF0F4]">
-              <Ranking title="Städte" rows={cities} />
-              <Ranking title="Seiten in 30 Minuten" rows={data.pages} />
-              <Ranking title="Neue Nutzer in 7 Tagen" rows={data.acquisition} />
+              <Ranking title="Cities" rows={cities} />
+              <Ranking title="Pages in the last 30 minutes" rows={data.pages} />
+              <Ranking title="New users in the last 7 days" rows={data.acquisition} />
             </div>
           </>
         )}
