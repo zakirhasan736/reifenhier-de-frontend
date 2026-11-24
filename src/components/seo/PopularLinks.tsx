@@ -5,10 +5,31 @@ import { fetchLandings } from '@/libs/seo/landingData';
 import SizeFinder from './SizeFinder';
 import BrandTiles from './BrandTiles';
 
-const SEASON_STYLE: Record<string, { icon: typeof Sun; tint: string; iconBg: string; iconColor: string }> = {
-  sommerreifen: { icon: Sun, tint: 'hover:border-[#F8C98A]', iconBg: 'bg-[#FFF4E5]', iconColor: 'text-[#D97706]' },
-  winterreifen: { icon: Snowflake, tint: 'hover:border-[#B9D3FF]', iconBg: 'bg-[#EAF2FF]', iconColor: 'text-[#2563EB]' },
-  ganzjahresreifen: { icon: CloudSun, tint: 'hover:border-[#A7E3D2]', iconBg: 'bg-[#E7F7F1]', iconColor: 'text-[#0F8A6B]' },
+const SEASON_STYLE: Record<
+  string,
+  { icon: typeof Sun; card: string; disc: string; color: string; ring: string }
+> = {
+  sommerreifen: {
+    icon: Sun,
+    card: 'from-[#FFF8EC] via-[#FFF1DA] to-[#FFE2B8]',
+    disc: 'bg-gradient-to-br from-[#FDBA4D] to-[#F59E0B]',
+    color: '#B45309',
+    ring: 'hover:ring-[#F8C98A]',
+  },
+  winterreifen: {
+    icon: Snowflake,
+    card: 'from-[#F1F6FF] via-[#E4EEFF] to-[#CFE0FF]',
+    disc: 'bg-gradient-to-br from-[#60A5FA] to-[#2563EB]',
+    color: '#1D4ED8',
+    ring: 'hover:ring-[#A9C6FF]',
+  },
+  ganzjahresreifen: {
+    icon: CloudSun,
+    card: 'from-[#EEFBF5] via-[#DDF6EA] to-[#C3EEDB]',
+    disc: 'bg-gradient-to-br from-[#34D399] to-[#059669]',
+    color: '#047857',
+    ring: 'hover:ring-[#9EE2C6]',
+  },
 };
 
 /**
@@ -27,21 +48,43 @@ export default async function PopularLinks() {
     price: euro(s.minPrice),
     count: Number(s.count) || 0,
   }));
+  const totalTyres = seasons.reduce((n, s) => n + (Number(s.count) || 0), 0);
 
   return (
-    <section className="popular-links-v2 bg-[#F6F8FC] lg:py-[80px] py-14" aria-labelledby="beliebt-title">
-      <div className="custom-container">
-        <div className="max-w-[640px] mb-8">
-          <span className="inline-block rounded-full bg-[#EEF2FF] text-primary-100 text-[12px] md:text-[13px] font-semibold tracking-[0.08em] uppercase px-3 py-1 mb-3">
-            Schnell finden
-          </span>
-          <h2 id="beliebt-title" className="text-[26px] md:text-[32px] lg:text-[40px] font-semibold leading-[118%] tracking-[-0.01em] text-[#16171A]">
-            Beliebte Reifengrößen und Marken
-          </h2>
+    <section className="popular-links-v3 relative overflow-hidden bg-[#F6F8FC] py-14 lg:py-[88px]" aria-labelledby="beliebt-title">
+      <span className="pointer-events-none absolute -left-40 top-24 h-[420px] w-[420px] rounded-full bg-[#DCE5FF] opacity-50 blur-[100px]" aria-hidden />
+      <div className="custom-container relative">
+        {/* ---------- Heading ---------- */}
+        <div className="mb-8 flex flex-col gap-5 md:mb-10 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-[640px]">
+            <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-[12px] font-bold uppercase tracking-[0.12em] !text-[#2F4FD8] shadow-sm ring-1 ring-[#E4E7F0]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#2F4FD8]" /> Schnell finden
+            </span>
+            <h2 id="beliebt-title" className="text-[28px] font-bold leading-[115%] tracking-[-0.015em] !text-[#16171A] md:text-[36px] lg:text-[44px]">
+              Beliebte Reifengrößen und Marken
+            </h2>
+            <p className="mt-3 !text-[15px] !leading-[160%] !tracking-normal !text-[#5A6072] md:!text-[17px]">
+              Die meistgesuchten Größen und Marken mit dem aktuell günstigsten Händlerpreis – ein Klick, und Sie sehen alle Angebote.
+            </p>
+          </div>
+          {totalTyres > 0 && (
+            <div className="flex gap-2">
+              {[
+                [totalTyres.toLocaleString('de-DE'), 'Reifen im Vergleich'],
+                [String(sizes.length), 'Größen'],
+                [String(brands.length), 'Marken'],
+              ].map(([v, l]) => (
+                <div key={l} className="rounded-[14px] bg-white px-4 py-3 shadow-sm ring-1 ring-[#E4E7F0]">
+                  <p className="!text-[18px] font-bold !leading-none !tracking-normal !text-[#16171A] tabular-nums md:!text-[20px]">{v}</p>
+                  <p className="mt-1 !text-[12px] !leading-tight !tracking-normal !text-[#6B7280]">{l}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Seasons */}
-        <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+        {/* ---------- Seasons ---------- */}
+        <ul className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 md:mb-10 md:gap-4">
           {SEASONS.map(s => {
             const st = SEASON_STYLE[s.slug];
             const Icon = st.icon;
@@ -50,49 +93,76 @@ export default async function PopularLinks() {
               <li key={s.slug}>
                 <Link
                   href={`/${s.slug}`}
-                  className={`group flex items-center gap-4 rounded-[16px] border border-[#E9ECF3] bg-mono-0 p-4 md:p-5 transition-all hover:-translate-y-0.5 ${st.tint}`}
+                  className={`group relative flex h-full items-center gap-4 overflow-hidden rounded-[20px] bg-gradient-to-br ${st.card} p-5 ring-1 ring-black/[0.04] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_-24px_rgba(16,24,40,0.35)] md:p-6 ${st.ring}`}
                 >
-                  <span className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] ${st.iconBg} ${st.iconColor}`}>
-                    <Icon size={24} strokeWidth={2} />
+                  <Icon size={120} strokeWidth={1.2} color={st.color} className="pointer-events-none absolute -bottom-6 -right-5 opacity-[0.09] transition-transform duration-500 group-hover:rotate-12" aria-hidden />
+                  <span className={`relative inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] shadow-[0_10px_20px_-10px_rgba(0,0,0,0.35)] ${st.disc}`}>
+                    <Icon size={26} strokeWidth={2.2} color="#fff" />
                   </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-[16px] md:text-[17px] font-semibold text-[#16171A]">{s.label}</span>
-                    <span className="block text-[13px] text-[#6B6E76] font-secondary">
-                      {stat?.count ? `${stat.count.toLocaleString('de-DE')} Reifen` : 'Alle Angebote'}
-                      {stat?.minPrice ? ` · ab ${euro(stat.minPrice)} €` : ''}
+                  <span className="relative min-w-0 flex-1">
+                    <span className="block text-[17px] font-bold !text-[#16171A] md:text-[19px]">{s.label}</span>
+                    <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
+                      {stat?.count ? (
+                        <span className="!text-[#4B5163] tabular-nums">{stat.count.toLocaleString('de-DE')} Reifen</span>
+                      ) : (
+                        <span className="!text-[#4B5163]">Alle Angebote</span>
+                      )}
+                      {stat?.minPrice ? (
+                        <span className="rounded-full bg-white/80 px-2 py-0.5 text-[12px] font-bold tabular-nums" style={{ color: st.color }}>
+                          ab {euro(stat.minPrice)} €
+                        </span>
+                      ) : null}
                     </span>
                   </span>
-                  <ArrowRight size={18} className="text-[#9AA0A8] transition-transform group-hover:translate-x-0.5 group-hover:text-primary-100" />
+                  <span className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-sm transition-transform group-hover:translate-x-1">
+                    <ArrowRight size={18} strokeWidth={2.4} color={st.color} />
+                  </span>
                 </Link>
               </li>
             );
           })}
         </ul>
 
-        {sizes.length ? (
-          <div className="mb-10">
-            <h3 className="flex items-center gap-2 mb-4 text-[18px] md:text-[20px] font-semibold text-[#16171A]">
-              <Ruler size={20} className="text-primary-100" /> Reifen nach Größe
-            </h3>
-            <SizeFinder items={sizeItems} />
-          </div>
-        ) : null}
+        <div className="grid gap-5 md:gap-6">
+          {sizes.length ? (
+            <div className="rounded-[24px] bg-white p-4 shadow-[0_12px_40px_-28px_rgba(16,24,40,0.25)] ring-1 ring-[#E4E7F0] sm:p-6 md:p-7">
+              <h3 className="mb-4 flex items-center gap-3 text-[18px] font-bold !text-[#16171A] md:text-[20px]">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#EEF2FF]">
+                  <Ruler size={20} color="#2F4FD8" />
+                </span>
+                <span className="flex-1 !text-[#16171A]">Reifen nach Größe</span>
+                <Link href="/reifen" className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-[#1B2A6B] to-[#2F4FD8] px-4 py-2 text-[13px] font-semibold shadow-[0_8px_18px_-10px_rgba(47,79,216,0.8)] transition-transform hover:-translate-y-0.5 sm:inline-flex">
+                  <span className="!text-white">Alle Größen</span>
+                  <ArrowRight size={14} strokeWidth={2.4} color="#fff" className="transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </h3>
+              <SizeFinder items={sizeItems} />
+            </div>
+          ) : null}
 
-        {brands.length ? (
-          <div>
-            <h3 className="flex items-center gap-2 mb-4 text-[18px] md:text-[20px] font-semibold text-[#16171A]">
-              <Tag size={20} className="text-primary-100" /> Reifen nach Marke
-            </h3>
-            <BrandTiles
-              items={brands.slice(0, 20).map(b => ({
-                href: brandPath(b.name),
-                name: b.name,
-                price: euro(b.minPrice),
-                count: Number(b.count) || 0,
-              }))}
-            />
-          </div>
-        ) : null}
+          {brands.length ? (
+            <div className="rounded-[24px] bg-white p-4 shadow-[0_12px_40px_-28px_rgba(16,24,40,0.25)] ring-1 ring-[#E4E7F0] sm:p-6 md:p-7">
+              <h3 className="mb-4 flex items-center gap-3 text-[18px] font-bold !text-[#16171A] md:text-[20px]">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#EEF2FF]">
+                  <Tag size={20} color="#2F4FD8" />
+                </span>
+                <span className="flex-1 !text-[#16171A]">Reifen nach Marke</span>
+                <Link href="/marken" className="group hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-[#1B2A6B] to-[#2F4FD8] px-4 py-2 text-[13px] font-semibold shadow-[0_8px_18px_-10px_rgba(47,79,216,0.8)] transition-transform hover:-translate-y-0.5 sm:inline-flex">
+                  <span className="!text-white">Alle Marken</span>
+                  <ArrowRight size={14} strokeWidth={2.4} color="#fff" className="transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </h3>
+              <BrandTiles
+                items={brands.slice(0, 20).map(b => ({
+                  href: brandPath(b.name),
+                  name: b.name,
+                  price: euro(b.minPrice),
+                  count: Number(b.count) || 0,
+                }))}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   );

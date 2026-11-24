@@ -4,6 +4,7 @@ import Image from 'next/image';
 import ReviewSummary from '@/components/reviews/ReviewSummary';
 import Link from 'next/link';
 import toast  from 'react-hot-toast';
+import { ArrowRight, Check, Mail, ShieldCheck } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -53,42 +54,64 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div className="footer-wrapper pt-4">
         <div className="footer-main-centent">
           <div className="custom-container">
-            <div className="footer-cta-section relative z-3 -mb-30 lg:-mb-20 bg-primary-100 md:py-[60px] py-8 xl:px-[78px] md:px-9 px-6 rounded-[20px]">
-              <div className="footer-cta-content flex items-center justify-between max-sm:flex-col max-sm:gap-4">
-                <div className="left-content">
-                  <h2 className="font-medium font-primary text-[24px] lg:text-[30px] sm:text-left text-center text-mono-0 leading-[120%]">
+            <div className="footer-cta-section rx-newsletter relative z-3 -mb-30 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0B1437] via-[#1B2A6B] to-[#2F4FD8] px-6 py-9 shadow-[0_30px_60px_-30px_rgba(11,20,55,0.6)] md:px-10 md:py-12 lg:-mb-20 xl:px-14">
+              <span className="pointer-events-none absolute -right-20 -top-24 h-[340px] w-[340px] rounded-full border-[40px] border-white/[0.06]" aria-hidden />
+              <span className="pointer-events-none absolute -bottom-24 right-[30%] h-[220px] w-[220px] rounded-full border-[26px] border-white/[0.05]" aria-hidden />
+              <span className="pointer-events-none absolute -left-24 top-1/2 h-[260px] w-[260px] -translate-y-1/2 rounded-full bg-[#5B7BFF] opacity-30 blur-[90px]" aria-hidden />
+              <div className="relative grid items-center gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-12">
+                <div className="sl-white">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-[0.12em] ring-1 ring-white/20">
+                    <Mail size={14} /> Newsletter
+                  </span>
+                  <h2 className="mt-4 font-primary text-[26px] font-bold leading-[118%] tracking-[-0.01em] md:text-[34px]">
                     Abonnieren Sie unseren Newsletter
                   </h2>
-                  <p className="font-normal font-secondary text-[16px] lg:text-[16px] sm:text-left text-center text-mono-0 mt-3 leading-[150%]">
+                  <p className="mt-3 max-w-[520px] font-secondary !text-[15px] !leading-[160%] !tracking-normal opacity-85 md:!text-[17px]">
                     Bleiben Sie auf dem Laufenden mit exklusiven Angeboten
                   </p>
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {['Preis-Tipps zur Saison', 'Neue Reifentests', 'Kein Spam'].map(t => (
+                      <li key={t} className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] px-3 py-1.5 text-[13px] ring-1 ring-white/15">
+                        <Check size={14} strokeWidth={3} /> {t}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="right-content  w-full max-w-[280px] lg:max-w-[390px]">
-                  <form
-                    onSubmit={handleSubmit}
-                    className="reifexa-subscription-form w-full flex lg:flex-row flex-col gap-3 items-center"
-                  >
-                    <label htmlFor="email" className="sr-only"></label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      placeholder="Ihre E-Mail-Adresse"
-                      className="border form-subs-input text-[16px] text-left font-normal font-secondary border-[#FFFFFF6F] md:max-w-[344px] placeholder:!text-[#FFFFFF] !text-[#FFFFFF] focus:!text-[#FFFFFF] focus-within:!text-[#ffffff] !shadow-none w-full h-[47px] !bg-[#16171A34] px-6 py-[15px] !rounded-full focus-visible:!rounded-full focus:!rounded-full focus-within:!rounded-full !outline-none focus:outline-none"
-                      disabled={loading}
-                    />
+                <div className="rounded-[22px] bg-white/[0.08] p-4 ring-1 ring-white/20 backdrop-blur md:p-5">
+                  <form onSubmit={handleSubmit} className="reifexa-subscription-form flex w-full flex-col gap-3 sm:flex-row">
+                    <label htmlFor="footer-newsletter-email" className="sr-only">E-Mail-Adresse</label>
+                    <div className="relative flex-1 overflow-hidden rounded-[14px] bg-white">
+                      <Mail size={18} color="#9AA0A8" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2" />
+                      <input
+                        id="footer-newsletter-email"
+                        type="email"
+                        required
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        placeholder="Ihre E-Mail-Adresse"
+                        autoComplete="email"
+                        className="h-[52px] w-full !rounded-none !border-0 bg-transparent pl-11 pr-4 font-secondary text-[15px] !text-[#16171A] !shadow-none !outline-none placeholder:!text-[#9AA0A8]"
+                        disabled={loading}
+                      />
+                    </div>
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`bg-mono-0 whitespace-nowrap w-full lg:w-auto flex items-center text-[16px] font-normal justify-center h-[47px] text-primary-100 text-center body-regular font-secondary rounded-full px-6 pt-[9px] pb-[8px] border border-primary-100 transition ease cursor-pointer leading-[1] ${
-                        loading
-                          ? 'opacity-70 cursor-not-allowed'
-                          : 'hover:bg-transparent hover:text-mono-0 hover:border-mono-0'
+                      className={`group inline-flex h-[52px] items-center justify-center gap-2 whitespace-nowrap rounded-[14px] bg-gradient-to-r from-[#4ADE80] to-[#22C55E] px-6 text-[15px] font-bold shadow-[0_12px_24px_-12px_rgba(34,197,94,0.8)] transition ${
+                        loading ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:-translate-y-0.5'
                       }`}
                     >
-                      {loading ? 'Loading …' : 'Abonnieren'}
+                      <span className="!text-[#06281A]">{loading ? 'Wird gesendet …' : 'Abonnieren'}</span>
+                      {!loading && <ArrowRight size={17} strokeWidth={2.6} color="#06281A" className="transition-transform group-hover:translate-x-0.5" />}
                     </button>
                   </form>
+                  <p className="sl-white mt-3 flex items-start gap-2 px-1 !text-[12.5px] !leading-[150%] !tracking-normal opacity-75">
+                    <ShieldCheck size={15} className="mt-[1px] shrink-0" />
+                    <span>
+                      Mit dem Abonnieren akzeptieren Sie unsere{' '}
+                      <Link href="/impressum-datenschutz" className="underline underline-offset-2">Datenschutzerklärung</Link>.
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
