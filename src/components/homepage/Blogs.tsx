@@ -10,6 +10,7 @@ interface Blog {
   createdAt?: string
   date: string
   excerpt?: string
+  tags?: string[]
 }
 
 const WP_API =
@@ -28,6 +29,7 @@ export default async function BlogsPage({ limit = 8 }: { limit?: number }) {
         date: post.createdAt,
         excerpt: post.metaDescription || '',
         coverImage: blogCoverSrc(post.coverImage),
+        tags: post.tags || [],
       }))
     }
   } catch (error) {

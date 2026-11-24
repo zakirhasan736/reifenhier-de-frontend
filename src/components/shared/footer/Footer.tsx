@@ -4,7 +4,13 @@ import Image from 'next/image';
 import ReviewSummary from '@/components/reviews/ReviewSummary';
 import Link from 'next/link';
 import toast  from 'react-hot-toast';
-import { ArrowRight, Check, Mail, ShieldCheck } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Check, Mail, ShieldCheck } from 'lucide-react';
+
+const FOOTER_COLUMNS: [string, [string, string][]][] = [
+  ['Reifen', [['Sommerreifen', '/sommerreifen'], ['Winterreifen', '/winterreifen'], ['Ganzjahresreifen', '/ganzjahresreifen'], ['Reifengrößen', '/reifen'], ['Reifenmarken', '/marken']]],
+  ['Ratgeber & Tools', [['News & Testberichte', '/artikel'], ['Reifengrößenrechner', '/reifengroessen-rechner'], ['Reifenpreisvergleich', '/reifenpreisvergleich'], ['Auto-API', '/auto-api']]],
+  ['Reifexa', [['Home', '/'], ['Alle Produkte', '/produkte'], ['Favoriten', '/favoriten']]],
+];
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -54,7 +60,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div className="footer-wrapper pt-4">
         <div className="footer-main-centent">
           <div className="custom-container">
-            <div className="footer-cta-section rx-newsletter relative z-3 -mb-30 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#0B1437] via-[#1B2A6B] to-[#2F4FD8] px-6 py-9 shadow-[0_30px_60px_-30px_rgba(11,20,55,0.6)] md:px-10 md:py-12 lg:-mb-20 xl:px-14">
+            <div className="footer-cta-section rx-newsletter relative z-3 -mb-30 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#2443C9] via-[#3A64F6] to-[#5B7BFF] px-6 py-9 shadow-[0_30px_60px_-30px_rgba(11,20,55,0.7)] ring-1 ring-white/15 md:px-10 md:py-12 lg:-mb-20 xl:px-14">
               <span className="pointer-events-none absolute -right-20 -top-24 h-[340px] w-[340px] rounded-full border-[40px] border-white/[0.06]" aria-hidden />
               <span className="pointer-events-none absolute -bottom-24 right-[30%] h-[220px] w-[220px] rounded-full border-[26px] border-white/[0.05]" aria-hidden />
               <span className="pointer-events-none absolute -left-24 top-1/2 h-[260px] w-[260px] -translate-y-1/2 rounded-full bg-[#5B7BFF] opacity-30 blur-[90px]" aria-hidden />
@@ -116,217 +122,90 @@ const handleSubmit = async (e: React.FormEvent) => {
               </div>
             </div>
           </div>
-          <div className="footer-main-box bg-[#ffffff] pt-30 lg:pt-20">
-            <div className="custom-container">
-              <div className="footer-top-area flex items-start justify-between pt-8  pb-[19px] max-sm:flex-col lg:gap-0 gap-5">
-                <div className="footer-logo-wrapper lg:max-w-[350px] max-w-[280px] w-full">
-                  <Image
-                    src="/images/reifexa_de_logo_sm.png"
-                    className="opacity-100 max-sm:w-[130px] sm:w-[140px] md:w-[180px] w-[150px] h-auto"
-                    alt="company logo"
-                    width={180}
-                    height={70}
-                    loading="lazy"
-                  />
-                  <p className="sm:text-[16px] text-[14px] text-left font-normal font-secondary  text-[#404042] md:text-[#404042] leading-[150%] mt-3">
-                    Ihre zuverlässige Quelle für hochwertige Reifen von
-                    Top-Marken. Wir machen es Ihnen leicht, die perfekte
-                    Passform für Ihr Fahrzeug zu finden – mit schnellem Versand
-                    und kompetenter Unterstützung.
+          <div className="footer-main-box relative overflow-hidden bg-gradient-to-b from-[#0B1437] to-[#101C4A] pt-30 lg:pt-20">
+            <span className="pointer-events-none absolute -right-32 top-10 h-[420px] w-[420px] rounded-full border-[50px] border-white/[0.04]" aria-hidden />
+            <div className="custom-container relative pb-8 pt-14 md:pt-16">
+              <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
+                <div>
+                  <Link href="/" className="inline-block overflow-hidden rounded-[14px] bg-white p-1.5" aria-label="Reifexa.de Startseite">
+                    <Image src="/images/reifexa_de_logo_sm.png" alt="Reifexa.de" width={150} height={58} loading="lazy" className="h-auto w-[140px] md:w-[150px]" />
+                  </Link>
+                  <p className="sl-white mt-4 max-w-[360px] !text-[15px] !leading-[165%] !tracking-normal opacity-75">
+                    Unabhängiger Reifenpreisvergleich für Deutschland – Händlerpreise inkl. Versand, Preisverlauf und Preisalarm.
                   </p>
-                </div>
-                <div className="footer-quick-link-cont max-w-[690px] w-full flex items-start justify-between max-sm:flex-col max-sm:gap-4">
-                  <div className="quick-link-cont">
-                    <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                      Direktlinks
-                    </h3>
-                    <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                          href="/"
-                        >
-                          Home
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                          href="/produkte"
-                        >
-                          Produkte
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                          href="/artikel"
-                        >
-                          News & Testberichte
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042]  hover:text-primary-100 transition ease-in duration-200"
-                          href="/favoriten"
-                        >
-                          Favoriten
-                        </Link>
-                      </li>
-                    </ul>
+                  <div className="mt-5 grid max-w-[380px] grid-cols-3 gap-2">
+                    {[
+                      ['Mehrmals', 'täglich neue Preise'],
+                      ['Kostenlos', 'für alle Nutzer'],
+                      ['Direkt', 'beim Händler kaufen'],
+                    ].map(([v, l]) => (
+                      <div key={v} className="sl-white rounded-[12px] bg-white/[0.06] px-3 py-2.5 ring-1 ring-white/10">
+                        <p className="!text-[15px] font-bold !leading-none !tracking-normal">{v}</p>
+                        <p className="mt-1 !text-[11px] !leading-tight !tracking-normal opacity-70">{l}</p>
+                      </div>
+                    ))}
                   </div>
-                  <div className="quick-link-cont">
-                    <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                      Direktlinks
-                    </h3>
-                    <ul className="quick-link-list flex flex-col gap-1 md:gap-[6px]">
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                          href="/sommerreifen"
-                        >
-                          Sommerreifen
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                          href="/winterreifen"
-                        >
-                          Winterreifen
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                          href="/ganzjahresreifen"
-                        >
-                          Ganzjahresreifen
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/reifen">
-                          Reifengrößen
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/marken">
-                          Reifenmarken
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/reifengroessen-rechner">
-                          Reifengrößenrechner
-                        </Link>
-                      </li>
-                      <li>
-                        <Link className="md:text-[16px] text-[14px] text-left font-normal font-secondary leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200" href="/reifenpreisvergleich">
-                          Reifenpreisvergleich
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="quick-link-cont">
-                    <h3 className="mb-2 md:mb-3 md:text-[18px] text-[16px] text-left font-normal font-primary text-[#404042] leading-[150%]">
-                      Soziale Medien
-                    </h3>
-                    <ul className="quick-link-list flex gap-3 md:gap-5 pl-0">
-                      <li>
-                        <Link
-                          className="h-8 w-8"
-                          href="https://facebook.com/reifexa.de"
-                        >
-                          <Image
-                            src={'/images/facebook-icon.png'}
-                            alt="reifexa icon"
-                            width={36}
-                            height={36}
-                          />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="h-8 w-8"
-                          href="https://www.instagram.com/reifexa.de"
-                        >
-                          <Image
-                            src={'/images/instagram-icon.png'}
-                            alt="reifexa icon"
-                            width={36}
-                            height={36}
-                          />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="h-8 w-8"
-                          href="https://www.tiktok.com/@reifexa"
-                        >
-                          <Image
-                            src={'/images/tiktok.webp'}
-                            alt="reifexa icon"
-                            width={36}
-                            height={36}
-                          />
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="h-8 w-8"
-                          href="https://www.youtube.com/@ReifexaDE"
+                  <ul className="mt-5 flex gap-2.5">
+                    {[
+                      ['https://facebook.com/reifexa.de', '/images/facebook-icon.png', 'Reifexa auf Facebook'],
+                      ['https://www.instagram.com/reifexa.de', '/images/instagram-icon.png', 'Reifexa auf Instagram'],
+                      ['https://www.tiktok.com/@reifexa', '/images/tiktok.webp', 'Reifexa auf TikTok'],
+                      ['https://www.youtube.com/@ReifexaDE', '/images/youtube.webp', 'Reifexa auf YouTube'],
+                    ].map(([href, img, label]) => (
+                      <li key={href}>
+                        <a
+                          href={href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          aria-label="Reifexa auf YouTube"
+                          aria-label={label}
+                          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/[0.08] ring-1 ring-white/15 transition hover:-translate-y-0.5 hover:bg-white/15"
                         >
-                          <Image
-                            src={'/images/youtube.webp'}
-                            alt="Reifexa YouTube-Kanal"
-                            width={36}
-                            height={36}
-                          />
-                        </Link>
+                          <Image src={img} alt="" width={22} height={22} />
+                        </a>
                       </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="py-4"><ReviewSummary /></div>
-              <div className="footer-bottom-area w-full pt-[13px] pb-[20px] border-t border-t-border-100 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
-                <div className="foot-centent w-full lg:gap-0 gap-2 max-sm:gap-1 lg:flex-row flex-col-reverse flex items-center justify-between">
-                  <div className="foot-left-content">
-                    <p className="foot-copyright-text max-sm:text-center text-[12px] font-normal font-secondary md:text-[14px] lg:text-[16px] text-[#404042] leading-[150%]">
-                      © {new Date().getFullYear()} reifexa.de Alle Rechte vorbehalten.
-                    </p>
-                  </div>
-                  <ul className="foot-middle-cont flex items-center gap-3 lg:gap-10 max-sm:justify-center">
-                    <li className="foot-middle-item">
-                      <Link
-                        className="md:text-[14px] max-sm:text-center text-[12px] whitespace-nowrap text-left font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                        href="/impressum-datenschutz"
-                      >
-                        Impressum & Datenschutz
-                      </Link>
-                    </li>
-                    <li><Link href="/auto-api">Auto-API</Link></li>
-                    <li className="foot-middle-item">
-                      <Link
-                        className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                        href="/AGB"
-                      >
-                        AGB
-                      </Link>
-                    </li>
-                    <li className="foot-middle-item">
-                      <a
-                        className="md:text-[14px] text-left max-sm:text-center text-[12px] whitespace-nowrap font-normal font-secondary leading-[120%] lg:leading-[150%] text-[#404042] hover:text-primary-100 transition ease-in duration-200"
-                        href="http://convertalinktest.awin.com"
-                        title="AWIN Convert-a-Link Test"
-                      >
-                        AWIN Affiliate
-                      </a>
-                    </li>
+                    ))}
                   </ul>
                 </div>
+                <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+                  {FOOTER_COLUMNS.map(([title, links]) => (
+                    <div key={title}>
+                      <h3 className="sl-white mb-4 !text-[12px] font-bold uppercase tracking-[0.14em] opacity-60">{title}</h3>
+                      <ul className="space-y-2.5">
+                        {links.map(([label, href]) => (
+                          <li key={href}>
+                            <Link href={href} className="sl-white !text-[15px] opacity-80 transition-opacity hover:opacity-100">
+                              {label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-12 flex flex-col gap-4 rounded-[18px] bg-white/[0.05] p-4 ring-1 ring-white/10 md:flex-row md:items-center md:justify-between">
+                <ReviewSummary dark />
+                <p className="sl-white flex items-start gap-2 !text-[13px] !leading-[150%] !tracking-normal opacity-70">
+                  <BadgeCheck size={16} className="mt-[1px] shrink-0" />
+                  Hinweis: Für Käufe über unsere Links erhalten wir ggf. eine Provision – der Preis bleibt für Sie gleich.
+                </p>
+              </div>
+
+              <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-6 md:flex-row md:items-center md:justify-between">
+                <p className="sl-white !text-[13px] !tracking-normal opacity-60">
+                  © {new Date().getFullYear()} reifexa.de · Alle Rechte vorbehalten.
+                </p>
+                <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13px]">
+                  <li><Link href="/impressum-datenschutz" className="sl-white opacity-80 hover:opacity-100">Impressum &amp; Datenschutz</Link></li>
+                  <li><Link href="/AGB" className="sl-white opacity-80 hover:opacity-100">AGB</Link></li>
+                  <li><Link href="/auto-api" className="sl-white opacity-80 hover:opacity-100">Auto-API</Link></li>
+                  <li>
+                    <a href="http://convertalinktest.awin.com" title="AWIN Convert-a-Link Test" className="sl-white opacity-80 hover:opacity-100">
+                      AWIN Affiliate
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
