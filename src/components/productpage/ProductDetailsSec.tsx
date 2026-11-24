@@ -955,6 +955,29 @@ const shareImage = !rawShareImage
                       merchantImageUrl={product.merchant_image_url}
                       galleryImages={product.gallery_images}
                       alt={productName}
+                      // A click on the product image opens the same offer as "Zum Angebot".
+                      exitHref={buildVendorExitUrl({
+                        token: cheapestOffer?.affiliate_product_cloak_url || '',
+                        productId: product._id,
+                        uuid: uuidCookie || 'guest',
+                        from: 'product-details-image',
+                        vendor: cheapestOffer?.vendor,
+                        vendorId: cheapestOffer?.vendor_id,
+                        brand: product.brand_name,
+                        instruction: 'Zum Angebot',
+                      })}
+                      onExit={() =>
+                        onVendorExitClick({
+                          productId: product._id,
+                          productName: product.product_name,
+                          brandName: product.brand_name,
+                          vendor: cheapestOffer?.vendor,
+                          vendorId: cheapestOffer?.vendor_id,
+                          source: 'product-details-image',
+                          instruction: 'Zum Angebot',
+                          vendorPrice: cheapestOffer?.price,
+                        })
+                      }
                       header={
                         <div className="product-slide-top-cont flex items-center justify-between">
                           <div className="brand-logo flex items-center rounded-[10px] bg-white px-2.5 py-1.5 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">

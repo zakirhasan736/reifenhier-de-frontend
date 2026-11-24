@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OptimizedImage from '@/components/elements/OptimizedImage';
+import VendorExitLink from '@/components/elements/VendorExitLink';
 import { productImageSrc } from '@/libs/productImage';
 
 function normalizeImages(source: string | string[] | undefined | null): string[] {
@@ -20,6 +21,8 @@ export default function ProductImageGallery({
   galleryImages,
   alt,
   header,
+  exitHref,
+  onExit,
 }: {
   images?: string | string[] | null;
   awinImageUrl?: string | null;
@@ -29,6 +32,9 @@ export default function ProductImageGallery({
   galleryImages?: Array<string | null | undefined> | null;
   alt: string;
   header?: ReactNode;
+  /** Shop link of the selected offer (same as "Zum Angebot"): a click on the image opens it. */
+  exitHref?: string;
+  onExit?: () => void;
 }) {
   const list = useMemo(() => normalizeImages(images), [images]);
   const extras = useMemo(
@@ -49,8 +55,13 @@ export default function ProductImageGallery({
       <div className="swiper-slides-view-area relative overflow-hidden rounded-[20px] border border-[#E9ECF3] bg-gradient-to-b from-[#F7F8FB] to-white p-3 md:p-6">
         {header ? <div className="relative z-20">{header}</div> : null}
         <div className="swiper-slider-view relative w-full">
-          <div className="slide-view-item flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center">
-            <OptimizedImage
+          {exitHref && exitHref !== '#' ? (
+            <VendorExitLink
+              href={exitHref}
+              onExit={onExit}
+              className="slide-view-item flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center cursor-pointer"
+            >
+              <OptimizedImage
               key={src}
               src={src}
               alt={alt}
@@ -61,7 +72,22 @@ export default function ProductImageGallery({
               fetchPriority="high"
               fallbacks={fallbacks}
             />
-          </div>
+            </VendorExitLink>
+          ) : (
+            <div className="slide-view-item flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center">
+              <OptimizedImage
+              key={src}
+              src={src}
+              alt={alt}
+              className="max-h-full w-auto object-contain drop-shadow-[0_18px_24px_rgba(16,24,40,0.18)]"
+              width={420}
+              height={420}
+              priority
+              fetchPriority="high"
+              fallbacks={fallbacks}
+            />
+            </div>
+          )}
 
           {list.length > 1 ? (
             <>
