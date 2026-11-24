@@ -30,12 +30,13 @@ export default function SizeFinder({ items }: { items: SizeFinderItem[] }) {
   );
 
   const visible = items.filter(i => !rim || i.diameter === rim).length;
+  const maxCount = Math.max(1, ...items.map(i => i.count));
 
   const chip = (active: boolean) =>
     `rounded-full px-3.5 py-1.5 text-[13px] md:text-[14px] font-semibold font-secondary transition-colors cursor-pointer ${
       active
-        ? 'bg-primary-100 text-mono-0'
-        : 'bg-[#F2F4F8] text-[#404042] hover:bg-[#E7EBF3]'
+        ? 'bg-gradient-to-r from-[#1B2A6B] to-[#2F4FD8] !text-white shadow-[0_6px_14px_-6px_rgba(47,79,216,0.7)]'
+        : 'bg-white !text-[#4B5163] ring-1 ring-[#E4E7F0] hover:ring-[#C9D6FC] hover:!text-[#2F4FD8]'
     }`;
 
   return (
@@ -65,7 +66,7 @@ export default function SizeFinder({ items }: { items: SizeFinderItem[] }) {
         </span>
       </div>
 
-      <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2.5">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2.5 md:gap-3">
         {items.map((i, idx) => {
           const hidden = !!rim && i.diameter !== rim;
           const mobileHidden = !rim && !showAll && idx >= MOBILE_LIMIT;
@@ -76,29 +77,40 @@ export default function SizeFinder({ items }: { items: SizeFinderItem[] }) {
             >
               <Link
                 href={i.href}
-                className="group flex h-full flex-col justify-between rounded-[12px] border border-[#E9ECF3] bg-mono-0 px-3.5 py-3 transition-all hover:border-[#C9D6FC] hover:shadow-[0_10px_24px_-16px_rgba(58,100,246,0.45)]"
+                className="group relative flex h-full flex-col rounded-[14px] bg-[#F8FAFE] px-3.5 py-3 ring-1 ring-[#E9ECF3] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:ring-[#B9C9FB] hover:shadow-[0_14px_28px_-18px_rgba(47,79,216,0.55)]"
               >
-                <span className="text-[15px] md:text-[16px] font-semibold font-primary text-[#16171A] tabular-nums group-hover:text-primary-100 transition-colors">
-                  {i.label}
+                <span className="flex items-start justify-between gap-2">
+                  <span className="text-[15px] md:text-[16px] font-bold font-primary !text-[#16171A] tabular-nums group-hover:!text-[#2F4FD8] transition-colors">
+                    {i.label}
+                  </span>
+                  {idx < 3 && !rim ? (
+                    <span className="rounded-full bg-[#FFF4E0] px-1.5 py-0.5 text-[10px] font-bold !text-[#B45309]">#{idx + 1}</span>
+                  ) : null}
                 </span>
-                <span className="mt-1 flex items-center justify-between gap-2 text-[12px] font-secondary">
-                  {i.price ? (
-                    <span className="text-primary-100 font-semibold tabular-nums">ab {i.price} €</span>
-                  ) : (
-                    <span />
-                  )}
-                  {i.count > 0 && <span className="text-[#9AA0A8]">{i.count} Reifen</span>}
-                </span>
+                {i.price ? (
+                  <span className="mt-1 text-[13px] font-semibold !text-[#2F4FD8] tabular-nums">ab {i.price} €</span>
+                ) : null}
+                {i.count > 0 && (
+                  <span className="mt-2 flex items-center gap-2">
+                    <span className="h-1 flex-1 overflow-hidden rounded-full bg-[#E6EAF3]">
+                      <span
+                        className="block h-full rounded-full bg-gradient-to-r from-[#7C9BFF] to-[#2F4FD8]"
+                        style={{ width: `${Math.max(8, Math.round((i.count / maxCount) * 100))}%` }}
+                      />
+                    </span>
+                    <span className="text-[11px] !text-[#8A90A0] tabular-nums">{i.count}</span>
+                  </span>
+                )}
               </Link>
             </li>
           );
         })}
-        <li className={!rim && !showAll && items.length > MOBILE_LIMIT ? 'max-sm:hidden' : ''}>
+        <li className={`sm:hidden ${!rim && !showAll && items.length > MOBILE_LIMIT ? 'max-sm:hidden' : ''}`}>
           <Link
             href="/reifen"
-            className="flex h-full min-h-[64px] items-center justify-center gap-1.5 rounded-[12px] border border-dashed border-[#C9D6FC] bg-[#F5F8FF] px-3 py-3 text-[14px] font-semibold text-primary-100 hover:bg-[#EEF2FF] transition-colors"
+            className="group flex h-full min-h-[84px] items-center justify-center gap-1.5 rounded-[14px] bg-gradient-to-br from-[#1B2A6B] to-[#2F4FD8] px-3 py-3 text-[14px] font-semibold !text-white shadow-[0_12px_24px_-14px_rgba(47,79,216,0.8)] transition-transform hover:-translate-y-0.5"
           >
-            Alle Größen <ArrowRight size={15} strokeWidth={2.4} />
+            <span className="!text-white">Alle Größen</span> <ArrowRight size={15} strokeWidth={2.4} color="#fff" className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </li>
       </ul>

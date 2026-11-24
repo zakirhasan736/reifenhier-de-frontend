@@ -6,7 +6,7 @@ import { Star } from 'lucide-react';
 type Summary = { count: number; average: number | null };
 const api = process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de';
 
-export default function ReviewSummary() {
+export default function ReviewSummary({ dark = false }: { dark?: boolean }) {
   const [summary, setSummary] = useState<Summary | null>(null);
 
   useEffect(() => {
@@ -23,6 +23,17 @@ export default function ReviewSummary() {
   }, []);
 
   if (!summary) return null;
+  if (dark) {
+    return <div className="sl-white inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px]">
+      {summary.average === null ? <span className="opacity-80">Reifexa-Bewertungen · Noch keine Bewertungen</span> : <>
+        <span className="flex gap-0.5" aria-hidden="true">
+          {[1, 2, 3, 4, 5].map(value => <Star key={value} size={16} color="#FBBF24" fill={value <= Math.round(summary.average ?? 0) ? '#FBBF24' : 'none'} />)}
+        </span>
+        <strong>{summary.average.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} / 5</strong>
+        <span className="opacity-70">aus {summary.count.toLocaleString('de-DE')} {summary.count === 1 ? 'Bewertung' : 'Bewertungen'}</span>
+      </>}
+    </div>;
+  }
   return <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#404042]">
     <strong>Reifexa-Bewertungen</strong>
     {summary.average === null ? <span>Noch keine Bewertungen</span> : <>
