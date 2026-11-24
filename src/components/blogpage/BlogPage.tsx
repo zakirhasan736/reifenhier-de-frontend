@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 import { blogCoverSrc, BLOGS_PER_PAGE } from '@/libs/blogs/mongo';
 import { ArticleCard, FeaturedArticleCard } from '@/components/blogpage/ArticleCard';
 
@@ -28,6 +28,13 @@ interface BlogPageProps {
 const apiUrl =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') ||
   'http://localhost:8001';
+
+const QUICK: [string, string][] = [
+  ['Sommerreifen', '/sommerreifen'],
+  ['Winterreifen', '/winterreifen'],
+  ['Ganzjahresreifen', '/ganzjahresreifen'],
+  ['Reifengrößenrechner', '/reifengroessen-rechner'],
+];
 
 /** Page numbers with gaps: 1 … 4 5 6 … 12 */
 function pageList(current: number, total: number): (number | '…')[] {
@@ -132,70 +139,88 @@ export default function BlogPage({
 
   return (
     <section className="blogs-page blogs-page-v2 bg-[#F6F8FC] pb-16">
-      {/* ---------- Header band ---------- */}
-      <div className="border-b border-[#E9ECF3] bg-white">
-        <div className="custom-container py-8 md:py-12">
-          <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center gap-1.5 text-[13px] text-[#6B6E76]">
-            <Link href="/" className="hover:text-primary-100">Startseite</Link>
-            <ChevronRight size={14} className="text-[#C0C4CC]" />
-            <Link href="/artikel" className="hover:text-primary-100">News &amp; Testberichte</Link>
+      {/* ---------- Hero ---------- */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0B1437] via-[#1B2A6B] to-[#2F4FD8]">
+        <span className="pointer-events-none absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full border-[48px] border-white/5" aria-hidden />
+        <span className="pointer-events-none absolute right-56 top-40 h-[160px] w-[160px] rounded-full border-[20px] border-white/5" aria-hidden />
+        <div className="custom-container relative pb-20 pt-8 md:pb-24 md:pt-10">
+          <nav aria-label="Breadcrumb" className="sl-white mb-8 flex flex-wrap items-center gap-1.5 text-[13px] opacity-75">
+            <Link href="/" className="hover:underline">Startseite</Link>
+            <ChevronRight size={14} />
+            <Link href="/artikel" className="hover:underline">News &amp; Testberichte</Link>
             {parentSlug && (
               <>
-                <ChevronRight size={14} className="text-[#C0C4CC]" />
-                <span className="capitalize text-[#16171A]">{parentSlug}</span>
+                <ChevronRight size={14} />
+                <span className="capitalize">{parentSlug}</span>
               </>
             )}
             {subSlug && (
               <>
-                <ChevronRight size={14} className="text-[#C0C4CC]" />
-                <span className="capitalize text-[#16171A]">{subSlug}</span>
+                <ChevronRight size={14} />
+                <span className="capitalize">{subSlug}</span>
               </>
             )}
           </nav>
 
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-[640px]">
-              <span className="mb-3 inline-block rounded-full bg-[#EEF2FF] px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-primary-100">
-                Ratgeber
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-[660px]">
+              <span className="sl-white inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[12.5px] font-semibold uppercase tracking-[0.12em] ring-1 ring-white/20">
+                <BookOpen size={14} /> Reifen-Ratgeber
               </span>
-              <h1 className="mb-2 text-[30px] md:text-[40px] font-semibold capitalize leading-[115%] tracking-[-0.01em] text-[#16171A]">
+              <h1 className="sl-white mt-5 text-[32px] md:text-[48px] font-bold capitalize leading-[112%] tracking-[-0.015em]">
                 {dynamicTitle}
               </h1>
-              <p className="md:!text-[17px] !text-[15px] text-[#6B6E76]">
+              <p className="sl-white mt-4 opacity-85 md:!text-[17px] !text-[15px] !leading-[160%]">
                 Tests, Kaufberatung und Tipps rund um Sommer-, Winter- und
                 Ganzjahresreifen.
                 {initialTotal > 0 ? ` ${initialTotal} Artikel.` : ''}
               </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {QUICK.map(([label, href]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="sl-white rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] font-medium ring-1 ring-white/15 transition hover:bg-white/20"
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </div>
             </div>
 
-            <div className="relative w-full lg:max-w-[380px]">
-              <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9AA0A8]" />
-              <input
-                type="search"
-                aria-label="Artikel suchen"
-                placeholder="Artikel suchen …"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="h-12 w-full rounded-[12px] border border-[#E4E7EE] bg-[#F7F8FB] pl-11 pr-10 text-[15px] text-[#16171A] outline-none transition focus:border-primary-100 focus:bg-white focus:ring-2 focus:ring-[#3a63f623]"
-              />
-              {searching && (
-                <button
-                  type="button"
-                  onClick={() => setSearch('')}
-                  aria-label="Suche löschen"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-full text-[#6B6E76] hover:bg-[#EEF0F4] cursor-pointer"
-                >
-                  <X size={15} />
-                </button>
-              )}
+            <div className="w-full lg:max-w-[400px]">
+              <div className="relative rounded-[16px] bg-white/10 p-1.5 ring-1 ring-white/20 backdrop-blur">
+                <Search size={18} color="#9AA0A8" className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="search"
+                  aria-label="Artikel suchen"
+                  placeholder="Artikel suchen …"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="h-12 w-full rounded-[12px] !border-0 bg-white pl-11 pr-10 text-[15px] !text-[#16171A] outline-none transition focus:ring-2 focus:ring-[#9DB2FF]"
+                />
+                {searching && (
+                  <button
+                    type="button"
+                    onClick={() => setSearch('')}
+                    aria-label="Suche löschen"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-[#EEF0F4] cursor-pointer"
+                  >
+                    <X size={15} color="#6B6E76" />
+                  </button>
+                )}
+              </div>
+              <p className="sl-white mt-2.5 px-1 !text-[12.5px] !tracking-normal opacity-70">
+                Preise mehrmals täglich aktualisiert · unabhängiger Vergleich
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="custom-container pt-8 md:pt-10">
+      <div className="custom-container relative -mt-10 md:-mt-12">
         {searching && !loading && (
-          <p className="mb-5 text-[14px] text-[#6B6E76]">
+          <p className="mb-5 inline-block rounded-full bg-white px-4 py-2 text-[14px] shadow-sm ring-1 ring-[#E4E7F0]">
             {total} {total === 1 ? 'Ergebnis' : 'Ergebnisse'} für „{search.trim()}“
           </p>
         )}

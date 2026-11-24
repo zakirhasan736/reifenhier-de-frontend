@@ -2652,3 +2652,59 @@ a.offer-pulse .finger-hand * {
   from { transform: scale(0.4); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+/* ================= Legal pages (Impressum, AGB) ================= */
+.rx-legal { counter-reset: rxsec; display: flex; flex-direction: column; gap: 16px; }
+.rx-legal > section {
+  scroll-margin-top: 6.5rem;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 0 1px #E4E7F0;
+  padding: 24px 22px;
+  transition: box-shadow .2s ease;
+}
+.rx-legal > section:target { box-shadow: 0 0 0 2px #2F4FD8, 0 16px 40px -24px rgba(47,79,216,.5); }
+@media (min-width: 768px) { .rx-legal > section { padding: 32px 36px; } }
+.rx-legal > section > h2 {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 14px !important;
+  font-size: 20px !important; line-height: 1.3; font-weight: 700;
+  color: #16171A !important;
+}
+.rx-legal--count > section { counter-increment: rxsec; }
+.rx-legal--count > section > h2::before {
+  content: counter(rxsec);
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 10px;
+  background: linear-gradient(135deg, #1B2A6B, #2F4FD8);
+  color: #fff; font-size: 14px; font-weight: 700;
+}
+/* big divider heading between groups (e.g. "Datenschutz") */
+.rx-legal > h2 {
+  margin: 20px 4px 0 !important;
+  font-size: 13px !important; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #2F4FD8 !important;
+  display: flex; align-items: center; gap: 12px;
+}
+.rx-legal > h2::after { content: ''; flex: 1; height: 1px; background: #DCE1EE; }
+.rx-legal h3 { color: #16171A !important; font-weight: 600; }
+.rx-legal p, .rx-legal li {
+  font-size: 15px; line-height: 1.75; letter-spacing: .1px; color: #2B3040;
+}
+.rx-legal strong { color: #16171A; }
+.rx-legal ul li::marker { color: #2F4FD8; }
+.rx-legal a { color: #2F4FD8 !important; text-decoration: underline; text-underline-offset: 3px; }
+.rx-legal a:hover { text-decoration: none; }
+/* small inner cards (lists in "Übersicht") */
+.rx-legal section .grid > div {
+  background: #F6F8FC; border-radius: 14px; box-shadow: 0 0 0 1px #E9ECF3; padding: 16px 18px;
+}
+.rx-legal > footer, .rx-legal > .rx-legal-foot {
+  border-radius: 16px; background: #EEF2FF; padding: 16px 20px; border: 0 !important; margin: 0 !important;
+}
+.rx-legal > footer p, .rx-legal > .rx-legal-foot p { font-size: 13.5px; color: #3B4256; }
+/* contact block */
+.rx-legal .rx-legal-contact { display: grid; gap: 12px; }
+@media (min-width: 640px) { .rx-legal .rx-legal-contact { grid-template-columns: 1fr 1fr; } }
+.rx-legal-note, .rx-legal-note * { color: rgba(255,255,255,.85) !important; }
+.rx-legal-note a { color: #fff !important; text-decoration: underline; text-underline-offset: 3px; }

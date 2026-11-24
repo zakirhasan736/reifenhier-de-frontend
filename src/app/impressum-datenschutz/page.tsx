@@ -2,6 +2,8 @@ import React from 'react';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import { Metadata } from 'next';
 import JsonLd from '@/components/seo/JsonLd';
+import LegalShell from '@/components/legal/LegalShell';
+import { CalendarDays, ListOrdered, ShieldCheck } from 'lucide-react';
 export const metadata: Metadata = {
   title: { absolute: 'Impressum & Datenschutz | Reifexa.de' },
   description:
@@ -15,17 +17,45 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
 };
+const TOC = [
+  { id: 'verantwortlicher', text: 'Verantwortlicher' },
+  { id: 'uebersicht', text: 'Übersicht der Verarbeitungen' },
+  { id: 'rechtsgrundlagen', text: 'Maßgebliche Rechtsgrundlagen' },
+  { id: 'sicherheitsmassnahmen', text: 'Sicherheitsmaßnahmen' },
+  { id: 'datenuebermittlung', text: 'Übermittlung von personenbezogenen Daten' },
+  { id: 'internationale-datentransfers', text: 'Internationale Datentransfers' },
+  { id: 'datenspeicherung-und-loeschung', text: 'Allgemeine Informationen zur Datenspeicherung und Löschung' },
+  { id: 'betroffenenrechte', text: 'Rechte der betroffenen Personen' },
+  { id: 'webhosting', text: 'Bereitstellung des Onlineangebotes und Webhosting' },
+  { id: 'einsatz-von-cookies', text: 'Einsatz von Cookies' },
+  { id: 'blogs-und-publikationsmedien', text: 'Blogs und Publikationsmedien' },
+  { id: 'kontakt-und-anfrageverwaltung', text: 'Kontakt- und Anfrageverwaltung' },
+  { id: 'newsletter', text: 'Newsletter und elektronische Benachrichtigungen' },
+  { id: 'webanalyse', text: 'Webanalyse, Monitoring und Optimierung' },
+  { id: 'onlinemarketing', text: 'Onlinemarketing' },
+  { id: 'affiliate-links', text: 'Affiliate-Programme und Affiliate-Links' },
+  { id: 'kundenrezensionen', text: 'Kundenrezensionen und Bewertungsverfahren' },
+  { id: 'social-media', text: 'Präsenzen in sozialen Netzwerken (Social Media)' },
+  { id: 'plugins-und-inhalte', text: 'Plug-ins und eingebettete Funktionen sowie Inhalte' },
+];
+
 const PrivacyPolicy: React.FC = () => {
   return (
     <>
-      <main className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
-        <header className="mb-8 text-left">
-          <h1 className="text-3xl font-bold text-secondary-100">Impressum</h1>
-          <p className="mt-2 text-sm text-gray-500">August 9, 2025</p>
-        </header>
-
+      <LegalShell
+        current="impressum"
+        title="Impressum & Datenschutz"
+        intro="Wer hinter Reifexa.de steht und wie wir mit Ihren Daten umgehen – übersichtlich nach Themen gegliedert."
+        meta={[
+          { icon: <CalendarDays size={14} />, label: 'Stand: 9. August 2025' },
+          { icon: <ListOrdered size={14} />, label: `${TOC.length} Abschnitte` },
+          { icon: <ShieldCheck size={14} />, label: 'DSGVO' },
+        ]}
+        toc={TOC}
+        numbered
+      >
         {/* Verantwortlicher */}
-        <section>
+        <section id="verantwortlicher">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">Verantwortlicher</h2>
           <p className="mt-2">
             Reifexa.de
@@ -49,7 +79,7 @@ const PrivacyPolicy: React.FC = () => {
         <h2 className="mt-5 text-3xl font-bold text-secondary-100">Datenschutz</h2>
 
         {/* Übersicht der Verarbeitungen */}
-        <section>
+        <section id="uebersicht">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Übersicht der Verarbeitungen
           </h2>
@@ -108,7 +138,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Rechtsgrundlagen */}
-        <section>
+        <section id="rechtsgrundlagen">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Maßgebliche Rechtsgrundlagen
           </h2>
@@ -123,7 +153,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Sicherheitsmaßnahmen */}
-        <section>
+        <section id="sicherheitsmassnahmen">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">Sicherheitsmaßnahmen</h2>
           <p className="mt-2">
             Wir treffen geeignete technische und organisatorische Maßnahmen
@@ -135,7 +165,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Übermittlung von personenbezogenen Daten */}
-        <section>
+        <section id="datenuebermittlung">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Übermittlung von personenbezogenen Daten
           </h2>
@@ -148,7 +178,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Internationale Datentransfers */}
-        <section>
+        <section id="internationale-datentransfers">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Internationale Datentransfers
           </h2>
@@ -162,7 +192,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Speicherung & Löschung */}
-        <section>
+        <section id="datenspeicherung-und-loeschung">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Allgemeine Informationen zur Datenspeicherung und Löschung
           </h2>
@@ -188,7 +218,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Rechte der betroffenen Personen */}
-        <section>
+        <section id="betroffenenrechte">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Rechte der betroffenen Personen
           </h2>
@@ -209,7 +239,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Bereitstellung & Webhosting */}
-        <section>
+        <section id="webhosting">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Bereitstellung des Onlineangebotes und Webhosting
           </h2>
@@ -222,7 +252,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Cookies */}
-        <section>
+        <section id="einsatz-von-cookies">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">Einsatz von Cookies</h2>
           <p className="mt-2">
             Wir setzen Cookies und ähnliche Technologien ein. Soweit rechtlich
@@ -242,7 +272,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Blogs & Publikationsmedien */}
-        <section>
+        <section id="blogs-und-publikationsmedien">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Blogs und Publikationsmedien
           </h2>
@@ -254,7 +284,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Kontakt- und Anfrageverwaltung */}
-        <section>
+        <section id="kontakt-und-anfrageverwaltung">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Kontakt- und Anfrageverwaltung
           </h2>
@@ -266,7 +296,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Newsletter */}
-        <section>
+        <section id="newsletter">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Newsletter und elektronische Benachrichtigungen
           </h2>
@@ -278,7 +308,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Webanalyse */}
-        <section>
+        <section id="webanalyse">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Webanalyse, Monitoring und Optimierung
           </h2>
@@ -322,7 +352,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Onlinemarketing */}
-        <section>
+        <section id="onlinemarketing">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">Onlinemarketing</h2>
           <p className="mt-2">
             Für die Vermarktung von Inhalten können Cookies/Profiling eingesetzt
@@ -334,7 +364,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Affiliate */}
-        <section>
+        <section id="affiliate-links">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Affiliate-Programme und Affiliate-Links
           </h2>
@@ -347,7 +377,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Bewertungen */}
-        <section>
+        <section id="kundenrezensionen">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Kundenrezensionen und Bewertungsverfahren
           </h2>
@@ -359,7 +389,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Social Media */}
-        <section>
+        <section id="social-media">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Präsenzen in sozialen Netzwerken (Social Media)
           </h2>
@@ -372,7 +402,7 @@ const PrivacyPolicy: React.FC = () => {
         </section>
 
         {/* Plug-ins */}
-        <section>
+        <section id="plugins-und-inhalte">
           <h2 className="text-xl font-semibold mt-6 text-secondary-100">
             Plug-ins und eingebettete Funktionen sowie Inhalte
           </h2>
@@ -405,7 +435,7 @@ const PrivacyPolicy: React.FC = () => {
             zusätzliche Hinweise an den jeweiligen Stellen erfolgen.
           </p>
         </footer>
-      </main>
+      </LegalShell>
       <JsonLd id="ld-impressum" data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',
