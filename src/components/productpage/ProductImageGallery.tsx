@@ -22,7 +22,6 @@ export default function ProductImageGallery({
   alt,
   header,
   exitHref,
-  exitLabel,
   onExit,
 }: {
   images?: string | string[] | null;
@@ -35,7 +34,6 @@ export default function ProductImageGallery({
   header?: ReactNode;
   /** Shop link of the selected offer (same as "Zum Angebot"): a click on the image opens it. */
   exitHref?: string;
-  exitLabel?: string;
   onExit?: () => void;
 }) {
   const list = useMemo(() => normalizeImages(images), [images]);
@@ -61,23 +59,19 @@ export default function ProductImageGallery({
             <VendorExitLink
               href={exitHref}
               onExit={onExit}
-              title={exitLabel || 'Zum Angebot'}
-              className="slide-view-item group flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center cursor-pointer"
+              className="slide-view-item flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center cursor-pointer"
             >
               <OptimizedImage
               key={src}
               src={src}
               alt={alt}
-              className="max-h-full w-auto object-contain drop-shadow-[0_18px_24px_rgba(16,24,40,0.18)] transition-transform duration-300 group-hover:scale-[1.03]"
+              className="max-h-full w-auto object-contain drop-shadow-[0_18px_24px_rgba(16,24,40,0.18)]"
               width={420}
               height={420}
               priority
               fetchPriority="high"
               fallbacks={fallbacks}
             />
-              <span className="sl-white pointer-events-none absolute bottom-2 left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full bg-[#16171A]/75 px-3 py-1.5 text-[12.5px] font-medium opacity-0 transition-opacity group-hover:opacity-100 md:inline-flex">
-                {exitLabel || 'Zum Angebot'} ›
-              </span>
             </VendorExitLink>
           ) : (
             <div className="slide-view-item flex h-[220px] sm:h-[320px] lg:h-[420px] items-center justify-center">

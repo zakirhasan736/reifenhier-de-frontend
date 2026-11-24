@@ -966,7 +966,6 @@ const shareImage = !rawShareImage
                         brand: product.brand_name,
                         instruction: 'Zum Angebot',
                       })}
-                      exitLabel={cheapestOffer?.vendor ? `Zum Angebot bei ${cheapestOffer.vendor}` : 'Zum Angebot'}
                       onExit={() =>
                         onVendorExitClick({
                           productId: product._id,
