@@ -2566,3 +2566,41 @@ a.offer-pulse .finger-hand * {
   0% { transform: scale(0.85); opacity: 0.55; }
   100% { transform: scale(1.55); opacity: 0; }
 }
+
+/* ---------- Floating review tab ---------- */
+.rx-review-tab { isolation: isolate; }
+.rx-review-tab::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rx-review-tab.rx-review-pulse::after { animation: rx-review-pulse 2.4s ease-out 3; }
+  .rx-review-tab.rx-review-pulse { animation: rx-review-nudge 2.4s ease-in-out 3; }
+  .rx-review-nudge { animation: rx-review-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  .rx-review-check { animation: rx-review-pop 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+  .rx-review-dialog[open] { animation: rx-review-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+}
+@keyframes rx-review-pulse {
+  0% { opacity: 0.55; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.35, 1.12); }
+}
+@keyframes rx-review-nudge {
+  0%, 60%, 100% { transform: translateX(0); }
+  70% { transform: translateX(-6px); }
+  80% { transform: translateX(0); }
+  90% { transform: translateX(-3px); }
+}
+@keyframes rx-review-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rx-review-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
