@@ -11,7 +11,7 @@ export default async function VehicleFitment({ size }: { size?: string }) {
     next: { revalidate: 3600 },
     signal: AbortSignal.timeout(2000),
   }).then(response => response.ok ? response.json() : null).catch(() => null) as { vehicles: Vehicle[] } | null;
-  if (!result?.vehicles.length) return null;
+  if (!result?.vehicles?.length) return null;
   return <section className="mx-auto my-8 max-w-5xl rounded-xl border p-5">
     <h2 className="text-xl font-bold">Passt z. B. auf diese Fahrzeugvarianten</h2>
     <ul className="my-3 list-disc pl-5">
