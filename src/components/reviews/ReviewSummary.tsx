@@ -13,7 +13,10 @@ export default function ReviewSummary() {
     const controller = new AbortController();
     fetch(`${api}/api/reviews/summary`, { signal: controller.signal })
       .then(async response => {
-        if (response.ok) setSummary(await response.json());
+        if (!response.ok) return;
+        const body = await response.json();
+        // only show a well-formed summary (a broken API response must not crash the page)
+        if (body && typeof body.count === 'number' && (body.average === null || typeof body.average === 'number')) setSummary(body);
       })
       .catch(() => {});
     return () => controller.abort();
