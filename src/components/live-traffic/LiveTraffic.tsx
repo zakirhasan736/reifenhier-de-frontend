@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import type { Activity, Traffic } from './types';
 import { placeLabel } from './countryCenters';
-import { germanCity } from './WorldMapNames';
 
 const apiOrigin = (process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de').replace(/\/$/, '');
 
@@ -27,7 +26,7 @@ function MapSkeleton() {
 
 function LiveSkeleton() {
   return (
-    <div role="status" aria-label="Live-Karte wird geladen">
+    <div role="status" aria-label="Loading live map">
       <div className="relative mx-3 mt-4 h-[480px] overflow-hidden rounded-[20px] border border-[#E7EAF2] md:mx-5 md:h-[600px]">
         <MapSkeleton />
       </div>
@@ -52,7 +51,7 @@ const WorldMap = dynamic(() => import('./WorldMap'), { ssr: false, loading: () =
 
 const regionNames = (() => {
   try {
-    return new Intl.DisplayNames(['de'], { type: 'region' });
+    return new Intl.DisplayNames(['en'], { type: 'region' });
   } catch {
     return null;
   }
@@ -78,7 +77,7 @@ function Ranking({ title, rows }: { title: string; rows: Activity[] | null }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-[13px] text-[#6B6E76]">{rows ? 'Keine Aktivität im Zeitraum.' : 'Daten derzeit nicht verfügbar.'}</p>
+        <p className="mt-3 text-[13px] text-[#6B6E76]">{rows ? 'No activity in this period.' : 'Data currently unavailable.'}</p>
       )}
     </div>
   );
@@ -125,7 +124,7 @@ export default function LiveTraffic() {
   }, []);
 
   const cities = data?.cities.slice(0, 6).map((city) => {
-    const name = germanCity(placeLabel(city.country, city.label, city.point));
+    const name = placeLabel(city.country, city.label, city.point);
     let country = city.country;
     try {
       country = regionNames?.of(city.country) || city.country;
@@ -146,19 +145,19 @@ export default function LiveTraffic() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-60 motion-safe:animate-ping" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[#22C55E]" />
               </span>
-              Echtzeit
+              Real time
             </p>
-            <h2 id="traffic-heading" className="mt-1 text-[24px] font-bold text-[#16171A] md:text-[30px]">Live-Besucher auf Reifexa</h2>
-            <p className="mt-1 text-[14px] text-[#5A6072]">Wo gerade Reifen verglichen werden – aktualisiert alle 30 Sekunden.</p>
+            <h2 id="traffic-heading" className="mt-1 text-[24px] font-bold text-[#16171A] md:text-[30px]">Reifexa live visitors</h2>
+            <p className="mt-1 text-[14px] text-[#5A6072]">Where people are comparing tyres right now – updated every 30 seconds.</p>
           </div>
           <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#F1F4FF] px-3 py-1.5 text-[12px] font-semibold text-[#3A64F6] md:self-auto">
-            {data ? `Stand ${new Date(data.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} Uhr` : 'Live'}
+            {data ? `Updated ${new Date(data.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : 'Live'}
           </span>
         </div>
 
         {!data ? (
           failed ? (
-            <p role="status" className="px-4 py-10 text-[14px] text-[#6B6E76] md:px-6">Die Live-Karte ist derzeit nicht verfügbar.</p>
+            <p role="status" className="px-4 py-10 text-[14px] text-[#6B6E76] md:px-6">The live map is currently unavailable.</p>
           ) : (
             <LiveSkeleton />
           )
@@ -167,11 +166,11 @@ export default function LiveTraffic() {
             <div className="relative mx-3 mt-4 h-[480px] overflow-hidden rounded-[20px] border border-[#E7EAF2] md:mx-5 md:h-[600px]">
               <WorldMap cities={data.cities} last30={data.last30} last5={data.last5} minutes={data.minutes} />
             </div>
-            <p className="px-4 pt-2 text-[11px] text-[#8B909A] md:px-6">Ungefähre Stadtpositionen · Google Analytics · keine personenbezogenen Daten</p>
+            <p className="px-4 pt-2 text-[11px] text-[#8B909A] md:px-6">Approximate city positions · Google Analytics · no personal data</p>
             <div className="mt-4 grid border-t border-[#EEF0F4] md:grid-cols-3 md:divide-x md:divide-[#EEF0F4]">
-              <Ranking title="Städte" rows={cities} />
-              <Ranking title="Seiten in 30 Minuten" rows={data.pages} />
-              <Ranking title="Neue Nutzer in 7 Tagen" rows={data.acquisition} />
+              <Ranking title="Cities" rows={cities} />
+              <Ranking title="Pages in the last 30 minutes" rows={data.pages} />
+              <Ranking title="New users in the last 7 days" rows={data.acquisition} />
             </div>
           </>
         )}
