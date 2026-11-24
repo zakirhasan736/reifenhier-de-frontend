@@ -2,6 +2,17 @@ import React from 'react';
 import type { Metadata } from 'next';
 import NewArticlesWrapper from '@/components/homepage/Blogs';
 import JsonLd from '@/components/seo/JsonLd';
+import LegalShell from '@/components/legal/LegalShell';
+import { CalendarDays, ListOrdered } from 'lucide-react';
+
+const TOC = [
+  { id: '1', text: 'Geltungsbereich, Änderungen der Nutzungsbedingungen' },
+  { id: '2', text: 'Leistungsbeschreibung, Vertragsverhältnisse' },
+  { id: '3', text: 'Haftungsausschluss' },
+  { id: '4', text: 'Pflichten des Nutzers' },
+  { id: '5', text: 'Datenschutz' },
+  { id: '6', text: 'Schlussbestimmungen' },
+];
 
 export const metadata: Metadata = {
   title: { absolute: 'Allgemeine Geschäftsbedingungen (AGB) | Reifexa.de' },
@@ -20,59 +31,18 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <>
-      <div className="mx-auto max-w-full md:max-w-4xl px-6 py-12">
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold tracking-tight text-secondary-100">
-            Allgemeine Geschäftsbedingungen (AGB) für Reifexa.de
-          </h1>
-        <p className="mt-2 text-sm">Für die Reifexa Auto-API gelten zusätzlich die <a className="underline" href="/auto-api/bedingungen">API-Nutzungsbedingungen</a> und die <a className="underline" href="/auto-api/preise-und-zahlung">Preis- und Zahlungsbedingungen</a>.</p>
-          <p className="mt-2 text-sm text-gray-500">
-            Zuletzt aktualisiert: {new Date().toLocaleDateString('de-DE')}
-          </p>
-        </div>
-
-        <nav
-          aria-label="Inhaltsverzeichnis"
-          className="mb-8 rounded-2xl bg-gray-50 p-4 ring-1 ring-gray-200"
-        >
-          <h2 className="text-base font-semibold  text-secondary-100">
-            Inhaltsverzeichnis
-          </h2>
-          <ol className="mt-3 list-decimal space-y-1 pl-6 text-sm">
-            <li>
-              <a href="#1" className="underline hover:no-underline">
-                Geltungsbereich, Änderungen der Nutzungsbedingungen
-              </a>
-            </li>
-            <li>
-              <a href="#2" className="underline hover:no-underline">
-                Leistungsbeschreibung, Vertragsverhältnisse
-              </a>
-            </li>
-            <li>
-              <a href="#3" className="underline hover:no-underline">
-                Haftungsausschluss
-              </a>
-            </li>
-            <li>
-              <a href="#4" className="underline hover:no-underline">
-                Pflichten des Nutzers
-              </a>
-            </li>
-            <li>
-              <a href="#5" className="underline hover:no-underline">
-                Datenschutz
-              </a>
-            </li>
-            <li>
-              <a href="#6" className="underline hover:no-underline">
-                Schlussbestimmungen
-              </a>
-            </li>
-          </ol>
-        </nav>
-
-        <div id="1" className="scroll-mt-20">
+      <LegalShell
+        current="agb"
+        title="Allgemeine Geschäftsbedingungen (AGB) für Reifexa.de"
+        intro="Die Regeln für die Nutzung unseres Reifen-Preisvergleichs – kurz, klar und in sechs Abschnitten."
+        meta={[
+          { icon: <CalendarDays size={14} />, label: <>Zuletzt aktualisiert: {new Date().toLocaleDateString('de-DE')}</> },
+          { icon: <ListOrdered size={14} />, label: `${TOC.length} Abschnitte` },
+        ]}
+        note={<p>Für die Reifexa Auto-API gelten zusätzlich die <a href="/auto-api/bedingungen">API-Nutzungsbedingungen</a> und die <a href="/auto-api/preise-und-zahlung">Preis- und Zahlungsbedingungen</a>.</p>}
+        toc={TOC}
+      >
+        <section id="1">
           <h2 className="text-2xl font-semibold  text-secondary-100">
             1. Geltungsbereich, Änderungen der Nutzungsbedingungen
           </h2>
@@ -87,9 +57,9 @@ export default function TermsPage() {
             ändern. Maßgeblich sind die AGB, die zum Zeitpunkt der Nutzung auf
             der Webseite veröffentlicht sind.
           </p>
-        </div>
+        </section>
 
-        <div id="2" className="mt-10 scroll-mt-20">
+        <section id="2">
           <h2 className="text-2xl font-semibold  text-secondary-100">
             2. Leistungsbeschreibung, Vertragsverhältnisse
           </h2>
@@ -117,9 +87,9 @@ export default function TermsPage() {
             2.4 Der Betreiber kann einzelne Angebote jederzeit und ohne
             vorherige Ankündigung von der Plattform entfernen oder ändern.
           </p>
-        </div>
+        </section>
 
-        <div id="3" className="mt-10 scroll-mt-20">
+        <section id="3">
           <h2 className="text-2xl font-semibold  text-secondary-100">3. Haftungsausschluss</h2>
           <p className="mt-3">
             3.1 Die Nutzung der Plattform erfolgt auf eigenes Risiko des
@@ -151,9 +121,9 @@ export default function TermsPage() {
             ist, gilt dies auch für die persönliche Haftung seiner Mitarbeiter,
             Vertreter und Erfüllungsgehilfen.
           </p>
-        </div>
+        </section>
 
-        <div id="4" className="mt-10 scroll-mt-20">
+        <section id="4">
           <h2 className="text-2xl font-semibold  text-secondary-100">4. Pflichten des Nutzers</h2>
           <p className="mt-3">
             4.1 Der Nutzer verpflichtet sich, Handlungen zu unterlassen, die die
@@ -168,17 +138,17 @@ export default function TermsPage() {
             Betreiber zur sofortigen Sperrung des Nutzerkontos und zur
             Einleitung weiterer rechtlicher Schritte.
           </p>
-        </div>
+        </section>
 
-        <div id="5" className="mt-10 scroll-mt-20">
+        <section id="5">
           <h2 className="text-2xl font-semibold  text-secondary-100">5. Datenschutz</h2>
           <p className="mt-3">
             Die Erhebung und Verarbeitung personenbezogener Daten erfolgt nach
             den in der Datenschutzerklärung festgelegten Bestimmungen.
           </p>
-        </div>
+        </section>
 
-        <div id="6" className="mt-10 scroll-mt-20">
+        <section id="6">
           <h2 className="text-2xl font-semibold  text-secondary-100">6. Schlussbestimmungen</h2>
           <p className="mt-3">
             6.1 Es gilt das Recht der Bundesrepublik Deutschland unter
@@ -194,9 +164,9 @@ export default function TermsPage() {
             6.3 Gerichtsstand für alle Streitigkeiten aus diesen AGB ist der
             Sitz des Betreibers.
           </p>
-        </div>
+        </section>
 
-        <div className="mt-12 border-t pt-6 text-sm text-gray-500">
+        <div className="rx-legal-foot">
           <p>
             Betreiber: <strong>Jens Kippels</strong> · Plattform:{' '}
             <strong>Reifexa.de</strong>
@@ -206,7 +176,7 @@ export default function TermsPage() {
             rechtlich prüfen.
           </p>
         </div>
-      </div>
+      </LegalShell>
       <JsonLd id="ld-agb" data={{
           '@context': 'https://schema.org',
           '@type': 'WebPage',

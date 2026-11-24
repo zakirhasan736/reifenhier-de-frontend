@@ -4,6 +4,8 @@ import { ArrowRight, BookOpen, CalendarDays, ChevronRight, Clock, Eye, ListOrder
 import BlogCoverImage from '@/components/blogpage/BlogCoverImage'
 import { ArticleCard, type ArticleCardData } from '@/components/blogpage/ArticleCard'
 import { formatBlogDate, formatReadTotal, stripHtml } from '@/libs/blogs/format'
+import TocNav from '@/components/legal/TocNav'
+import ReadingProgress from '@/components/blogpage/ReadingProgress'
 
 type Crumb = { name: string; href?: string }
 
@@ -45,19 +47,22 @@ export default function ArticleLayout({
 
   return (
     <>
-      <article className="blog-details-page article-v2 bg-white">
+      <ReadingProgress targetId="article-body" />
+      <article className="blog-details-page article-v2 bg-[#F6F8FC]">
         {/* ---------- Hero ---------- */}
-        <header className="bg-[#F6F8FC] border-b border-[#E9ECF3]">
-          <div className="custom-container pt-8 md:pt-10 pb-28 md:pb-40">
-            <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-1.5 text-[13px] text-[#6B6E76]">
-              <Link href="/" className="hover:text-primary-100">Startseite</Link>
-              <ChevronRight size={14} className="text-[#C0C4CC]" />
-              <Link href="/artikel" className="hover:text-primary-100">News &amp; Testberichte</Link>
+        <header className="relative overflow-hidden bg-gradient-to-br from-[#0B1437] via-[#1B2A6B] to-[#2F4FD8]">
+          <span className="pointer-events-none absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full border-[48px] border-white/5" aria-hidden />
+          <span className="pointer-events-none absolute right-56 top-44 h-[160px] w-[160px] rounded-full border-[20px] border-white/5" aria-hidden />
+          <div className="custom-container relative pt-8 md:pt-10 pb-28 md:pb-40">
+            <nav aria-label="Breadcrumb" className="sl-white mb-6 flex flex-wrap items-center gap-1.5 text-[13px] opacity-75">
+              <Link href="/" className="hover:underline">Startseite</Link>
+              <ChevronRight size={14} />
+              <Link href="/artikel" className="hover:underline">News &amp; Testberichte</Link>
               {crumbs.map(c => (
                 <span key={c.name} className="inline-flex items-center gap-1.5">
-                  <ChevronRight size={14} className="text-[#C0C4CC]" />
+                  <ChevronRight size={14} />
                   {c.href ? (
-                    <Link href={c.href} className="capitalize hover:text-primary-100">{c.name}</Link>
+                    <Link href={c.href} className="capitalize hover:underline">{c.name}</Link>
                   ) : (
                     <span className="capitalize">{c.name}</span>
                   )}
@@ -69,50 +74,50 @@ export default function ArticleLayout({
               {tags.length > 0 && (
                 <div className="mb-4 flex flex-wrap gap-2">
                   {tags.slice(0, 4).map(t => (
-                    <span key={t} className="rounded-full bg-[#EEF2FF] px-3 py-1 text-[12px] font-semibold text-primary-100">
+                    <span key={t} className="sl-white rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.08em] ring-1 ring-white/20">
                       {t}
                     </span>
                   ))}
                 </div>
               )}
               <h1
-                className="text-[28px] md:text-[40px] lg:text-[46px] font-semibold leading-[115%] tracking-[-0.015em] text-[#16171A]"
+                className="sl-white text-[28px] md:text-[40px] lg:text-[48px] font-bold leading-[113%] tracking-[-0.015em]"
                 dangerouslySetInnerHTML={{ __html: titleHtml }}
               />
               {intro && (
-                <p className="mt-4 max-w-[720px] md:!text-[18px] !text-[16px] !leading-[160%] text-[#5B5D63]">
+                <p className="sl-white mt-4 max-w-[720px] opacity-85 md:!text-[18px] !text-[16px] !leading-[160%]">
                   {intro}
                 </p>
               )}
-              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#6B6E76]">
-                <span className="inline-flex items-center gap-2 font-semibold text-[#16171A]">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-[12px] font-bold text-white">R</span>
+              <div className="sl-white mt-6 flex flex-wrap items-center gap-2 text-[13px]">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pl-1 pr-3 font-semibold ring-1 ring-white/15">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[12px] font-bold !text-[#1B2A6B]">R</span>
                   Reifexa Redaktion
                 </span>
                 {published && (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
                     <CalendarDays size={14} />
                     <time dateTime={published}>{formatBlogDate(published)}</time>
                   </span>
                 )}
                 {showUpdated && (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
                     <RefreshCw size={14} />
                     Aktualisiert <time dateTime={updated}>{formatBlogDate(updated)}</time>
                   </span>
                 )}
                 {minutes ? (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
                     <Clock size={14} /> {minutes} Min. Lesezeit
                   </span>
                 ) : null}
                 {views && views > 0 ? (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
                     <Eye size={14} /> {views.toLocaleString('de-DE')} {views === 1 ? 'Aufruf' : 'Aufrufe'}
                   </span>
                 ) : null}
                 {readTotal ? (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
                     <BookOpen size={14} /> {readTotal} insgesamt gelesen
                   </span>
                 ) : null}
@@ -139,21 +144,13 @@ export default function ArticleLayout({
           )}
 
           <div className="grid grid-cols-12 gap-y-8 lg:gap-x-12 pt-8 md:pt-12 pb-14">
-            <div className="col-span-12 lg:col-span-8 min-w-0">
+            <div id="article-body" className="col-span-12 lg:col-span-8 min-w-0 rounded-[20px] bg-white p-5 ring-1 ring-[#E4E7F0] sm:p-8 md:p-10">
               {toc.length > 1 && (
-                <details className="lg:hidden mb-6 rounded-[14px] border border-[#E9ECF3] bg-[#F7F8FB] p-4" open>
+                <details className="lg:hidden mb-6 rounded-[14px] bg-[#F6F8FC] p-4 ring-1 ring-[#E4E7F0]">
                   <summary className="flex cursor-pointer items-center gap-2 text-[15px] font-semibold text-[#16171A]">
-                    <ListOrdered size={17} className="text-primary-100" /> Inhalt
+                    <ListOrdered size={17} color="#2F4FD8" /> Inhalt
                   </summary>
-                  <ol className="mt-3 space-y-2 border-l-2 border-[#E4E7EE]">
-                    {toc.map(t => (
-                      <li key={t.id}>
-                        <a href={`#${t.id}`} className="block pl-3 text-[14px] leading-snug text-[#404042] hover:text-primary-100">
-                          {t.text}
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
+                  <TocNav items={toc} className="mt-3" />
                 </details>
               )}
               <div className="article-body max-w-[760px]">{children}</div>
@@ -162,26 +159,16 @@ export default function ArticleLayout({
             <aside className="col-span-12 lg:col-span-4">
               <div className="lg:sticky lg:top-28 flex flex-col gap-4">
                 {toc.length > 1 && (
-                  <nav aria-label="Inhaltsverzeichnis" className="hidden lg:block rounded-[16px] border border-[#E9ECF3] bg-white p-5">
-                    <p className="mb-3 flex items-center gap-2 text-[15px] font-semibold text-[#16171A]">
-                      <ListOrdered size={17} className="text-primary-100" /> Inhalt
+                  <nav aria-label="Inhaltsverzeichnis" className="hidden lg:block max-h-[calc(100vh-20rem)] overflow-y-auto rounded-[20px] bg-white p-4 ring-1 ring-[#E4E7F0]">
+                    <p className="mb-2 flex items-center gap-2 px-2.5 text-[12px] font-bold uppercase tracking-[0.12em] !text-[#6B7280]">
+                      <ListOrdered size={15} color="#2F4FD8" /> Inhalt
                     </p>
-                    <ol className="space-y-2 border-l-2 border-[#EEF0F4]">
-                      {toc.map(t => (
-                        <li key={t.id}>
-                          <a
-                            href={`#${t.id}`}
-                            className="-ml-[2px] block border-l-2 border-transparent pl-3 text-[14px] leading-snug text-[#5B5D63] hover:border-primary-100 hover:text-primary-100"
-                          >
-                            {t.text}
-                          </a>
-                        </li>
-                      ))}
-                    </ol>
+                    <TocNav items={toc} />
                   </nav>
                 )}
 
-                <div className="relative overflow-hidden rounded-[16px] bg-[#0F1E4D] p-6 text-white">
+                <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-[#0B1437] via-[#1B2A6B] to-[#2F4FD8] p-6">
+                  <span className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full border-[16px] border-white/5" aria-hidden />
                   <p className="mb-1 text-[18px] font-semibold !text-white">Reifen vergleichen</p>
                   <p className="mb-4 !text-[14px] !text-white/75">
                     Über 40.000 Reifen – Preise mehrmals täglich aktualisiert.
@@ -217,7 +204,7 @@ export default function ArticleLayout({
       </article>
 
       {related.length > 0 && (
-        <section className="bg-[#F6F8FC] py-12 md:py-16" aria-labelledby="related-title">
+        <section className="border-t border-[#E4E7F0] bg-white py-12 md:py-16" aria-labelledby="related-title">
           <div className="custom-container">
             <div className="mb-6 flex items-end justify-between gap-4">
               <h2 id="related-title" className="text-[24px] md:text-[30px] font-semibold text-[#16171A]">
