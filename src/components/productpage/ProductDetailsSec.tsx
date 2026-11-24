@@ -1301,7 +1301,33 @@ const shareImage = !rawShareImage
                     {cheapestOffer?.payment_icons?.length ? (
                       <div className="mt-4 border-t border-[#E9ECF3] pt-3">
                         <span className="text-[12px] font-medium text-[#6B6E76]">Zahlungsmethoden</span>
-                        <ul className="payment-method-list mt-2 flex flex-wrap items-center gap-1.5">
+                        {/* A click on the payment icons opens the same offer as "Zum Angebot". */}
+                        <VendorExitLink
+                          href={buildVendorExitUrl({
+                            token: cheapestOffer?.affiliate_product_cloak_url || '',
+                            productId: product._id,
+                            uuid: uuidCookie || 'guest',
+                            from: 'product-details-payment',
+                            vendor: cheapestOffer?.vendor,
+                            vendorId: cheapestOffer?.vendor_id,
+                            brand: product.brand_name,
+                            instruction: 'Zum Angebot',
+                          })}
+                          onExit={() =>
+                            onVendorExitClick({
+                              productId: product._id,
+                              productName: product.product_name,
+                              brandName: product.brand_name,
+                              vendor: cheapestOffer?.vendor,
+                              vendorId: cheapestOffer?.vendor_id,
+                              source: 'product-details-payment',
+                              instruction: 'Zum Angebot',
+                              vendorPrice: cheapestOffer?.price,
+                            })
+                          }
+                          className="mt-2 block w-fit cursor-pointer"
+                        >
+                        <ul className="payment-method-list flex flex-wrap items-center gap-1.5">
                           {cheapestOffer.payment_icons.map((icon: string, idx: number) => {
                             const paymentName = paymentDisplayName(icon, idx);
                             return (
@@ -1313,6 +1339,7 @@ const shareImage = !rawShareImage
                             );
                           })}
                         </ul>
+                        </VendorExitLink>
                       </div>
                     ) : null}
                   </div>
@@ -1579,6 +1606,8 @@ const shareImage = !rawShareImage
                             {/* Payments */}
                             <div className="offer-product-bottom-cont col-span-2 md:col-span-2">
                               <span className="sr-only">Zahlungsmethoden:</span>
+                              {/* A click on the payment icons opens this offer's shop (same link as Zum Angebot). */}
+                              <VendorExitLink href={outHref} onExit={onOfferExit} className="block w-fit cursor-pointer">
                               <ul className="payment-methods-list flex items-center flex-wrap gap-1.5" aria-label="Zahlungsmethoden">
                                 {resolveOfferPaymentIcons(offer.vendor, offer.payment_icons).map((icon: string, i: number) => {
                                   const display = paymentDisplayName(icon, i);
@@ -1591,6 +1620,7 @@ const shareImage = !rawShareImage
                                   );
                                 })}
                               </ul>
+                              </VendorExitLink>
                             </div>
 
                             {/* CTAs */}
