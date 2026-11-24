@@ -93,7 +93,7 @@ export default function WorldMap({ cities }: { cities: City[] }) {
     const spots = placed(cities);
     const max = Math.max(1, ...spots.map((city) => city.count));
     for (const city of spots) {
-      const size = Math.round(22 + 30 * Math.sqrt(city.count / max));
+      const size = Math.round(12 + 6 * Math.sqrt(city.count / max));
       const icon = L.divIcon({
         className: 'rx-live-pin',
         html: `<span class="rx-live-dot" style="width:${size}px;height:${size}px"></span>`,
@@ -104,9 +104,8 @@ export default function WorldMap({ cities }: { cities: City[] }) {
       tip.textContent = `${placeLabel(city.country, city.label, city.point)} · ${city.count} active`;
       const marker = L.marker(city.point!, { icon, keyboard: false, zIndexOffset: 500 });
       marker.bindTooltip(tip, {
-        permanent: true,
         direction: 'top',
-        offset: [0, -Math.round(size / 2)],
+        offset: [0, -8],
         className: 'rx-live-label',
         opacity: 1,
       }).addTo(layer);
