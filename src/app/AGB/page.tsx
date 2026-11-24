@@ -25,7 +25,7 @@ export default function TermsPage() {
           <h1 className="text-3xl font-bold tracking-tight text-secondary-100">
             Allgemeine Geschäftsbedingungen (AGB) für Reifexa.de
           </h1>
-        <p><a className="underline" href="/auto-api/bedingungen">Bedingungen für den Auto-API-Zugang</a></p>
+        <p className="mt-2 text-sm">Für die Reifexa Auto-API gelten zusätzlich die <a className="underline" href="/auto-api/bedingungen">API-Nutzungsbedingungen</a> und die <a className="underline" href="/auto-api/preise-und-zahlung">Preis- und Zahlungsbedingungen</a>.</p>
           <p className="mt-2 text-sm text-gray-500">
             Zuletzt aktualisiert: {new Date().toLocaleDateString('de-DE')}
           </p>
