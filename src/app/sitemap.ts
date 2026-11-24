@@ -22,6 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/artikel', changeFrequency: 'daily', priority: 0.8 },
     { path: '/impressum-datenschutz', changeFrequency: 'monthly', priority: 0.3 },
     { path: '/AGB', changeFrequency: 'monthly', priority: 0.3 },
+    { path: '/auto-api', changeFrequency: 'weekly', priority: 0.6 },
+    { path: '/auto-api/dokumentation', changeFrequency: 'monthly', priority: 0.5 },
+    { path: '/auto-api/bedingungen', changeFrequency: 'monthly', priority: 0.3 },
+    { path: '/auto-api/preise-und-zahlung', changeFrequency: 'monthly', priority: 0.3 },
   ]
 
   const { sizes, brands, brandSizes } = await fetchLandings()
