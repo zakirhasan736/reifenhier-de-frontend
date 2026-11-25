@@ -20,14 +20,14 @@ type Spot = City & { point: [number, number]; key: string; name: string };
 const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services';
 const STYLES: Record<Style, { label: string; layers: { url: string; pane?: string }[]; attribution: string }> = {
   light: {
-    // Light grey map with city and country names (Google-Analytics look)
+    // Esri Light Gray Canvas (no API key needed): grey land with city and country names.
+    // Names are in their own layer above the visitor circles, so they stay readable (like GA).
     label: 'Light',
-    // names in their own layer above the circles, so they stay readable (like GA)
     layers: [
-      { url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png' },
-      { url: 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', pane: 'rxLabels' },
+      { url: `${ESRI}/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}` },
+      { url: `${ESRI}/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, pane: 'rxLabels' },
     ],
-    attribution: '© OpenStreetMap contributors © CARTO',
+    attribution: '© Esri, HERE, Garmin, © OpenStreetMap',
   },
   streets: {
     label: 'Streets',
@@ -36,7 +36,7 @@ const STYLES: Record<Style, { label: string; layers: { url: string; pane?: strin
   },
   satellite: {
     label: 'Satellite',
-    layers: [{ url: `${ESRI}/World_Imagery/MapServer/tile/{z}/{y}/{x}` }, { url: `${ESRI}/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}`, pane: 'overlayPane' }],
+    layers: [{ url: `${ESRI}/World_Imagery/MapServer/tile/{z}/{y}/{x}` }, { url: `${ESRI}/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}`, pane: 'rxLabels' }],
     attribution: '© Esri, Maxar, Earthstar Geographics',
   },
 };
@@ -168,7 +168,6 @@ export default function WorldMap({ cities, last30, last5, minutes }: { cities: C
       L.tileLayer(l.url, {
         maxZoom: 19,
         maxNativeZoom: 18,
-        subdomains: 'abcd',
         ...(l.pane ? { pane: l.pane } : {}),
         attribution: l === STYLES[style].layers[0] ? STYLES[style].attribution : undefined,
       }).addTo(group);
