@@ -404,7 +404,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   ],
                   text: {
                     banner: {
-                      description: "<p>Hiermit informieren wir Sie darüber, dass auf dieser Website Cookies verwendet werden. <a href='/impressum-datenschutz' target='_blank'>Datenschutzerklärung</a></p>",
+                      description: "<div class='rx-ck-text'><p class='rx-ck-title'>Bevor es losgeht: Bitte wählen Sie Ihre Cookie-Einstellung</p><p>Hiermit informieren wir Sie darüber, dass auf dieser Website Cookies verwendet werden. Danach können Sie die Seite ganz normal nutzen. <a href='/impressum-datenschutz' target='_blank'>Datenschutzerklärung</a></p></div>",
                       acceptAllButtonText: "Alle akzeptieren",
                       rejectNonEssentialButtonText: "Alle ablehnen",
                       preferencesButtonText: "Einstellungen"
@@ -421,8 +421,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               var tries = 0;
               var interval = setInterval(function () {
                 tries += 1;
-                if (setupSilktide() || tries >= 50) clearInterval(interval);
-              }, 200);
+                if (setupSilktide() || tries >= 100) clearInterval(interval);
+              }, 100);
             })();
           `}
         </Script>
