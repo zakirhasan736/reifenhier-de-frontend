@@ -148,3 +148,96 @@ export function listingUrlForSize(p: TyreListingInput) {
   const qs = params.toString();
   return qs ? `/produkte?${qs}` : '/produkte';
 }
+
+const PREMIUM_BRANDS = ['michelin', 'continental', 'bridgestone', 'goodyear', 'pirelli', 'dunlop'];
+const QUALITY_BRANDS = [
+  'hankook', 'nokian', 'vredestein', 'falken', 'toyo', 'yokohama', 'kumho', 'bfgoodrich', 'uniroyal', 'semperit',
+  'barum', 'fulda', 'firestone', 'kleber', 'cooper', 'nexen', 'general', 'gt radial', 'maxxis', 'kenda', 'sava',
+  'debica', 'matador', 'giti', 'laufenn', 'avon', 'apollo', 'kormoran', 'riken', 'tigar',
+];
+const brandScore = (name: string) => {
+  const n = String(name || '').toLowerCase().trim();
+  if (PREMIUM_BRANDS.some(b => n.startsWith(b))) return 1;
+  if (QUALITY_BRANDS.some(b => n.startsWith(b))) return 0.5;
+  return 0;
+};
+/** A=1 … E=0.2 – the same scale Searchlight uses */
+const labelScore = (g?: string) => {
+  const r = gradeRank(g);
+  return r === 99 ? 0.45 : Math.max(0, (5 - r) / 5);
+};
+
+export type CompareVerdict = {
+  /** 0..100 per product id – same idea as Searchlight's match score */
+  scores: Record<string, number>;
+  bestId: string | null;
+  /** short reasons for the best product, from our own data only */
+  reasons: string[];
+  /** extra cost for 4 tyres compared with the cheapest product */
+  extraFor4: Record<string, number>;
+};
+
+const euro = (n: number) => `${n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+
+/**
+ * One clear answer for the comparison, weighted exactly like Searchlight's
+ * "Preis-Leistung" (wet grip 3, price 3, brand 2, fuel 1.5, noise 1, rating 1),
+ * so the compare winner and Searchlight's recommendation agree.
+ */
+export function compareVerdict(products: CompareProduct[]): CompareVerdict {
+  const empty: CompareVerdict = { scores: {}, bestId: null, reasons: [], extraFor4: {} };
+  if (!products.length) return empty;
+  const prices = products.map(comparePrice).filter(p => p > 0);
+  const lo = prices.length ? Math.min(...prices) : 0;
+  const hi = prices.length ? Math.max(...prices) : 0;
+  const dbs = products.map(noiseDb).filter((d): d is number => d != null);
+  const dbLo = dbs.length ? Math.min(...dbs) : 0;
+  const dbHi = dbs.length ? Math.max(...dbs) : 0;
+  const W = { wet: 3, cheap: 3, brand: 2, fuel: 1.5, quiet: 1, rating: 1 };
+  const total = Object.values(W).reduce((a, b) => a + b, 0);
+
+  const raw = products.map(p => {
+    const price = comparePrice(p);
+    const cheap = price > 0 && hi > lo ? 1 - (price - lo) / (hi - lo) : price > 0 ? 1 : 0;
+    const db = noiseDb(p);
+    const quiet = db == null ? 0.45 : Math.max(0, Math.min(1, (76 - db) / 10));
+    const r = Number(p.average_rating);
+    const rating = r > 0 ? Math.max(0, Math.min(1, (r - 2.5) / 2.5)) : 0.5;
+    const s =
+      (labelScore(p.wet_grip) * W.wet + cheap * W.cheap + brandScore(p.brand_name) * W.brand + labelScore(p.fuel_class) * W.fuel + quiet * W.quiet + rating * W.rating) / total;
+    return { p, s };
+  });
+  const scores: Record<string, number> = {};
+  raw.forEach(r => (scores[r.p._id] = Math.round(50 + r.s * 49)));
+  const best = [...raw].sort((a, b) => b.s - a.s || comparePrice(a.p) - comparePrice(b.p))[0]?.p || null;
+
+  const extraFor4: Record<string, number> = {};
+  products.forEach(p => {
+    const price = comparePrice(p);
+    extraFor4[p._id] = price > 0 && lo > 0 ? Math.round((price - lo) * 4 * 100) / 100 : 0;
+  });
+
+  const reasons: string[] = [];
+  if (best && products.length > 1) {
+    const others = products.filter(p => p._id !== best._id);
+    const bestPrice = comparePrice(best);
+    const wet = String(best.wet_grip || '').toUpperCase()[0];
+    const betterWet = others.filter(o => gradeRank(o.wet_grip) > gradeRank(best.wet_grip)).length;
+    if (bestPrice > 0 && bestPrice === lo) reasons.push('Günstigster Reifen im Vergleich');
+    else if (bestPrice > 0) {
+      const pricier = others.filter(o => comparePrice(o) > bestPrice);
+      if (pricier.length) {
+        const save = Math.max(...pricier.map(o => (comparePrice(o) - bestPrice) * 4));
+        reasons.push(`Bis zu ${euro(save)} günstiger als die teureren Reifen (4 Stück)`);
+      }
+    }
+    if (wet && betterWet === others.length && others.length) reasons.push(`Beste Nasshaftung im Vergleich (${wet})`);
+    else if (wet && 'AB'.includes(wet)) reasons.push(`Sehr gute Nasshaftung (${wet}) – kurzer Bremsweg bei Regen`);
+    const fuel = String(best.fuel_class || '').toUpperCase()[0];
+    if (fuel && 'AB'.includes(fuel)) reasons.push(`Geringer Rollwiderstand (${fuel}) – spart Sprit`);
+    const db = noiseDb(best);
+    if (db != null && db === dbLo && dbHi > dbLo) reasons.push(`Leisester Reifen (${db} dB)`);
+    if ((best.offer_count || 0) > 1) reasons.push(`${best.offer_count} Shops im Preisvergleich`);
+  }
+  return { scores, bestId: best?._id || null, reasons: reasons.slice(0, 3), extraFor4 };
+}
