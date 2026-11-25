@@ -1,6 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toMoneyNumber } from '@/libs/money';
 
+/** One shop offer for the compare table (cheapest first). */
+export interface CompareOffer {
+  vendor: string;
+  vendor_id?: string;
+  price: number;
+  token?: string;
+  logo?: string;
+  in_stock?: boolean;
+  delivery_cost?: number | null;
+}
+
 export interface CompareProduct {
   _id: string;
   slug: string;
@@ -32,6 +43,8 @@ export interface CompareProduct {
   price_checked_at?: number;
   /** stored daily best prices: { points: [['2026-11-01', 64.9], …] } */
   price_trend?: { points?: [string, number][] } | null;
+  /** shops for this tyre, in stock first, then cheapest */
+  offers_top?: CompareOffer[];
 }
 
 type CheapestVendorLike = {
@@ -58,6 +71,44 @@ interface CompareState {
 const MAX_COMPARE = 4;
 
 export const COMPARE_STORAGE_KEY = 'reifexa_compare_v1';
+
+type RawOffer = {
+  vendor?: string;
+  vendor_id?: string | number;
+  price?: unknown;
+  affiliate_product_cloak_url?: string;
+  vendor_logo?: string;
+  in_stock?: boolean;
+  delivery_cost?: unknown;
+};
+
+/** Shops sorted like the product page: deliverable first, then price; one row per shop. */
+export function topOffers(raw: unknown, max = 6): CompareOffer[] | undefined {
+  if (!Array.isArray(raw) || !raw.length) return undefined;
+  const seen = new Set<string>();
+  const out: CompareOffer[] = [];
+  const list = (raw as RawOffer[])
+    .map(o => ({ o, price: toMoneyNumber(o?.price) ?? 0 }))
+    .filter(x => x.o && x.price > 0)
+    .sort((a, b) => Number(a.o.in_stock === false) - Number(b.o.in_stock === false) || a.price - b.price);
+  for (const { o, price } of list) {
+    const key = String(o.vendor || o.vendor_id || '').trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    const logo = String(o.vendor_logo || '').trim();
+    out.push({
+      vendor: String(o.vendor || 'Shop'),
+      vendor_id: o.vendor_id != null ? String(o.vendor_id) : undefined,
+      price,
+      token: o.affiliate_product_cloak_url || undefined,
+      logo: logo && logo !== '0' ? logo : undefined,
+      in_stock: o.in_stock !== false,
+      delivery_cost: toMoneyNumber(o.delivery_cost),
+    });
+    if (out.length >= max) break;
+  }
+  return out.length ? out : undefined;
+}
 
 function asImage(value: unknown) {
   if (Array.isArray(value)) return String(value[0] || '');
@@ -100,6 +151,7 @@ export function normalizeCompareProduct(raw: RawCompareInput): CompareProduct {
       (Array.isArray(raw.offers) ? raw.offers.length : undefined) ??
       raw.offer_count,
     price_checked_at: raw.price_checked_at,
+    offers_top: topOffers(raw.offers) ?? raw.offers_top,
     price_trend:
       raw.price_trend && Array.isArray(raw.price_trend.points)
         ? { points: raw.price_trend.points.filter(x => Array.isArray(x) && x.length === 2).slice(-60) as [string, number][] }
