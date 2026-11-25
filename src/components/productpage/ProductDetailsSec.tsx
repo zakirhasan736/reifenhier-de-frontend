@@ -1153,7 +1153,32 @@ const shareImage = !rawShareImage
                     <div className="flex flex-col gap-3">
                       <div>
                         <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6B6E76]">Bester Preis</span>
-                        <div className="mt-1 flex flex-wrap items-baseline gap-2">
+                        {/* A click on the best price opens the same offer as "Zum Angebot". */}
+                        <VendorExitLink
+                          href={cheapestOffer?.affiliate_product_cloak_url ? buildVendorExitUrl({
+                            token: cheapestOffer.affiliate_product_cloak_url,
+                            productId: product._id,
+                            uuid: uuidCookie || 'guest',
+                            from: 'product-details-price',
+                            vendor: cheapestOffer?.vendor,
+                            vendorId: cheapestOffer?.vendor_id,
+                            brand: product.brand_name,
+                            instruction: 'Zum Angebot',
+                          }) : '#angebote'}
+                          onExit={() =>
+                            onVendorExitClick({
+                              productId: product._id,
+                              productName: product.product_name,
+                              brandName: product.brand_name,
+                              vendor: cheapestOffer?.vendor,
+                              vendorId: cheapestOffer?.vendor_id,
+                              source: 'product-details-price',
+                              instruction: 'Zum Angebot',
+                              vendorPrice: cheapestOffer?.price,
+                            })
+                          }
+                          className="mt-1 flex w-fit flex-wrap items-baseline gap-2 cursor-pointer"
+                        >
                           <span className="text-[30px] md:text-[34px] leading-none font-semibold font-primary text-[#16171A] tabular-nums">
                             {formatEUR(cheapPrice)}
                           </span>
@@ -1167,7 +1192,7 @@ const shareImage = !rawShareImage
                               {productSavings}
                             </span>
                           ) : null}
-                        </div>
+                        </VendorExitLink>
                         <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2">
                         {fromPriceLabel && (
                           <p className="!text-[13px] text-[#6B6E76]">
@@ -1574,9 +1599,9 @@ const shareImage = !rawShareImage
                             {/* Price */}
                             <div className="offer-product-top-cont col-span-1 md:col-span-3 text-right md:text-left">
                               <div className="flex items-center justify-end md:justify-start gap-2 flex-wrap">
-                                <span className="offer-price text-[22px] md:text-[24px] font-semibold text-[#16171A] tabular-nums">
+                                <VendorExitLink href={outHref} onExit={onOfferExit} className="offer-price text-[22px] md:text-[24px] font-semibold text-[#16171A] tabular-nums cursor-pointer hover:underline">
                                   {formatEUR(price)}
-                                </span>
+                                </VendorExitLink>
                                 {savingsLabel ? <SavingsPercentBadge label={savingsLabel} tooltipPlacement="right" /> : null}
                               </div>
                               <p className="mt-0.5 !text-[12px] !tracking-normal text-[#6B6E76]">

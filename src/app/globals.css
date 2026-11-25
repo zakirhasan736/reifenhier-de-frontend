@@ -2437,24 +2437,6 @@ a.offer-pulse .finger-hand * {
   40% { transform: translate(-2px, 5px) rotate(-10deg); }
   55% { transform: translate(0, 1px) rotate(-2deg); }
 }
-#silktide-wrapper #silktide-banner,
-#silktide-wrapper #silktide-banner .actions {
-  overflow: visible;
-}
-#silktide-wrapper #silktide-banner button.accept-all.offer-pulse {
-  position: relative;
-  overflow: visible;
-  padding-right: 2.75rem;
-}
-#silktide-wrapper #silktide-banner button.accept-all .offer-hand {
-  right: 2px;
-  left: auto;
-  top: 50%;
-  width: 44px;
-  height: 44px;
-  margin-top: -22px;
-  z-index: 6;
-}
 .offer-ping {
   position: absolute;
   inset: 0;
@@ -2720,3 +2702,155 @@ a.offer-pulse .finger-hand * {
 [aria-label="Searchlight Reifen-Assistent"] p,
 [aria-labelledby="compare-title"] p { letter-spacing: normal; }
 select.sl-select, select.sl-select:focus, select.sl-select:focus-visible, select.sl-select:valid { border: 0 !important; }
+
+/* ================= Cookie banner: full width, dark overlay, guide hand ================= */
+#silktide-wrapper {
+  --backdropBackgroundColor: rgba(7, 11, 28, 0.74);
+  --backdropBackgroundBlur: 3px;
+  --primaryColor: #1B2A6B;
+  --textColor: #2B3040;
+  --fontFamily: var(--font-poppins), Poppins, 'Segoe UI', Arial, sans-serif;
+}
+#silktide-wrapper #silktide-banner {
+  top: auto !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  overflow: visible !important;
+  border-radius: 24px 24px 0 0 !important;
+  padding: 22px max(20px, calc((100vw - 1200px) / 2)) calc(22px + env(safe-area-inset-bottom)) !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 36px;
+  align-items: center;
+  box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.35) !important;
+  transform: translateY(0) !important;
+  opacity: 1;
+  animation: rx-ck-up 0.25s ease-out both !important;
+  animation-delay: 0s !important;
+}
+#silktide-wrapper #silktide-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(90deg, #1B2A6B, #2F4FD8, #4ADE80);
+}
+@keyframes rx-ck-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+#silktide-wrapper #silktide-banner .rx-ck-text p { margin: 0; font-size: 14.5px; line-height: 1.6; letter-spacing: normal; }
+#silktide-wrapper #silktide-banner .rx-ck-text p.rx-ck-title {
+  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #16171A;
+}
+#silktide-wrapper #silktide-banner .actions { margin-top: 0 !important; gap: 12px !important; flex-direction: row !important; align-items: center !important; flex-wrap: wrap; justify-content: flex-end; }
+#silktide-wrapper #silktide-banner .actions-row { flex-grow: 0 !important; gap: 8px !important; }
+#silktide-wrapper #silktide-banner .silktide-logo { display: none !important; }
+#silktide-wrapper #silktide-banner .preferences { padding: 10px 4px !important; font-size: 14px !important; color: #4B5163 !important; }
+#silktide-wrapper #silktide-banner button.accept-all {
+  position: relative;
+  overflow: visible;
+  min-height: 52px;
+  padding: 12px 30px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(90deg, #15803D, #22C55E) !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 14px 28px -12px rgba(22, 163, 74, 0.8);
+}
+#silktide-wrapper #silktide-banner button.accept-all:hover { filter: brightness(1.05); }
+#silktide-wrapper #silktide-banner button.reject-all {
+  min-height: 52px;
+  padding: 12px 22px !important;
+  border-radius: 14px !important;
+  border: 1.5px solid #CBD2E1 !important;
+  background: #fff !important;
+  color: #2B3040 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+#silktide-wrapper #silktide-banner .rx-ck-hint {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: #FEF3C7;
+  color: #78350F;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+#silktide-wrapper #silktide-banner.rx-ck-nudge .rx-ck-hint { display: flex; }
+#silktide-wrapper #silktide-banner.rx-ck-shake { animation: rx-ck-shake 0.5s ease-in-out !important; }
+@keyframes rx-ck-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+@media (max-width: 767px) {
+  #silktide-wrapper #silktide-banner {
+    grid-template-columns: 1fr;
+    row-gap: 14px;
+    padding: 20px 16px calc(16px + env(safe-area-inset-bottom)) !important;
+  }
+  #silktide-wrapper #silktide-banner .rx-ck-text p.rx-ck-title { font-size: 16px; }
+  #silktide-wrapper #silktide-banner .rx-ck-text p { font-size: 13.5px; }
+  #silktide-wrapper #silktide-banner .actions { justify-content: stretch; }
+  #silktide-wrapper #silktide-banner button.accept-all { order: 1; flex: 1 1 100%; }
+  #silktide-wrapper #silktide-banner button.reject-all { order: 2; flex: 1 1 0; }
+  #silktide-wrapper #silktide-banner .actions-row { order: 3; flex: 0 0 auto; }
+}
+
+/* Guide hand: from the middle of the screen to "Alle akzeptieren" */
+.rx-ck-hand {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 150px;
+  z-index: 100002;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+  will-change: transform, opacity;
+}
+.rx-ck-hand svg { width: 150px !important; height: 150px !important; display: block; }
+.rx-ck-ring {
+  position: fixed;
+  z-index: 100001;
+  pointer-events: none;
+  border-radius: 18px;
+  border: 3px solid #4ADE80;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rx-ck-ring.on { animation: rx-ck-ring 1.4s ease-out infinite; }
+}
+@keyframes rx-ck-ring {
+  0% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+.rx-ck-shade {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  background: rgba(7, 11, 28, 0.74);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: sl-fade 0.2s ease-out both;
+}
+html.rx-ck-open, html.rx-ck-open body { overflow: hidden; }
+/* the banner sits above our shade; Silktide's own backdrop is not needed */
+#silktide-wrapper #silktide-backdrop { background: transparent !important; backdrop-filter: none !important; }
