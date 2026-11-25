@@ -20,6 +20,13 @@ export type Pick = {
   vendorId: string;
   token: string;
   reason: string;
+  /** 55–99: how well it fits the visitor's wishes compared with all tyres of the size */
+  match?: number | null;
+  pros?: string[];
+  cons?: string[];
+  inStock?: boolean;
+  rating?: number | null;
+  reviews?: number;
 };
 
 export type Criteria = {
@@ -31,13 +38,23 @@ export type Criteria = {
   budgetPer4?: number;
   minLoadIndex?: number;
   minSpeed?: string;
+  brand?: string;
+  runflat?: boolean;
+  xl?: boolean;
+  /** server picked the season of the month because none was given */
+  seasonAssumed?: boolean;
+  car?: { make: string; model: string; year?: string };
 };
 
 export type RecommendResult = {
   criteria: Criteria;
-  needs: 'size' | null;
+  needs: 'size' | 'carSize' | null;
   message: string;
   total?: number;
+  summary?: { minPrice: number; avgPrice: number; maxPrice: number };
+  /** needs === 'carSize': the sizes of the named car */
+  sizes?: CarSize[];
+  car?: { make: string; model: string; year?: string; generation?: string; note?: string };
   picks: Pick[];
 };
 
@@ -80,7 +97,7 @@ async function post<T>(path: string, body: unknown, signal?: AbortSignal): Promi
   return j as T;
 }
 
-export const recommend = (body: Criteria & { text?: string }) => post<RecommendResult>('/recommend', body);
+export const recommend = (body: Criteria & { text?: string; keepSize?: boolean }) => post<RecommendResult>('/recommend', body);
 export const productCheck = (slug: string) => post<ProductCheck>('/product-check', { slug });
 export const carSizes = (body: { make: string; model: string; year?: string }, signal?: AbortSignal) => post<CarResult>('/car', body, signal);
 export const readPhoto = (image: string) => post<PhotoResult>('/photo', { image });
