@@ -6,12 +6,13 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { AlertTriangle, ArrowRight, Check, Crown, Gauge, Plus, Ruler, ShieldCheck, Trash2, Volume1, X, Droplets, Fuel, Tag } from 'lucide-react';
 import OptimizedImage from '@/components/elements/OptimizedImage';
+import PriceTrendChart from '@/components/elements/PriceTrendChart';
 import VendorExitLink from '@/components/elements/VendorExitLink';
 import { productImageSrc } from '@/libs/productImage';
 import { addProduct, refreshCompareProducts, closeModal, clearProducts, removeProduct, type CompareProduct } from '@/store/compareSlice';
 import type { AppDispatch, RootState } from '@/store/store';
 import { formatEuro } from '@/libs/money';
-import { comparePrice, compareVerdict, gradeRank, listingUrlForSize, loadRank, noiseDb, parseTyreSize, sameSize, speedRank } from '@/libs/compare';
+import { comparePrice, compareVerdict, gradeRank, listingUrlForSize, loadRank, noiseDb, parseTyreSize, sameSize, shopSavingsPct, speedRank, trendPoints } from '@/libs/compare';
 import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
 
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
@@ -169,13 +170,28 @@ export default function CompareModal() {
       label: 'Preis',
       icon: <Tag size={15} color="#2F4FD8" />,
       isBest: p => comparePrice(p) > 0 && comparePrice(p) === priceMin && !allSame(products.map(comparePrice)),
-      render: p => (
-        <span className="block">
-          <span className="block text-[17px] font-bold !text-[#16171A]">{formatEuro(comparePrice(p))}</span>
-          <span className="block text-[11.5px] !text-[#6B7280]">4 Stück {formatEuro(comparePrice(p) * 4)}</span>
-          {verdict.extraFor4[p._id] > 0 ? <span className="block text-[11.5px] font-semibold !text-[#C2410C]">+{formatEuro(verdict.extraFor4[p._id])} für 4</span> : null}
-        </span>
-      ),
+      render: p => {
+        const sp = shopSavingsPct(p);
+        const t = trendPoints(p);
+        return (
+          <span className="block w-full">
+            <span className="block text-[17px] font-bold !text-[#16171A]">{formatEuro(comparePrice(p))}</span>
+            <span className="block text-[11.5px] !text-[#6B7280]">4 Stück {formatEuro(comparePrice(p) * 4)}</span>
+            {verdict.extraFor4[p._id] > 0 ? <span className="block text-[11.5px] font-semibold !text-[#C2410C]">+{formatEuro(verdict.extraFor4[p._id])} für 4</span> : null}
+            {sp ? (
+              <span className="mt-1 inline-block rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[10.5px] font-bold !text-[#15803D]">−{sp} % vs. teuerster Shop</span>
+            ) : null}
+            {t ? (
+              <span className="mx-auto mt-1.5 block max-w-[170px]">
+                <PriceTrendChart points={t.points} height={40} showAxis={false} />
+                <span className={`block text-[10.5px] font-semibold ${t.pct < 0 ? '!text-[#15803D]' : t.pct > 0 ? '!text-[#B91C1C]' : '!text-[#6B7280]'}`}>
+                  {t.pct < 0 ? `↓ ${Math.abs(t.pct)} %` : t.pct > 0 ? `↑ ${t.pct} %` : 'stabil'} · 60 Tage{t.isLowest ? ' · Tiefstpreis' : ''}
+                </span>
+              </span>
+            ) : null}
+          </span>
+        );
+      },
       hint: p => (p.best_vendor ? `bei ${p.best_vendor}${p.offer_count && p.offer_count > 1 ? ` · ${p.offer_count} Shops` : ''}` : ''),
     },
     {
@@ -310,6 +326,18 @@ export default function CompareModal() {
                   <div className="sl-white flex-1 md:flex-none">
                     <p className="text-[22px] font-bold leading-none">{formatEuro(comparePrice(best))}</p>
                     <p className="mt-1 text-[12px] opacity-75">4 Stück {formatEuro(comparePrice(best) * 4)}</p>
+                    {(() => {
+                      const t = trendPoints(best);
+                      return t ? (
+                        <div className="mt-1.5 max-w-[200px]">
+                          <PriceTrendChart points={t.points} height={34} showAxis={false} dark />
+                          <p className="text-[11px] font-semibold opacity-90">
+                            {t.pct < 0 ? `↓ ${Math.abs(t.pct)} % in 60 Tagen` : t.pct > 0 ? `↑ ${t.pct} % in 60 Tagen` : 'Preis stabil'}
+                            {t.isLowest ? ' · Tiefstpreis' : ''}
+                          </p>
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                   <ShopLink
                     p={best}

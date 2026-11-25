@@ -30,6 +30,8 @@ export interface CompareProduct {
   best_vendor_token?: string;
   offer_count?: number;
   price_checked_at?: number;
+  /** stored daily best prices: { points: [['2026-11-01', 64.9], …] } */
+  price_trend?: { points?: [string, number][] } | null;
 }
 
 type CheapestVendorLike = {
@@ -98,6 +100,10 @@ export function normalizeCompareProduct(raw: RawCompareInput): CompareProduct {
       (Array.isArray(raw.offers) ? raw.offers.length : undefined) ??
       raw.offer_count,
     price_checked_at: raw.price_checked_at,
+    price_trend:
+      raw.price_trend && Array.isArray(raw.price_trend.points)
+        ? { points: raw.price_trend.points.filter(x => Array.isArray(x) && x.length === 2).slice(-60) as [string, number][] }
+        : raw.price_trend ?? undefined,
   };
 }
 
