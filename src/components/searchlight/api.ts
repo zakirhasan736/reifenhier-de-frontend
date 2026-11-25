@@ -27,6 +27,12 @@ export type Pick = {
   inStock?: boolean;
   rating?: number | null;
   reviews?: number;
+  /** most expensive shop for the same tyre and how much less the best price is */
+  maxShopPrice?: number | null;
+  shopSavingsPct?: number;
+  shopSavingsFor4?: number;
+  /** price line of the last ~60 days (step points, last = today) */
+  trend?: { points: [string, number][]; pct: number; low: number; high: number; isLowest: boolean; days: number } | null;
 };
 
 export type Criteria = {

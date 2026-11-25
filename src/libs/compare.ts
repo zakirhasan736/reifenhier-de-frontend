@@ -231,6 +231,8 @@ export function compareVerdict(products: CompareProduct[]): CompareVerdict {
         reasons.push(`Bis zu ${euro(save)} günstiger als die teureren Reifen (4 Stück)`);
       }
     }
+    const sp = shopSavingsPct(best);
+    if (sp) reasons.push(`${sp} % günstiger als beim teuersten Shop`);
     if (wet && betterWet === others.length && others.length) reasons.push(`Beste Nasshaftung im Vergleich (${wet})`);
     else if (wet && 'AB'.includes(wet)) reasons.push(`Sehr gute Nasshaftung (${wet}) – kurzer Bremsweg bei Regen`);
     const fuel = String(best.fuel_class || '').toUpperCase()[0];
@@ -240,4 +242,31 @@ export function compareVerdict(products: CompareProduct[]): CompareVerdict {
     if ((best.offer_count || 0) > 1) reasons.push(`${best.offer_count} Shops im Preisvergleich`);
   }
   return { scores, bestId: best?._id || null, reasons: reasons.slice(0, 3), extraFor4 };
+}
+
+/** Stored daily best prices of the last 60 days + today's price (null if < 2 points). */
+export function trendPoints(p: CompareProduct, now = new Date()): { points: [string, number][]; pct: number; isLowest: boolean } | null {
+  const raw = (p.price_trend?.points || []).filter(x => Array.isArray(x) && x.length === 2 && Number(x[1]) > 0);
+  const cut = new Date(now.getTime() - 60 * 864e5).toISOString().slice(0, 10);
+  const today = now.toISOString().slice(0, 10);
+  let pts = raw.map(([d, v]) => [String(d).slice(0, 10), Number(v)] as [string, number]);
+  const before = pts.filter(([d]) => d < cut).pop();
+  pts = pts.filter(([d]) => d >= cut);
+  if (before) pts.unshift([cut, before[1]]);
+  const price = comparePrice(p);
+  if (price > 0 && (!pts.length || pts[pts.length - 1][0] < today)) pts.push([today, price]);
+  if (pts.length < 2) return null;
+  const first = pts[0][1];
+  const last = pts[pts.length - 1][1];
+  const low = Math.min(...pts.map(x => x[1]));
+  return { points: pts, pct: first > 0 ? Math.round(((last - first) / first) * 100) : 0, isLowest: last <= low + 0.005 };
+}
+
+/** % less than the most expensive shop for the same tyre (0 when unknown). */
+export function shopSavingsPct(p: CompareProduct) {
+  const price = comparePrice(p);
+  const max = toMoneyNumber(p.expensive_offer) ?? 0;
+  if (!(price > 0) || !(max > price)) return 0;
+  const pct = Math.round(((max - price) / max) * 100);
+  return pct >= 2 && pct <= 90 ? pct : 0;
 }

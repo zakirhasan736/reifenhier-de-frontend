@@ -1,17 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { AlertTriangle, ArrowRight, Check, Crown, Gauge, Plus, Ruler, ShieldCheck, Trash2, Volume1, X, Droplets, Fuel, Tag } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Check, Crown, Gauge, Plus, Ruler, ShieldCheck, Store, Trash2, Volume1, X, Droplets, Fuel, Tag } from 'lucide-react';
 import OptimizedImage from '@/components/elements/OptimizedImage';
+import PriceTrendChart from '@/components/elements/PriceTrendChart';
 import VendorExitLink from '@/components/elements/VendorExitLink';
 import { productImageSrc } from '@/libs/productImage';
-import { addProduct, refreshCompareProducts, closeModal, clearProducts, removeProduct, type CompareProduct } from '@/store/compareSlice';
+import { addProduct, refreshCompareProducts, closeModal, clearProducts, removeProduct, type CompareOffer, type CompareProduct } from '@/store/compareSlice';
 import type { AppDispatch, RootState } from '@/store/store';
 import { formatEuro } from '@/libs/money';
-import { comparePrice, compareVerdict, gradeRank, listingUrlForSize, loadRank, noiseDb, parseTyreSize, sameSize, speedRank } from '@/libs/compare';
+import { comparePrice, compareVerdict, gradeRank, listingUrlForSize, loadRank, noiseDb, parseTyreSize, sameSize, shopSavingsPct, speedRank, trendPoints } from '@/libs/compare';
 import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
 
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
@@ -41,6 +42,78 @@ function ShopLink({ p, className, label = 'Zum Angebot', hand = true }: { p: Com
     >
       {label} <ArrowRight size={15} />
     </VendorExitLink>
+  );
+}
+
+function VendorMark({ o }: { o: CompareOffer }) {
+  const [failed, setFailed] = useState(false);
+  if (o.logo && !failed) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={o.logo} alt={o.vendor} className="h-[18px] w-auto max-w-[86px] object-contain" loading="lazy" onError={() => setFailed(true)} />;
+  }
+  return <span className="max-w-[96px] truncate text-[12.5px] font-bold !text-[#16171A]">{o.vendor}</span>;
+}
+
+/** Shops for one tyre, cheapest first – every row goes straight to the shop. */
+function ShopList({ p, onClose, max = 4 }: { p: CompareProduct; onClose: () => void; max?: number }) {
+  const offers = p.offers_top || [];
+  if (!offers.length) {
+    return (
+      <Link href={`/produkte/${p.slug}`} onClick={onClose} className="text-[12.5px] font-semibold !text-[#2F4FD8] hover:underline">
+        Alle Angebote ansehen
+      </Link>
+    );
+  }
+  const cheapest = offers[0].price;
+  const shown = offers.slice(0, max);
+  return (
+    <div className="w-full space-y-1.5 text-left">
+      {shown.map((o, i) => {
+        const diff = Math.round((o.price - cheapest) * 100) / 100;
+        const row = (
+          <span
+            className={`flex items-center gap-2 rounded-[10px] px-2.5 py-2 transition ${
+              i === 0 ? 'bg-[#F0FDF4] ring-1 ring-[#86EFAC] hover:ring-[#16A34A]' : 'bg-white ring-1 ring-[#E4E7F0] hover:ring-[#9DB2FF]'
+            }`}
+          >
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <VendorMark o={o} />
+              <span className="text-[10.5px] leading-tight !text-[#6B7280]">
+                {i === 0 ? (
+                  <b className="!text-[#15803D]">Günstigster Shop</b>
+                ) : (
+                  <span className="!text-[#C2410C]">+{formatEuro(diff)}</span>
+                )}
+                {o.in_stock === false ? ' · nicht lieferbar' : o.delivery_cost === 0 ? ' · Versand frei' : ''}
+              </span>
+            </span>
+            <span className={`shrink-0 text-[14px] font-bold ${i === 0 ? '!text-[#15803D]' : '!text-[#16171A]'}`}>{formatEuro(o.price)}</span>
+            <ArrowRight size={14} color={i === 0 ? '#15803D' : '#9AA3B8'} className="shrink-0" />
+          </span>
+        );
+        return o.token ? (
+          <VendorExitLink
+            key={o.vendor}
+            href={buildVendorExitUrl({ token: o.token, productId: p._id, from: 'compare-shops', vendor: o.vendor, vendorId: o.vendor_id, brand: p.brand_name, instruction: 'Zum Angebot' })}
+            onExit={() =>
+              onVendorExitClick({ productId: p._id, productName: p.product_name, brandName: p.brand_name, vendor: o.vendor, vendorId: o.vendor_id, source: 'compare-shops', instruction: 'Zum Angebot', vendorPrice: o.price })
+            }
+            className="block"
+          >
+            {row}
+          </VendorExitLink>
+        ) : (
+          <Link key={o.vendor} href={`/produkte/${p.slug}`} onClick={onClose} className="block">
+            {row}
+          </Link>
+        );
+      })}
+      {offers.length > max || (p.offer_count || 0) > shown.length ? (
+        <Link href={`/produkte/${p.slug}`} onClick={onClose} className="block pt-0.5 text-center text-[11.5px] font-semibold !text-[#2F4FD8] hover:underline">
+          Alle {Math.max(offers.length, p.offer_count || 0)} Shops ansehen
+        </Link>
+      ) : null}
+    </div>
   );
 }
 
@@ -82,6 +155,8 @@ type Row = {
   render: (p: CompareProduct) => ReactNode;
   /** small text under the value on mobile */
   hint?: (p: CompareProduct) => string;
+  /** rendered as its own block on mobile (too wide for 3–4 small columns) */
+  desktopOnly?: boolean;
 };
 
 export default function CompareModal() {
@@ -169,14 +244,37 @@ export default function CompareModal() {
       label: 'Preis',
       icon: <Tag size={15} color="#2F4FD8" />,
       isBest: p => comparePrice(p) > 0 && comparePrice(p) === priceMin && !allSame(products.map(comparePrice)),
-      render: p => (
-        <span className="block">
-          <span className="block text-[17px] font-bold !text-[#16171A]">{formatEuro(comparePrice(p))}</span>
-          <span className="block text-[11.5px] !text-[#6B7280]">4 Stück {formatEuro(comparePrice(p) * 4)}</span>
-          {verdict.extraFor4[p._id] > 0 ? <span className="block text-[11.5px] font-semibold !text-[#C2410C]">+{formatEuro(verdict.extraFor4[p._id])} für 4</span> : null}
-        </span>
-      ),
+      render: p => {
+        const sp = shopSavingsPct(p);
+        const t = trendPoints(p);
+        return (
+          <span className="block w-full">
+            <span className="block text-[17px] font-bold !text-[#16171A]">{formatEuro(comparePrice(p))}</span>
+            <span className="block text-[11.5px] !text-[#6B7280]">4 Stück {formatEuro(comparePrice(p) * 4)}</span>
+            {verdict.extraFor4[p._id] > 0 ? <span className="block text-[11.5px] font-semibold !text-[#C2410C]">+{formatEuro(verdict.extraFor4[p._id])} für 4</span> : null}
+            {sp ? (
+              <span className="mt-1 inline-block rounded-full bg-[#DCFCE7] px-2 py-0.5 text-[10.5px] font-bold !text-[#15803D]">−{sp} % vs. teuerster Shop</span>
+            ) : null}
+            {t ? (
+              <span className="mx-auto mt-1.5 block max-w-[170px]">
+                <PriceTrendChart points={t.points} height={40} showAxis={false} />
+                <span className={`block text-[10.5px] font-semibold ${t.pct < 0 ? '!text-[#15803D]' : t.pct > 0 ? '!text-[#B91C1C]' : '!text-[#6B7280]'}`}>
+                  {t.pct < 0 ? `↓ ${Math.abs(t.pct)} %` : t.pct > 0 ? `↑ ${t.pct} %` : 'stabil'} · 60 Tage{t.isLowest ? ' · Tiefstpreis' : ''}
+                </span>
+              </span>
+            ) : null}
+          </span>
+        );
+      },
       hint: p => (p.best_vendor ? `bei ${p.best_vendor}${p.offer_count && p.offer_count > 1 ? ` · ${p.offer_count} Shops` : ''}` : ''),
+    },
+    {
+      key: 'shops',
+      label: 'Shops',
+      icon: <Store size={15} color="#0E7490" />,
+      isBest: () => false,
+      desktopOnly: true,
+      render: p => <ShopList p={p} onClose={close} />,
     },
     {
       key: 'wet',
@@ -310,6 +408,18 @@ export default function CompareModal() {
                   <div className="sl-white flex-1 md:flex-none">
                     <p className="text-[22px] font-bold leading-none">{formatEuro(comparePrice(best))}</p>
                     <p className="mt-1 text-[12px] opacity-75">4 Stück {formatEuro(comparePrice(best) * 4)}</p>
+                    {(() => {
+                      const t = trendPoints(best);
+                      return t ? (
+                        <div className="mt-1.5 max-w-[200px]">
+                          <PriceTrendChart points={t.points} height={34} showAxis={false} dark />
+                          <p className="text-[11px] font-semibold opacity-90">
+                            {t.pct < 0 ? `↓ ${Math.abs(t.pct)} % in 60 Tagen` : t.pct > 0 ? `↑ ${t.pct} % in 60 Tagen` : 'Preis stabil'}
+                            {t.isLowest ? ' · Tiefstpreis' : ''}
+                          </p>
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                   <ShopLink
                     p={best}
@@ -348,7 +458,7 @@ export default function CompareModal() {
                 );
               })}
             </div>
-            {rows.map(row => (
+            {rows.filter(r => !r.desktopOnly).map(row => (
               <div key={row.key} className="rounded-[14px] bg-white p-2.5 ring-1 ring-[#E4E7F0]">
                 <p className="mb-2 flex items-center gap-1.5 text-[12px] font-bold !text-[#2B3040]">
                   {row.icon} {row.label}
@@ -367,6 +477,22 @@ export default function CompareModal() {
                 </div>
               </div>
             ))}
+            <div className="rounded-[14px] bg-white p-2.5 ring-1 ring-[#E4E7F0]">
+              <p className="mb-2 flex items-center gap-1.5 text-[12px] font-bold !text-[#2B3040]">
+                <Store size={15} color="#0E7490" /> Shops – günstigster zuerst
+              </p>
+              <div className="space-y-3">
+                {products.map(p => (
+                  <div key={p._id}>
+                    <p className="mb-1.5 flex items-center gap-1.5 text-[12px] font-semibold !text-[#16171A]">
+                      {p._id === verdict.bestId && products.length > 1 ? <Crown size={12} color="#15803D" /> : null}
+                      {p.brand_name} {shortName(p)}
+                    </p>
+                    <ShopList p={p} onClose={close} max={3} />
+                  </div>
+                ))}
+              </div>
+            </div>
             <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${products.length}, minmax(0,1fr))` }}>
               {products.map(p => (
                 <ShopLink
@@ -428,7 +554,7 @@ export default function CompareModal() {
                   {products.map(p => {
                     const win = products.length > 1 && row.isBest(p);
                     return (
-                      <div key={p._id} className={`flex flex-col items-center justify-center gap-1 border-l border-t border-[#EEF0F6] px-3 py-3 text-center ${win ? 'bg-[#F0FDF4]' : ''}`}>
+                      <div key={p._id} className={`flex flex-col items-center gap-1 border-l border-t border-[#EEF0F6] px-3 py-3 text-center ${row.desktopOnly ? 'justify-start' : 'justify-center'} ${win ? 'bg-[#F0FDF4]' : ''}`}>
                         {row.render(p)}
                         {row.hint?.(p) ? <span className="text-[11.5px] !text-[#6B7280]">{row.hint(p)}</span> : null}
                         {win ? <BestBadge /> : null}

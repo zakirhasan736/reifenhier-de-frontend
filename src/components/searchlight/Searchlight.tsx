@@ -42,6 +42,7 @@ import {
   X,
 } from 'lucide-react';
 import OptimizedImage from '@/components/elements/OptimizedImage';
+import PriceTrendChart from '@/components/elements/PriceTrendChart';
 import VendorExitLink from '@/components/elements/VendorExitLink';
 import { productImageSrc } from '@/libs/productImage';
 import { buildVendorExitUrl, onVendorExitClick } from '@/libs/analytics/vendorExit';
@@ -349,20 +350,43 @@ function HeroPick({ p, avg }: { p: Pick; avg?: number }) {
         ) : p.reason ? (
           <p className="mt-3 rounded-[12px] bg-[#F1F4FF] px-3 py-2 text-[13px] !text-[#1E2A5A]">{p.reason}</p>
         ) : null}
-        <div className="mt-3.5 flex items-end justify-between gap-3 rounded-[14px] bg-[#F6F8FC] px-3 py-2.5">
-          <div>
-            <p className="text-[24px] font-bold leading-none !text-[#16171A]">
-              {eur(p.price)}
-              <span className="ml-1 text-[12px] font-medium !text-[#6B7280]">/ Stück</span>
-            </p>
-            <p className="mt-1 text-[12.5px] !text-[#4B5163]">
-              4 Reifen: <b className="!text-[#16171A]">{eur(p.priceFor4)}</b>
-            </p>
+        <div className="mt-3.5 rounded-[14px] bg-[#F6F8FC] p-3">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[24px] font-bold leading-none !text-[#16171A]">
+                {eur(p.price)}
+                <span className="ml-1 text-[12px] font-medium !text-[#6B7280]">/ Stück</span>
+              </p>
+              <p className="mt-1 text-[12.5px] !text-[#4B5163]">
+                4 Reifen: <b className="!text-[#16171A]">{eur(p.priceFor4)}</b>
+              </p>
+            </div>
+            {p.shopSavingsPct && p.shopSavingsPct >= 2 ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#16A34A] px-2.5 py-1 text-[12px] font-bold !text-white">
+                <TrendingDown size={13} color="#fff" /> {p.shopSavingsPct} % günstiger
+              </span>
+            ) : save >= 10 ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#DCFCE7] px-2.5 py-1 text-[11.5px] font-bold !text-[#15803D]">
+                <TrendingDown size={13} color="#15803D" /> {eur(save)} unter Ø
+              </span>
+            ) : null}
           </div>
-          {save >= 10 ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#DCFCE7] px-2.5 py-1 text-[11.5px] font-bold !text-[#15803D]">
-              <TrendingDown size={13} color="#15803D" /> {eur(save)} unter Ø
-            </span>
+          {p.shopSavingsPct && p.shopSavingsPct >= 2 && p.maxShopPrice ? (
+            <p className="mt-2 text-[12.5px] leading-[145%] !text-[#14532D]">
+              Beim teuersten Shop kostet derselbe Reifen {eur(p.maxShopPrice)} – hier sparst du <b>{eur(p.shopSavingsFor4 || 0)}</b> bei 4 Reifen.
+            </p>
+          ) : null}
+          {p.trend ? (
+            <div className="mt-2.5 rounded-[12px] bg-white px-2.5 pb-1 pt-2 ring-1 ring-[#E6E9F2]">
+              <div className="flex items-center justify-between text-[11.5px]">
+                <span className="font-semibold !text-[#4B5163]">Preisverlauf · {p.trend.days} Tage</span>
+                <span className={`font-bold ${p.trend.pct < 0 ? '!text-[#15803D]' : p.trend.pct > 0 ? '!text-[#B91C1C]' : '!text-[#6B7280]'}`}>
+                  {p.trend.pct < 0 ? `↓ ${Math.abs(p.trend.pct)} %` : p.trend.pct > 0 ? `↑ ${p.trend.pct} %` : 'stabil'}
+                  {p.trend.isLowest ? ' · Tiefstpreis' : ''}
+                </span>
+              </div>
+              <PriceTrendChart points={p.trend.points} height={62} />
+            </div>
           ) : null}
         </div>
         <div className="mt-3">
@@ -409,8 +433,14 @@ function CompactPick({ p }: { p: Pick }) {
       ) : null}
       <div className="flex items-center gap-3 p-3.5">
         <div className="min-w-0 flex-1">
-          <p className="text-[18px] font-bold leading-none !text-[#16171A]">{eur(p.price)}</p>
-          <p className="mt-1 text-[11.5px] !text-[#6B7280]">4 Stück {eur(p.priceFor4)}</p>
+          <p className="flex items-center gap-1.5 text-[18px] font-bold leading-none !text-[#16171A]">
+            {eur(p.price)}
+            {p.shopSavingsPct && p.shopSavingsPct >= 2 ? <span className="rounded-full bg-[#DCFCE7] px-1.5 py-0.5 text-[10.5px] font-bold !text-[#15803D]">−{p.shopSavingsPct} %</span> : null}
+          </p>
+          <p className="mt-1 text-[11.5px] !text-[#6B7280]">
+            4 Stück {eur(p.priceFor4)}
+            {p.trend && p.trend.pct < 0 ? <span className="font-semibold !text-[#15803D]"> · ↓ {Math.abs(p.trend.pct)} %</span> : null}
+          </p>
         </div>
         <div className="w-[148px] shrink-0">
           <ShopButton p={p} compact />
@@ -741,6 +771,8 @@ export default function Searchlight() {
           best_vendor_token: p.token,
           offer_count: p.offerCount,
           average_rating: p.rating ?? undefined,
+          expensive_offer: p.maxShopPrice ?? undefined,
+          price_trend: p.trend ? { points: p.trend.points } : undefined,
           ...s,
         })
       );
