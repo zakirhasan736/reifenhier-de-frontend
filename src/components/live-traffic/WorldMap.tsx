@@ -20,9 +20,14 @@ type Spot = City & { point: [number, number]; key: string; name: string };
 const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services';
 const STYLES: Record<Style, { label: string; layers: { url: string; pane?: string }[]; attribution: string }> = {
   light: {
+    // Light grey map with city and country names (Google-Analytics look)
     label: 'Light',
-    layers: [{ url: `${ESRI}/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}` }, { url: `${ESRI}/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, pane: 'overlayPane' }],
-    attribution: '© Esri, HERE, Garmin, © OpenStreetMap',
+    // names in their own layer above the circles, so they stay readable (like GA)
+    layers: [
+      { url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png' },
+      { url: 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', pane: 'rxLabels' },
+    ],
+    attribution: '© OpenStreetMap contributors © CARTO',
   },
   streets: {
     label: 'Streets',
@@ -91,7 +96,7 @@ export default function WorldMap({ cities, last30, last5, minutes }: { cities: C
   const tiles = useRef<L.LayerGroup | null>(null);
   const markers = useRef<L.LayerGroup | null>(null);
   const seen = useRef('');
-  const [style, setStyle] = useState<Style>('streets');
+  const [style, setStyle] = useState<Style>('light');
   const [selected, setSelected] = useState<string>('');
   const [scrollZoom, setScrollZoom] = useState(false);
 
@@ -129,6 +134,10 @@ export default function WorldMap({ cities, last30, last5, minutes }: { cities: C
     if (!container) return;
     const map = L.map(container, { scrollWheelZoom: false, zoomControl: false, minZoom: 2, maxZoom: 18, zoomSnap: 0.25, attributionControl: true, maxBounds: [[-86, -200], [86, 200]] });
     map.setView(GERMANY, container.clientWidth < 560 ? 5 : 6);
+    // map names above the visitor circles; clicks go through to the circles
+    const labels = map.createPane('rxLabels');
+    labels.style.zIndex = '625'; // above circles (600), below tooltips (650) and popups (700)
+    labels.style.pointerEvents = 'none';
     tiles.current = L.layerGroup().addTo(map);
     markers.current = L.layerGroup().addTo(map);
     mapRef.current = map;
@@ -156,7 +165,13 @@ export default function WorldMap({ cities, last30, last5, minutes }: { cities: C
     if (!map || !group) return;
     group.clearLayers();
     for (const l of STYLES[style].layers) {
-      L.tileLayer(l.url, { maxZoom: 19, maxNativeZoom: 18, ...(l.pane ? { pane: l.pane } : {}), attribution: l === STYLES[style].layers[0] ? STYLES[style].attribution : undefined }).addTo(group);
+      L.tileLayer(l.url, {
+        maxZoom: 19,
+        maxNativeZoom: 18,
+        subdomains: 'abcd',
+        ...(l.pane ? { pane: l.pane } : {}),
+        attribution: l === STYLES[style].layers[0] ? STYLES[style].attribution : undefined,
+      }).addTo(group);
     }
   }, [style]);
 
@@ -167,13 +182,16 @@ export default function WorldMap({ cities, last30, last5, minutes }: { cities: C
     if (!map || !layer) return;
     layer.clearLayers();
     const max = Math.max(1, ...spots.map((s) => s.count));
-    const named = new Set([...spots].sort((a, b) => b.count - a.count).slice(0, 15).map((x) => x.key));
-    for (const s of spots) {
-      const size = Math.round(12 + 14 * Math.sqrt(s.count / max));
+    // bigger first, so small circles stay clickable on top
+    for (const s of [...spots].sort((a, b) => b.count - a.count)) {
+      // flat translucent circles sized by visitors (like Google Analytics realtime);
+      // the city and country names come from the map itself
+      const k = map.getSize().x < 560 ? 0.72 : 1
+      const size = Math.round((18 + 30 * Math.sqrt(s.count / max)) * k);
       const active = s.key === selected;
       const icon = L.divIcon({
         className: 'rx-live-pin',
-        html: `<span class="rx-live-dot${active ? ' is-active' : ''}" style="width:${size}px;height:${size}px"><span class="rx-live-wave"></span><span class="rx-live-wave rx-live-wave-2"></span>${s.count > 1 ? `<b>${s.count}</b>` : ''}</span>${named.has(s.key) || active ? `<span class="rx-live-name">${s.name.replace(/[<>&"]/g, '')}</span>` : ''}`,
+        html: `<span class="rx-live-dot${active ? ' is-active' : ''}" style="width:${size}px;height:${size}px"></span>`,
         iconSize: [size, size],
         iconAnchor: [size / 2, size / 2],
       });
