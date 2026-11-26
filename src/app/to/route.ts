@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { captureServer } from '@/libs/serverSentry'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -93,8 +94,10 @@ async function bounce(req: NextRequest, method: 'GET' | 'POST') {
     }
 
     // Fallback: send browser directly to backend /r (still better than /out)
+    void captureServer(new Error(`/to: API answered ${res.status} without a redirect`), { area: 'vendor-exit' })
     return NextResponse.redirect(upstream, 302)
-  } catch {
+  } catch (err) {
+    void captureServer(err, { area: 'vendor-exit' })
     return NextResponse.redirect(upstream, 302)
   }
 }

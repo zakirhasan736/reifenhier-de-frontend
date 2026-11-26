@@ -99,7 +99,7 @@ export default function FloatingReview() {
       setNudge(true);
     };
     const timer = window.setTimeout(show, 60000);
-    // back from a shop tab (vendor exit opens a new tab)
+    // back from a shop: a new tab (desktop) or the back button (phones, same tab)
     let leftForShop = false;
     const onClick = (e: MouseEvent) => {
       if ((e.target as HTMLElement | null)?.closest?.('a.vendor-exit-cue, a[href^="/to?"]')) leftForShop = true;
@@ -107,9 +107,14 @@ export default function FloatingReview() {
     const onVisible = () => {
       if (document.visibilityState === 'visible' && leftForShop) window.setTimeout(show, 1500);
     };
+    const onShow = (e: PageTransitionEvent) => {
+      if (e.persisted && leftForShop) window.setTimeout(show, 1500);
+    };
     document.addEventListener('click', onClick, true);
     document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('pageshow', onShow);
     return () => {
+      window.removeEventListener('pageshow', onShow);
       clearTimeout(p);
       clearTimeout(p2);
       clearTimeout(timer);

@@ -149,6 +149,23 @@ export default function RootLayout({
           }}
         />
         {/*
+          Leaving for a shop in the same tab cancels requests that are still
+          running (price history, reviews, live traffic …). Browsers report those
+          as "TypeError: Failed to fetch" / "Load failed" and Clarity counts them
+          as JavaScript errors on the Zum Angebot click. They are not bugs, so
+          they are dropped here — only during the 15 s after the visitor leaves.
+          Registered before Clarity/Sentry, so they never see them.
+          Also: repeat clicks on a shop link within 3 s are ignored. This runs
+          before React loads, so rage taps on a slow phone cannot fire several
+          /to requests that cancel each other (and count extra AWIN clicks).
+        */}
+        <script
+          id="leave-noise-guard"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var w=window;if(w.__rxLeaveGuard)return;w.__rxLeaveGuard=1;function leaving(){return w.__rxLeaving&&Date.now()-w.__rxLeaving<15000}w.addEventListener('pagehide',function(){w.__rxLeaving=Date.now()},true);w.addEventListener('pageshow',function(e){if(e.persisted)w.__rxLeaving=0},true);var NET=/Failed to fetch|Load failed|NetworkError|network error|AbortError|aborted|cancell?ed/i;w.addEventListener('unhandledrejection',function(e){if(!leaving())return;var r=e.reason,t='';try{t=r&&(r.name||'')+' '+(r.message||r)}catch(x){}if(NET.test(String(t))){e.preventDefault();e.stopImmediatePropagation()}},true);var last=0;w.addEventListener('pageshow',function(e){if(e.persisted)last=0});document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href^="/to?"]');if(!a||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var n=Date.now();if(n-last<3000){e.preventDefault();e.stopImmediatePropagation();return}last=n},true)})();`,
+          }}
+        />
+        {/*
           Google Consent Mode v2 defaults — MUST run before GTM / gtag.js.
           Everything is denied until the visitor accepts in the Silktide banner
           (its onAccept handlers send gtag('consent','update', …)).
@@ -346,7 +363,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                           dataLayer.push({ event: 'consent_accepted_analytics' });
                         }
                         window.reifexaErrorReporting = true;
-                        var loaderKey = ${JSON.stringify(process.env.NEXT_PUBLIC_SENTRY_LOADER_KEY || '')};
+                        // Loader key = the public key of the DSN (Sentry → Project → Client Keys).
+                        var loaderKey = ${JSON.stringify(
+                          process.env.NEXT_PUBLIC_SENTRY_LOADER_KEY ||
+                            (/^https:\/\/([a-f0-9]{32})@/i.exec(process.env.NEXT_PUBLIC_SENTRY_DSN || '') || [])[1] ||
+                            ''
+                        )};
                         if (/^[a-f0-9]{32}$/i.test(loaderKey) && !document.getElementById('sentry-browser-loader')) {
                           window.sentryOnLoad = function () {
                             window.Sentry.init({
@@ -354,8 +376,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                               tracesSampleRate: 0,
                               replaysSessionSampleRate: 0,
                               replaysOnErrorSampleRate: 0,
-                              beforeSend: function (event) {
-                                return window.reifexaErrorReporting ? event : null;
+                              environment: ${JSON.stringify(process.env.NEXT_PUBLIC_SENTRY_ENV || 'production')},
+                              // Cross-origin noise without a stack, and requests the browser
+                              // cancels when the visitor leaves for a shop.
+                              ignoreErrors: ['Script error.', 'ResizeObserver loop'],
+                              beforeSend: function (event, hint) {
+                                if (!window.reifexaErrorReporting) return null;
+                                var err = hint && hint.originalException;
+                                var text = err ? String((err.name || '') + ' ' + (err.message || err)) : '';
+                                if (window.__rxLeaving && Date.now() - window.__rxLeaving < 15000 &&
+                                    /Failed to fetch|Load failed|NetworkError|AbortError|aborted/i.test(text)) return null;
+                                return event;
                               }
                             });
                           };
