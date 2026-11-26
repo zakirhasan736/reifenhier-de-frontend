@@ -520,6 +520,24 @@ const ProductSinglepage: React.FC<ProductProps> = ({
       price: parseMoneyEU(top.price),
     };
   })();
+  function bestOfferLink(source: string) {
+    const vendor = cheapestOffer?.vendor;
+    const vendorId = cheapestOffer?.vendor_id;
+    const instruction = 'Zum Angebot';
+    return {
+      href: buildVendorExitUrl({
+        token: cheapestOffer?.affiliate_product_cloak_url || '',
+        productId: product._id, uuid: uuidCookie || 'guest', from: source,
+        vendor, vendorId, brand: product.brand_name, instruction,
+      }),
+      onExit: () => onVendorExitClick({
+        productId: product._id, productName: product.product_name,
+        brandName: product.brand_name, vendor, vendorId, source,
+        instruction, vendorPrice: cheapestOffer?.price,
+      }),
+    };
+  }
+  const imageOffer = bestOfferLink('product-details-image');
   const cheapPrice =
     (fromPrice && fromPrice > 0 ? fromPrice : null) ??
     lowestPrice(
@@ -956,28 +974,8 @@ const shareImage = !rawShareImage
                       galleryImages={product.gallery_images}
                       alt={productName}
                       // A click on the product image opens the same offer as "Zum Angebot".
-                      exitHref={buildVendorExitUrl({
-                        token: cheapestOffer?.affiliate_product_cloak_url || '',
-                        productId: product._id,
-                        uuid: uuidCookie || 'guest',
-                        from: 'product-details-image',
-                        vendor: cheapestOffer?.vendor,
-                        vendorId: cheapestOffer?.vendor_id,
-                        brand: product.brand_name,
-                        instruction: 'Zum Angebot',
-                      })}
-                      onExit={() =>
-                        onVendorExitClick({
-                          productId: product._id,
-                          productName: product.product_name,
-                          brandName: product.brand_name,
-                          vendor: cheapestOffer?.vendor,
-                          vendorId: cheapestOffer?.vendor_id,
-                          source: 'product-details-image',
-                          instruction: 'Zum Angebot',
-                          vendorPrice: cheapestOffer?.price,
-                        })
-                      }
+                      exitHref={imageOffer.href}
+                      onExit={imageOffer.onExit}
                       header={
                         <div className="product-slide-top-cont flex items-center justify-between">
                           <div className="brand-logo flex items-center rounded-[10px] bg-white px-2.5 py-1.5 shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
@@ -1054,7 +1052,7 @@ const shareImage = !rawShareImage
                     </div>
 
                     <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em] text-[#16171A]">
-                      {headingTitle}
+                      <VendorExitLink {...bestOfferLink('product-details-title')}>{headingTitle}</VendorExitLink>
                     </h1>
                     <ProductProof productId={product._id} slug={product.slug} className="mt-3" />
                     {(alternatives.length > 0 || indexVariants.length > 0) && (
@@ -1212,28 +1210,7 @@ const shareImage = !rawShareImage
                       <span className="text-[13px] font-medium text-[#5A5B61]">bei</span>
                       {cheapestOffer?.affiliate_product_cloak_url ? (
                         <VendorExitLink
-                          href={buildVendorExitUrl({
-                            token: cheapestOffer?.affiliate_product_cloak_url || '',
-                            productId: product._id,
-                            uuid: uuidCookie || 'guest',
-                            from: 'product-details-vendor-logo',
-                            vendor: cheapestOffer?.vendor,
-                            vendorId: cheapestOffer?.vendor_id,
-                            brand: product.brand_name,
-                            instruction: 'Zum Angebot',
-                          })}
-                          onExit={() => {
-                            onVendorExitClick({
-                              productId: product._id,
-                              productName: product.product_name,
-                              brandName: product.brand_name,
-                              vendor: cheapestOffer?.vendor,
-                              vendorId: cheapestOffer?.vendor_id,
-                              source: 'product-details-vendor-logo',
-                              instruction: 'Zum Angebot',
-                              vendorPrice: cheapestOffer?.price,
-                            });
-                          }}
+                          {...bestOfferLink('product-details-vendor-logo')}
                           className="inline-flex max-w-[160px] items-center rounded-[10px] border border-[#E4E5EA] bg-white px-2.5 py-1.5 hover:border-primary-100"
                           title={`Zum Angebot bei ${cheapestOffer?.vendor || 'Anbieter'}`}
                         >
@@ -1258,28 +1235,7 @@ const shareImage = !rawShareImage
                     {/* CTAs */}
                     <div className="product-cta-box mt-4 flex flex-wrap sm:flex-nowrap items-stretch gap-2">
                       <VendorExitLink
-                        href={buildVendorExitUrl({
-                          token: cheapestOffer?.affiliate_product_cloak_url || '',
-                          productId: product._id,
-                          uuid: uuidCookie || 'guest',
-                          from: 'product-details-page',
-                          vendor: cheapestOffer?.vendor,
-                          vendorId: cheapestOffer?.vendor_id,
-                          brand: product.brand_name,
-                          instruction: 'Zum Angebot',
-                        })}
-                        onExit={() => {
-                          onVendorExitClick({
-                            productId: product._id,
-                            productName: product.product_name,
-                            brandName: product.brand_name,
-                            vendor: cheapestOffer?.vendor,
-                            vendorId: cheapestOffer?.vendor_id,
-                            source: 'product-details-page',
-                            instruction: 'Zum Angebot',
-                            vendorPrice: cheapestOffer?.price,
-                          });
-                        }}
+                        {...bestOfferLink('product-details-page')}
                         id="pdp-main-cta"
                         hand
                         className="product-card-btn-states primary-button-state max-sm:basis-full flex-1 min-w-0 inline-flex h-14 sm:h-12 items-center justify-center gap-2 whitespace-nowrap rounded-[12px] bg-primary-100 px-5 pr-10 text-[15px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(58,100,246,0.7)] transition hover:opacity-90"
@@ -1328,28 +1284,7 @@ const shareImage = !rawShareImage
                         <span className="text-[12px] font-medium text-[#6B6E76]">Zahlungsmethoden</span>
                         {/* A click on the payment icons opens the same offer as "Zum Angebot". */}
                         <VendorExitLink
-                          href={buildVendorExitUrl({
-                            token: cheapestOffer?.affiliate_product_cloak_url || '',
-                            productId: product._id,
-                            uuid: uuidCookie || 'guest',
-                            from: 'product-details-payment',
-                            vendor: cheapestOffer?.vendor,
-                            vendorId: cheapestOffer?.vendor_id,
-                            brand: product.brand_name,
-                            instruction: 'Zum Angebot',
-                          })}
-                          onExit={() =>
-                            onVendorExitClick({
-                              productId: product._id,
-                              productName: product.product_name,
-                              brandName: product.brand_name,
-                              vendor: cheapestOffer?.vendor,
-                              vendorId: cheapestOffer?.vendor_id,
-                              source: 'product-details-payment',
-                              instruction: 'Zum Angebot',
-                              vendorPrice: cheapestOffer?.price,
-                            })
-                          }
+                          {...bestOfferLink('product-details-payment')}
                           className="mt-2 block w-fit cursor-pointer"
                         >
                         <ul className="payment-method-list flex flex-wrap items-center gap-1.5">
@@ -1685,28 +1620,7 @@ const shareImage = !rawShareImage
               price={fromPriceLabel}
               vendor={cheapestOffer?.vendor}
               offerCount={offerCount}
-              href={buildVendorExitUrl({
-                token: cheapestOffer?.affiliate_product_cloak_url || '',
-                productId: product._id,
-                uuid: uuidCookie || 'guest',
-                from: 'product-details-sticky-bar',
-                vendor: cheapestOffer?.vendor,
-                vendorId: cheapestOffer?.vendor_id,
-                brand: product.brand_name,
-                instruction: 'Zum Angebot',
-              })}
-              onExit={() =>
-                onVendorExitClick({
-                  productId: product._id,
-                  productName: product.product_name,
-                  brandName: product.brand_name,
-                  vendor: cheapestOffer?.vendor,
-                  vendorId: cheapestOffer?.vendor_id,
-                  source: 'product-details-sticky-bar',
-                  instruction: 'Zum Angebot',
-                  vendorPrice: cheapestOffer?.price,
-                })
-              }
+              {...bestOfferLink('product-details-sticky-bar')}
             />
           </section>
         </>

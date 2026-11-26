@@ -1,6 +1,8 @@
 import { getOrCreateUuid } from '@/utils/uuid'
 import { trackProductInterest } from '@/libs/push/priceAlerts'
 
+import { sendBehavior } from './sendBehavior'
+
 const API = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '')
 
 export type VendorExitParams = {
@@ -42,19 +44,7 @@ export function trackBehavior(payload: Record<string, unknown>) {
       uuid: getOrCreateUuid(),
       ...payload,
     })
-    if (typeof navigator !== 'undefined' && navigator.sendBeacon && API) {
-      const blob = new Blob([body], { type: 'text/plain' })
-      navigator.sendBeacon(`${API}/api/v1/e`, blob)
-      return
-    }
-    if (API) {
-      void fetch(`${API}/api/v1/e`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body,
-        keepalive: true,
-      })
-    }
+    if (API) void sendBehavior(`${API}/api/v1/e`, body)
   } catch {
     // ignore
   }

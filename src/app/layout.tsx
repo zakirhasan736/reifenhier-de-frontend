@@ -345,10 +345,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                           gtag('consent', 'update', { analytics_storage: 'granted' });
                           dataLayer.push({ event: 'consent_accepted_analytics' });
                         }
+                        window.reifexaErrorReporting = true;
+                        var loaderKey = ${JSON.stringify(process.env.NEXT_PUBLIC_SENTRY_LOADER_KEY || '')};
+                        if (/^[a-f0-9]{32}$/i.test(loaderKey) && !document.getElementById('sentry-browser-loader')) {
+                          window.sentryOnLoad = function () {
+                            window.Sentry.init({
+                              sendDefaultPii: false,
+                              tracesSampleRate: 0,
+                              replaysSessionSampleRate: 0,
+                              replaysOnErrorSampleRate: 0,
+                              beforeSend: function (event) {
+                                return window.reifexaErrorReporting ? event : null;
+                              }
+                            });
+                          };
+                          var loader = document.createElement('script');
+                          loader.id = 'sentry-browser-loader';
+                          loader.src = 'https://js.sentry-cdn.com/' + loaderKey + '.min.js';
+                          loader.crossOrigin = 'anonymous';
+                          document.head.appendChild(loader);
+                        }
                         // Microsoft Clarity (heatmaps, session recordings) — only after analytics consent
                         if (typeof window.reifexaLoadClarity === 'function') window.reifexaLoadClarity();
                       },
                       onReject: function() {
+                        window.reifexaErrorReporting = false;
                         if (typeof gtag === 'function') {
                           gtag('consent', 'update', { analytics_storage: 'denied' });
                         }
