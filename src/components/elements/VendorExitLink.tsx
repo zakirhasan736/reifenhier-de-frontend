@@ -29,19 +29,21 @@ export default function VendorExitLink({ href, className, id, title, tabIndex, h
     timer.current = window.setTimeout(() => setPending(false), 2500)
   }
 
+  if (!href || href === '#') return <span id={id} className={className} aria-disabled="true">{children}</span>
+
   return (
     <a
       id={id}
       title={title}
       href={href}
       tabIndex={tabIndex}
-      target="_blank"
       rel="sponsored noopener"
       referrerPolicy="strict-origin-when-cross-origin"
       data-pending={pending ? '1' : '0'}
       aria-busy={pending}
       className={`vendor-exit-cue ${hand ? 'offer-pulse' : ''} ${className || ''}`}
       onClick={() => {
+        if (href.startsWith('#')) return
         arm()
         try {
           onExit?.()

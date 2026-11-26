@@ -10,7 +10,11 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
+    const reporting = window as Window & {
+      reifexaErrorReporting?: boolean;
+      Sentry?: { captureException: (error: Error) => void };
+    };
+    if (reporting.reifexaErrorReporting) reporting.Sentry?.captureException(error);
     console.error('Error occurred:', error);
   }, [error]);
 
