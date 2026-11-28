@@ -1051,8 +1051,13 @@ const shareImage = !rawShareImage
                       </div>
                     </div>
 
-                    <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em] text-[#16171A]">
-                      <VendorExitLink {...bestOfferLink('product-details-title')}>{headingTitle}</VendorExitLink>
+                    <h1 className="product-details-title-box text-[22px] md:text-[26px] lg:text-[30px] font-semibold font-primary leading-[120%] tracking-[-0.01em]">
+                      <VendorExitLink
+                        {...bestOfferLink('product-details-title')}
+                        className="text-primary-100 underline decoration-[#C5CAD6] underline-offset-[3px] hover:decoration-primary-100 transition-colors"
+                      >
+                        {headingTitle}
+                      </VendorExitLink>
                     </h1>
                     <ProductProof productId={product._id} slug={product.slug} className="mt-3" />
                     {(alternatives.length > 0 || indexVariants.length > 0) && (

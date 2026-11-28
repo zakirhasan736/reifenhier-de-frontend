@@ -649,7 +649,7 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                 .map(item => (
                   <li
                     key={item.vendor_id}
-                    className="competitor-lists-item flex items-center justify-between rounded-[8px] bg-mono-0 px-2 py-1.5"
+                    className="competitor-lists-item rounded-[8px] bg-mono-0"
                   >
                     <VendorExitLink
                       href={buildVendorExitUrl({
@@ -674,13 +674,11 @@ const wetMeta = getWetGripMeta(wetLetter || wet_grip);
                           vendorPrice: toMoneyNumber(item.price) ?? undefined,
                         });
                       }}
-                      className="inline-flex max-w-full items-center font-secondary font-medium text-[13px] text-left text-primary-100 underline underline-offset-2 leading-[140%] truncate"
+                      className="flex w-full items-center justify-between gap-3 px-2 py-1.5 font-secondary text-[13px] leading-[140%] text-primary-100 underline underline-offset-2 hover:bg-[#F5F8FF]"
                     >
-                      {item.vendor}
+                      <span className="min-w-0 truncate text-left font-medium">{item.vendor}</span>
+                      <span className="shrink-0 font-semibold tabular-nums">{formatEuro(item.price)}</span>
                     </VendorExitLink>
-                    <span className="shrink-0 font-secondary font-semibold text-[13px] text-[#16171A] tabular-nums">
-                      {formatEuro(item.price)}
-                    </span>
                   </li>
                 ))}
             </ul>
