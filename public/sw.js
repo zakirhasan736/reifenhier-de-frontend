@@ -1,4 +1,4 @@
-/* Reifexa Web Push service worker — price alerts for viewed / clicked products */
+/* Reifexa Web Push service worker — price alerts and ops sale alerts */
 
 self.addEventListener('install', () => {
   self.skipWaiting()
@@ -16,6 +16,7 @@ self.addEventListener('push', (event) => {
     tag: 'reifexa-price',
     icon: '/images/favicon.png',
     badge: '/images/favicon.png',
+    sound: true,
   }
 
   try {
@@ -31,17 +32,45 @@ self.addEventListener('push', (event) => {
     }
   }
 
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'Reifexa', {
+  const admin = String(data.kind || '').indexOf('admin_') === 0
+  const target = data.url || (admin ? 'https://www.reifexa.de/ops' : 'https://www.reifexa.de/')
+
+  event.waitUntil((async () => {
+    const clientList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+    const deskVisible = clientList.some((client) => client.visibilityState === 'visible' && String(client.url || '').indexOf('/ops') !== -1)
+    clientList.forEach((client) => {
+      client.postMessage({
+        type: 'rx-push',
+        kind: data.kind || '',
+        title: data.title,
+        body: data.body,
+        vendor: data.vendor || '',
+        commission: data.commission || '',
+        amount: data.saleAmount || '',
+        transactionId: data.transactionId || data.tag || '',
+        url: target,
+      })
+    })
+    await self.registration.showNotification(data.title || 'Reifexa', {
       body: data.body,
       icon: data.icon || '/images/favicon.png',
       badge: data.badge || '/images/favicon.png',
-      tag: data.tag || 'reifexa-price',
+      tag: data.tag || (admin ? 'reifexa-sale' : 'reifexa-price'),
       renotify: true,
-      data: { url: data.url || 'https://www.reifexa.de/' },
-      actions: [{ action: 'open', title: 'Angebot ansehen' }],
+      silent: deskVisible || data.sound === false,
+      requireInteraction: admin && !deskVisible,
+      vibrate: admin ? [140, 70, 140, 70, 220] : [80, 40, 80],
+      data: {
+        url: target,
+        kind: data.kind || '',
+        transactionId: data.transactionId || data.tag || '',
+        vendor: data.vendor || '',
+        commission: data.commission || '',
+        amount: data.saleAmount || '',
+      },
+      actions: [{ action: 'open', title: admin ? 'Im Desk öffnen' : 'Angebot ansehen' }],
     })
-  )
+  })())
 })
 
 self.addEventListener('notificationclick', (event) => {

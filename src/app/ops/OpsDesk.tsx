@@ -78,6 +78,34 @@ function picture(product: HomeProduct) {
   return raw || product.awin_image_url || product.merchant_thumb_url || '';
 }
 
+let saleAudio: AudioContext | null = null;
+
+function unlockAudio() {
+  const Ctx = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!Ctx) return;
+  if (!saleAudio) saleAudio = new Ctx();
+  if (saleAudio.state === 'suspended') saleAudio.resume().catch(() => undefined);
+}
+
+function playChime() {
+  unlockAudio();
+  if (!saleAudio) return;
+  const now = saleAudio.currentTime;
+  [880, 1318].forEach((freq, index) => {
+    const osc = saleAudio!.createOscillator();
+    const gain = saleAudio!.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    const start = now + index * 0.11;
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.2, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.42);
+    osc.connect(gain).connect(saleAudio!.destination);
+    osc.start(start);
+    osc.stop(start + 0.46);
+  });
+}
+
 export default function OpsDesk() {
   const [token, setToken] = useState('');
   const [email, setEmail] = useState('');
@@ -97,7 +125,10 @@ export default function OpsDesk() {
   const [busy, setBusy] = useState('');
   const [pushOn, setPushOn] = useState(false);
   const [devices, setDevices] = useState(0);
+  const [live, setLive] = useState(false);
   const homeHydrated = useRef(false);
+  const loadRef = useRef<() => Promise<void>>(async () => undefined);
+  const heardRef = useRef(new Set<string>());
 
   useEffect(() => {
     try { setToken(localStorage.getItem(TOKEN_KEY) || ''); } catch { /* private mode */ }
@@ -167,10 +198,82 @@ export default function OpsDesk() {
   }, [token, call, preset, from, to, rangeQuery]);
 
   useEffect(() => {
+    loadRef.current = () => load();
+  }, [load]);
+
+  useEffect(() => {
     load().catch((e) => setNote(e.message));
     const id = setInterval(() => { load().catch(() => undefined); }, 30000);
     return () => clearInterval(id);
   }, [load]);
+
+  useEffect(() => {
+    if (!token) return;
+    let stop = false;
+    const controller = new AbortController();
+    const announce = (event: { transactionId?: string; vendor?: string; commission?: string; amount?: string; body?: string; title?: string }) => {
+      const id = event.transactionId || '';
+      if (id) {
+        if (heardRef.current.has(id)) return;
+        heardRef.current.add(id);
+      }
+      playChime();
+      const vendor = event.vendor || 'Shop';
+      setNote(event.commission
+        ? `${vendor} · commission ${event.commission}${event.amount ? ` · sale ${event.amount}` : ''}`
+        : (event.body || event.title || 'New sale'));
+      loadRef.current().catch(() => undefined);
+    };
+    const onMessage = (event: MessageEvent) => {
+      const data = event.data;
+      if (!data || data.type !== 'rx-push') return;
+      if (data.kind && !String(data.kind).startsWith('admin_')) return;
+      announce(data);
+    };
+    navigator.serviceWorker?.addEventListener('message', onMessage);
+    const connect = async () => {
+      while (!stop) {
+        try {
+          const res = await fetch(`${API}/api/ops/stream`, {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: controller.signal,
+          });
+          if (res.status === 401 || !res.ok || !res.body) {
+            setLive(false);
+            if (res.status === 401) return;
+            throw new Error('stream');
+          }
+          setLive(true);
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buf = '';
+          while (!stop) {
+            const chunk = await reader.read();
+            if (chunk.done) break;
+            buf += decoder.decode(chunk.value, { stream: true });
+            const parts = buf.split('\n\n');
+            buf = parts.pop() || '';
+            for (const part of parts) {
+              const line = part.split('\n').find((row) => row.startsWith('data:'));
+              if (!line) continue;
+              const event = JSON.parse(line.slice(5).trim());
+              if (event.type === 'sale' || event.type === 'status') announce(event);
+            }
+          }
+        } catch {
+          if (stop) return;
+        }
+        setLive(false);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+    };
+    connect();
+    return () => {
+      stop = true;
+      controller.abort();
+      navigator.serviceWorker?.removeEventListener('message', onMessage);
+    };
+  }, [token]);
 
   async function login(e: FormEvent) {
     e.preventDefault();
@@ -215,6 +318,7 @@ export default function OpsDesk() {
   }
 
   async function enablePush() {
+    unlockAudio();
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       setNote('This browser cannot receive push notifications.');
       return;
@@ -261,6 +365,7 @@ export default function OpsDesk() {
   }
 
   async function sendTest() {
+    unlockAudio();
     setNote('');
     const test = await call('/push/test', { method: 'POST' });
     const body = await test.json().catch(() => ({}));
@@ -311,12 +416,12 @@ export default function OpsDesk() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F3F5FA] px-4 py-6 text-[#16171A] md:px-8">
+    <main className="min-h-screen bg-[#F3F5FA] px-4 py-6 text-[#16171A] md:px-8" onPointerDown={unlockAudio}>
       <div className="mx-auto max-w-6xl">
         <header className="flex flex-wrap items-center justify-between gap-4 rounded-3xl bg-[#12141C] px-5 py-4 text-white">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9AA6FF]">Reifexa ops</p>
-            <h1 className="text-xl font-semibold">Desk</h1>
+            <h1 className="text-xl font-semibold">Desk <span className={`ml-2 text-xs font-semibold ${live ? 'text-[#3DDC97]' : 'text-white/40'}`}>{live ? 'Live' : 'Connecting'}</span></h1>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button type="button" onClick={enablePush} className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm font-semibold">
