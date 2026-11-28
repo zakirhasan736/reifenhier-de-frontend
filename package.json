@@ -21,6 +21,7 @@
     "@palmabit/react-cookie-law": "^0.7.1",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@reduxjs/toolkit": "^2.8.2",
+    "@sentry/nextjs": "^11.17.0",
     "@sentry/node": "^11.19.0",
     "axios": "^1.11.0",
     "base64-url": "^2.3.3",

@@ -176,4 +176,25 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+/**
+ * Sentry's webpack plugin is optional. The server build was failing with
+ * "Cannot find module '@sentry/nextjs/config'" whenever the DSN was set and
+ * the package was not installed. A missing package must not stop `next build`.
+ */
+function withOptionalSentry(config) {
+  const enabled = Boolean(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN);
+  if (!enabled) return config;
+  try {
+    const { withSentryConfig } = require('@sentry/nextjs/config');
+    return withSentryConfig(config, {
+      silent: true,
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+    });
+  } catch (err) {
+    console.warn('[sentry] Building without the Sentry plugin:', err && err.message ? err.message : err);
+    return config;
+  }
+}
+
+module.exports = withOptionalSentry(nextConfig);
