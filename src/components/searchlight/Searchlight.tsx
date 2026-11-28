@@ -861,6 +861,8 @@ export default function Searchlight() {
   const rc = result?.criteria;
   const picks = result?.picks || [];
 
+  if (pathname.startsWith('/ops')) return null;
+
   return (
     <>
       {/* Floating, pulsing button + help bubble */}

@@ -10,6 +10,7 @@
  * Backend: POST /api/reviews { kind: 'satisfaction' | 'bug', rating 1–5, message }.
  */
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import { usePathname } from 'next/navigation';
 import { Bug, CheckCircle2, Heart, Loader2, Send, Star, X } from 'lucide-react';
 
 const api = (process.env.NEXT_PUBLIC_API_URL || 'https://api.reifexa.de').replace(/\/$/, '');
@@ -63,6 +64,7 @@ function Stars({ value, hover, onPick, onHover, size = 36 }: { value: number; ho
 }
 
 export default function FloatingReview() {
+  const pathname = usePathname() || '/';
   const dialog = useRef<HTMLDialogElement>(null);
   const [state, setState] = useState<'' | 'sending' | 'done' | 'error'>('');
   const [kind, setKind] = useState<'satisfaction' | 'bug'>('satisfaction');
@@ -157,6 +159,7 @@ export default function FloatingReview() {
   }
 
   const canSend = rating > 0 && (chips.length > 0 || message.trim().length > 0);
+  if (pathname.startsWith('/ops')) return null;
   const avg = summary?.average != null && summary.count > 0 ? summary.average.toLocaleString('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '';
 
   return (

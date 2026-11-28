@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import ReviewSummary from '@/components/reviews/ReviewSummary';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import toast  from 'react-hot-toast';
 import { ArrowRight, BadgeCheck, Check, Mail, ShieldCheck } from 'lucide-react';
 
@@ -13,6 +14,7 @@ const FOOTER_COLUMNS: [string, [string, string][]][] = [
 ];
 
 const Footer: React.FC = () => {
+  const pathname = usePathname() || '/';
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -54,6 +56,8 @@ const handleSubmit = async (e: React.FormEvent) => {
     setLoading(false);
   }
 };
+
+  if (pathname.startsWith('/ops')) return null;
 
   return (
     <footer className="footer-section bg-[#F7F8FA]">

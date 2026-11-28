@@ -17,10 +17,10 @@ export type BrandHomeItem = {
   count: number;
 };
 
-async function fetchJson<T>(path: string): Promise<T | null> {
+async function fetchJson<T>(path: string, revalidate = 300): Promise<T | null> {
   try {
     const res = await fetch(`${API}/api/products/${path}`, {
-      next: { revalidate: 300 },
+      next: { revalidate },
     });
     if (!res.ok) return null;
     return stripInternalLinks((await res.json()) as T);
@@ -30,7 +30,7 @@ async function fetchJson<T>(path: string): Promise<T | null> {
 }
 
 export async function getFeaturedHomeData(): Promise<FeaturedHomeData> {
-  const data = await fetchJson<FeaturedHomeData>('sessions-products');
+  const data = await fetchJson<FeaturedHomeData>('sessions-products', 60);
   return {
     title: data?.title || 'Our recommendation',
     category: data?.category || 'Winterreifen',

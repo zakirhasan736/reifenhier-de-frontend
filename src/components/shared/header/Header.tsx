@@ -144,6 +144,8 @@ export default function Header() {
     }
   }, [pathname]); // update on route change
 
+  if (pathname?.startsWith('/ops')) return null;
+
   return (
     <header className="bg-white relative z-[999]">
       {/* ============================
