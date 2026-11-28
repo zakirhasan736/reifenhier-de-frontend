@@ -8,7 +8,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "test": "node --test tests/*.test.mjs",
     "test:clicks": "playwright test",
     "test:clicks:ui": "playwright test --ui",

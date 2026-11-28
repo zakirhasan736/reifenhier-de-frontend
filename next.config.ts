@@ -10,8 +10,7 @@ const { HTML_LIMITED_BOT_UA_RE_STRING } = require('next/dist/shared/lib/router/u
 const SEO_BOTS =
   'Googlebot|GoogleOther|Storebot-Google|AdsBot-Google|Mediapartners-Google|bingbot|msnbot|PerplexityBot|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|SeznamBot|ecosia|Applebot';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: import('next').NextConfig = {
   htmlLimitedBots: new RegExp(`${HTML_LIMITED_BOT_UA_RE_STRING}|${SEO_BOTS}`, 'i'),
   images: {
     // Extra widths so a 1280–1600px wide screen doesn't download the 1920px
@@ -181,18 +180,25 @@ const nextConfig = {
  * "Cannot find module '@sentry/nextjs/config'" whenever the DSN was set and
  * the package was not installed. A missing package must not stop `next build`.
  */
-function withOptionalSentry(config) {
+function withOptionalSentry(config: import('next').NextConfig): import('next').NextConfig {
   const enabled = Boolean(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN);
   if (!enabled) return config;
   try {
-    const { withSentryConfig } = require('@sentry/nextjs/config');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { withSentryConfig } = require('@sentry/nextjs/config') as {
+      withSentryConfig: (
+        nextConfig: import('next').NextConfig,
+        options: { silent?: boolean; org?: string; project?: string },
+      ) => import('next').NextConfig;
+    };
     return withSentryConfig(config, {
       silent: true,
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
     });
   } catch (err) {
-    console.warn('[sentry] Building without the Sentry plugin:', err && err.message ? err.message : err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn('[sentry] Building without the Sentry plugin:', message);
     return config;
   }
 }

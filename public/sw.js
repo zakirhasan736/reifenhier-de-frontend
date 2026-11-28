@@ -1,6 +1,6 @@
 /* Reifexa Web Push service worker — price alerts for viewed / clicked products */
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', () => {
   self.skipWaiting()
 })
 
